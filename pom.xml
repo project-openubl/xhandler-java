@@ -160,9 +160,7 @@
                         <jacoco-agent.destfile>target/jacoco.exec</jacoco-agent.destfile>
                     </systemPropertyVariables>
                     <excludes>
-                        <exclude>oasis/names/specification/**/*</exclude>
-                        <exclude>sunat/names/specification/**/*</exclude>
-                        <exclude>un/unece/uncefact/**/*</exclude>
+                        <exclude>pe/gob/sunat/service/**/*</exclude>
                     </excludes>
                 </configuration>
             </plugin>

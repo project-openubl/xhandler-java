@@ -81,19 +81,41 @@
                             <goal>wsdl2java</goal>
                         </goals>
                         <configuration>
-                            <!--<sourceRoot>${basedir}/src/main/java</sourceRoot>-->
                             <wsdlOptions>
                                 <wsdlOption>
                                     <wsdl>src/main/resources/wsdl/billService.wsdl</wsdl>
+                                    <extraargs>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>http://service.sunat.gob.pe=service.sunat.gob.pe.billservice</extraarg>
+                                    </extraargs>
                                 </wsdlOption>
                                 <wsdlOption>
-                                    <wsdl>src/main/resources/wsdl/retencion_percepcion.wsdl</wsdl>
+                                    <wsdl>src/main/resources/wsdl/guiaRemision.wsdl</wsdl>
+                                    <extraargs>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>http://service.sunat.gob.pe=service.sunat.gob.pe.guiaremision</extraarg>
+                                    </extraargs>
                                 </wsdlOption>
                                 <wsdlOption>
-                                    <wsdl>src/main/resources/wsdl/consulta_factura.wsdl</wsdl>
+                                    <wsdl>src/main/resources/wsdl/retencionPercepcion.wsdl</wsdl>
+                                    <extraargs>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>http://service.sunat.gob.pe=service.sunat.gob.pe.retencionpercepcion</extraarg>
+                                    </extraargs>
                                 </wsdlOption>
                                 <wsdlOption>
-                                    <wsdl>src/main/resources/wsdl/consulta_cdr.wsdl</wsdl>
+                                    <wsdl>src/main/resources/wsdl/billValidService.wsdl</wsdl>
+                                    <extraargs>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>http://service.sunat.gob.pe=service.sunat.gob.pe.billvalidservice</extraarg>
+                                    </extraargs>
+                                </wsdlOption>
+                                <wsdlOption>
+                                    <wsdl>src/main/resources/wsdl/billConsultService.wsdl</wsdl>
+                                    <extraargs>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>http://service.sunat.gob.pe=service.sunat.gob.pe.billconsultservice</extraarg>
+                                    </extraargs>
                                 </wsdlOption>
                             </wsdlOptions>
                         </configuration>
@@ -161,6 +183,7 @@
                     </systemPropertyVariables>
                     <excludes>
                         <exclude>pe/gob/sunat/**/*</exclude>
+                        <exclude>service/sunat/gob/pe/**/*</exclude>
                     </excludes>
                 </configuration>
             </plugin>

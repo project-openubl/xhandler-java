@@ -9,7 +9,8 @@
                   xmlns:ns0="http://service.gem.factura.comppago.registro.servicio.sunat.gob.pe/"
                   xmlns:ns1="http://service.sunat.gob.pe"
                   targetNamespace="http://service.gem.factura.comppago.registro.servicio.sunat.gob.pe/">
-    <wsdl:import location="https://e-factura.sunat.gob.pe/ol-ti-itcpfegem/billService.ns1.wsdl" namespace="http://service.sunat.gob.pe"/>
+    <wsdl:import location="https://e-factura.sunat.gob.pe/ol-ti-itcpfegem/billService.ns1.wsdl"
+                 namespace="http://service.sunat.gob.pe"/>
     <wsdl:binding name="BillServicePortBinding" type="ns1:billService">
         <soap11:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
         <wsdl:operation name="getStatus">

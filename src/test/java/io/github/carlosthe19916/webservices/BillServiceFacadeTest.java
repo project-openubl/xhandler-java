@@ -32,18 +32,6 @@ public class BillServiceFacadeTest {
     }
 
     @Test
-    public void sendBillBytesZip() throws IOException {
-        final String FILE_NAME = "20494637074-01-F001-00000001.zip";
-        InputStream is = getClass().getResourceAsStream("/ubl/" + FILE_NAME);
-
-        byte[] bytes = new byte[is.available()];
-        int read = is.read(bytes);
-
-        byte[] result = BillServiceFacade.sendBill(FILE_NAME, bytes, URL, USERNAME, PASSWORD);
-        Assert.assertNotNull(result);
-    }
-
-    @Test
     public void sendBillPath() throws IOException, URISyntaxException {
         final String FILE_NAME = "20494637074-01-F001-00000001.xml";
         java.net.URL url = getClass().getResource("/ubl/" + FILE_NAME);

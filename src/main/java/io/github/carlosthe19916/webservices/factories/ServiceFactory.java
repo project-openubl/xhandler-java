@@ -25,7 +25,7 @@ public class ServiceFactory {
 
     public static <T> T getInstance(Class<T> serviceClass, ServiceConfig config) {
         JaxWsProxyFactoryBean factory = new JaxWsProxyFactoryBean();
-        factory.setServiceClass(BillService.class);
+        factory.setServiceClass(serviceClass);
 
         /*
          * Address

@@ -3,7 +3,17 @@
 [![Maintainability](https://sonarcloud.io/api/project_badges/measure?project=carlosthe19916&metric=alert_status)](https://sonarcloud.io/dashboard?id=carlosthe19916)
 
 # sunat-web-services
-Libreria que contiene los web endpoints para conectarse con la SUNAT
+Libreria que contiene los web endpoints para conectarse con la SUNAT.
+
+Para incluirla en tu projecto puedes usar maven:
+
+```
+<dependency>
+    <groupId>io.github.carlosthe19916</groupId>
+    <artifactId>sunat-web-services</artifactId>
+    <version>latestVersion</version>
+</dependency>
+```
 
 ## SUNAT Web Services 
 

@@ -1,4 +1,4 @@
-package io.github.carlosthe19916.webservices.cxf;
+package io.github.carlosthe19916.webservices.wrappers;
 
 public class ServiceConfig {
 

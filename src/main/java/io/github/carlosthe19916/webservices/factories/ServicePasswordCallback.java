@@ -1,4 +1,4 @@
-package io.github.carlosthe19916.webservices.cxf.ws;
+package io.github.carlosthe19916.webservices.factories;
 
 import org.apache.wss4j.common.ext.WSPasswordCallback;
 

@@ -1,7 +1,7 @@
-package io.github.carlosthe19916.webservices;
+package io.github.carlosthe19916.webservices.managers;
 
-import io.github.carlosthe19916.webservices.cxf.BillServiceManager;
-import io.github.carlosthe19916.webservices.cxf.ServiceConfig;
+import io.github.carlosthe19916.webservices.wrappers.BillServiceWrapper;
+import io.github.carlosthe19916.webservices.wrappers.ServiceConfig;
 import jodd.io.ZipBuilder;
 import service.sunat.gob.pe.billservice.StatusResponse;
 
@@ -10,9 +10,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-public class BillServiceSender {
+public class BillServiceManager {
 
-    private BillServiceSender() {
+    private BillServiceManager() {
         // Just static methods
     }
 
@@ -58,7 +58,7 @@ public class BillServiceSender {
                 .username(username)
                 .passwod(password)
                 .build();
-        return BillServiceManager.sendBill(config, fileName, file, null);
+        return BillServiceWrapper.sendBill(config, fileName, file, null);
     }
 
     /**
@@ -73,7 +73,7 @@ public class BillServiceSender {
                 .username(username)
                 .passwod(password)
                 .build();
-        return BillServiceManager.getStatus(config, ticket);
+        return BillServiceWrapper.getStatus(config, ticket);
     }
 
     /**
@@ -118,7 +118,7 @@ public class BillServiceSender {
                 .username(username)
                 .passwod(password)
                 .build();
-        return BillServiceManager.sendSummary(config, fileName, file, null);
+        return BillServiceWrapper.sendSummary(config, fileName, file, null);
     }
 
     /**
@@ -154,7 +154,7 @@ public class BillServiceSender {
                 .username(username)
                 .passwod(password)
                 .build();
-        return BillServiceManager.sendPack(config, fileName, file, null);
+        return BillServiceWrapper.sendPack(config, fileName, file, null);
     }
 
 }

@@ -1,4 +1,4 @@
-package io.github.carlosthe19916.webservices;
+package io.github.carlosthe19916.webservices.managers;
 
 
 import org.junit.Assert;
@@ -12,7 +12,7 @@ import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class BillServiceSenderTest {
+public class BillServiceManagerTest {
 
     private String USERNAME = "20494637074MODDATOS";
     private String PASSWORD = "MODDATOS";
@@ -27,7 +27,7 @@ public class BillServiceSenderTest {
         byte[] bytes = new byte[is.available()];
         int read = is.read(bytes);
 
-        byte[] result = BillServiceSender.sendBill(FILE_NAME, bytes, URL_BOLETA_FACTURA, USERNAME, PASSWORD);
+        byte[] result = BillServiceManager.sendBill(FILE_NAME, bytes, URL_BOLETA_FACTURA, USERNAME, PASSWORD);
         Assert.assertNotNull(result);
     }
 
@@ -37,7 +37,7 @@ public class BillServiceSenderTest {
         java.net.URL url = getClass().getResource("/ubl/" + FILE_NAME);
         Path path = Paths.get(url.toURI());
 
-        byte[] result = BillServiceSender.sendBill(path, URL_BOLETA_FACTURA, USERNAME, PASSWORD);
+        byte[] result = BillServiceManager.sendBill(path, URL_BOLETA_FACTURA, USERNAME, PASSWORD);
         Assert.assertNotNull(result);
     }
 
@@ -48,7 +48,7 @@ public class BillServiceSenderTest {
         Path path = Paths.get(url.toURI());
         File file = path.toFile();
 
-        byte[] result = BillServiceSender.sendBill(file, URL_BOLETA_FACTURA, USERNAME, PASSWORD);
+        byte[] result = BillServiceManager.sendBill(file, URL_BOLETA_FACTURA, USERNAME, PASSWORD);
         Assert.assertNotNull(result);
     }
 
@@ -60,7 +60,7 @@ public class BillServiceSenderTest {
         byte[] bytes = new byte[is.available()];
         int read = is.read(bytes);
 
-        byte[] result = BillServiceSender.sendBill(FILE_NAME, bytes, URL_RETENCION, USERNAME, PASSWORD);
+        byte[] result = BillServiceManager.sendBill(FILE_NAME, bytes, URL_RETENCION, USERNAME, PASSWORD);
         Assert.assertNotNull(result);
     }
 
@@ -68,7 +68,7 @@ public class BillServiceSenderTest {
     public void getStatus() {
         final String TICKET = "1529342625179";
 
-        StatusResponse status = BillServiceSender.getStatus(TICKET, URL_BOLETA_FACTURA, USERNAME, PASSWORD);
+        StatusResponse status = BillServiceManager.getStatus(TICKET, URL_BOLETA_FACTURA, USERNAME, PASSWORD);
         Assert.assertNotNull(status);
     }
 
@@ -80,7 +80,7 @@ public class BillServiceSenderTest {
         byte[] bytes = new byte[is.available()];
         int read = is.read(bytes);
 
-        String ticket = BillServiceSender.sendSummary(FILE_NAME, bytes, URL_BOLETA_FACTURA, USERNAME, PASSWORD);
+        String ticket = BillServiceManager.sendSummary(FILE_NAME, bytes, URL_BOLETA_FACTURA, USERNAME, PASSWORD);
         Assert.assertNotNull(ticket);
     }
 
@@ -92,7 +92,7 @@ public class BillServiceSenderTest {
         byte[] bytes = new byte[is.available()];
         int read = is.read(bytes);
 
-        String ticket = BillServiceSender.sendSummary(FILE_NAME, bytes, URL_RETENCION, USERNAME, PASSWORD);
+        String ticket = BillServiceManager.sendSummary(FILE_NAME, bytes, URL_RETENCION, USERNAME, PASSWORD);
         Assert.assertNotNull(ticket);
     }
 

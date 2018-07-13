@@ -32,7 +32,7 @@ PRODUCCIÓN | URL
 **Consulta CDR** | https://e-factura.sunat.gob.pe/ol-it-wsconscpegem/billConsultService
 
 # Enviar Comprobantes de Pago mediante BillService
-Para enviar Boletas, Facturas, Notas de Crédito, Notas de Débito, Guias de Remisión, Percepciones, Retenciones se debe de usar la clase BillServiceSender.
+Para enviar Boletas, Facturas, Notas de Crédito, Notas de Débito, Guias de Remisión, Percepciones, Retenciones se debe de usar la clase BillServiceManager.
 
 El valor de URL dependerá de qué tipo de documento está intentando enviar.
 ```
@@ -41,11 +41,11 @@ USERNAME = "12345678959MODDATOS"; // RUC + USUARIO SOL
 PASSWORD = "MODDATOS"; // PASSWORD SOL
 
 File file = new File(".../myFolder/12345678959-01-F001-00000001.xml");
-byte[] result = BillServiceSender.sendBill(file, URL, USERNAME, PASSWORD);
+byte[] result = BillServiceManager.sendBill(file, URL, USERNAME, PASSWORD);
 ```
 
 # Enviar Resumenes diarios y Bajas mediante BillService
-Para Enviar Resumenes diarios y Bajas se debe de usar la clase BillServiceSender.
+Para Enviar Resumenes diarios y Bajas se debe de usar la clase BillServiceManager.
 
 ```
 String URL = "https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService";
@@ -54,5 +54,5 @@ PASSWORD = "MODDATOS"; // PASSWORD SOL
 
 File file = new File(".../myFolder/12345678959-RA-20180316-00001.xml");
 
-String ticket = BillServiceSender.sendSummary(file, URL, USERNAME, PASSWORD);
+String ticket = BillServiceManager.sendSummary(file, URL, USERNAME, PASSWORD);
 ```

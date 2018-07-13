@@ -1,14 +1,14 @@
-package io.github.carlosthe19916.webservices.cxf;
+package io.github.carlosthe19916.webservices.wrappers;
 
-import io.github.carlosthe19916.webservices.cxf.ws.ServiceFactory;
+import io.github.carlosthe19916.webservices.factories.ServiceFactory;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.mail.util.ByteArrayDataSource;
 
-public class BillServiceManager {
+public class BillServiceWrapper {
 
-    private BillServiceManager() {
+    private BillServiceWrapper() {
         // Just static methods
     }
 

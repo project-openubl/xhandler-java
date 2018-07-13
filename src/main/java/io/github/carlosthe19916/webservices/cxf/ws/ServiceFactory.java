@@ -1,6 +1,6 @@
-package io.github.carlosthe19916.webservices.cxf;
+package io.github.carlosthe19916.webservices.cxf.ws;
 
-import io.github.carlosthe19916.webservices.CxfConfig;
+import io.github.carlosthe19916.webservices.cxf.ServiceConfig;
 import org.apache.cxf.configuration.jsse.TLSClientParameters;
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.endpoint.Endpoint;
@@ -25,7 +25,7 @@ public class ServiceFactory {
         // Just static methods
     }
 
-    public static <T> T get(Class<T> serviceClass, CxfConfig config) {
+    public static <T> T getInstance(Class<T> serviceClass, ServiceConfig config) {
         JaxWsProxyFactoryBean factory = new JaxWsProxyFactoryBean();
         factory.setServiceClass(BillService.class);
 

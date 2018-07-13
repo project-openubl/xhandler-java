@@ -1,12 +1,12 @@
-package io.github.carlosthe19916.webservices;
+package io.github.carlosthe19916.webservices.cxf;
 
-public class CxfConfig {
+public class ServiceConfig {
 
     private final String url;
     private final String username;
     private final String passwod;
 
-    public CxfConfig(Builder builder) {
+    private ServiceConfig(Builder builder) {
         this.url = builder.url;
         this.username = builder.username;
         this.passwod = builder.passwod;
@@ -44,8 +44,8 @@ public class CxfConfig {
             return this;
         }
 
-        public CxfConfig build() {
-            return new CxfConfig(this);
+        public ServiceConfig build() {
+            return new ServiceConfig(this);
         }
     }
 }

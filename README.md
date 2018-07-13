@@ -56,3 +56,40 @@ File file = new File(".../myFolder/12345678959-RA-20180316-00001.xml");
 
 String ticket = BillServiceManager.sendSummary(file, URL, USERNAME, PASSWORD);
 ```
+
+# Consultar estado comprobante
+
+```
+ServiceConfig config = new ServiceConfig.Builder()
+                .url(URL_CONSULTA)
+                .username(USERNAME)
+                .passwod(PASSWORD)
+                .build();
+
+BillConsultBean consult = new BillConsultBean.Builder()
+        .ruc("1234567894")
+        .tipo("01")
+        .serie("F001")
+        .numero(102)
+        .build();
+
+service.sunat.gob.pe.billconsultservice.StatusResponse response = BillConsultServiceManager.getStatus(config, consult);
+```
+
+# Verificar validez de archivo XML
+Se puede verificar la autenticidad de un archivo XMl mediante:
+
+
+```
+URL_CONSULTA = "https://e-factura.sunat.gob.pe/ol-it-wsconsvalidcpe/billValidService";
+
+File file = new File("../folder/F001-00005954.xml");
+
+ServiceConfig config = new ServiceConfig.Builder()
+    .url(URL_CONSULTA)
+    .username(USERNAME)
+    .passwod(PASSWORD)
+    .build();
+
+StatusResponse status = BillValidServiceManager.getStatus(file, config);
+```

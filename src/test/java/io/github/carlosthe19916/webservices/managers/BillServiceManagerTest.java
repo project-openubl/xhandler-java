@@ -7,9 +7,7 @@ import service.sunat.gob.pe.billservice.StatusResponse;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URISyntaxException;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class BillServiceManagerTest {
@@ -20,47 +18,20 @@ public class BillServiceManagerTest {
     private String URL_RETENCION = "https://e-beta.sunat.gob.pe/ol-ti-itemision-otroscpe-gem-beta/billService";
 
     @Test
-    public void sendBillInvoiceXml() throws IOException {
+    public void sendBillInvoice() throws IOException, URISyntaxException {
         final String FILE_NAME = "20494637074-01-F001-00000001.xml";
-        InputStream is = getClass().getResourceAsStream("/ubl/" + FILE_NAME);
-
-        byte[] bytes = new byte[is.available()];
-        int read = is.read(bytes);
-
-        byte[] result = BillServiceManager.sendBill(FILE_NAME, bytes, URL_BOLETA_FACTURA, USERNAME, PASSWORD);
-        Assert.assertNotNull(result);
-    }
-
-    @Test
-    public void sendBillInvoicePath() throws IOException, URISyntaxException {
-        final String FILE_NAME = "20494637074-01-F001-00000001.xml";
-        java.net.URL url = getClass().getResource("/ubl/" + FILE_NAME);
-        Path path = Paths.get(url.toURI());
-
-        byte[] result = BillServiceManager.sendBill(path, URL_BOLETA_FACTURA, USERNAME, PASSWORD);
-        Assert.assertNotNull(result);
-    }
-
-    @Test
-    public void sendBillInvoiceFile() throws IOException, URISyntaxException {
-        final String FILE_NAME = "20494637074-01-F001-00000001.xml";
-        java.net.URL url = getClass().getResource("/ubl/" + FILE_NAME);
-        Path path = Paths.get(url.toURI());
-        File file = path.toFile();
+        File file = Paths.get(getClass().getResource("/ubl/" + FILE_NAME).toURI()).toFile();
 
         byte[] result = BillServiceManager.sendBill(file, URL_BOLETA_FACTURA, USERNAME, PASSWORD);
         Assert.assertNotNull(result);
     }
 
     @Test
-    public void sendBillRetencionXml() throws IOException {
+    public void sendBillRetencion() throws IOException, URISyntaxException {
         final String FILE_NAME = "20494637074-20-R001-00000001.xml";
-        InputStream is = getClass().getResourceAsStream("/ubl/" + FILE_NAME);
+        File file = Paths.get(getClass().getResource("/ubl/" + FILE_NAME).toURI()).toFile();
 
-        byte[] bytes = new byte[is.available()];
-        int read = is.read(bytes);
-
-        byte[] result = BillServiceManager.sendBill(FILE_NAME, bytes, URL_RETENCION, USERNAME, PASSWORD);
+        byte[] result = BillServiceManager.sendBill(file, URL_RETENCION, USERNAME, PASSWORD);
         Assert.assertNotNull(result);
     }
 
@@ -73,26 +44,20 @@ public class BillServiceManagerTest {
     }
 
     @Test
-    public void sendInvoiceVoidedDocumentXml() throws IOException {
+    public void sendInvoiceVoidedDocumentXml() throws IOException, URISyntaxException {
         final String FILE_NAME = "20494637074-RA-20180316-00001.xml";
-        InputStream is = getClass().getResourceAsStream("/ubl/" + FILE_NAME);
+        File file = Paths.get(getClass().getResource("/ubl/" + FILE_NAME).toURI()).toFile();
 
-        byte[] bytes = new byte[is.available()];
-        int read = is.read(bytes);
-
-        String ticket = BillServiceManager.sendSummary(FILE_NAME, bytes, URL_BOLETA_FACTURA, USERNAME, PASSWORD);
+        String ticket = BillServiceManager.sendSummary(file, URL_BOLETA_FACTURA, USERNAME, PASSWORD);
         Assert.assertNotNull(ticket);
     }
 
     @Test
-    public void sendRetencionVoidedDocumentXml() throws IOException {
+    public void sendRetencionVoidedDocumentXml() throws IOException, URISyntaxException {
         final String FILE_NAME = "20494637074-RR-20180713-00001.xml";
-        InputStream is = getClass().getResourceAsStream("/ubl/" + FILE_NAME);
+        File file = Paths.get(getClass().getResource("/ubl/" + FILE_NAME).toURI()).toFile();
 
-        byte[] bytes = new byte[is.available()];
-        int read = is.read(bytes);
-
-        String ticket = BillServiceManager.sendSummary(FILE_NAME, bytes, URL_RETENCION, USERNAME, PASSWORD);
+        String ticket = BillServiceManager.sendSummary(file, URL_RETENCION, USERNAME, PASSWORD);
         Assert.assertNotNull(ticket);
     }
 

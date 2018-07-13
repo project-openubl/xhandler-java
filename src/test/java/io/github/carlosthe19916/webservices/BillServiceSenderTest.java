@@ -72,4 +72,28 @@ public class BillServiceSenderTest {
         Assert.assertNotNull(status);
     }
 
+    @Test
+    public void sendInvoiceVoidedDocumentXml() throws IOException {
+        final String FILE_NAME = "20494637074-RA-20180316-00001.xml";
+        InputStream is = getClass().getResourceAsStream("/ubl/" + FILE_NAME);
+
+        byte[] bytes = new byte[is.available()];
+        int read = is.read(bytes);
+
+        String ticket = BillServiceSender.sendSummary(FILE_NAME, bytes, URL_BOLETA_FACTURA, USERNAME, PASSWORD);
+        Assert.assertNotNull(ticket);
+    }
+
+    @Test
+    public void sendRetencionVoidedDocumentXml() throws IOException {
+        final String FILE_NAME = "20494637074-RR-20180713-00001.xml";
+        InputStream is = getClass().getResourceAsStream("/ubl/" + FILE_NAME);
+
+        byte[] bytes = new byte[is.available()];
+        int read = is.read(bytes);
+
+        String ticket = BillServiceSender.sendSummary(FILE_NAME, bytes, URL_RETENCION, USERNAME, PASSWORD);
+        Assert.assertNotNull(ticket);
+    }
+
 }

@@ -37,8 +37,8 @@ public class ServiceFactory {
         /*
          * Logging
          */
-        factory.getInInterceptors().add(new LoggingInInterceptor());
-        factory.getOutInterceptors().add(new LoggingOutInterceptor());
+//        factory.getInInterceptors().add(new LoggingInInterceptor());
+//        factory.getOutInterceptors().add(new LoggingOutInterceptor());
 
         T client = (T) factory.create();
         defineTimeouts(client);

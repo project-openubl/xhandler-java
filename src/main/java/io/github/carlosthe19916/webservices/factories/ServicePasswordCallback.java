@@ -5,11 +5,11 @@ import org.apache.wss4j.common.ext.WSPasswordCallback;
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
 import java.util.Map;
-import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ServicePasswordCallback implements CallbackHandler {
 
-    public static final Map<String, String> PASSWORDS = new TreeMap<>();
+    public static final Map<String, String> PASSWORDS = new ConcurrentHashMap<>();
 
     @Override
     public void handle(Callback[] callbacks) {

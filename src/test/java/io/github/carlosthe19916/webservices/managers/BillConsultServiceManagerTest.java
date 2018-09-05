@@ -4,16 +4,9 @@ package io.github.carlosthe19916.webservices.managers;
 import io.github.carlosthe19916.webservices.wrappers.ServiceConfig;
 import org.junit.Assert;
 import org.junit.Test;
-import pe.gob.sunat.servicio2.registro.electronico.comppago.consulta.ws.service.BillConsultService;
-import service.sunat.gob.pe.billservice.StatusResponse;
 
 import javax.xml.ws.soap.SOAPFaultException;
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URISyntaxException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 public class BillConsultServiceManagerTest {
 
@@ -26,7 +19,7 @@ public class BillConsultServiceManagerTest {
         ServiceConfig config = new ServiceConfig.Builder()
                 .url(URL_CONSULTA)
                 .username(USERNAME)
-                .passwod(PASSWORD)
+                .password(PASSWORD)
                 .build();
 
         BillConsultBean consult = new BillConsultBean.Builder()
@@ -49,7 +42,7 @@ public class BillConsultServiceManagerTest {
         ServiceConfig config = new ServiceConfig.Builder()
                 .url(URL_CONSULTA)
                 .username(USERNAME)
-                .passwod(PASSWORD)
+                .password(PASSWORD)
                 .build();
 
         BillConsultBean consult = new BillConsultBean.Builder()

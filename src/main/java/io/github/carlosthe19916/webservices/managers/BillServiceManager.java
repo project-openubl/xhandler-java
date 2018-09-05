@@ -56,7 +56,7 @@ public class BillServiceManager {
         ServiceConfig config = new ServiceConfig.Builder()
                 .url(url)
                 .username(username)
-                .passwod(password)
+                .password(password)
                 .build();
         return BillServiceWrapper.sendBill(config, fileName, file, null);
     }
@@ -71,7 +71,7 @@ public class BillServiceManager {
         ServiceConfig config = new ServiceConfig.Builder()
                 .url(url)
                 .username(username)
-                .passwod(password)
+                .password(password)
                 .build();
         return BillServiceWrapper.getStatus(config, ticket);
     }
@@ -116,7 +116,7 @@ public class BillServiceManager {
         ServiceConfig config = new ServiceConfig.Builder()
                 .url(url)
                 .username(username)
-                .passwod(password)
+                .password(password)
                 .build();
         return BillServiceWrapper.sendSummary(config, fileName, file, null);
     }
@@ -152,7 +152,7 @@ public class BillServiceManager {
         ServiceConfig config = new ServiceConfig.Builder()
                 .url(url)
                 .username(username)
-                .passwod(password)
+                .password(password)
                 .build();
         return BillServiceWrapper.sendPack(config, fileName, file, null);
     }

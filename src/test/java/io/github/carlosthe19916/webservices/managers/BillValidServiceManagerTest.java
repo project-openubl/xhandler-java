@@ -31,7 +31,7 @@ public class BillValidServiceManagerTest {
         ServiceConfig config = new ServiceConfig.Builder()
                 .url(URL_CONSULTA)
                 .username(USERNAME)
-                .passwod(PASSWORD)
+                .password(PASSWORD)
                 .build();
 
         try {

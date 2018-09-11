@@ -1,11 +1,15 @@
-package io.github.carlosthe19916.webservices.managers.errorhandler;
+package io.github.carlosthe19916.webservices.utils;
 
 import javax.xml.ws.soap.SOAPFaultException;
 import java.util.Optional;
 
-public abstract class AbstractErrorHandler implements SUNATErrorHandler {
+public class Util {
 
-    protected Optional<Integer> getErrorCode(SOAPFaultException e) {
+    private Util() {
+        // Just static methods
+    }
+
+    public static Optional<Integer> getErrorCode(SOAPFaultException e) {
         String errorCode = e.getFault().getFaultCode().replaceAll("soap-env:Client.", "");
 
         if (!errorCode.matches("-?\\d+")) {
@@ -19,7 +23,7 @@ public abstract class AbstractErrorHandler implements SUNATErrorHandler {
         return Optional.of(Integer.parseInt(errorCode));
     }
 
-    protected String getFileNameWithoutExtension(String fileName) {
+    public static String getFileNameWithoutExtension(String fileName) {
         return fileName.substring(0, fileName.lastIndexOf('.'));
     }
 

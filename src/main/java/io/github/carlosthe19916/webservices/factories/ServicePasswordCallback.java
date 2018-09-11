@@ -9,7 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ServicePasswordCallback implements CallbackHandler {
 
-    public static final Map<String, String> PASSWORDS = new ConcurrentHashMap<>();
+    protected static final Map<String, String> PASSWORDS = new ConcurrentHashMap<>();
 
     @Override
     public void handle(Callback[] callbacks) {

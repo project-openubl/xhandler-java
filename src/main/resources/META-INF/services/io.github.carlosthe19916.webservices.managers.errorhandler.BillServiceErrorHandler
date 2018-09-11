@@ -1,0 +1,3 @@
+io.github.carlosthe19916.webservices.managers.errorhandler.billservice.BillServiceExcepcionErrorHandler
+io.github.carlosthe19916.webservices.managers.errorhandler.billservice.BillServiceObservacionesErrorHandler
+io.github.carlosthe19916.webservices.managers.errorhandler.billservice.BillServiceRechazoErrorHandler

@@ -1,14 +1,11 @@
-package io.github.carlosthe19916.webservices.managers.errorhandler.basic;
+package io.github.carlosthe19916.webservices.managers.errorhandler.billservice;
 
-import io.github.carlosthe19916.webservices.managers.errorhandler.AbstractErrorHandler;
 import io.github.carlosthe19916.webservices.managers.errorhandler.BillServiceErrorHandler;
 import io.github.carlosthe19916.webservices.models.BillServiceResult;
 import io.github.carlosthe19916.webservices.wrappers.ServiceConfig;
 import service.sunat.gob.pe.billservice.StatusResponse;
 
-import javax.xml.ws.soap.SOAPFaultException;
-
-public class BillServiceObservacionesErrorHandler extends AbstractErrorHandler implements BillServiceErrorHandler {
+public abstract class AbstractBillServiceErrorHandler implements BillServiceErrorHandler {
 
     @Override
     public BillServiceResult sendBill(String fileName, byte[] zipFile, String partyType, ServiceConfig config) {
@@ -33,11 +30,6 @@ public class BillServiceObservacionesErrorHandler extends AbstractErrorHandler i
     @Override
     public int getPriority() {
         return 0;
-    }
-
-    @Override
-    public boolean test(SOAPFaultException e) {
-        return getErrorCode(e).orElse(-1) >= 4_000;
     }
 
 }

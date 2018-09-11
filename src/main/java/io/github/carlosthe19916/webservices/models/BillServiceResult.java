@@ -24,7 +24,7 @@ public class BillServiceResult {
         return description;
     }
 
-    public static enum Status {
+    public enum Status {
         ACEPTADO,
         RECHAZADO,
         BAJA

@@ -1,5 +1,6 @@
 package io.github.carlosthe19916.webservices.utils;
 
+import javax.xml.soap.SOAPFault;
 import javax.xml.ws.soap.SOAPFaultException;
 import java.util.Optional;
 
@@ -9,11 +10,22 @@ public class Util {
         // Just static methods
     }
 
-    public static Optional<Integer> getErrorCode(SOAPFaultException e) {
-        String errorCode = e.getFault().getFaultCode().replaceAll("soap-env:Client.", "");
+    public static Optional<Integer> getErrorCode(SOAPFaultException exception) {
+        String errorCode = "";
+
+        SOAPFault fault = exception.getFault();
+        if (fault != null) {
+            String faultCode = fault.getFaultCode();
+            if (faultCode != null) {
+                errorCode = faultCode.replaceAll("soap-env:Client.", "");
+            }
+        }
 
         if (!errorCode.matches("-?\\d+")) {
-            errorCode = e.getMessage();
+            String exceptionMessage = exception.getMessage();
+            if (exceptionMessage != null) {
+                errorCode = exceptionMessage.replaceAll("soap-env:Client.", "");
+            }
         }
 
         if (!errorCode.matches("-?\\d+")) {
@@ -24,7 +36,11 @@ public class Util {
     }
 
     public static String getFileNameWithoutExtension(String fileName) {
-        return fileName.substring(0, fileName.lastIndexOf('.'));
+        int index = fileName.lastIndexOf('.');
+        if (index != -1) {
+            return fileName.substring(0, fileName.lastIndexOf('.'));
+        }
+        return fileName;
     }
 
 }

@@ -24,6 +24,7 @@ public class BillValidServiceWrapper {
                                                                                           String fechaEmision,
                                                                                           double importeTotal,
                                                                                           String nroAutorizacion) {
+
         BillValidService billValidService = ServiceFactory.getInstance(BillValidService.class, config);
         return billValidService.validaCDPcriterios(rucEmisor, tipoCDP, serieCDP, numeroCDP, tipoDocIdReceptor, numeroDocIdReceptor, fechaEmision, importeTotal, nroAutorizacion);
     }

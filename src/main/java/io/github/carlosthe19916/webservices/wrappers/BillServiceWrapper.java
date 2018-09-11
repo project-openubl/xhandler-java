@@ -12,26 +12,26 @@ public class BillServiceWrapper {
         // Just static methods
     }
 
-    public static byte[] sendBill(ServiceConfig config, String fileName, byte[] zipFile, String partyType) {
+    public static byte[] sendBill(String fileName, byte[] zipFile, String partyType, ServiceConfig config) {
         service.sunat.gob.pe.billservice.BillService billService = ServiceFactory.getInstance(service.sunat.gob.pe.billservice.BillService.class, config);
         DataSource dataSource = new ByteArrayDataSource(zipFile, "application/zip");
         DataHandler dataHandler = new DataHandler(dataSource);
         return billService.sendBill(fileName, dataHandler, partyType);
     }
 
-    public static service.sunat.gob.pe.billservice.StatusResponse getStatus(ServiceConfig config, String ticket) {
+    public static service.sunat.gob.pe.billservice.StatusResponse getStatus(String ticket, ServiceConfig config) {
         service.sunat.gob.pe.billservice.BillService billService = ServiceFactory.getInstance(service.sunat.gob.pe.billservice.BillService.class, config);
         return billService.getStatus(ticket);
     }
 
-    public static String sendSummary(ServiceConfig config, String fileName, byte[] zipFile, String partyType) {
+    public static String sendSummary(String fileName, byte[] zipFile, String partyType, ServiceConfig config) {
         service.sunat.gob.pe.billservice.BillService billService = ServiceFactory.getInstance(service.sunat.gob.pe.billservice.BillService.class, config);
         DataSource dataSource = new ByteArrayDataSource(zipFile, "application/zip");
         DataHandler dataHandler = new DataHandler(dataSource);
         return billService.sendSummary(fileName, dataHandler, partyType);
     }
 
-    public static String sendPack(ServiceConfig config, String fileName, byte[] zipFile, String partyType) {
+    public static String sendPack(String fileName, byte[] zipFile, String partyType, ServiceConfig config) {
         service.sunat.gob.pe.billservice.BillService billService = ServiceFactory.getInstance(service.sunat.gob.pe.billservice.BillService.class, config);
         DataSource dataSource = new ByteArrayDataSource(zipFile, "application/zip");
         DataHandler dataHandler = new DataHandler(dataSource);

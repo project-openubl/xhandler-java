@@ -1,6 +1,7 @@
 package io.github.carlosthe19916.webservices.managers;
 
 
+import io.github.carlosthe19916.webservices.models.BillConsultBean;
 import io.github.carlosthe19916.webservices.wrappers.ServiceConfig;
 import org.junit.Assert;
 import org.junit.Test;
@@ -30,7 +31,7 @@ public class BillConsultServiceManagerTest {
                 .build();
 
         try {
-            service.sunat.gob.pe.billconsultservice.StatusResponse response = BillConsultServiceManager.getStatus(config, consult);
+            service.sunat.gob.pe.billconsultservice.StatusResponse response = BillConsultServiceManager.getStatus(consult, config);
         } catch (SOAPFaultException e) {
             // Las consultas deben de hacerse con un usuario y constraseña de produccion.
             Assert.assertEquals(e.getMessage(), "El Usuario ingresado no existe");
@@ -53,7 +54,7 @@ public class BillConsultServiceManagerTest {
                 .build();
 
         try {
-            service.sunat.gob.pe.billconsultservice.StatusResponse response = BillConsultServiceManager.getStatusCdr(config, consult);
+            service.sunat.gob.pe.billconsultservice.StatusResponse response = BillConsultServiceManager.getStatusCdr(consult, config);
         } catch (SOAPFaultException e) {
             // Las consultas deben de hacerse con un usuario y constraseña de produccion.
             Assert.assertEquals(e.getMessage(), "El Usuario ingresado no existe");

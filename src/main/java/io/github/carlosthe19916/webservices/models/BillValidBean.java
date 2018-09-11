@@ -1,4 +1,4 @@
-package io.github.carlosthe19916.webservices.managers;
+package io.github.carlosthe19916.webservices.models;
 
 public class BillValidBean {
 

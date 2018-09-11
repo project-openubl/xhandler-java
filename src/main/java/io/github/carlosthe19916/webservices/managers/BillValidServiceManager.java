@@ -1,5 +1,6 @@
 package io.github.carlosthe19916.webservices.managers;
 
+import io.github.carlosthe19916.webservices.models.BillValidBean;
 import io.github.carlosthe19916.webservices.wrappers.BillValidServiceWrapper;
 import io.github.carlosthe19916.webservices.wrappers.ServiceConfig;
 

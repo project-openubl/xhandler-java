@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
 
 public class BillService1033ErrorHandler extends AbstractBillServiceErrorHandler {
 
+    private final static String DEFAULT_CONSULT_URL = "https://e-factura.sunat.gob.pe/ol-it-wsconscpegem/billConsultService";
     private final static Pattern FILENAME_STRUCTURE = Pattern.compile("(?:\\d{11}-)\\d{2}-[a-zA-Z_0-9]{4}-\\d{1,8}"); // [RUC]-[TIPO DOCUMENTO]-[SERIE]-[NUMERO]
 
     @Override
@@ -21,7 +22,13 @@ public class BillService1033ErrorHandler extends AbstractBillServiceErrorHandler
         Matcher matcher = FILENAME_STRUCTURE.matcher(Util.getFileNameWithoutExtension(fileName));
         if (matcher.matches()) {
             BillConsultBean consult = new BillConsultBean.Builder().build();
-            service.sunat.gob.pe.billconsultservice.StatusResponse response = BillConsultServiceManager.getStatusCdr(consult, config);
+            ServiceConfig consultServiceConfig = new ServiceConfig.Builder()
+                    .url(DEFAULT_CONSULT_URL)
+                    .username(config.getUsername())
+                    .password(config.getPassword())
+                    .build();
+
+            service.sunat.gob.pe.billconsultservice.StatusResponse response = BillConsultServiceManager.getStatusCdr(consult, consultServiceConfig);
 
             Optional<ConsultaCdrResponseType> optional = ConsultaCdrResponseType.searchByCode(response.getStatusCode());
             if (optional.isPresent()) {

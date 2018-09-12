@@ -7,7 +7,6 @@ import io.github.carlosthe19916.webservices.models.BillServiceResult;
 import io.github.carlosthe19916.webservices.wrappers.BillServiceWrapper;
 import io.github.carlosthe19916.webservices.wrappers.ServiceConfig;
 import jodd.io.ZipBuilder;
-import service.sunat.gob.pe.billservice.StatusResponse;
 
 import javax.xml.ws.soap.SOAPFaultException;
 import java.io.File;

@@ -27,4 +27,9 @@ public class SUNATWebServiceException extends SOAPFaultException {
         return SUNATCodigoErrores.getInstance().get(sunatErrorCode);
     }
 
+    public String getSUNATErrorMessage(int maxLength) {
+        Integer sunatErrorCode = getSUNATErrorCode();
+        return SUNATCodigoErrores.getInstance().getWithMaxLength(sunatErrorCode, maxLength);
+    }
+
 }

@@ -1,6 +1,6 @@
 package io.github.carlosthe19916.webservices.managers;
 
-import io.github.carlosthe19916.webservices.exceptions.SUNATWebServiceException;
+import io.github.carlosthe19916.webservices.exceptions.WebServiceExceptionFactory;
 import io.github.carlosthe19916.webservices.managers.errorhandler.BillServiceErrorHandler;
 import io.github.carlosthe19916.webservices.managers.errorhandler.BillServiceErrorHandlerManager;
 import io.github.carlosthe19916.webservices.models.BillServiceResult;
@@ -63,7 +63,7 @@ public class BillServiceManager {
                     return result;
                 }
             }
-            throw new SUNATWebServiceException(e);
+            throw WebServiceExceptionFactory.createWebServiceException(e);
         }
     }
 
@@ -82,7 +82,7 @@ public class BillServiceManager {
                     return statusResponse;
                 }
             }
-            throw new SUNATWebServiceException(e);
+            throw WebServiceExceptionFactory.createWebServiceException(e);
         }
     }
 
@@ -127,7 +127,7 @@ public class BillServiceManager {
                     return ticket;
                 }
             }
-            throw new SUNATWebServiceException(e);
+            throw WebServiceExceptionFactory.createWebServiceException(e);
         }
     }
 
@@ -163,7 +163,7 @@ public class BillServiceManager {
                     return ticket;
                 }
             }
-            throw new SUNATWebServiceException(e);
+            throw WebServiceExceptionFactory.createWebServiceException(e);
         }
     }
 

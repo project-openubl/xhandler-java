@@ -66,4 +66,9 @@ public class BillService1033ErrorHandler extends AbstractBillServiceErrorHandler
         return errorCode == 1_033;
     }
 
+    @Override
+    public int getPriority() {
+        return 1;
+    }
+
 }

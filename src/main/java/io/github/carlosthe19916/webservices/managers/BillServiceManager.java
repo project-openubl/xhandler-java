@@ -2,6 +2,7 @@ package io.github.carlosthe19916.webservices.managers;
 
 import io.github.carlosthe19916.webservices.exceptions.SUNATWebServiceException;
 import io.github.carlosthe19916.webservices.managers.errorhandler.BillServiceErrorHandler;
+import io.github.carlosthe19916.webservices.managers.errorhandler.BillServiceErrorHandlerManager;
 import io.github.carlosthe19916.webservices.models.BillServiceResult;
 import io.github.carlosthe19916.webservices.wrappers.BillServiceWrapper;
 import io.github.carlosthe19916.webservices.wrappers.ServiceConfig;
@@ -56,7 +57,7 @@ public class BillServiceManager {
             byte[] bytes = BillServiceWrapper.sendBill(fileName, file, null, config);
             return new BillServiceResult(BillServiceResult.Status.ACEPTADO, bytes, null);
         } catch (SOAPFaultException e) {
-            Set<BillServiceErrorHandler> billServiceErrorHandlers = BillServiceSingleton.getInstance().getApplicableErrorHandlers(e);
+            Set<BillServiceErrorHandler> billServiceErrorHandlers = BillServiceErrorHandlerManager.getInstance().getApplicableErrorHandlers(e);
             for (BillServiceErrorHandler errorHandler : billServiceErrorHandlers) {
                 BillServiceResult result = errorHandler.sendBill(fileName, file, null, config);
                 if (result != null) {
@@ -71,11 +72,11 @@ public class BillServiceManager {
      * @param ticket numero de ticket a ser consultado
      * @param config Credenciales y URL de destino de la petición
      */
-    public static StatusResponse getStatus(String ticket, ServiceConfig config) {
+    public static service.sunat.gob.pe.billservice.StatusResponse getStatus(String ticket, ServiceConfig config) {
         try {
             return BillServiceWrapper.getStatus(ticket, config);
         } catch (SOAPFaultException e) {
-            Set<BillServiceErrorHandler> billServiceErrorHandlers = BillServiceSingleton.getInstance().getApplicableErrorHandlers(e);
+            Set<BillServiceErrorHandler> billServiceErrorHandlers = BillServiceErrorHandlerManager.getInstance().getApplicableErrorHandlers(e);
             for (BillServiceErrorHandler errorHandler : billServiceErrorHandlers) {
                 service.sunat.gob.pe.billservice.StatusResponse statusResponse = errorHandler.getStatus(ticket, config);
                 if (statusResponse != null) {
@@ -120,7 +121,7 @@ public class BillServiceManager {
         try {
             return BillServiceWrapper.sendSummary(fileName, file, null, config);
         } catch (SOAPFaultException e) {
-            Set<BillServiceErrorHandler> billServiceErrorHandlers = BillServiceSingleton.getInstance().getApplicableErrorHandlers(e);
+            Set<BillServiceErrorHandler> billServiceErrorHandlers = BillServiceErrorHandlerManager.getInstance().getApplicableErrorHandlers(e);
             for (BillServiceErrorHandler errorHandler : billServiceErrorHandlers) {
                 String ticket = errorHandler.sendSummary(fileName, file, null, config);
                 if (ticket != null) {
@@ -156,7 +157,7 @@ public class BillServiceManager {
         try {
             return BillServiceWrapper.sendPack(fileName, file, null, config);
         } catch (SOAPFaultException e) {
-            Set<BillServiceErrorHandler> billServiceErrorHandlers = BillServiceSingleton.getInstance().getApplicableErrorHandlers(e);
+            Set<BillServiceErrorHandler> billServiceErrorHandlers = BillServiceErrorHandlerManager.getInstance().getApplicableErrorHandlers(e);
             for (BillServiceErrorHandler errorHandler : billServiceErrorHandlers) {
                 String ticket = errorHandler.sendPack(fileName, file, null, config);
                 if (ticket != null) {

@@ -1,7 +1,4 @@
-package io.github.carlosthe19916.webservices.managers;
-
-import io.github.carlosthe19916.webservices.managers.errorhandler.BillServiceErrorHandler;
-import io.github.carlosthe19916.webservices.managers.errorhandler.SUNATErrorHandler;
+package io.github.carlosthe19916.webservices.managers.errorhandler;
 
 import javax.xml.ws.soap.SOAPFaultException;
 import java.util.Comparator;
@@ -10,24 +7,24 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
-public class BillServiceSingleton {
+public class BillServiceErrorHandlerManager {
 
-    private static volatile BillServiceSingleton instance;
+    private static volatile BillServiceErrorHandlerManager instance;
 
     private Set<BillServiceErrorHandler> errorHandlers;
 
-    private BillServiceSingleton() {
+    private BillServiceErrorHandlerManager() {
         errorHandlers = new TreeSet<>(Comparator.comparingInt(SUNATErrorHandler::getPriority));
         for (BillServiceErrorHandler errorHandler : ServiceLoader.load(BillServiceErrorHandler.class)) {
             errorHandlers.add(errorHandler);
         }
     }
 
-    public static BillServiceSingleton getInstance() {
+    public static BillServiceErrorHandlerManager getInstance() {
         if (instance == null) {
-            synchronized (BillServiceSingleton.class) {
+            synchronized (BillServiceErrorHandlerManager.class) {
                 if (instance == null) {
-                    instance = new BillServiceSingleton();
+                    instance = new BillServiceErrorHandlerManager();
                 }
             }
         }

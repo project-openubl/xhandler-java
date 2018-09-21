@@ -3,7 +3,7 @@ package io.github.carlosthe19916.webservices.managers.errorhandler.billservice;
 import io.github.carlosthe19916.webservices.managers.BillConsultServiceManager;
 import io.github.carlosthe19916.webservices.models.BillConsultBean;
 import io.github.carlosthe19916.webservices.models.BillServiceResult;
-import io.github.carlosthe19916.webservices.models.types.ConsultaCdrResponseType;
+import io.github.carlosthe19916.webservices.models.types.ConsultaResponseType;
 import io.github.carlosthe19916.webservices.utils.Util;
 import io.github.carlosthe19916.webservices.wrappers.ServiceConfig;
 
@@ -40,7 +40,7 @@ public class BillService1033ErrorHandler extends AbstractBillServiceErrorHandler
 
             service.sunat.gob.pe.billconsultservice.StatusResponse response = BillConsultServiceManager.getStatus(consult, consultServiceConfig);
 
-            Optional<ConsultaCdrResponseType> optional = ConsultaCdrResponseType.searchByCode(response.getStatusCode());
+            Optional<ConsultaResponseType> optional = ConsultaResponseType.searchByCode(response.getStatusCode());
             if (optional.isPresent()) {
                 switch (optional.get()) {
                     case EXISTE_Y_ACEPTADO:

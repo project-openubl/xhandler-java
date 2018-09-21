@@ -21,7 +21,15 @@ public class BillService1033ErrorHandler extends AbstractBillServiceErrorHandler
     public BillServiceResult sendBill(String fileName, byte[] zipFile, String partyType, ServiceConfig config) {
         Matcher matcher = FILENAME_STRUCTURE.matcher(Util.getFileNameWithoutExtension(fileName));
         if (matcher.matches()) {
-            BillConsultBean consult = new BillConsultBean.Builder().build();
+            String[] fileNameSplit = fileName.split("-");
+
+            BillConsultBean consult = new BillConsultBean.Builder()
+                    .ruc(fileNameSplit[0])
+                    .tipo(fileNameSplit[1])
+                    .serie(fileNameSplit[2])
+                    .numero(Integer.parseInt(fileNameSplit[3]))
+                    .build();
+
             ServiceConfig consultServiceConfig = new ServiceConfig.Builder()
                     .url(DEFAULT_CONSULT_URL)
                     .username(config.getUsername())

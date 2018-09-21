@@ -6,6 +6,7 @@ import io.github.carlosthe19916.webservices.models.BillServiceResult;
 import io.github.carlosthe19916.webservices.models.types.ConsultaCdrResponseType;
 import io.github.carlosthe19916.webservices.utils.Util;
 import io.github.carlosthe19916.webservices.wrappers.ServiceConfig;
+import org.apache.commons.io.FilenameUtils;
 
 import javax.xml.ws.soap.SOAPFaultException;
 import java.util.Optional;
@@ -21,7 +22,7 @@ public class BillService1033ErrorHandler extends AbstractBillServiceErrorHandler
     public BillServiceResult sendBill(String fileName, byte[] zipFile, String partyType, ServiceConfig config) {
         Matcher matcher = FILENAME_STRUCTURE.matcher(Util.getFileNameWithoutExtension(fileName));
         if (matcher.matches()) {
-            String[] fileNameSplit = fileName.split("-");
+            String[] fileNameSplit = FilenameUtils.removeExtension(fileName).split("-");
 
             BillConsultBean consult = new BillConsultBean.Builder()
                     .ruc(fileNameSplit[0])

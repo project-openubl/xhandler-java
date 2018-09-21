@@ -38,7 +38,7 @@ public class BillService1033ErrorHandler extends AbstractBillServiceErrorHandler
                     .password(config.getPassword())
                     .build();
 
-            service.sunat.gob.pe.billconsultservice.StatusResponse response = BillConsultServiceManager.getStatusCdr(consult, consultServiceConfig);
+            service.sunat.gob.pe.billconsultservice.StatusResponse response = BillConsultServiceManager.getStatus(consult, consultServiceConfig);
 
             Optional<ConsultaCdrResponseType> optional = ConsultaCdrResponseType.searchByCode(response.getStatusCode());
             if (optional.isPresent()) {

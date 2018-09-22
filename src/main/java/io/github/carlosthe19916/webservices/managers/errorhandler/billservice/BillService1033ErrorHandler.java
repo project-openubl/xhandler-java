@@ -19,53 +19,53 @@ public class BillService1033ErrorHandler extends AbstractBillServiceErrorHandler
 
     @Override
     public BillServiceResult sendBill(String fileName, byte[] zipFile, String partyType, ServiceConfig config) {
-        String fileNameWithoutExtension = Util.getFileNameWithoutExtension(fileName);
-
-        Matcher matcher = FILENAME_STRUCTURE.matcher(fileNameWithoutExtension);
-        if (matcher.matches()) {
-            String[] split = fileNameWithoutExtension.split("-");
-
-            BillConsultBean consult = new BillConsultBean.Builder()
-                    .ruc(split[0])
-                    .tipo(split[1])
-                    .serie(split[2])
-                    .numero(Integer.parseInt(split[3]))
-                    .build();
-
-            ServiceConfig consultServiceConfig = new ServiceConfig.Builder()
-                    .url(DEFAULT_CONSULT_URL)
-                    .username(config.getUsername())
-                    .password(config.getPassword())
-                    .build();
-
-            service.sunat.gob.pe.billconsultservice.StatusResponse response = BillConsultServiceManager.getStatus(consult, consultServiceConfig);
-
-            Optional<ConsultaResponseType> optional = ConsultaResponseType.searchByCode(response.getStatusCode());
-            if (optional.isPresent()) {
-                switch (optional.get()) {
-                    case EXISTE_Y_ACEPTADO:
-                        return new BillServiceResult(
-                                BillServiceResult.Status.ACEPTADO,
-                                response.getContent(),
-                                response.getStatusMessage()
-                        );
-                    case EXISTE_PERO_RECHAZADO:
-                        return new BillServiceResult(
-                                BillServiceResult.Status.RECHAZADO,
-                                response.getContent(),
-                                response.getStatusMessage()
-                        );
-                    case EXISTE_PERO_DADO_DE_BAJA:
-                        return new BillServiceResult(
-                                BillServiceResult.Status.BAJA,
-                                response.getContent(),
-                                response.getStatusMessage()
-                        );
-                    default:
-                        return null;
-                }
-            }
-        }
+//        String fileNameWithoutExtension = Util.getFileNameWithoutExtension(fileName);
+//
+//        Matcher matcher = FILENAME_STRUCTURE.matcher(fileNameWithoutExtension);
+//        if (matcher.matches()) {
+//            String[] split = fileNameWithoutExtension.split("-");
+//
+//            BillConsultBean consult = new BillConsultBean.Builder()
+//                    .ruc(split[0])
+//                    .tipo(split[1])
+//                    .serie(split[2])
+//                    .numero(Integer.parseInt(split[3]))
+//                    .build();
+//
+//            ServiceConfig consultServiceConfig = new ServiceConfig.Builder()
+//                    .url(DEFAULT_CONSULT_URL)
+//                    .username(config.getUsername())
+//                    .password(config.getPassword())
+//                    .build();
+//
+//            service.sunat.gob.pe.billconsultservice.StatusResponse response = BillConsultServiceManager.getStatus(consult, consultServiceConfig);
+//
+//            Optional<ConsultaResponseType> optional = ConsultaResponseType.searchByCode(response.getStatusCode());
+//            if (optional.isPresent()) {
+//                switch (optional.get()) {
+//                    case EXISTE_Y_ACEPTADO:
+//                        return new BillServiceResult(
+//                                BillServiceResult.DocumentStatus.ACEPTADO,
+//                                response.getContent(),
+//                                response.getStatusMessage()
+//                        );
+//                    case EXISTE_PERO_RECHAZADO:
+//                        return new BillServiceResult(
+//                                BillServiceResult.DocumentStatus.RECHAZADO,
+//                                response.getContent(),
+//                                response.getStatusMessage()
+//                        );
+//                    case EXISTE_PERO_DADO_DE_BAJA:
+//                        return new BillServiceResult(
+//                                BillServiceResult.DocumentStatus.BAJA,
+//                                response.getContent(),
+//                                response.getStatusMessage()
+//                        );
+//                    default:
+//                        return null;
+//                }
+//            }
+//        }
 
         return null;
     }

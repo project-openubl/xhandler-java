@@ -4,11 +4,14 @@ import io.github.carlosthe19916.webservices.exceptions.WebServiceExceptionFactor
 import io.github.carlosthe19916.webservices.managers.errorhandler.BillServiceErrorHandler;
 import io.github.carlosthe19916.webservices.managers.errorhandler.BillServiceErrorHandlerManager;
 import io.github.carlosthe19916.webservices.models.BillServiceResult;
+import io.github.carlosthe19916.webservices.utils.Util;
 import io.github.carlosthe19916.webservices.wrappers.BillServiceWrapper;
 import io.github.carlosthe19916.webservices.wrappers.ServiceConfig;
 import jodd.io.ZipBuilder;
+import org.w3c.dom.Document;
 
 import javax.xml.ws.soap.SOAPFaultException;
+import javax.xml.xpath.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -53,8 +56,22 @@ public class BillServiceManager {
         }
 
         try {
-            byte[] bytes = BillServiceWrapper.sendBill(fileName, file, null, config);
-            return new BillServiceResult(BillServiceResult.Status.ACEPTADO, bytes, null);
+            byte[] cdrZip = BillServiceWrapper.sendBill(fileName, file, null, config);
+//            byte[] cdrXml = Util.getFirstXmlFileFromZip(cdrZip);
+//            Document cdrDocument = Util.getDocumentFromBytes(cdrXml);
+//
+//            XPathFactory xPathFactory = XPathFactory.newInstance();
+//            XPath xPath = xPathFactory.newXPath();
+//            try {
+//                XPathExpression xPathExpression = xPath.compile("/");
+//                String  description = (String) xPathExpression.evaluate(cdrDocument, XPathConstants.STRING);
+//                String  codigo = (String) xPathExpression.evaluate(cdrDocument, XPathConstants.STRING);
+//            } catch (XPathExpressionException e) {
+//                e.printStackTrace();
+//            }
+//
+//            return new BillServiceResult(BillServiceResult.DocumentStatus.ACEPTADO, cdrZip, null);
+            return null;
         } catch (SOAPFaultException e) {
             Set<BillServiceErrorHandler> billServiceErrorHandlers = BillServiceErrorHandlerManager.getInstance().getApplicableErrorHandlers(e);
             for (BillServiceErrorHandler errorHandler : billServiceErrorHandlers) {

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ar:ApplicationResponse xmlns:ar="urn:oasis:names:specification:ubl:schema:xsd:ApplicationResponse-2" xmlns:ext="urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2" xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2" xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><ext:UBLExtensions><ext:UBLExtension><ext:ExtensionContent><Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
+<SignedInfo>
+  <CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#WithComments"/>
+  <SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha512"/>
+  <Reference URI="">
+    <Transforms>
+      <Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
+      <Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#WithComments"/>
+    </Transforms>
+    <DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha512"/>
+    <DigestValue>VKY1IcYW+H/VLoYyShq8xvzea6YGCg6VOR7X4ZeA+hz/z9PZdkDPzN4e83PUOnRoBKnj3DDqZ0N9d6OSWAfaag==</DigestValue>
+  </Reference>
+</SignedInfo>
+    <SignatureValue>*Private key 'BetaPublicCert' not up*</SignatureValue><KeyInfo><X509Data><X509Certificate>*Named certificate 'BetaPrivateKey' not up*</X509Certificate><X509IssuerSerial><X509IssuerName>*Named certificate 'BetaPrivateKey' not up*</X509IssuerName><X509SerialNumber>*Named certificate 'BetaPrivateKey' not up*</X509SerialNumber></X509IssuerSerial></X509Data></KeyInfo></Signature></ext:ExtensionContent></ext:UBLExtension></ext:UBLExtensions><cbc:ID>1537453143191</cbc:ID><cbc:IssueDate>2018-09-20T09:16:25</cbc:IssueDate><cbc:IssueTime>00:00:00</cbc:IssueTime><cbc:ResponseDate>2018-09-20</cbc:ResponseDate><cbc:ResponseTime>10:19:03</cbc:ResponseTime><cac:Signature><cbc:ID>SignSUNAT</cbc:ID><cac:SignatoryParty><cac:PartyIdentification><cbc:ID>20131312955</cbc:ID></cac:PartyIdentification><cac:PartyName><cbc:Name>SUNAT</cbc:Name></cac:PartyName></cac:SignatoryParty><cac:DigitalSignatureAttachment><cac:ExternalReference><cbc:URI>#SignSUNAT</cbc:URI></cac:ExternalReference></cac:DigitalSignatureAttachment></cac:Signature><cac:SenderParty><cac:PartyIdentification><cbc:ID>20131312955</cbc:ID></cac:PartyIdentification></cac:SenderParty><cac:ReceiverParty><cac:PartyIdentification><cbc:ID>12345678901</cbc:ID></cac:PartyIdentification></cac:ReceiverParty><cac:DocumentResponse><cac:Response><cbc:ReferenceID>F001-00000587</cbc:ReferenceID><cbc:ResponseCode>0</cbc:ResponseCode><cbc:Description>La Factura numero F001-00000587, ha sido aceptada</cbc:Description></cac:Response><cac:DocumentReference><cbc:ID>F001-00000587</cbc:ID></cac:DocumentReference><cac:RecipientParty><cac:PartyIdentification><cbc:ID>6-10414774453</cbc:ID></cac:PartyIdentification></cac:RecipientParty></cac:DocumentResponse></ar:ApplicationResponse>

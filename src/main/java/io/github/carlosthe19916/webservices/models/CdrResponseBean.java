@@ -2,15 +2,15 @@ package io.github.carlosthe19916.webservices.models;
 
 public class CdrResponseBean {
 
-    private final String responseCode;
+    private final Integer responseCode;
     private final String description;
 
-    public CdrResponseBean(String responseCode, String description) {
+    public CdrResponseBean(Integer responseCode, String description) {
         this.responseCode = responseCode;
         this.description = description;
     }
 
-    public String getResponseCode() {
+    public Integer getResponseCode() {
         return responseCode;
     }
 

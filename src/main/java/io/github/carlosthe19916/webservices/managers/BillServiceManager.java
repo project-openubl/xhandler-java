@@ -4,11 +4,15 @@ import io.github.carlosthe19916.webservices.exceptions.WebServiceExceptionFactor
 import io.github.carlosthe19916.webservices.managers.errorhandler.BillServiceErrorHandler;
 import io.github.carlosthe19916.webservices.managers.errorhandler.BillServiceErrorHandlerManager;
 import io.github.carlosthe19916.webservices.models.BillServiceResult;
+import io.github.carlosthe19916.webservices.utils.CdrUtils;
 import io.github.carlosthe19916.webservices.wrappers.BillServiceWrapper;
 import io.github.carlosthe19916.webservices.wrappers.ServiceConfig;
 import jodd.io.ZipBuilder;
+import org.xml.sax.SAXException;
 
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.ws.soap.SOAPFaultException;
+import javax.xml.xpath.XPathExpressionException;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -53,8 +57,8 @@ public class BillServiceManager {
         }
 
         try {
-            byte[] bytes = BillServiceWrapper.sendBill(fileName, file, null, config);
-            return new BillServiceResult(BillServiceResult.Status.ACEPTADO, bytes, null);
+            byte[] zip = BillServiceWrapper.sendBill(fileName, file, null, config);
+            return CdrUtils.processZip(zip);
         } catch (SOAPFaultException e) {
             Set<BillServiceErrorHandler> billServiceErrorHandlers = BillServiceErrorHandlerManager.getInstance().getApplicableErrorHandlers(e);
             for (BillServiceErrorHandler errorHandler : billServiceErrorHandlers) {
@@ -64,8 +68,12 @@ public class BillServiceManager {
                 }
             }
             throw WebServiceExceptionFactory.createWebServiceException(e);
+        } catch (SAXException | ParserConfigurationException | XPathExpressionException e) {
+            throw new IllegalStateException(e);
         }
     }
+
+
 
     /**
      * @param ticket numero de ticket a ser consultado

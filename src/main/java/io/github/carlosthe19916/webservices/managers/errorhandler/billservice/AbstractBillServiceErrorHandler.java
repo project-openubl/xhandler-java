@@ -27,9 +27,4 @@ public abstract class AbstractBillServiceErrorHandler implements BillServiceErro
         return null;
     }
 
-    @Override
-    public int getPriority() {
-        return 0;
-    }
-
 }

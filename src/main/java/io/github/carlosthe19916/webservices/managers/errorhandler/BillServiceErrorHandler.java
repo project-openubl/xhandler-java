@@ -3,7 +3,7 @@ package io.github.carlosthe19916.webservices.managers.errorhandler;
 import io.github.carlosthe19916.webservices.models.BillServiceResult;
 import io.github.carlosthe19916.webservices.wrappers.ServiceConfig;
 
-public interface BillServiceErrorHandler extends SUNATErrorHandler {
+public interface BillServiceErrorHandler {
 
     BillServiceResult sendBill(String fileName, byte[] zipFile, String partyType, ServiceConfig config);
 

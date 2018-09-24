@@ -2,7 +2,8 @@ package io.github.carlosthe19916.webservices.managers;
 
 import io.github.carlosthe19916.webservices.exceptions.WebServiceExceptionFactory;
 import io.github.carlosthe19916.webservices.managers.errorhandler.BillServiceErrorHandler;
-import io.github.carlosthe19916.webservices.managers.errorhandler.BillServiceErrorHandlerManager;
+import io.github.carlosthe19916.webservices.managers.errorhandler.BillServiceErrorHandlerFactory;
+import io.github.carlosthe19916.webservices.managers.errorhandler.BillServiceErrorHandlerFactoryManager;
 import io.github.carlosthe19916.webservices.models.BillServiceResult;
 import io.github.carlosthe19916.webservices.utils.CdrUtils;
 import io.github.carlosthe19916.webservices.wrappers.BillServiceWrapper;
@@ -60,8 +61,11 @@ public class BillServiceManager {
             byte[] zip = BillServiceWrapper.sendBill(fileName, file, null, config);
             return CdrUtils.processZip(zip);
         } catch (SOAPFaultException e) {
-            Set<BillServiceErrorHandler> billServiceErrorHandlers = BillServiceErrorHandlerManager.getInstance().getApplicableErrorHandlers(e);
-            for (BillServiceErrorHandler errorHandler : billServiceErrorHandlers) {
+            Set<BillServiceErrorHandlerFactory> factories = BillServiceErrorHandlerFactoryManager
+                    .getInstance()
+                    .getApplicableErrorHandlers(e);
+            for (BillServiceErrorHandlerFactory factory : factories) {
+                BillServiceErrorHandler errorHandler = factory.create(e);
                 BillServiceResult result = errorHandler.sendBill(fileName, file, null, config);
                 if (result != null) {
                     return result;
@@ -73,8 +77,6 @@ public class BillServiceManager {
         }
     }
 
-
-
     /**
      * @param ticket numero de ticket a ser consultado
      * @param config Credenciales y URL de destino de la petición
@@ -83,8 +85,11 @@ public class BillServiceManager {
         try {
             return BillServiceWrapper.getStatus(ticket, config);
         } catch (SOAPFaultException e) {
-            Set<BillServiceErrorHandler> billServiceErrorHandlers = BillServiceErrorHandlerManager.getInstance().getApplicableErrorHandlers(e);
-            for (BillServiceErrorHandler errorHandler : billServiceErrorHandlers) {
+            Set<BillServiceErrorHandlerFactory> factories = BillServiceErrorHandlerFactoryManager
+                    .getInstance()
+                    .getApplicableErrorHandlers(e);
+            for (BillServiceErrorHandlerFactory factory : factories) {
+                BillServiceErrorHandler errorHandler = factory.create(e);
                 service.sunat.gob.pe.billservice.StatusResponse statusResponse = errorHandler.getStatus(ticket, config);
                 if (statusResponse != null) {
                     return statusResponse;
@@ -128,8 +133,11 @@ public class BillServiceManager {
         try {
             return BillServiceWrapper.sendSummary(fileName, file, null, config);
         } catch (SOAPFaultException e) {
-            Set<BillServiceErrorHandler> billServiceErrorHandlers = BillServiceErrorHandlerManager.getInstance().getApplicableErrorHandlers(e);
-            for (BillServiceErrorHandler errorHandler : billServiceErrorHandlers) {
+            Set<BillServiceErrorHandlerFactory> factories = BillServiceErrorHandlerFactoryManager
+                    .getInstance()
+                    .getApplicableErrorHandlers(e);
+            for (BillServiceErrorHandlerFactory factory : factories) {
+                BillServiceErrorHandler errorHandler = factory.create(e);
                 String ticket = errorHandler.sendSummary(fileName, file, null, config);
                 if (ticket != null) {
                     return ticket;
@@ -164,8 +172,11 @@ public class BillServiceManager {
         try {
             return BillServiceWrapper.sendPack(fileName, file, null, config);
         } catch (SOAPFaultException e) {
-            Set<BillServiceErrorHandler> billServiceErrorHandlers = BillServiceErrorHandlerManager.getInstance().getApplicableErrorHandlers(e);
-            for (BillServiceErrorHandler errorHandler : billServiceErrorHandlers) {
+            Set<BillServiceErrorHandlerFactory> factories = BillServiceErrorHandlerFactoryManager
+                    .getInstance()
+                    .getApplicableErrorHandlers(e);
+            for (BillServiceErrorHandlerFactory factory : factories) {
+                BillServiceErrorHandler errorHandler = factory.create(e);
                 String ticket = errorHandler.sendPack(fileName, file, null, config);
                 if (ticket != null) {
                     return ticket;

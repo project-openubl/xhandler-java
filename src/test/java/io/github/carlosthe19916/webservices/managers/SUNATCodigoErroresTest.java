@@ -3,8 +3,6 @@ package io.github.carlosthe19916.webservices.managers;
 import org.junit.Assert;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
 public class SUNATCodigoErroresTest {
 
     @Test

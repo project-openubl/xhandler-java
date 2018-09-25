@@ -1,6 +1,6 @@
 package io.github.carlosthe19916.webservices.utils;
 
-import io.github.carlosthe19916.webservices.models.BillServiceResult;
+import io.github.carlosthe19916.webservices.models.DocumentStatusResult;
 import io.github.carlosthe19916.webservices.models.CdrResponseBean;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -55,27 +55,27 @@ public class CdrUtils {
         return new CdrResponseBean(Integer.parseInt(code), description);
     }
 
-    public static BillServiceResult processZip(byte[] zip) throws IOException, ParserConfigurationException, SAXException, XPathExpressionException {
+    public static DocumentStatusResult processZip(byte[] zip) throws IOException, ParserConfigurationException, SAXException, XPathExpressionException {
         byte[] xml = Util.getFirstXmlFileFromZip(zip);
         Document document = Util.getDocumentFromBytes(xml);
         CdrResponseBean cdrContent = CdrUtils.extractResponse(document);
 
         Integer responseCode = cdrContent.getResponseCode();
 
-        BillServiceResult.DocumentStatus status;
+        DocumentStatusResult.Status status;
         if (responseCode == 0) {
-            status = BillServiceResult.DocumentStatus.ACEPTADO;
+            status = DocumentStatusResult.Status.ACEPTADO;
         } else if (responseCode >= 100 && responseCode < 2_000) {
-            status = BillServiceResult.DocumentStatus.EXCEPCION;
+            status = DocumentStatusResult.Status.EXCEPCION;
         } else if (responseCode >= 2_000 && responseCode < 4_000) {
-            status = BillServiceResult.DocumentStatus.RECHAZADO;
+            status = DocumentStatusResult.Status.RECHAZADO;
         } else if (responseCode >= 4_000) {
-            status = BillServiceResult.DocumentStatus.ACEPTADO;
+            status = DocumentStatusResult.Status.ACEPTADO;
         } else {
             throw new IllegalStateException("CDR status code=" + responseCode + " not valid");
         }
 
-        return new BillServiceResult(status, zip, cdrContent.getResponseCode(), cdrContent.getDescription());
+        return new DocumentStatusResult(status, zip, cdrContent.getResponseCode(), cdrContent.getDescription());
     }
 
 }

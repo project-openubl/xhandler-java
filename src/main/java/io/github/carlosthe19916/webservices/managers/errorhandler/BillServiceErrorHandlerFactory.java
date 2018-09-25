@@ -4,6 +4,7 @@ import javax.xml.ws.soap.SOAPFaultException;
 
 public interface BillServiceErrorHandlerFactory extends SUNATErrorHandlerFactory {
 
+    BillServiceErrorHandler create(int errorCode);
     BillServiceErrorHandler create(SOAPFaultException e);
 
 }

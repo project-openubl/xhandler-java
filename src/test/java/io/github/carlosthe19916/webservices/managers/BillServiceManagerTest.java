@@ -1,7 +1,7 @@
 package io.github.carlosthe19916.webservices.managers;
 
-
-import io.github.carlosthe19916.webservices.models.BillServiceResult;
+import io.github.carlosthe19916.webservices.models.DocumentStatusResult;
+import io.github.carlosthe19916.webservices.models.SendSummaryResult;
 import io.github.carlosthe19916.webservices.wrappers.ServiceConfig;
 import org.junit.Assert;
 import org.junit.Test;
@@ -36,8 +36,8 @@ public class BillServiceManagerTest {
         final String FILE_NAME = "20494637074-01-F001-00000001.xml";
         File file = Paths.get(getClass().getResource("/ubl/" + FILE_NAME).toURI()).toFile();
 
-        BillServiceResult result = BillServiceManager.sendBill(file, BOLETA_FACTURA_SERVICE_CONFIG);
-        Assert.assertNotNull(result);
+        DocumentStatusResult statusResult = BillServiceManager.sendBill(file, BOLETA_FACTURA_SERVICE_CONFIG);
+        Assert.assertNotNull(statusResult);
     }
 
     @Test
@@ -45,7 +45,7 @@ public class BillServiceManagerTest {
         final String FILE_NAME = "20494637074-20-R001-00000001.xml";
         File file = Paths.get(getClass().getResource("/ubl/" + FILE_NAME).toURI()).toFile();
 
-        BillServiceResult result = BillServiceManager.sendBill(file, RETENTION_SERVICE_CONFIG);
+        DocumentStatusResult result = BillServiceManager.sendBill(file, RETENTION_SERVICE_CONFIG);
         Assert.assertNotNull(result);
     }
 
@@ -53,8 +53,8 @@ public class BillServiceManagerTest {
     public void getStatus() {
         final String TICKET = "1529342625179";
 
-        StatusResponse status = BillServiceManager.getStatus(TICKET, BOLETA_FACTURA_SERVICE_CONFIG);
-        Assert.assertNotNull(status);
+        DocumentStatusResult statusResult = BillServiceManager.getStatus(TICKET, BOLETA_FACTURA_SERVICE_CONFIG);
+        Assert.assertNotNull(statusResult);
     }
 
     @Test
@@ -62,8 +62,8 @@ public class BillServiceManagerTest {
         final String FILE_NAME = "20494637074-RA-20180316-00001.xml";
         File file = Paths.get(getClass().getResource("/ubl/" + FILE_NAME).toURI()).toFile();
 
-        String ticket = BillServiceManager.sendSummary(file, BOLETA_FACTURA_SERVICE_CONFIG);
-        Assert.assertNotNull(ticket);
+        SendSummaryResult sendSummaryResult = BillServiceManager.sendSummary(file, BOLETA_FACTURA_SERVICE_CONFIG);
+        Assert.assertNotNull(sendSummaryResult);
     }
 
     @Test
@@ -71,8 +71,8 @@ public class BillServiceManagerTest {
         final String FILE_NAME = "20494637074-RR-20180713-00001.xml";
         File file = Paths.get(getClass().getResource("/ubl/" + FILE_NAME).toURI()).toFile();
 
-        String ticket = BillServiceManager.sendSummary(file, RETENTION_SERVICE_CONFIG);
-        Assert.assertNotNull(ticket);
+        SendSummaryResult sendSummaryResult = BillServiceManager.sendSummary(file, RETENTION_SERVICE_CONFIG);
+        Assert.assertNotNull(sendSummaryResult);
     }
 
 }

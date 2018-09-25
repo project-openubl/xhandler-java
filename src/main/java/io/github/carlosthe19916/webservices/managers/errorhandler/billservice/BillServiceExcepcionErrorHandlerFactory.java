@@ -9,14 +9,24 @@ import javax.xml.ws.soap.SOAPFaultException;
 public class BillServiceExcepcionErrorHandlerFactory implements BillServiceErrorHandlerFactory {
 
     @Override
+    public BillServiceErrorHandler create(int errorCode) {
+        return new BillServiceExcepcionErrorHandler(errorCode);
+    }
+
+    @Override
     public BillServiceErrorHandler create(SOAPFaultException exception) {
         return new BillServiceExcepcionErrorHandler(exception);
     }
 
     @Override
+    public boolean test(int errorCode) {
+        return errorCode >= 100 && errorCode < 2_000;
+    }
+
+    @Override
     public boolean test(SOAPFaultException exception) {
         Integer errorCode = Util.getErrorCode(exception).orElse(-1);
-        return errorCode >= 100 && errorCode < 2_000;
+        return test(errorCode);
     }
 
     @Override

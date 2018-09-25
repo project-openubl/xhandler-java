@@ -39,4 +39,10 @@ public class BillServiceErrorHandlerFactoryManager {
                 .collect(Collectors.toSet());
     }
 
+    public Set<BillServiceErrorHandlerFactory> getApplicableErrorHandlers(int errorCode) {
+        return factories.stream()
+                .filter(f -> f.test(errorCode))
+                .collect(Collectors.toSet());
+    }
+
 }

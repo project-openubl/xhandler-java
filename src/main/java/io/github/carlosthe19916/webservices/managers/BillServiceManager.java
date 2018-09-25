@@ -4,12 +4,15 @@ import io.github.carlosthe19916.webservices.exceptions.WebServiceExceptionFactor
 import io.github.carlosthe19916.webservices.managers.errorhandler.BillServiceErrorHandler;
 import io.github.carlosthe19916.webservices.managers.errorhandler.BillServiceErrorHandlerFactory;
 import io.github.carlosthe19916.webservices.managers.errorhandler.BillServiceErrorHandlerFactoryManager;
-import io.github.carlosthe19916.webservices.models.BillServiceResult;
+import io.github.carlosthe19916.webservices.models.DocumentStatusResult;
+import io.github.carlosthe19916.webservices.models.SendSummaryResult;
+import io.github.carlosthe19916.webservices.models.types.ConsultaTicketResponseType;
 import io.github.carlosthe19916.webservices.utils.CdrUtils;
 import io.github.carlosthe19916.webservices.wrappers.BillServiceWrapper;
 import io.github.carlosthe19916.webservices.wrappers.ServiceConfig;
 import jodd.io.ZipBuilder;
 import org.xml.sax.SAXException;
+import service.sunat.gob.pe.billservice.StatusResponse;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.ws.soap.SOAPFaultException;
@@ -30,7 +33,7 @@ public class BillServiceManager {
      * @param file   archivo a ser enviado
      * @param config Credenciales y URL de destino de la petición
      */
-    public static BillServiceResult sendBill(File file, ServiceConfig config) throws IOException {
+    public static DocumentStatusResult sendBill(File file, ServiceConfig config) throws IOException {
         return sendBill(file.toPath(), config);
     }
 
@@ -38,7 +41,7 @@ public class BillServiceManager {
      * @param path   ubicacion del archivo a ser enviado
      * @param config Credenciales y URL de destino de la petición
      */
-    public static BillServiceResult sendBill(Path path, ServiceConfig config) throws IOException {
+    public static DocumentStatusResult sendBill(Path path, ServiceConfig config) throws IOException {
         return sendBill(path.getFileName().toString(), Files.readAllBytes(path), config);
     }
 
@@ -47,7 +50,7 @@ public class BillServiceManager {
      * @param file     archivo a ser enviado
      * @param config   Credenciales y URL de destino de la petición
      */
-    public static BillServiceResult sendBill(String fileName, byte[] file, ServiceConfig config) throws IOException {
+    public static DocumentStatusResult sendBill(String fileName, byte[] file, ServiceConfig config) throws IOException {
         if (fileName.endsWith(".xml")) {
             file = ZipBuilder.createZipInMemory()
                     .add(file)
@@ -66,7 +69,7 @@ public class BillServiceManager {
                     .getApplicableErrorHandlers(e);
             for (BillServiceErrorHandlerFactory factory : factories) {
                 BillServiceErrorHandler errorHandler = factory.create(e);
-                BillServiceResult result = errorHandler.sendBill(fileName, file, null, config);
+                DocumentStatusResult result = errorHandler.sendBill(fileName, file, null, config);
                 if (result != null) {
                     return result;
                 }
@@ -81,29 +84,76 @@ public class BillServiceManager {
      * @param ticket numero de ticket a ser consultado
      * @param config Credenciales y URL de destino de la petición
      */
-    public static service.sunat.gob.pe.billservice.StatusResponse getStatus(String ticket, ServiceConfig config) {
+    public static DocumentStatusResult getStatus(String ticket, ServiceConfig config) {
         try {
-            return BillServiceWrapper.getStatus(ticket, config);
-        } catch (SOAPFaultException e) {
-            Set<BillServiceErrorHandlerFactory> factories = BillServiceErrorHandlerFactoryManager
-                    .getInstance()
-                    .getApplicableErrorHandlers(e);
-            for (BillServiceErrorHandlerFactory factory : factories) {
-                BillServiceErrorHandler errorHandler = factory.create(e);
-                service.sunat.gob.pe.billservice.StatusResponse statusResponse = errorHandler.getStatus(ticket, config);
-                if (statusResponse != null) {
-                    return statusResponse;
+            StatusResponse statusResponse = BillServiceWrapper.getStatus(ticket, config);
+            int statusCode = Integer.parseInt(statusResponse.getStatusCode());
+
+
+            DocumentStatusResult statusResult;
+            if (statusCode == ConsultaTicketResponseType.PROCESO_CORRECTAMENTE.getCode()) {
+                statusResult = CdrUtils.processZip(statusResponse.getContent());
+            } else if (statusCode == ConsultaTicketResponseType.PROCESO_CON_ERRORES.getCode()) {
+                // Handle error 99
+                statusResult = getStatusHandleErrors(ticket, config, 99);
+
+                // If 99 is not handle then try to handle the error inside the xml
+                if (statusResult == null) {
+                    statusResult = CdrUtils.processZip(statusResponse.getContent());
+                    Integer errorCode = statusResult.getCode();
+
+                    statusResult = getStatusHandleErrors(ticket, config, errorCode);
+                }
+
+                // If no result then build it manually
+                if (statusResult == null) {
+                    statusResult = new DocumentStatusResult(
+                            DocumentStatusResult.Status.RECHAZADO,
+                            statusResponse.getContent(),
+                            statusCode,
+                            ConsultaTicketResponseType.PROCESO_CON_ERRORES.getDescription()
+                    );
+                }
+            } else { // OTHERS
+                statusResult = getStatusHandleErrors(ticket, config, statusCode);
+
+                if (statusResult == null) {
+                    String errorDescription = SUNATCodigoErrores.getInstance().get(statusCode);
+                    statusResult = new DocumentStatusResult(
+                            DocumentStatusResult.Status.EXCEPCION,
+                            statusResponse.getContent(),
+                            statusCode,
+                            errorDescription
+                    );
                 }
             }
-            throw WebServiceExceptionFactory.createWebServiceException(e);
+            return statusResult;
+        } catch (IOException | ParserConfigurationException | SAXException | XPathExpressionException e) {
+            throw new IllegalStateException(e);
         }
+    }
+
+    private static DocumentStatusResult getStatusHandleErrors(String ticket, ServiceConfig config, int statusCode) {
+        Set<BillServiceErrorHandlerFactory> factories = BillServiceErrorHandlerFactoryManager
+                .getInstance()
+                .getApplicableErrorHandlers(statusCode);
+
+        for (BillServiceErrorHandlerFactory factory : factories) {
+            BillServiceErrorHandler errorHandler = factory.create(statusCode);
+            DocumentStatusResult statusResult = errorHandler.getStatus(ticket, config);
+            if (statusResult != null) {
+                return statusResult;
+            }
+        }
+
+        return null;
     }
 
     /**
      * @param file   archivo a ser enviado
      * @param config Credenciales y URL de destino de la petición
      */
-    public static String sendSummary(File file, ServiceConfig config) throws IOException {
+    public static SendSummaryResult sendSummary(File file, ServiceConfig config) throws IOException {
         return sendSummary(file.toPath(), config);
     }
 
@@ -111,7 +161,7 @@ public class BillServiceManager {
      * @param path   ubicacion del archivo a ser enviado
      * @param config Credenciales y URL de destino de la petición
      */
-    public static String sendSummary(Path path, ServiceConfig config) throws IOException {
+    public static SendSummaryResult sendSummary(Path path, ServiceConfig config) throws IOException {
         return sendSummary(path.getFileName().toString(), Files.readAllBytes(path), config);
     }
 
@@ -120,7 +170,7 @@ public class BillServiceManager {
      * @param file     archivo a ser enviado
      * @param config   Credenciales y URL de destino de la petición
      */
-    public static String sendSummary(String fileName, byte[] file, ServiceConfig config) throws IOException {
+    public static SendSummaryResult sendSummary(String fileName, byte[] file, ServiceConfig config) throws IOException {
         if (fileName.endsWith(".xml")) {
             file = ZipBuilder.createZipInMemory()
                     .add(file)
@@ -130,21 +180,39 @@ public class BillServiceManager {
             fileName = fileName.substring(0, fileName.lastIndexOf(".")) + ".zip";
         }
 
+        String ticket = null;
         try {
-            return BillServiceWrapper.sendSummary(fileName, file, null, config);
+            ticket = BillServiceWrapper.sendSummary(fileName, file, null, config);
         } catch (SOAPFaultException e) {
             Set<BillServiceErrorHandlerFactory> factories = BillServiceErrorHandlerFactoryManager
                     .getInstance()
                     .getApplicableErrorHandlers(e);
             for (BillServiceErrorHandlerFactory factory : factories) {
                 BillServiceErrorHandler errorHandler = factory.create(e);
-                String ticket = errorHandler.sendSummary(fileName, file, null, config);
+                ticket = errorHandler.sendSummary(fileName, file, null, config);
                 if (ticket != null) {
-                    return ticket;
+                    break;
                 }
             }
-            throw WebServiceExceptionFactory.createWebServiceException(e);
+            if (ticket == null) {
+                throw WebServiceExceptionFactory.createWebServiceException(e);
+            }
         }
+
+
+        SendSummaryResult sendSummaryResult = new SendSummaryResult(ticket);
+
+
+        try {
+            DocumentStatusResult statusResult = getStatus(ticket, config);
+            sendSummaryResult.setStatusResult(statusResult);
+        } catch (SOAPFaultException e) {
+            // Should be removed on development
+            System.out.println(e);
+        }
+
+
+        return sendSummaryResult;
     }
 
     /**

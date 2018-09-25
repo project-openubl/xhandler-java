@@ -1,20 +1,20 @@
 package io.github.carlosthe19916.webservices.models;
 
-public class BillServiceResult {
+public class DocumentStatusResult {
 
-    private DocumentStatus status;
+    private Status status;
     private byte[] cdr;
-    private int code;
+    private Integer code;
     private String description;
 
-    public BillServiceResult(DocumentStatus status, byte[] cdr, int code, String description) {
+    public DocumentStatusResult(Status status, byte[] cdr, Integer code, String description) {
         this.status = status;
         this.cdr = cdr;
         this.code = code;
         this.description = description;
     }
 
-    public DocumentStatus getStatus() {
+    public Status getStatus() {
         return status;
     }
 
@@ -22,7 +22,7 @@ public class BillServiceResult {
         return cdr;
     }
 
-    public int getCode() {
+    public Integer getCode() {
         return code;
     }
 
@@ -30,7 +30,7 @@ public class BillServiceResult {
         return description;
     }
 
-    public void setStatus(DocumentStatus status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 
@@ -38,7 +38,7 @@ public class BillServiceResult {
         this.cdr = cdr;
     }
 
-    public void setCode(int code) {
+    public void setCode(Integer code) {
         this.code = code;
     }
 
@@ -46,10 +46,11 @@ public class BillServiceResult {
         this.description = description;
     }
 
-    public enum DocumentStatus {
+    public enum Status {
         ACEPTADO,
         RECHAZADO,
         BAJA,
         EXCEPCION
     }
+    
 }

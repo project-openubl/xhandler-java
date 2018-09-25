@@ -4,8 +4,9 @@ import javax.xml.ws.soap.SOAPFaultException;
 
 public interface SUNATErrorHandlerFactory {
 
+    boolean test(int errorCode);
+
     boolean test(SOAPFaultException e);
 
     int getPriority();
-
 }

@@ -6,21 +6,21 @@ import io.github.carlosthe19916.webservices.utils.Util;
 
 import javax.xml.ws.soap.SOAPFaultException;
 
-public class BillService1033ErrorHandlerFactory implements BillServiceErrorHandlerFactory {
+public class BillService2324ErrorHandlerFactory implements BillServiceErrorHandlerFactory {
 
     @Override
     public BillServiceErrorHandler create(int errorCode) {
-        return new BillService1033ErrorHandler(errorCode);
+        return new BillService2324ErrorHandler(errorCode);
     }
 
     @Override
     public BillServiceErrorHandler create(SOAPFaultException exception) {
-        return new BillService1033ErrorHandler(exception);
+        return new BillService2324ErrorHandler(exception);
     }
 
     @Override
     public boolean test(int errorCode) {
-        return errorCode == 1_033;
+        return errorCode == 2_324;
     }
 
     @Override

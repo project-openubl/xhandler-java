@@ -3,7 +3,7 @@ package io.github.carlosthe19916.webservices.managers.errorhandler.billservice;
 import io.github.carlosthe19916.webservices.managers.BillConsultServiceManager;
 import io.github.carlosthe19916.webservices.managers.BillValidServiceManager;
 import io.github.carlosthe19916.webservices.models.BillConsultBean;
-import io.github.carlosthe19916.webservices.models.BillServiceResult;
+import io.github.carlosthe19916.webservices.models.DocumentStatusResult;
 import io.github.carlosthe19916.webservices.models.types.ConsultaResponseType;
 import io.github.carlosthe19916.webservices.utils.CdrUtils;
 import io.github.carlosthe19916.webservices.utils.Util;
@@ -25,14 +25,22 @@ public class BillService1033ErrorHandler extends AbstractBillServiceErrorHandler
     private final static String DEFAULT_BILL_VALID_URL = "https://exception-factura.sunat.gob.pe/ol-it-wsconsvalidcpe/billValidService";
     private final static Pattern FILENAME_STRUCTURE = Pattern.compile("(?:\\d{11}-)\\d{2}-[a-zA-Z_0-9]{4}-\\d{1,8}"); // [RUC]-[TIPO DOCUMENTO]-[SERIE]-[NUMERO]
 
-    private final SOAPFaultException exception;
+    private final int errorCode;
+
+    public BillService1033ErrorHandler(int errorCode) {
+        boolean isInRange = errorCode == 1_033;
+        if (!isInRange) {
+            throw new IllegalArgumentException("Can not create Error 1033 with code:" + errorCode);
+        }
+        this.errorCode = errorCode;
+    }
 
     public BillService1033ErrorHandler(SOAPFaultException exception) {
-        this.exception = exception;
+        this(Util.getErrorCode(exception).orElse(-1));
     }
 
     @Override
-    public BillServiceResult sendBill(String fileName, byte[] zipFile, String partyType, ServiceConfig config) {
+    public DocumentStatusResult sendBill(String fileName, byte[] zipFile, String partyType, ServiceConfig config) {
         String fileNameWithoutExtension = Util.getFileNameWithoutExtension(fileName);
 
         Matcher matcher = FILENAME_STRUCTURE.matcher(fileNameWithoutExtension);
@@ -97,9 +105,9 @@ public class BillService1033ErrorHandler extends AbstractBillServiceErrorHandler
                             return CdrUtils.processZip(statusResponse1.getContent());
                         }
                         case EXISTE_PERO_DADO_DE_BAJA: {
-                            BillServiceResult billServiceResult = CdrUtils.processZip(statusResponse1.getContent());
-                            billServiceResult.setStatus(BillServiceResult.DocumentStatus.BAJA);
-                            return billServiceResult;
+                            DocumentStatusResult sendBillResult = CdrUtils.processZip(statusResponse1.getContent());
+                            sendBillResult.setStatus(DocumentStatusResult.Status.BAJA);
+                            return sendBillResult;
                         }
                         default: {
                             return null;

@@ -10,9 +10,6 @@ public class BillServiceRechazoErrorHandlerFactory implements BillServiceErrorHa
 
     @Override
     public BillServiceErrorHandler create(SOAPFaultException exception) {
-        if (!test(exception)) {
-            throw new IllegalArgumentException("Exception type not allowed");
-        }
         return new BillServiceRechazoErrorHandler(exception);
     }
 

@@ -10,9 +10,6 @@ public class BillServiceObservacionesErrorHandlerFactory implements BillServiceE
 
     @Override
     public BillServiceErrorHandler create(SOAPFaultException exception) {
-        if (!test(exception)) {
-            throw new IllegalArgumentException("Exception type not allowed");
-        }
         return new BillServiceObservacionesErrorHandler(exception);
     }
 

@@ -62,7 +62,7 @@ public class BillServiceManager {
 
         try {
             byte[] zip = BillServiceWrapper.sendBill(fileName, file, null, config);
-            return CdrUtils.processZip(zip);
+            return CdrUtils.getInfoFromCdrZip(zip);
         } catch (SOAPFaultException e) {
             Set<BillServiceErrorHandlerFactory> factories = BillServiceErrorHandlerFactoryManager
                     .getInstance()
@@ -89,17 +89,16 @@ public class BillServiceManager {
             StatusResponse statusResponse = BillServiceWrapper.getStatus(ticket, config);
             int statusCode = Integer.parseInt(statusResponse.getStatusCode());
 
-
             DocumentStatusResult statusResult;
             if (statusCode == ConsultaTicketResponseType.PROCESO_CORRECTAMENTE.getCode()) {
-                statusResult = CdrUtils.processZip(statusResponse.getContent());
+                statusResult = CdrUtils.getInfoFromCdrZip(statusResponse.getContent());
             } else if (statusCode == ConsultaTicketResponseType.PROCESO_CON_ERRORES.getCode()) {
                 // Handle error 99
                 statusResult = getStatusHandleErrors(ticket, config, 99);
 
                 // If 99 is not handle then try to handle the error inside the xml
                 if (statusResult == null) {
-                    statusResult = CdrUtils.processZip(statusResponse.getContent());
+                    statusResult = CdrUtils.getInfoFromCdrZip(statusResponse.getContent());
                     Integer errorCode = statusResult.getCode();
 
                     statusResult = getStatusHandleErrors(ticket, config, errorCode);

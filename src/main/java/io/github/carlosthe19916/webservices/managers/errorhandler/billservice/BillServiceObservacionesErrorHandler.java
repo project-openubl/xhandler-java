@@ -2,7 +2,7 @@ package io.github.carlosthe19916.webservices.managers.errorhandler.billservice;
 
 import io.github.carlosthe19916.webservices.managers.SUNATCodigoErrores;
 import io.github.carlosthe19916.webservices.models.DocumentStatusResult;
-import io.github.carlosthe19916.webservices.utils.Util;
+import io.github.carlosthe19916.webservices.utils.Utils;
 import io.github.carlosthe19916.webservices.wrappers.ServiceConfig;
 
 import javax.xml.ws.soap.SOAPFaultException;
@@ -20,7 +20,7 @@ public class BillServiceObservacionesErrorHandler extends AbstractBillServiceErr
     }
 
     public BillServiceObservacionesErrorHandler(SOAPFaultException exception) {
-        this(Util.getErrorCode(exception).orElse(-1));
+        this(Utils.getErrorCode(exception).orElse(-1));
     }
 
     @Override

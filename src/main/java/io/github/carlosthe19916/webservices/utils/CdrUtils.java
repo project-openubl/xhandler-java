@@ -55,9 +55,9 @@ public class CdrUtils {
         return new CdrResponseBean(Integer.parseInt(code), description);
     }
 
-    public static DocumentStatusResult processZip(byte[] zip) throws IOException, ParserConfigurationException, SAXException, XPathExpressionException {
-        byte[] xml = Util.getFirstXmlFileFromZip(zip);
-        Document document = Util.getDocumentFromBytes(xml);
+    public static DocumentStatusResult getInfoFromCdrZip(byte[] zip) throws IOException, ParserConfigurationException, SAXException, XPathExpressionException {
+        byte[] xml = Utils.getFirstXmlFileFromZip(zip);
+        Document document = Utils.getDocumentFromBytes(xml);
         CdrResponseBean cdrContent = CdrUtils.extractResponse(document);
 
         Integer responseCode = cdrContent.getResponseCode();

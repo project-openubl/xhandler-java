@@ -15,9 +15,9 @@ import java.util.Optional;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-public class Util {
+public class Utils {
 
-    private Util() {
+    private Utils() {
         // Just static methods
     }
 

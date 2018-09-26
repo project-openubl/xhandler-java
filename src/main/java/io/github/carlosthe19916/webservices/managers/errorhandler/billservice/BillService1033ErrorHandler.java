@@ -6,7 +6,7 @@ import io.github.carlosthe19916.webservices.models.BillConsultBean;
 import io.github.carlosthe19916.webservices.models.DocumentStatusResult;
 import io.github.carlosthe19916.webservices.models.types.ConsultaResponseType;
 import io.github.carlosthe19916.webservices.utils.CdrUtils;
-import io.github.carlosthe19916.webservices.utils.Util;
+import io.github.carlosthe19916.webservices.utils.Utils;
 import io.github.carlosthe19916.webservices.wrappers.ServiceConfig;
 import org.xml.sax.SAXException;
 import service.sunat.gob.pe.billvalidservice.StatusResponse;
@@ -36,12 +36,12 @@ public class BillService1033ErrorHandler extends AbstractBillServiceErrorHandler
     }
 
     public BillService1033ErrorHandler(SOAPFaultException exception) {
-        this(Util.getErrorCode(exception).orElse(-1));
+        this(Utils.getErrorCode(exception).orElse(-1));
     }
 
     @Override
     public DocumentStatusResult sendBill(String fileName, byte[] zipFile, String partyType, ServiceConfig config) {
-        String fileNameWithoutExtension = Util.getFileNameWithoutExtension(fileName);
+        String fileNameWithoutExtension = Utils.getFileNameWithoutExtension(fileName);
 
         Matcher matcher = FILENAME_STRUCTURE.matcher(fileNameWithoutExtension);
         if (matcher.matches()) {
@@ -79,7 +79,7 @@ public class BillService1033ErrorHandler extends AbstractBillServiceErrorHandler
                 byte[] xml = null;
                 String xmlFileName = null;
                 if (fileName.endsWith(".zip")) {
-                    xml = Util.getFirstXmlFileFromZip(zipFile);
+                    xml = Utils.getFirstXmlFileFromZip(zipFile);
                     xmlFileName = fileName.substring(0, fileName.lastIndexOf(".")) + ".xml";
                 }
 
@@ -99,13 +99,13 @@ public class BillService1033ErrorHandler extends AbstractBillServiceErrorHandler
                 if (optional.isPresent()) {
                     switch (optional.get()) {
                         case EXISTE_Y_ACEPTADO: {
-                            return CdrUtils.processZip(statusResponse1.getContent());
+                            return CdrUtils.getInfoFromCdrZip(statusResponse1.getContent());
                         }
                         case EXISTE_PERO_RECHAZADO: {
-                            return CdrUtils.processZip(statusResponse1.getContent());
+                            return CdrUtils.getInfoFromCdrZip(statusResponse1.getContent());
                         }
                         case EXISTE_PERO_DADO_DE_BAJA: {
-                            DocumentStatusResult sendBillResult = CdrUtils.processZip(statusResponse1.getContent());
+                            DocumentStatusResult sendBillResult = CdrUtils.getInfoFromCdrZip(statusResponse1.getContent());
                             sendBillResult.setStatus(DocumentStatusResult.Status.BAJA);
                             return sendBillResult;
                         }

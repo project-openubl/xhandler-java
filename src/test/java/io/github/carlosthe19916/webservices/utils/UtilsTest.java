@@ -18,11 +18,11 @@ import java.util.Optional;
 
 import static org.mockito.Mockito.*;
 
-public class UtilTest {
+public class UtilsTest {
 
     /**
      * Should get the correct error code from javax.xml.ws.soap.SOAPFaultException
-     * {@link io.github.carlosthe19916.webservices.utils.Util#getErrorCode(SOAPFaultException)}
+     * {@link Utils#getErrorCode(SOAPFaultException)}
      */
     @Test
     public void test_shouldExtractErrorCode() {
@@ -31,7 +31,7 @@ public class UtilTest {
         when(mockFault.getFaultCode()).thenReturn("100");
 
         SOAPFaultException exception = new SOAPFaultException(mockFault);
-        Optional<Integer> result = Util.getErrorCode(exception);
+        Optional<Integer> result = Utils.getErrorCode(exception);
         verify(mockFault).getFaultCode();
 
         Assert.assertTrue(result.isPresent());
@@ -43,7 +43,7 @@ public class UtilTest {
         when(mockFault.getFaultCode()).thenReturn("soap-env:Client.100");
 
         exception = new SOAPFaultException(mockFault);
-        result = Util.getErrorCode(exception);
+        result = Utils.getErrorCode(exception);
         verify(mockFault).getFaultCode();
 
         Assert.assertTrue(result.isPresent());
@@ -54,7 +54,7 @@ public class UtilTest {
         SOAPFaultException mockException = mock(SOAPFaultException.class);
         when(mockException.getMessage()).thenReturn("100");
 
-        result = Util.getErrorCode(mockException);
+        result = Utils.getErrorCode(mockException);
         verify(mockFault).getFaultCode();
 
         Assert.assertTrue(result.isPresent());
@@ -65,7 +65,7 @@ public class UtilTest {
         mockException = mock(SOAPFaultException.class);
         when(mockException.getMessage()).thenReturn("soap-env:Client.100");
 
-        result = Util.getErrorCode(mockException);
+        result = Utils.getErrorCode(mockException);
         verify(mockFault).getFaultCode();
 
         Assert.assertTrue(result.isPresent());
@@ -74,19 +74,19 @@ public class UtilTest {
 
     /**
      * Should remove extension from fileName
-     * {@link io.github.carlosthe19916.webservices.utils.Util#getFileNameWithoutExtension(String)}
+     * {@link Utils#getFileNameWithoutExtension(String)}
      */
     @Test
     public void test_getFileNameWithoutExtension() {
-        Assert.assertEquals("file", Util.getFileNameWithoutExtension("file"));
-        Assert.assertEquals("file", Util.getFileNameWithoutExtension("file."));
-        Assert.assertEquals("file", Util.getFileNameWithoutExtension("file.xml"));
-        Assert.assertEquals("file.md", Util.getFileNameWithoutExtension("file.md.xml"));
+        Assert.assertEquals("file", Utils.getFileNameWithoutExtension("file"));
+        Assert.assertEquals("file", Utils.getFileNameWithoutExtension("file."));
+        Assert.assertEquals("file", Utils.getFileNameWithoutExtension("file.xml"));
+        Assert.assertEquals("file.md", Utils.getFileNameWithoutExtension("file.md.xml"));
     }
 
     /**
      * Should obtain the first XML file found on zip file
-     * {@link io.github.carlosthe19916.webservices.utils.Util#getFirstXmlFileFromZip(byte[])}
+     * {@link Utils#getFirstXmlFileFromZip(byte[])}
      */
     @Test
     public void test_shouldReturnFirstXmlFound() throws URISyntaxException, IOException {
@@ -96,21 +96,21 @@ public class UtilTest {
         final File cdrFile = Paths.get(getClass().getResource("/ubl/cdr/R-12345678901-01-F001-00000587.xml").toURI()).toFile();
         final byte[] cdrBytes = Files.readAllBytes(cdrFile.toPath());
 
-        final byte[] cdrExtractedBytes = Util.getFirstXmlFileFromZip(cdrZipBytes);
+        final byte[] cdrExtractedBytes = Utils.getFirstXmlFileFromZip(cdrZipBytes);
 
         Assert.assertTrue(Arrays.equals(cdrBytes, cdrExtractedBytes));
     }
 
     /**
      * Should parse byte[] to xml document
-     * {@link io.github.carlosthe19916.webservices.utils.Util#getDocumentFromBytes(byte[])}
+     * {@link Utils#getDocumentFromBytes(byte[])}
      */
     @Test
     public void getDocumentFromBytes() throws URISyntaxException, IOException, ParserConfigurationException, SAXException {
         final File file = Paths.get(getClass().getResource("/ubl/F001-00005954.xml").toURI()).toFile();
         final byte[] bytes = Files.readAllBytes(file.toPath());
 
-        Document document = Util.getDocumentFromBytes(bytes);
+        Document document = Utils.getDocumentFromBytes(bytes);
         Assert.assertNotNull(document);
     }
 }

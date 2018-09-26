@@ -2,7 +2,7 @@ package io.github.carlosthe19916.webservices.managers.errorhandler.billservice;
 
 import io.github.carlosthe19916.webservices.managers.errorhandler.BillServiceErrorHandler;
 import io.github.carlosthe19916.webservices.managers.errorhandler.BillServiceErrorHandlerFactory;
-import io.github.carlosthe19916.webservices.utils.Util;
+import io.github.carlosthe19916.webservices.utils.Utils;
 
 import javax.xml.ws.soap.SOAPFaultException;
 
@@ -25,7 +25,7 @@ public class BillServiceObservacionesErrorHandlerFactory implements BillServiceE
 
     @Override
     public boolean test(SOAPFaultException exception) {
-        return test(Util.getErrorCode(exception).orElse(-1));
+        return test(Utils.getErrorCode(exception).orElse(-1));
     }
 
     @Override

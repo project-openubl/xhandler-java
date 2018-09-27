@@ -1,7 +1,5 @@
 package io.github.carlosthe19916.webservices.managers.errorhandler;
 
-import io.github.carlosthe19916.webservices.managers.errorhandler.billservice.BillService1033ErrorHandlerFactory;
-import io.github.carlosthe19916.webservices.managers.errorhandler.billservice.BillServiceRechazoErrorHandlerFactory;
 import org.junit.Assert;
 import org.junit.Test;
 

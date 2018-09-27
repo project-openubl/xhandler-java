@@ -1,59 +1,49 @@
-package io.github.carlosthe19916.webservices.managers.errorhandler.billservice;
+package io.github.carlosthe19916.webservices.managers.providers.errors;
 
-import io.github.carlosthe19916.webservices.managers.BillConsultServiceManager;
-import io.github.carlosthe19916.webservices.managers.BillValidServiceManager;
-import io.github.carlosthe19916.webservices.models.BillConsultBean;
-import io.github.carlosthe19916.webservices.models.DocumentStatusResult;
+import io.github.carlosthe19916.webservices.managers.providers.AbstractErrorBillServiceProvider;
+import io.github.carlosthe19916.webservices.managers.providers.BillServiceModel;
 import io.github.carlosthe19916.webservices.models.types.ConsultaResponseType;
-import io.github.carlosthe19916.webservices.utils.CdrUtils;
+import io.github.carlosthe19916.webservices.utils.CdrToModel;
 import io.github.carlosthe19916.webservices.utils.Utils;
+import io.github.carlosthe19916.webservices.wrappers.BillConsultServiceWrapper;
+import io.github.carlosthe19916.webservices.wrappers.BillValidServiceWrapper;
 import io.github.carlosthe19916.webservices.wrappers.ServiceConfig;
 import org.xml.sax.SAXException;
-import service.sunat.gob.pe.billvalidservice.StatusResponse;
+import service.sunat.gob.pe.billconsultservice.StatusResponse;
 
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.ws.soap.SOAPFaultException;
 import javax.xml.xpath.XPathExpressionException;
 import java.io.IOException;
+import java.util.Base64;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class BillService1033ErrorHandler extends AbstractBillServiceErrorHandler {
+public class Error1033BillServiceProvider extends AbstractErrorBillServiceProvider {
 
     private final static String DEFAULT_BILL_CONSULT_URL = "https://exception-factura.sunat.gob.pe/ol-it-wsconscpegem/billConsultService";
     private final static String DEFAULT_BILL_VALID_URL = "https://exception-factura.sunat.gob.pe/ol-it-wsconsvalidcpe/billValidService";
     private final static Pattern FILENAME_STRUCTURE = Pattern.compile("(?:\\d{11}-)\\d{2}-[a-zA-Z_0-9]{4}-\\d{1,8}"); // [RUC]-[TIPO DOCUMENTO]-[SERIE]-[NUMERO]
 
-    private final int errorCode;
+    private final Integer exceptionCode;
+    private final BillServiceModel previousResult;
 
-    public BillService1033ErrorHandler(int errorCode) {
-        boolean isInRange = errorCode == 1_033;
-        if (!isInRange) {
-            throw new IllegalArgumentException("Can not create Error 1033 with code:" + errorCode);
-        }
-        this.errorCode = errorCode;
+    public Error1033BillServiceProvider(Integer exceptionCode) {
+        this.previousResult = null;
+        this.exceptionCode = exceptionCode;
     }
 
-    public BillService1033ErrorHandler(SOAPFaultException exception) {
-        this(Utils.getErrorCode(exception).orElse(-1));
+    public Error1033BillServiceProvider(Integer exceptionCode, BillServiceModel previousResult) {
+        this.exceptionCode = exceptionCode;
+        this.previousResult = previousResult;
     }
 
     @Override
-    public DocumentStatusResult sendBill(String fileName, byte[] zipFile, String partyType, ServiceConfig config) {
+    public BillServiceModel sendBill(String fileName, byte[] file, ServiceConfig config) {
         String fileNameWithoutExtension = Utils.getFileNameWithoutExtension(fileName);
 
         Matcher matcher = FILENAME_STRUCTURE.matcher(fileNameWithoutExtension);
         if (matcher.matches()) {
-
-            // STEP 1.CHECK INFO
-            String[] split = fileNameWithoutExtension.split("-");
-            BillConsultBean consult = new BillConsultBean.Builder()
-                    .ruc(split[0])
-                    .tipo(split[1])
-                    .serie(split[2])
-                    .numero(Integer.parseInt(split[3]))
-                    .build();
 
             ServiceConfig consultServiceConfig = new ServiceConfig.Builder()
                     .url(DEFAULT_BILL_CONSULT_URL)
@@ -61,7 +51,16 @@ public class BillService1033ErrorHandler extends AbstractBillServiceErrorHandler
                     .password(config.getPassword())
                     .build();
 
-            service.sunat.gob.pe.billconsultservice.StatusResponse statusResponse1 = BillConsultServiceManager.getStatus(consult, consultServiceConfig);
+            // STEP 1.CHECK INFO
+            String[] split = fileNameWithoutExtension.split("-");
+            StatusResponse statusResponse1 = BillConsultServiceWrapper.getStatus(
+                    consultServiceConfig,
+                    split[0],
+                    split[1],
+                    split[2],
+                    Integer.parseInt(split[3])
+            );
+
             int statusCode1 = Integer.parseInt(statusResponse1.getStatusCode());
             if (statusCode1 < 1 || statusCode1 > 3) {
                 // Unknown code
@@ -76,14 +75,18 @@ public class BillService1033ErrorHandler extends AbstractBillServiceErrorHandler
                         .password(config.getPassword())
                         .build();
 
-                byte[] xml = null;
-                String xmlFileName = null;
+                byte[] xml = file;
+                String xmlFileName = fileName;
                 if (fileName.endsWith(".zip")) {
-                    xml = Utils.getFirstXmlFileFromZip(zipFile);
+                    xml = Utils.getFirstXmlFileFromZip(file);
                     xmlFileName = fileName.substring(0, fileName.lastIndexOf(".")) + ".xml";
                 }
 
-                StatusResponse statusResponse2 = BillValidServiceManager.getStatus(xmlFileName, xml, validServiceConfig);
+                assert xml != null;
+                byte[] encode = Base64.getEncoder().encode(xml);
+                String xmlBase64Encoded = new String(encode);
+
+                service.sunat.gob.pe.billvalidservice.StatusResponse statusResponse2 = BillValidServiceWrapper.getStatus(validServiceConfig, xmlFileName, xmlBase64Encoded);
                 int statusCode2 = Integer.parseInt(statusResponse2.getStatusCode());
                 if (statusCode2 != 0) {
                     // xml file was not valid
@@ -99,15 +102,15 @@ public class BillService1033ErrorHandler extends AbstractBillServiceErrorHandler
                 if (optional.isPresent()) {
                     switch (optional.get()) {
                         case EXISTE_Y_ACEPTADO: {
-                            return CdrUtils.getInfoFromCdrZip(statusResponse1.getContent());
+                            return CdrToModel.toModel(statusResponse1.getContent());
                         }
                         case EXISTE_PERO_RECHAZADO: {
-                            return CdrUtils.getInfoFromCdrZip(statusResponse1.getContent());
+                            return CdrToModel.toModel(statusResponse1.getContent());
                         }
                         case EXISTE_PERO_DADO_DE_BAJA: {
-                            DocumentStatusResult sendBillResult = CdrUtils.getInfoFromCdrZip(statusResponse1.getContent());
-                            sendBillResult.setStatus(DocumentStatusResult.Status.BAJA);
-                            return sendBillResult;
+                            BillServiceModel model = CdrToModel.toModel(statusResponse1.getContent());
+                            model.setStatus(BillServiceModel.Status.BAJA);
+                            return model;
                         }
                         default: {
                             return null;
@@ -121,5 +124,4 @@ public class BillService1033ErrorHandler extends AbstractBillServiceErrorHandler
 
         return null;
     }
-
 }

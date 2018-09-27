@@ -1,7 +1,7 @@
 package io.github.carlosthe19916.webservices.utils;
 
-import io.github.carlosthe19916.webservices.models.DocumentStatusResult;
 import io.github.carlosthe19916.webservices.models.CdrResponseBean;
+import io.github.carlosthe19916.webservices.models.DocumentStatusResult;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 

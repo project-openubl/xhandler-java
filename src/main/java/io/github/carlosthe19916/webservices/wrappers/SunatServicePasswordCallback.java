@@ -1,4 +1,4 @@
-package io.github.carlosthe19916.webservices.factories;
+package io.github.carlosthe19916.webservices.wrappers;
 
 import org.apache.wss4j.common.ext.WSPasswordCallback;
 
@@ -7,7 +7,7 @@ import javax.security.auth.callback.CallbackHandler;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ServicePasswordCallback implements CallbackHandler {
+public class SunatServicePasswordCallback implements CallbackHandler {
 
     protected static final Map<String, String> PASSWORDS = new ConcurrentHashMap<>();
 

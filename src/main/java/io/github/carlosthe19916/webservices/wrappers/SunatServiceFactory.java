@@ -1,6 +1,5 @@
-package io.github.carlosthe19916.webservices.factories;
+package io.github.carlosthe19916.webservices.wrappers;
 
-import io.github.carlosthe19916.webservices.wrappers.ServiceConfig;
 import org.apache.cxf.configuration.jsse.TLSClientParameters;
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.endpoint.Endpoint;
@@ -17,14 +16,14 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class ServiceFactory {
+public class SunatServiceFactory {
 
     private static final long DEFAULT_CLIENT_CONNECTION_TIMEOUT = 30000L;
     private static final long DEFAULT_CLIENT_RECEIVE_TIMEOUT = 15000L;
 
     private static final Map<Class<?>, Map<ServiceConfig, Object>> classCache = Collections.synchronizedMap(new LinkedHashMap<>());
 
-    private ServiceFactory() {
+    private SunatServiceFactory() {
         // Just static methods
     }
 
@@ -108,12 +107,12 @@ public class ServiceFactory {
          * password callback object.
          */
         outProps.put("user", username);
-        outProps.put("passwordCallbackClass", ServicePasswordCallback.class.getName());
+        outProps.put("passwordCallbackClass", SunatServicePasswordCallback.class.getName());
 
         /*
          * Save user password on memory
          */
-        ServicePasswordCallback.PASSWORDS.putIfAbsent(username, password);
+        SunatServicePasswordCallback.PASSWORDS.putIfAbsent(username, password);
 
         Client client = ClientProxy.getClient(t);
         Endpoint cxfEnpoint = client.getEndpoint();

@@ -50,7 +50,8 @@ public class DocumentStatusResult {
         ACEPTADO,
         RECHAZADO,
         BAJA,
-        EXCEPCION
+        EXCEPCION,
+        EN_PROCESO
     }
     
 }

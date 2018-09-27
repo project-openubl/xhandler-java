@@ -1,17 +1,10 @@
 package io.github.carlosthe19916.webservices.managers.errorhandler.billservice;
 
 import io.github.carlosthe19916.webservices.models.DocumentStatusResult;
-import io.github.carlosthe19916.webservices.utils.CdrUtils;
 import io.github.carlosthe19916.webservices.utils.Utils;
-import io.github.carlosthe19916.webservices.wrappers.BillServiceWrapper;
 import io.github.carlosthe19916.webservices.wrappers.ServiceConfig;
-import org.xml.sax.SAXException;
-import service.sunat.gob.pe.billservice.StatusResponse;
 
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.ws.soap.SOAPFaultException;
-import javax.xml.xpath.XPathExpressionException;
-import java.io.IOException;
 
 public class BillService2324ErrorHandler extends AbstractBillServiceErrorHandler {
 
@@ -30,13 +23,9 @@ public class BillService2324ErrorHandler extends AbstractBillServiceErrorHandler
 
     @Override
     public DocumentStatusResult getStatus(String ticket, ServiceConfig config) {
-        StatusResponse statusResponse = BillServiceWrapper.getStatus(ticket, config);
-        try {
-            DocumentStatusResult statusResult = CdrUtils.getInfoFromCdrZip(statusResponse.getContent());
-            statusResult.setStatus(DocumentStatusResult.Status.ACEPTADO);
-            return statusResult;
-        } catch (IOException | ParserConfigurationException | SAXException | XPathExpressionException e) {
-            throw new IllegalStateException(e);
+        if (previousStatusResult != null) {
+            previousStatusResult.setStatus(DocumentStatusResult.Status.ACEPTADO);
         }
+        return previousStatusResult;
     }
 }

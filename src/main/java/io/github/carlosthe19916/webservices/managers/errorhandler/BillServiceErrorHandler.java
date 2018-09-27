@@ -13,4 +13,6 @@ public interface BillServiceErrorHandler {
 
     String sendPack(String fileName, byte[] zipFile, String partyType, ServiceConfig config);
 
+    void setPreviousStatusResult(DocumentStatusResult previousStatusResult);
+
 }

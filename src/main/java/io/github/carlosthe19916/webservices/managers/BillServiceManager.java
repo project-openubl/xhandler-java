@@ -93,28 +93,30 @@ public class BillServiceManager {
             if (statusCode == ConsultaTicketResponseType.PROCESO_CORRECTAMENTE.getCode()) {
                 statusResult = CdrUtils.getInfoFromCdrZip(statusResponse.getContent());
             } else if (statusCode == ConsultaTicketResponseType.PROCESO_CON_ERRORES.getCode()) {
+                DocumentStatusResult previousStatusResult = CdrUtils.getInfoFromCdrZip(statusResponse.getContent());
+
                 // Handle error 99
-                statusResult = getStatusHandleErrors(ticket, config, 99);
+                statusResult = getStatusHandleErrors(ticket, config, 99, previousStatusResult);
 
                 // If 99 is not handle then try to handle the error inside the xml
                 if (statusResult == null) {
-                    statusResult = CdrUtils.getInfoFromCdrZip(statusResponse.getContent());
-                    Integer errorCode = statusResult.getCode();
-
-                    statusResult = getStatusHandleErrors(ticket, config, errorCode);
+                    Integer errorCode = previousStatusResult.getCode();
+                    statusResult = getStatusHandleErrors(ticket, config, errorCode, previousStatusResult);
                 }
 
-                // If no result then build it manually
+                // If no result then build it from cdr
                 if (statusResult == null) {
-                    statusResult = new DocumentStatusResult(
-                            DocumentStatusResult.Status.RECHAZADO,
-                            statusResponse.getContent(),
-                            statusCode,
-                            ConsultaTicketResponseType.PROCESO_CON_ERRORES.getDescription()
-                    );
+                    statusResult = previousStatusResult;
                 }
+            } else if (statusCode == ConsultaTicketResponseType.EN_PROCESO.getCode()) {
+                statusResult = new DocumentStatusResult(
+                        DocumentStatusResult.Status.EN_PROCESO,
+                        statusResponse.getContent(),
+                        statusCode,
+                        ConsultaTicketResponseType.EN_PROCESO.getDescription()
+                );
             } else { // OTHERS
-                statusResult = getStatusHandleErrors(ticket, config, statusCode);
+                statusResult = getStatusHandleErrors(ticket, config, statusCode, null);
 
                 if (statusResult == null) {
                     String errorDescription = SUNATCodigoErrores.getInstance().get(statusCode);
@@ -132,13 +134,15 @@ public class BillServiceManager {
         }
     }
 
-    private static DocumentStatusResult getStatusHandleErrors(String ticket, ServiceConfig config, int statusCode) {
+    private static DocumentStatusResult getStatusHandleErrors(String ticket, ServiceConfig config, int statusCode, DocumentStatusResult previousStatusResult) {
         Set<BillServiceErrorHandlerFactory> factories = BillServiceErrorHandlerFactoryManager
                 .getInstance()
                 .getApplicableErrorHandlers(statusCode);
 
         for (BillServiceErrorHandlerFactory factory : factories) {
             BillServiceErrorHandler errorHandler = factory.create(statusCode);
+            errorHandler.setPreviousStatusResult(previousStatusResult);
+
             DocumentStatusResult statusResult = errorHandler.getStatus(ticket, config);
             if (statusResult != null) {
                 return statusResult;
@@ -203,11 +207,14 @@ public class BillServiceManager {
 
 
         try {
+            Thread.sleep(300);
             DocumentStatusResult statusResult = getStatus(ticket, config);
             sendSummaryResult.setStatusResult(statusResult);
         } catch (SOAPFaultException e) {
             // Should be removed on development
             System.out.println(e);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
 
 

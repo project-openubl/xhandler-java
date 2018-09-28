@@ -13,6 +13,8 @@ import java.nio.file.Path;
 
 public class BillServiceManager {
 
+    static final long DEFAULT_DELAY = 5_000;
+
     private BillServiceManager() {
         // Just static methods
     }
@@ -61,6 +63,10 @@ public class BillServiceManager {
         return sendSummary(file.toPath(), config);
     }
 
+    public static BillServiceModel sendSummary(File file, ServiceConfig config, BillServiceCallback callback) throws IOException {
+        return sendSummary(file.toPath(), config, callback, DEFAULT_DELAY);
+    }
+
     public static BillServiceModel sendSummary(File file, ServiceConfig config, BillServiceCallback callback, long delay) throws IOException {
         return sendSummary(file.toPath(), config, callback, delay);
     }
@@ -71,6 +77,10 @@ public class BillServiceManager {
      */
     public static BillServiceModel sendSummary(Path path, ServiceConfig config) throws IOException {
         return sendSummary(path.getFileName().toString(), Files.readAllBytes(path), config, null, -1);
+    }
+
+    public static BillServiceModel sendSummary(Path path, ServiceConfig config, BillServiceCallback callback) throws IOException {
+        return sendSummary(path.getFileName().toString(), Files.readAllBytes(path), config, callback, DEFAULT_DELAY);
     }
 
     public static BillServiceModel sendSummary(Path path, ServiceConfig config, BillServiceCallback callback, long delay) throws IOException {

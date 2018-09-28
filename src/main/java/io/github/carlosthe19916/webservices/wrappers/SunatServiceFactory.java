@@ -18,8 +18,8 @@ import java.util.Map;
 
 public class SunatServiceFactory {
 
-    private static final long DEFAULT_CLIENT_CONNECTION_TIMEOUT = 30000L;
-    private static final long DEFAULT_CLIENT_RECEIVE_TIMEOUT = 15000L;
+    private static final long DEFAULT_CLIENT_CONNECTION_TIMEOUT = 30_000L;
+    private static final long DEFAULT_CLIENT_RECEIVE_TIMEOUT = 15_000L;
 
     private static final Map<Class<?>, Map<ServiceConfig, Object>> classCache = Collections.synchronizedMap(new LinkedHashMap<>());
 

@@ -124,24 +124,29 @@ public class DefaultBillServiceProvider implements BillServiceProvider {
 
     private void sendSummaryOrPackCallback(ServiceConfig config, String ticket, BillServiceCallback callback, long delay) {
         Runnable runnable = () -> {
-            BillServiceModel status = getStatus(ticket, config);
-            switch (status.getStatus()) {
-                case ACEPTADO:
-                    callback.onSuccess(status.getCode(), status.getDescription(), status.getCdr());
-                    break;
-                case RECHAZADO:
-                    callback.onError(status.getCode(), status.getDescription(), status.getCdr());
-                    break;
-                case BAJA:
-                    throw new IllegalStateException("Invalid status result=" + status.getStatus());
-                case EXCEPCION:
-                    callback.onException(status.getCode(), status.getDescription());
-                    break;
-                case EN_PROCESO:
-                    callback.onProcess(status.getCode(), status.getDescription());
-                    break;
-                default:
-                    throw new IllegalStateException("Unexpected status=" + status.getStatus());
+            try {
+                BillServiceModel status = getStatus(ticket, config);
+
+                switch (status.getStatus()) {
+                    case ACEPTADO:
+                        callback.onSuccess(status.getCode(), status.getDescription(), status.getCdr());
+                        break;
+                    case RECHAZADO:
+                        callback.onError(status.getCode(), status.getDescription(), status.getCdr());
+                        break;
+                    case BAJA:
+                        throw new IllegalStateException("Invalid status result=" + status.getStatus());
+                    case EXCEPCION:
+                        callback.onException(status.getCode(), status.getDescription());
+                        break;
+                    case EN_PROCESO:
+                        callback.onProcess(status.getCode(), status.getDescription());
+                        break;
+                    default:
+                        throw new IllegalStateException("Unexpected status=" + status.getStatus());
+                }
+            } catch (SOAPFaultException e) {
+                callback.onThrownException(e);
             }
         };
 
@@ -185,10 +190,29 @@ public class DefaultBillServiceProvider implements BillServiceProvider {
 
     @Override
     public BillServiceModel getStatus(String ticket, ServiceConfig config) {
+        byte[] zip;
+        int statusCode;
+
         try {
             StatusResponse statusResponse = BillServiceWrapper.getStatus(ticket, config);
-            byte[] zip = statusResponse.getContent();
-            int statusCode = Integer.parseInt(statusResponse.getStatusCode());
+            zip = statusResponse.getContent();
+            statusCode = Integer.parseInt(statusResponse.getStatusCode());
+        } catch (SOAPFaultException e) {
+            Set<ErrorBillServiceProviderFactory> factories = ErrorBillServiceRegistry.getInstance().getFactories(e);
+            for (ErrorBillServiceProviderFactory factory : factories) {
+                int exceptionCode = Utils.getErrorCode(e).orElseThrow(() -> new IllegalArgumentException("Could not get Sunat exception code"));
+
+                ErrorBillServiceProvider provider = factory.create(exceptionCode);
+                BillServiceModel handledResult = provider.getStatus(ticket, config);
+                if (handledResult != null) {
+                    return handledResult;
+                }
+            }
+            throw WebServiceExceptionFactory.createWebServiceException(e);
+        }
+
+        try {
+
 
             BillServiceModel result;
             if (statusCode == TicketResponseType.PROCESO_CORRECTAMENTE.getCode()) {

@@ -6,6 +6,7 @@ import io.github.carlosthe19916.webservices.wrappers.ServiceConfig;
 import org.junit.Assert;
 import org.junit.Test;
 
+import javax.xml.ws.soap.SOAPFaultException;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -99,7 +100,7 @@ public class BillServiceManagerTest {
 //        Assert.assertNull(result.getCdr());
 //        Assert.assertEquals(Integer.valueOf(2_335), result.getCode());
 //        Assert.assertEquals("My mock message", result.getDescription());
-//        Assert.assertEquals(BillServiceModel.Status.RECHAZADO, result.getStatus());
+//        Assert.assertEquals(BillServiceModel.Status.RECHAZADO, result.getStatusWrapper());
 //    }
 
     /**
@@ -172,6 +173,31 @@ public class BillServiceManagerTest {
 
         Assert.assertNotNull(result);
         Assert.assertNotNull(result.getTicket());
+    }
+
+    /**
+     * Should send voided document
+     * {@link io.github.carlosthe19916.webservices.managers.BillServiceManager#sendSummary(File, ServiceConfig)}
+     */
+    @Test
+    public void test_sendSummary_andCallback() throws IOException, URISyntaxException, InterruptedException {
+        final String FILE_NAME = "20494637074-RA-20180316-00001.xml";
+        File file = Paths.get(getClass().getResource("/ubl/" + FILE_NAME).toURI()).toFile();
+
+        MockBillServiceCallback callback = new MockBillServiceCallback();
+        MockBillServiceCallback.StatusWrapper statusWrapper = callback.getStatusWrapper();
+
+        BillServiceModel result = BillServiceManager.sendSummary(file, BOLETA_FACTURA_SERVICE_CONFIG,  callback, 500);
+
+        Thread.sleep(3_000);
+
+        Assert.assertNotNull(result);
+        Assert.assertNotNull(result.getTicket());
+
+        Assert.assertEquals(BillServiceModel.Status.ACEPTADO, statusWrapper.getStatus());
+        Assert.assertNotNull(statusWrapper.getCdr());
+        Assert.assertEquals(Integer.valueOf(0), statusWrapper.getCode());
+        Assert.assertEquals("La Comunicacion de baja RA-20180316-00001, ha sido aceptada", statusWrapper.getDescription());
     }
 
 }

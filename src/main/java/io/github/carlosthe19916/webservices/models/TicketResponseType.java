@@ -1,8 +1,5 @@
 package io.github.carlosthe19916.webservices.models;
 
-import java.util.Optional;
-import java.util.stream.Stream;
-
 public enum TicketResponseType {
 
     PROCESO_CORRECTAMENTE(0, "Procesó correctamente"),

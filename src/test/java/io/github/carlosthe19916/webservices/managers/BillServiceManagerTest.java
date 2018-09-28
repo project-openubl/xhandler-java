@@ -1,12 +1,10 @@
 package io.github.carlosthe19916.webservices.managers;
 
-import io.github.carlosthe19916.webservices.providers.BillServiceCallback;
 import io.github.carlosthe19916.webservices.providers.BillServiceModel;
 import io.github.carlosthe19916.webservices.wrappers.ServiceConfig;
 import org.junit.Assert;
 import org.junit.Test;
 
-import javax.xml.ws.soap.SOAPFaultException;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;

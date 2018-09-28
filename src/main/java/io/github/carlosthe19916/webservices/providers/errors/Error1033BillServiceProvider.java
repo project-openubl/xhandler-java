@@ -1,8 +1,8 @@
 package io.github.carlosthe19916.webservices.providers.errors;
 
+import io.github.carlosthe19916.webservices.models.ConsultResponseType;
 import io.github.carlosthe19916.webservices.providers.AbstractErrorBillServiceProvider;
 import io.github.carlosthe19916.webservices.providers.BillServiceModel;
-import io.github.carlosthe19916.webservices.models.ConsultResponseType;
 import io.github.carlosthe19916.webservices.utils.Utils;
 import io.github.carlosthe19916.webservices.wrappers.BillConsultServiceWrapper;
 import io.github.carlosthe19916.webservices.wrappers.BillValidServiceWrapper;

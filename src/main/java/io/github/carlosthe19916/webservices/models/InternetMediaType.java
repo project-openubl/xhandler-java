@@ -1,8 +1,5 @@
 package io.github.carlosthe19916.webservices.models;
 
-import java.util.Arrays;
-import java.util.Optional;
-
 public enum InternetMediaType {
 
     GP3(".3gp", "video/3gpp"),

@@ -1,7 +1,7 @@
 package io.github.carlosthe19916.webservices.utils;
 
-import io.github.carlosthe19916.webservices.providers.BillServiceModel;
 import io.github.carlosthe19916.webservices.models.CdrModel;
+import io.github.carlosthe19916.webservices.providers.BillServiceModel;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 

@@ -1,3 +1,22 @@
+/*
+ *
+ *  * Copyright 2017 Carlosthe19916, Inc. and/or its affiliates
+ *  * and other contributors as indicated by the @author tags.
+ *  *
+ *  * Licensed under the Apache License, Version 2.0 (the "License");
+ *  * you may not use this file except in compliance with the License.
+ *  * You may obtain a copy of the License at
+ *  *
+ *  * http://www.apache.org/licenses/LICENSE-2.0
+ *  *
+ *  * Unless required by applicable law or agreed to in writing, software
+ *  * distributed under the License is distributed on an "AS IS" BASIS,
+ *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  * See the License for the specific language governing permissions and
+ *  * limitations under the License.
+ *
+ */
+
 package io.github.carlosthe19916.webservices.managers;
 
 import io.github.carlosthe19916.webservices.providers.BillServiceCallback;
@@ -85,6 +104,14 @@ public class BillServiceManager {
 
     public static BillServiceModel sendSummary(Path path, ServiceConfig config, BillServiceCallback callback, long delay) throws IOException {
         return sendSummary(path.getFileName().toString(), Files.readAllBytes(path), config, callback, delay);
+    }
+
+    public static BillServiceModel sendSummary(String fileName, byte[] file, ServiceConfig config) throws IOException {
+        return sendSummary(fileName, file, config, null, -1);
+    }
+
+    public static BillServiceModel sendSummary(String fileName, byte[] file, ServiceConfig config, BillServiceCallback callback) throws IOException {
+        return sendSummary(fileName, file, config, callback, DEFAULT_DELAY);
     }
 
     /**

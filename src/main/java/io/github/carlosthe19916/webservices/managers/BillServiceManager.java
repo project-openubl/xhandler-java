@@ -1,8 +1,9 @@
 package io.github.carlosthe19916.webservices.managers;
 
-import io.github.carlosthe19916.webservices.managers.providers.BillServiceModel;
-import io.github.carlosthe19916.webservices.managers.providers.BillServiceProvider;
-import io.github.carlosthe19916.webservices.managers.providers.DefaultBillServiceProvider;
+import io.github.carlosthe19916.webservices.providers.BillServiceCallback;
+import io.github.carlosthe19916.webservices.providers.BillServiceModel;
+import io.github.carlosthe19916.webservices.providers.BillServiceProvider;
+import io.github.carlosthe19916.webservices.providers.DefaultBillServiceProvider;
 import io.github.carlosthe19916.webservices.wrappers.ServiceConfig;
 
 import java.io.File;
@@ -60,12 +61,20 @@ public class BillServiceManager {
         return sendSummary(file.toPath(), config);
     }
 
+    public static BillServiceModel sendSummary(File file, ServiceConfig config, BillServiceCallback callback, long delay) throws IOException {
+        return sendSummary(file.toPath(), config, callback, delay);
+    }
+
     /**
      * @param path   ubicacion del archivo a ser enviado
      * @param config Credenciales y URL de destino de la petición
      */
     public static BillServiceModel sendSummary(Path path, ServiceConfig config) throws IOException {
-        return sendSummary(path.getFileName().toString(), Files.readAllBytes(path), config);
+        return sendSummary(path.getFileName().toString(), Files.readAllBytes(path), config, null, -1);
+    }
+
+    public static BillServiceModel sendSummary(Path path, ServiceConfig config, BillServiceCallback callback, long delay) throws IOException {
+        return sendSummary(path.getFileName().toString(), Files.readAllBytes(path), config, callback, delay);
     }
 
     /**
@@ -73,9 +82,17 @@ public class BillServiceManager {
      * @param file     archivo a ser enviado
      * @param config   Credenciales y URL de destino de la petición
      */
-    public static BillServiceModel sendSummary(String fileName, byte[] file, ServiceConfig config) throws IOException {
+    public static BillServiceModel sendSummary(String fileName, byte[] file, ServiceConfig config, BillServiceCallback callback, long delay) throws IOException {
         BillServiceProvider billServiceProvider = new DefaultBillServiceProvider();
-        return billServiceProvider.sendSummary(fileName, file, config);
+
+        BillServiceModel result;
+        if (callback != null) {
+            result = billServiceProvider.sendSummary(fileName, file, config, callback, delay);
+        } else {
+            result = billServiceProvider.sendSummary(fileName, file, config);
+        }
+
+        return result;
     }
 
     /**

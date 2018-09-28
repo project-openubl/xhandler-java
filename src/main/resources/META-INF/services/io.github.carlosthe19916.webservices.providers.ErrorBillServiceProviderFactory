@@ -1,0 +1,5 @@
+io.github.carlosthe19916.webservices.providers.errors.ErrorExcepcionBillServiceProviderFactory
+io.github.carlosthe19916.webservices.providers.errors.ErrorRechazoBillServiceProviderFactory
+io.github.carlosthe19916.webservices.providers.errors.ErrorObservacionesBillServiceProviderFactory
+io.github.carlosthe19916.webservices.providers.errors.Error1033BillServiceProviderFactory
+io.github.carlosthe19916.webservices.providers.errors.Error2324BillServiceProviderFactory

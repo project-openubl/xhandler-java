@@ -1,6 +1,6 @@
 package io.github.carlosthe19916.webservices.exceptions;
 
-import io.github.carlosthe19916.webservices.managers.SUNATCodigoErrores;
+import io.github.carlosthe19916.webservices.utils.SunatErrors;
 import io.github.carlosthe19916.webservices.utils.Utils;
 
 import javax.xml.ws.soap.SOAPFaultException;
@@ -17,12 +17,12 @@ public class ValidationWebServiceException extends AbstractWebServiceException {
 
     public String getSUNATErrorMessage() {
         Integer errorCode = getSUNATErrorCode();
-        return SUNATCodigoErrores.getInstance().get(errorCode);
+        return SunatErrors.getInstance().get(errorCode);
     }
 
     public String getSUNATErrorMessage(int maxLength) {
         Integer errorCode = getSUNATErrorCode();
-        return SUNATCodigoErrores.getInstance().getWithMaxLength(errorCode, maxLength);
+        return SunatErrors.getInstance().getWithMaxLength(errorCode, maxLength);
     }
 
 }

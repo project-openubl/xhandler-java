@@ -1,6 +1,6 @@
 package io.github.carlosthe19916.webservices.wrappers;
 
-import io.github.carlosthe19916.webservices.models.types.InternetMediaType;
+import io.github.carlosthe19916.webservices.models.InternetMediaType;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;

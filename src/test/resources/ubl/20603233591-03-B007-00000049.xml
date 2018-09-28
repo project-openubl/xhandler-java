@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?><Invoice xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2" xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2" xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2" xmlns:ccts="urn:un:unece:uncefact:documentation:2" xmlns:cec="urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:ext="urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2" xmlns:qdt="urn:oasis:names:specification:ubl:schema:xsd:QualifiedDatatypes-2" xmlns:sac="urn:sunat:names:specification:ubl:peru:schema:xsd:SunatAggregateComponents-1" xmlns:udt="urn:un:unece:uncefact:data:specification:UnqualifiedDataTypesSchemaModule:2" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <ext:UBLExtensions>
+    <ext:UBLExtension>
+      <ext:ExtensionContent>
+        <sac:AdditionalInformation>
+          <sac:AdditionalMonetaryTotal>
+            <cbc:ID>1001</cbc:ID>
+            <cbc:PayableAmount currencyID="PEN">20.89</cbc:PayableAmount>
+          </sac:AdditionalMonetaryTotal>
+          <sac:AdditionalProperty>
+            <cbc:ID>1000</cbc:ID>
+            <cbc:Value>veinticuatro y 65/100</cbc:Value>
+          </sac:AdditionalProperty>
+        </sac:AdditionalInformation>
+      </ext:ExtensionContent>
+    </ext:UBLExtension>
+  <ext:UBLExtension><ext:ExtensionContent><ds:Signature Id="SignAHREN" xmlns:ds="http://www.w3.org/2000/09/xmldsig#"><ds:SignedInfo><ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/><ds:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/><ds:Reference URI=""><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><ds:DigestValue>5Qd4VHDbtAE0SpH7thXs+6HKnYw=</ds:DigestValue></ds:Reference></ds:SignedInfo><ds:SignatureValue>DVk7mqrFXX8oD7g6HpjwDd52O6KxpXc8VkDvcAnmpyA16G7RxfoQTQRzrrkNFGHrv4I+wcPPAjtDxswU5iGSELogMs10ZwBzuryoivZoKwYML6eTgBq5itB2EA29IHnQm+JFI/L2h9CZ15KKHzC8SACG6Q1Tgv7fzXy+18Use0EMc1VFr63OkDB74v+SbAyodrlcjL0BkOsY1y+WSCKDzF8MmbydvcV6AfVsjrVCWBNSws8oNsKl1ITNgtpG8X+lkFzpgrOv3tH/Rl5fxNfPrODtGocSZSbCxRQGtgF+PDYdqzoPwfKE9T9SIntuqT9tSTzPwaUh9l28Y8mXX39JlA==</ds:SignatureValue><ds:KeyInfo><ds:X509Data><ds:X509Certificate>MIICmTCCAYECBgFcjed4uzANBgkqhkiG9w0BAQsFADAQMQ4wDAYDVQQDDAVhaHJlbjAeFw0xNzA2MDkxNzI3NTZaFw0yNzA2MDkxNzI5MzZaMBAxDjAMBgNVBAMMBWFocmVuMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnsgbXAsxriga3PwL/a4S+G8GjEgVyq8w0sRkOQ6Db3ZIz7P3cjOFghA13bMw1UXTz1hS9ApcBYY56uMR2t/sTwwwzobMfSMJauWdoXCAuZbfw1jz+r4ZrHWp02SHCcCuvRmwuJqmxTHq/SExNmpHnSBxEOOctlfRlKujvcJcZyozTilYF7vHkBpEj+3DtMlKQWZPgb8nGKwYqRAawKc09y31ZgIl4awmtof91g/4h4c56y48ttJkpts1zi+d3DqGaBqd8SoCfUPqu53ssm8pX/ufkIewEPim3MBShBZq3QYk4nq7p6W6Jo5wtl/3b7dcQLdo36pBYifY7MbwwBYCnwIDAQABMA0GCSqGSIb3DQEBCwUAA4IBAQAJH+T2EivzD24fmNOhIRWSDObz5w6iJek4dO7vJkaeTypUCcdD6oGQbx/Nyihhq0cWPxYBFI/cXhpemsM9otmy3p0Gcl1YTRQaP5JUxcSvY0Ta48RvidNCCi3FvwM46fYqEUq6xbm5xNc5I8KjWGbnoEyrWnz1T5KkRzAunrdUjb8nq36KZn7/eDVg2DphJoSDI9RH83ig+lJP7K/QUMkXjD+DoQjvopQE59GGSDGhGtvnuoVl3TcIabOzK104v6y0u/nllr63eQYmcD9Efjlt67htEJM8SeC4zRA8fRtogZhXurWtKpxKHN8wNEYDML7rWmYTh7/7tQt3GHH9eBEc</ds:X509Certificate></ds:X509Data></ds:KeyInfo></ds:Signature></ext:ExtensionContent></ext:UBLExtension></ext:UBLExtensions>
+  <cbc:UBLVersionID>2.0</cbc:UBLVersionID>
+  <cbc:CustomizationID>1.0</cbc:CustomizationID>
+  <cbc:ID>B007-00000049</cbc:ID>
+  <cbc:IssueDate>2018-09-11</cbc:IssueDate>
+  <cbc:IssueTime>04:36:52</cbc:IssueTime>
+  <cbc:InvoiceTypeCode>03</cbc:InvoiceTypeCode>
+  <cbc:Note/>
+  <cbc:DocumentCurrencyCode>PEN</cbc:DocumentCurrencyCode>
+  <cac:Signature>
+    <cbc:ID>IDSignAHREN</cbc:ID>
+    <cac:SignatoryParty>
+      <cac:PartyIdentification>
+        <cbc:ID>20603233591</cbc:ID>
+      </cac:PartyIdentification>
+      <cac:PartyName>
+        <cbc:Name>GASOLINERA PETROX E.I.R.L. </cbc:Name>
+      </cac:PartyName>
+    </cac:SignatoryParty>
+    <cac:DigitalSignatureAttachment>
+      <cac:ExternalReference>
+        <cbc:URI>#signatureAHREN</cbc:URI>
+      </cac:ExternalReference>
+    </cac:DigitalSignatureAttachment>
+  </cac:Signature>
+  <cac:AccountingSupplierParty>
+    <cbc:CustomerAssignedAccountID>20603233591</cbc:CustomerAssignedAccountID>
+    <cbc:AdditionalAccountID>6</cbc:AdditionalAccountID>
+    <cac:Party>
+      <cac:PartyName>
+        <cbc:Name>GASOLINERA PETROX E.I.R.L. </cbc:Name>
+      </cac:PartyName>
+      <cac:PostalAddress>
+        <cbc:ID>050101</cbc:ID>
+        <cbc:StreetName>CAR.AYACUCHO - HUANTA NRO. S/N RUMICHACA CENTRO JESUS NAZARENO AYACUCHO  - HUAMANGA  - JESUS NAZARENO&lt;/td&gt;&#13;
+ &lt;/tr&gt;&#13;
+&#13;
+ &lt;tr&gt;&#13;
+ </cbc:StreetName>
+        <cbc:CitySubdivisionName>11 de junio</cbc:CitySubdivisionName>
+        <cbc:CityName>HUAMANGA</cbc:CityName>
+        <cbc:CountrySubentity>AYACUCHO</cbc:CountrySubentity>
+        <cac:Country>
+          <cbc:IdentificationCode>PE</cbc:IdentificationCode>
+        </cac:Country>
+      </cac:PostalAddress>
+      <cac:PartyLegalEntity>
+        <cbc:RegistrationName>GASOLINERA PETROX E.I.R.L. </cbc:RegistrationName>
+      </cac:PartyLegalEntity>
+    </cac:Party>
+  </cac:AccountingSupplierParty>
+  <cac:AccountingCustomerParty>
+    <cbc:CustomerAssignedAccountID>00000000</cbc:CustomerAssignedAccountID>
+    <cbc:AdditionalAccountID>0</cbc:AdditionalAccountID>
+    <cac:Party>
+      <cac:PostalAddress>
+        <cbc:StreetName>-</cbc:StreetName>
+      </cac:PostalAddress>
+      <cac:PartyLegalEntity>
+        <cbc:RegistrationName>Cliente</cbc:RegistrationName>
+      </cac:PartyLegalEntity>
+      <cac:Contact>
+        <cbc:ElectronicMail/>
+      </cac:Contact>
+    </cac:Party>
+  </cac:AccountingCustomerParty>
+  <cac:TaxTotal>
+    <cbc:TaxAmount currencyID="PEN">3.76</cbc:TaxAmount>
+    <cac:TaxSubtotal>
+      <cbc:TaxAmount currencyID="PEN">3.76</cbc:TaxAmount>
+      <cac:TaxCategory>
+        <cac:TaxScheme>
+          <cbc:ID>1000</cbc:ID>
+          <cbc:Name>IGV</cbc:Name>
+          <cbc:TaxTypeCode>VAT</cbc:TaxTypeCode>
+        </cac:TaxScheme>
+      </cac:TaxCategory>
+    </cac:TaxSubtotal>
+  </cac:TaxTotal>
+  <cac:LegalMonetaryTotal>
+    <cbc:PayableAmount currencyID="PEN">24.65</cbc:PayableAmount>
+  </cac:LegalMonetaryTotal>
+  <cac:InvoiceLine>
+    <cbc:ID>1</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="NIU">2.0</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="PEN">20.59</cbc:LineExtensionAmount>
+    <cac:PricingReference>
+      <cac:AlternativeConditionPrice>
+        <cbc:PriceAmount currencyID="PEN">12.15</cbc:PriceAmount>
+        <cbc:PriceTypeCode>01</cbc:PriceTypeCode>
+      </cac:AlternativeConditionPrice>
+    </cac:PricingReference>
+    <cac:TaxTotal>
+      <cbc:TaxAmount currencyID="PEN">-8.44</cbc:TaxAmount>
+      <cac:TaxSubtotal>
+        <cbc:TaxAmount currencyID="PEN">-8.44</cbc:TaxAmount>
+        <cac:TaxCategory>
+          <cbc:TaxExemptionReasonCode>10</cbc:TaxExemptionReasonCode>
+          <cac:TaxScheme>
+            <cbc:ID>1000</cbc:ID>
+            <cbc:Name>IGV</cbc:Name>
+            <cbc:TaxTypeCode>VAT</cbc:TaxTypeCode>
+          </cac:TaxScheme>
+        </cac:TaxCategory>
+      </cac:TaxSubtotal>
+    </cac:TaxTotal>
+    <cac:Item>
+      <cbc:Description>DIESEL B5 S50</cbc:Description>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="PEN">10.30</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+  <cac:InvoiceLine>
+    <cbc:ID>2</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="NIU">1.0</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="PEN">10.59</cbc:LineExtensionAmount>
+    <cac:PricingReference>
+      <cac:AlternativeConditionPrice>
+        <cbc:PriceAmount currencyID="PEN">12.5</cbc:PriceAmount>
+        <cbc:PriceTypeCode>01</cbc:PriceTypeCode>
+      </cac:AlternativeConditionPrice>
+    </cac:PricingReference>
+    <cac:TaxTotal>
+      <cbc:TaxAmount currencyID="PEN">1.91</cbc:TaxAmount>
+      <cac:TaxSubtotal>
+        <cbc:TaxAmount currencyID="PEN">1.91</cbc:TaxAmount>
+        <cac:TaxCategory>
+          <cbc:TaxExemptionReasonCode>10</cbc:TaxExemptionReasonCode>
+          <cac:TaxScheme>
+            <cbc:ID>1000</cbc:ID>
+            <cbc:Name>IGV</cbc:Name>
+            <cbc:TaxTypeCode>VAT</cbc:TaxTypeCode>
+          </cac:TaxScheme>
+        </cac:TaxCategory>
+      </cac:TaxSubtotal>
+    </cac:TaxTotal>
+    <cac:Item>
+      <cbc:Description>GASOHOL 90 PLUS</cbc:Description>
+    </cac:Item>
+    <cac:Price>
+      <cbc:PriceAmount currencyID="PEN">10.59</cbc:PriceAmount>
+    </cac:Price>
+  </cac:InvoiceLine>
+</Invoice>

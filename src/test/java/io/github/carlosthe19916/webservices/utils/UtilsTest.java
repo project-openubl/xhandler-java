@@ -1,13 +1,19 @@
 package io.github.carlosthe19916.webservices.utils;
 
+import io.github.carlosthe19916.webservices.providers.BillServiceModel;
+import io.github.carlosthe19916.webservices.models.CdrModel;
 import org.junit.Assert;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.soap.SOAPFault;
 import javax.xml.ws.soap.SOAPFaultException;
+import javax.xml.xpath.XPathExpressionException;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -113,4 +119,43 @@ public class UtilsTest {
         Document document = Utils.getDocumentFromBytes(bytes);
         Assert.assertNotNull(document);
     }
+
+    /**
+     * Should extract info from document
+     * {@link io.github.carlosthe19916.webservices.utils.Utils#extractResponse(Document)}
+     */
+    @Test
+    public void test_shouldExtractResponse() throws Exception {
+        final File cdrFile = Paths.get(getClass().getResource("/ubl/cdr/R-12345678901-01-F001-00000587.xml").toURI()).toFile();
+        final byte[] cdrBytes = Files.readAllBytes(cdrFile.toPath());
+
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setNamespaceAware(true);
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        Document document = builder.parse(new ByteArrayInputStream(cdrBytes));
+
+        CdrModel response = Utils.extractResponse(document);
+
+        Assert.assertNotNull(response);
+        Assert.assertEquals(Integer.valueOf(0), response.getResponseCode());
+        Assert.assertEquals("La Factura numero F001-00000587, ha sido aceptada", response.getDescription());
+    }
+
+    /**
+     * Should create the correct model from zip
+     * {@link io.github.carlosthe19916.webservices.utils.Utils#toModel(byte[])}
+     */
+    @Test
+    public void test_createModelFromZip() throws IOException, URISyntaxException, XPathExpressionException, SAXException, ParserConfigurationException {
+        final File cdrFile = Paths.get(getClass().getResource("/ubl/cdr/cdr.zip").toURI()).toFile();
+        final byte[] cdrBytes = Files.readAllBytes(cdrFile.toPath());
+
+        BillServiceModel result = Utils.toModel(cdrBytes);
+
+        Assert.assertNotNull(result.getCdr());
+        Assert.assertEquals(Integer.valueOf(0), result.getCode());
+        Assert.assertEquals("La Factura numero F001-00000587, ha sido aceptada", result.getDescription());
+        Assert.assertEquals(BillServiceModel.Status.ACEPTADO, result.getStatus());
+    }
+
 }

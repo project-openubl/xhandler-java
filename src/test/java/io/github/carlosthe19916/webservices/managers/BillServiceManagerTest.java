@@ -1,20 +1,18 @@
 /*
+ * Copyright 2017 Carlosthe19916, Inc. and/or its affiliates
+ * and other contributors as indicated by the @author tags.
  *
- *  * Copyright 2017 Carlosthe19916, Inc. and/or its affiliates
- *  * and other contributors as indicated by the @author tags.
- *  *
- *  * Licensed under the Apache License, Version 2.0 (the "License");
- *  * you may not use this file except in compliance with the License.
- *  * You may obtain a copy of the License at
- *  *
- *  * http://www.apache.org/licenses/LICENSE-2.0
- *  *
- *  * Unless required by applicable law or agreed to in writing, software
- *  * distributed under the License is distributed on an "AS IS" BASIS,
- *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  * See the License for the specific language governing permissions and
- *  * limitations under the License.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package io.github.carlosthe19916.webservices.managers;
@@ -28,6 +26,9 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class BillServiceManagerTest {
 
@@ -204,7 +205,11 @@ public class BillServiceManagerTest {
         MockBillServiceCallback callback = new MockBillServiceCallback();
         MockBillServiceCallback.StatusWrapper statusWrapper = callback.getStatusWrapper();
 
-        BillServiceModel result = BillServiceManager.sendSummary(file, BOLETA_FACTURA_SERVICE_CONFIG, callback, 500);
+        Map<String, Object> params = new HashMap<>();
+        params.put("param1", "value1");
+        params.put("param2", "value2");
+
+        BillServiceModel result = BillServiceManager.sendSummary(file, BOLETA_FACTURA_SERVICE_CONFIG, params, callback, 500);
 
         Thread.sleep(3_000);
 
@@ -215,6 +220,7 @@ public class BillServiceManagerTest {
         Assert.assertNotNull(statusWrapper.getCdr());
         Assert.assertEquals(Integer.valueOf(0), statusWrapper.getCode());
         Assert.assertEquals("La Comunicacion de baja RA-20180316-00001, ha sido aceptada", statusWrapper.getDescription());
+        Assert.assertEquals(params, statusWrapper.getParams());
     }
 
 }

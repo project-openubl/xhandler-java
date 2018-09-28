@@ -1,20 +1,18 @@
 /*
+ * Copyright 2017 Carlosthe19916, Inc. and/or its affiliates
+ * and other contributors as indicated by the @author tags.
  *
- *  * Copyright 2017 Carlosthe19916, Inc. and/or its affiliates
- *  * and other contributors as indicated by the @author tags.
- *  *
- *  * Licensed under the Apache License, Version 2.0 (the "License");
- *  * you may not use this file except in compliance with the License.
- *  * You may obtain a copy of the License at
- *  *
- *  * http://www.apache.org/licenses/LICENSE-2.0
- *  *
- *  * Unless required by applicable law or agreed to in writing, software
- *  * distributed under the License is distributed on an "AS IS" BASIS,
- *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  * See the License for the specific language governing permissions and
- *  * limitations under the License.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package io.github.carlosthe19916.webservices.providers;
@@ -33,6 +31,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.ws.soap.SOAPFaultException;
 import javax.xml.xpath.XPathExpressionException;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -41,6 +41,82 @@ import java.util.concurrent.TimeUnit;
 public class DefaultBillServiceProvider implements BillServiceProvider {
 
     private ScheduledExecutorService executorService = Executors.newScheduledThreadPool(10);
+
+    private BillServiceModel sendSummaryOrPack(String fileName, byte[] file, ServiceConfig config, boolean isSummary) {
+        if (fileName.endsWith(".xml")) {
+            try {
+                file = ZipBuilder.createZipInMemory()
+                        .add(file)
+                        .path(fileName)
+                        .save()
+                        .toBytes();
+                fileName = fileName.substring(0, fileName.lastIndexOf(".")) + ".zip";
+            } catch (IOException e) {
+                throw new IllegalStateException(e);
+            }
+        }
+
+        BillServiceModel result = null;
+        try {
+            String ticket;
+
+            if (isSummary) {
+                ticket = BillServiceWrapper.sendSummary(fileName, file, null, config);
+            } else {
+                ticket = BillServiceWrapper.sendPack(fileName, file, null, config);
+            }
+
+            result = Utils.toModel(ticket);
+        } catch (SOAPFaultException e) {
+            Set<ErrorBillServiceProviderFactory> factories = ErrorBillServiceRegistry.getInstance().getFactories(e);
+            for (ErrorBillServiceProviderFactory factory : factories) {
+                int exceptionCode = Utils.getErrorCode(e).orElseThrow(() -> new IllegalArgumentException("Could not get Sunat exception code"));
+
+                ErrorBillServiceProvider provider = factory.create(exceptionCode);
+                BillServiceModel handledResult = provider.sendSummary(fileName, file, config);
+                if (handledResult != null) {
+                    result = handledResult;
+                }
+            }
+
+            if (result == null) {
+                throw WebServiceExceptionFactory.createWebServiceException(e);
+            }
+        }
+
+        return result;
+    }
+
+    private void sendSummaryOrPackCallback(ServiceConfig config, String ticket, BillServiceCallback callback, Map<String, Object> params, long delay) {
+        Runnable runnable = () -> {
+            try {
+                BillServiceModel status = getStatus(ticket, config);
+
+                switch (status.getStatus()) {
+                    case ACEPTADO:
+                        callback.onSuccess(params, status.getCode(), status.getDescription(), status.getCdr());
+                        break;
+                    case RECHAZADO:
+                        callback.onError(params, status.getCode(), status.getDescription(), status.getCdr());
+                        break;
+                    case BAJA:
+                        throw new IllegalStateException("Invalid status result=" + status.getStatus());
+                    case EXCEPCION:
+                        callback.onException(params, status.getCode(), status.getDescription());
+                        break;
+                    case EN_PROCESO:
+                        callback.onProcess(params, status.getCode(), status.getDescription());
+                        break;
+                    default:
+                        throw new IllegalStateException("Unexpected status=" + status.getStatus());
+                }
+            } catch (SOAPFaultException e) {
+                callback.onThrownException(params, e);
+            }
+        };
+
+        executorService.schedule(runnable, delay, TimeUnit.MILLISECONDS);
+    }
 
     @Override
     public BillServiceModel sendBill(String fileName, byte[] file, ServiceConfig config) {
@@ -94,104 +170,28 @@ public class DefaultBillServiceProvider implements BillServiceProvider {
 
     @Override
     public BillServiceModel sendSummary(String fileName, byte[] file, ServiceConfig config) {
-        return sendSummary(fileName, file, config, null, -1);
-    }
-
-    private BillServiceModel sendSummaryOrPack(String fileName, byte[] file, ServiceConfig config, boolean isSummary) {
-        if (fileName.endsWith(".xml")) {
-            try {
-                file = ZipBuilder.createZipInMemory()
-                        .add(file)
-                        .path(fileName)
-                        .save()
-                        .toBytes();
-                fileName = fileName.substring(0, fileName.lastIndexOf(".")) + ".zip";
-            } catch (IOException e) {
-                throw new IllegalStateException(e);
-            }
-        }
-
-        BillServiceModel result = null;
-        try {
-            String ticket;
-
-            if (isSummary) {
-                ticket = BillServiceWrapper.sendSummary(fileName, file, null, config);
-            } else {
-                ticket = BillServiceWrapper.sendPack(fileName, file, null, config);
-            }
-
-            result = Utils.toModel(ticket);
-        } catch (SOAPFaultException e) {
-            Set<ErrorBillServiceProviderFactory> factories = ErrorBillServiceRegistry.getInstance().getFactories(e);
-            for (ErrorBillServiceProviderFactory factory : factories) {
-                int exceptionCode = Utils.getErrorCode(e).orElseThrow(() -> new IllegalArgumentException("Could not get Sunat exception code"));
-
-                ErrorBillServiceProvider provider = factory.create(exceptionCode);
-                BillServiceModel handledResult = provider.sendSummary(fileName, file, config);
-                if (handledResult != null) {
-                    result = handledResult;
-                }
-            }
-
-            if (result == null) {
-                throw WebServiceExceptionFactory.createWebServiceException(e);
-            }
-        }
-
-        return result;
-    }
-
-    private void sendSummaryOrPackCallback(ServiceConfig config, String ticket, BillServiceCallback callback, long delay) {
-        Runnable runnable = () -> {
-            try {
-                BillServiceModel status = getStatus(ticket, config);
-
-                switch (status.getStatus()) {
-                    case ACEPTADO:
-                        callback.onSuccess(status.getCode(), status.getDescription(), status.getCdr());
-                        break;
-                    case RECHAZADO:
-                        callback.onError(status.getCode(), status.getDescription(), status.getCdr());
-                        break;
-                    case BAJA:
-                        throw new IllegalStateException("Invalid status result=" + status.getStatus());
-                    case EXCEPCION:
-                        callback.onException(status.getCode(), status.getDescription());
-                        break;
-                    case EN_PROCESO:
-                        callback.onProcess(status.getCode(), status.getDescription());
-                        break;
-                    default:
-                        throw new IllegalStateException("Unexpected status=" + status.getStatus());
-                }
-            } catch (SOAPFaultException e) {
-                callback.onThrownException(e);
-            }
-        };
-
-        executorService.schedule(runnable, delay, TimeUnit.MILLISECONDS);
+        return sendSummary(fileName, file, config, Collections.emptyMap(), null, -1);
     }
 
     @Override
-    public BillServiceModel sendSummary(String fileName, byte[] file, ServiceConfig config, BillServiceCallback callback, long delay) {
+    public BillServiceModel sendSummary(String fileName, byte[] file, ServiceConfig config, Map<String, Object> params, BillServiceCallback callback, long delay) {
         BillServiceModel result = sendSummaryOrPack(fileName, file, config, true);
         if (callback != null) {
-            sendSummaryOrPackCallback(config, result.getTicket(), callback, delay);
+            sendSummaryOrPackCallback(config, result.getTicket(), callback, params, delay);
         }
         return result;
     }
 
     @Override
     public BillServiceModel sendPack(String fileName, byte[] file, ServiceConfig config) {
-        return sendPack(fileName, file, config, null, -1);
+        return sendPack(fileName, file, config, Collections.emptyMap(), null, -1);
     }
 
     @Override
-    public BillServiceModel sendPack(String fileName, byte[] file, ServiceConfig config, BillServiceCallback callback, long delay) {
+    public BillServiceModel sendPack(String fileName, byte[] file, ServiceConfig config, Map<String, Object> params, BillServiceCallback callback, long delay) {
         BillServiceModel result = sendSummaryOrPack(fileName, file, config, false);
         if (callback != null) {
-            sendSummaryOrPackCallback(config, result.getTicket(), callback, delay);
+            sendSummaryOrPackCallback(config, result.getTicket(), callback, params, delay);
         }
         return result;
     }

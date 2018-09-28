@@ -1,7 +1,5 @@
 package io.github.carlosthe19916.webservices.wrappers;
 
-import io.github.carlosthe19916.webservices.factories.ServiceFactory;
-
 public class BillConsultServiceWrapper {
 
     private BillConsultServiceWrapper() {
@@ -15,7 +13,7 @@ public class BillConsultServiceWrapper {
             String serie,
             int numero) {
 
-        service.sunat.gob.pe.billconsultservice.BillService billService = ServiceFactory.getInstance(service.sunat.gob.pe.billconsultservice.BillService.class, config);
+        service.sunat.gob.pe.billconsultservice.BillService billService = SunatServiceFactory.getInstance(service.sunat.gob.pe.billconsultservice.BillService.class, config);
         return billService.getStatus(ruc, tipo, serie, numero);
     }
 
@@ -26,7 +24,7 @@ public class BillConsultServiceWrapper {
             String serie,
             int numero) {
 
-        service.sunat.gob.pe.billconsultservice.BillService billService = ServiceFactory.getInstance(service.sunat.gob.pe.billconsultservice.BillService.class, config);
+        service.sunat.gob.pe.billconsultservice.BillService billService = SunatServiceFactory.getInstance(service.sunat.gob.pe.billconsultservice.BillService.class, config);
         return billService.getStatusCdr(ruc, tipo, serie, numero);
     }
 

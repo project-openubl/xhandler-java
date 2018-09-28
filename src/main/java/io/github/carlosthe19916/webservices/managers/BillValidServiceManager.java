@@ -1,6 +1,6 @@
 package io.github.carlosthe19916.webservices.managers;
 
-import io.github.carlosthe19916.webservices.models.BillValidBean;
+import io.github.carlosthe19916.webservices.models.BillValidModel;
 import io.github.carlosthe19916.webservices.wrappers.BillValidServiceWrapper;
 import io.github.carlosthe19916.webservices.wrappers.ServiceConfig;
 
@@ -31,7 +31,7 @@ public class BillValidServiceManager {
         return BillValidServiceWrapper.getStatus(config, fileName, base64Encoded);
     }
 
-    public static service.sunat.gob.pe.billvalidservice.StatusResponse validaCDPcriterios(BillValidBean bean, ServiceConfig config) {
+    public static service.sunat.gob.pe.billvalidservice.StatusResponse validaCDPcriterios(BillValidModel bean, ServiceConfig config) {
         return BillValidServiceWrapper.validaCDPcriterios(config,
                 bean.getRucEmisor(),
                 bean.getTipoCDP(),

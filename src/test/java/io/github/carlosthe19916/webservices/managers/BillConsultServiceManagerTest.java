@@ -1,7 +1,7 @@
 package io.github.carlosthe19916.webservices.managers;
 
 
-import io.github.carlosthe19916.webservices.models.BillConsultBean;
+import io.github.carlosthe19916.webservices.models.BillConsultModel;
 import io.github.carlosthe19916.webservices.wrappers.ServiceConfig;
 import org.junit.Assert;
 import org.junit.Test;
@@ -23,7 +23,7 @@ public class BillConsultServiceManagerTest {
                 .password(PASSWORD)
                 .build();
 
-        BillConsultBean consult = new BillConsultBean.Builder()
+        BillConsultModel consult = new BillConsultModel.Builder()
                 .ruc("20494918910")
                 .tipo("01")
                 .serie("F001")
@@ -46,7 +46,7 @@ public class BillConsultServiceManagerTest {
                 .password(PASSWORD)
                 .build();
 
-        BillConsultBean consult = new BillConsultBean.Builder()
+        BillConsultModel consult = new BillConsultModel.Builder()
                 .ruc("20494918910")
                 .tipo("01")
                 .serie("F001")

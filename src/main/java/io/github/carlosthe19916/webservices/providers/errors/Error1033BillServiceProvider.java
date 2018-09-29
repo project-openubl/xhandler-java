@@ -37,8 +37,8 @@ import java.util.regex.Pattern;
 
 public class Error1033BillServiceProvider extends AbstractErrorBillServiceProvider {
 
-    private final static String DEFAULT_BILL_CONSULT_URL = "https://exception-factura.sunat.gob.pe/ol-it-wsconscpegem/billConsultService";
-    private final static String DEFAULT_BILL_VALID_URL = "https://exception-factura.sunat.gob.pe/ol-it-wsconsvalidcpe/billValidService";
+    private final static String DEFAULT_BILL_CONSULT_URL = "https://e-factura.sunat.gob.pe/ol-it-wsconscpegem/billConsultService";
+    private final static String DEFAULT_BILL_VALID_URL = "https://e-factura.sunat.gob.pe/ol-it-wsconsvalidcpe/billValidService";
     private final static Pattern FILENAME_STRUCTURE = Pattern.compile("(?:\\d{11}-)\\d{2}-[a-zA-Z_0-9]{4}-\\d{1,8}"); // [RUC]-[TIPO DOCUMENTO]-[SERIE]-[NUMERO]
 
     private final Integer exceptionCode;

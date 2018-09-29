@@ -21,7 +21,7 @@
 
     <groupId>io.github.carlosthe19916</groupId>
     <artifactId>sunat-web-services</artifactId>
-    <version>1.3.1-SNAPSHOT</version>
+    <version>1.3.1.Final</version>
 
     <name>Sunat Web Services</name>
     <description>Sunat Web Services Endpoints</description>

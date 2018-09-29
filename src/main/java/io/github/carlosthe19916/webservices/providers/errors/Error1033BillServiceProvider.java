@@ -58,10 +58,10 @@ public class Error1033BillServiceProvider extends AbstractErrorBillServiceProvid
     public BillServiceModel sendBill(String fileName, byte[] file, ServiceConfig config) {
 
         // STEP: CHECK XML FILE
-        boolean isXmlValid = checkXmlFileValidity(fileName, file, config.getUsername(), config.getPassword());
-        if (!isXmlValid) {
-            return null;
-        }
+//        boolean isXmlValid = checkXmlFileValidity(fileName, file, config.getUsername(), config.getPassword());
+//        if (!isXmlValid) {
+//            return null;
+//        }
 
         // STEP: CHECK DOCUMENT VALIDITY
         StatusResponse statusResponse = checkDocumentStatus(fileName, config.getUsername(), config.getPassword());
@@ -103,21 +103,37 @@ public class Error1033BillServiceProvider extends AbstractErrorBillServiceProvid
         Matcher matcher = FILENAME_STRUCTURE.matcher(fileNameWithoutExtension);
         if (matcher.matches()) {
 
-            ServiceConfig consultServiceConfig = new ServiceConfig.Builder()
+            ServiceConfig consultStatusServiceConfig = new ServiceConfig.Builder()
                     .url(DEFAULT_BILL_CONSULT_URL)
                     .username(username)
                     .password(password)
                     .build();
 
             String[] split = fileNameWithoutExtension.split("-");
-            return BillConsultServiceWrapper.getStatus(
-                    consultServiceConfig,
+
+
+            StatusResponse result = BillConsultServiceWrapper.getStatusCdr(
+                    consultStatusServiceConfig,
                     split[0],
                     split[1],
                     split[2],
-                    Integer.parseInt(split[3])
-            );
+                    Integer.parseInt(split[3]));
+            if (result.getContent() != null) {
+                StatusResponse statusResponse = BillConsultServiceWrapper.getStatus(
+                        consultStatusServiceConfig,
+                        split[0],
+                        split[1],
+                        split[2],
+                        Integer.parseInt(split[3])
+                );
+
+                result.setStatusCode(statusResponse.getStatusCode());
+                result.setStatusMessage(statusResponse.getStatusMessage());
+            }
+
+            return result;
         }
+
         return null;
     }
 

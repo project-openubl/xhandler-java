@@ -17,10 +17,11 @@
 
 package io.github.carlosthe19916.webservices.providers;
 
-import io.github.carlosthe19916.webservices.providers.errors.Error1033BillServiceProviderFactory;
-import io.github.carlosthe19916.webservices.providers.errors.ErrorRechazoBillServiceProviderFactory;
+import io.github.carlosthe19916.webservices.providers.errors.*;
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.util.Set;
 
 public class ErrorBillServiceRegistryTest {
 
@@ -35,20 +36,22 @@ public class ErrorBillServiceRegistryTest {
     @Test
     public void shouldOrderHandlersByPriority() {
         ErrorBillServiceRegistry instance = ErrorBillServiceRegistry.getInstance();
+        Set<ErrorBillServiceProviderFactory> factories = instance.getFactories(1_033);
 
-        int rechazoIndex = -1;
+        int excepcionIndex = -1;
         int error1033Index = -1;
 
-        for (int i = 0; i < instance.factories.size(); i++) {
-            ErrorBillServiceProviderFactory factories = instance.factories.get(i);
-            if (factories instanceof ErrorRechazoBillServiceProviderFactory) {
-                rechazoIndex = i;
-            } else if (factories instanceof Error1033BillServiceProviderFactory) {
-                error1033Index = i;
+        int index = 0;
+        for (ErrorBillServiceProviderFactory factory : factories) {
+            if (factory instanceof ErrorExcepcionBillServiceProviderFactory) {
+                excepcionIndex = index;
+            } else if (factory instanceof Error1033BillServiceProviderFactory) {
+                error1033Index = index;
             }
+            index++;
         }
 
-        Assert.assertTrue(error1033Index < rechazoIndex);
+        Assert.assertTrue(error1033Index < excepcionIndex);
     }
 
 }

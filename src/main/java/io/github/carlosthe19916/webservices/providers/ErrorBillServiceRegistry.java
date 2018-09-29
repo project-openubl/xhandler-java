@@ -18,25 +18,21 @@
 package io.github.carlosthe19916.webservices.providers;
 
 import javax.xml.ws.soap.SOAPFaultException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ServiceLoader;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ErrorBillServiceRegistry {
 
     private static volatile ErrorBillServiceRegistry instance;
 
-    protected List<ErrorBillServiceProviderFactory> factories;
+    private List<ErrorBillServiceProviderFactory> factories;
 
     private ErrorBillServiceRegistry() {
         factories = new LinkedList<>();
         for (ErrorBillServiceProviderFactory factory : ServiceLoader.load(ErrorBillServiceProviderFactory.class)) {
             this.factories.add(factory);
         }
-
-        factories.sort((t1, t2) -> t2.getPriority() - t1.getPriority());
+//        factories.sort((t1, t2) -> t2.getPriority() - t1.getPriority());
     }
 
     public static ErrorBillServiceRegistry getInstance() {
@@ -51,15 +47,17 @@ public class ErrorBillServiceRegistry {
     }
 
     public Set<ErrorBillServiceProviderFactory> getFactories(SOAPFaultException e) {
+        TreeSet<ErrorBillServiceProviderFactory> result = new TreeSet<>((t1, t2) -> t2.getPriority() - t1.getPriority());
         return factories.stream()
                 .filter(f -> f.isSupported(e))
-                .collect(Collectors.toSet());
+                .collect(Collectors.toCollection(() -> result));
     }
 
     public Set<ErrorBillServiceProviderFactory> getFactories(int errorCode) {
+        TreeSet<ErrorBillServiceProviderFactory> result = new TreeSet<>((t1, t2) -> t2.getPriority() - t1.getPriority());
         return factories.stream()
                 .filter(f -> f.isSupported(errorCode))
-                .collect(Collectors.toSet());
+                .collect(Collectors.toCollection(() -> result));
     }
 
 }

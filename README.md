@@ -42,7 +42,7 @@ File file = new File("../../12345678959-01-F001-00000001.xml");
 BillServiceModel result = BillServiceManager.sendBill(file, config);
 ```
 
-Nota: El valor de URL dependerá de qué tipo de documento está intentando enviar.
+**Nota**: El valor de URL dependerá de qué tipo de documento está intentando enviar.
 
 ### BillService:sendSummary
 Utilizado para enviar:
@@ -62,7 +62,7 @@ File file = new File(".../../12345678959-RA-20180316-00001.xml");
 BillServiceModel result = BillServiceManager.sendSummary(file, config);
 ```
 
-Nota: El resultado de enviar una baja o resumen diario es un número de ticket. En caso desee consultar el ticket al mismo tiempo en el que se envía el comprobante, entonces deberás de usar:
+**Nota**: El resultado de enviar una baja o resumen diario es un número de ticket. En caso desee consultar el ticket al mismo tiempo en el que se envía el comprobante, entonces deberás de usar:
 
 ```
 ServiceConfig config;
@@ -176,4 +176,64 @@ PRODUCCIÓN | URL
 **Consulta validez** | https://e-factura.sunat.gob.pe/ol-it-wsconsvalidcpe/billValidService
 **Consulta CDR** | https://e-factura.sunat.gob.pe/ol-it-wsconscpegem/billConsultService
 
-## 
+
+## Listado de errores CPE SUNAT
+La SUNAT clasifica los errores en tres tipos: Excepciones, Rechazo, Observaciones.
+
+Los códigos se han clasificado de acuerdo al tipo de error:
+
+- Del 0100 al 1999 Excepciones
+- Del 2000 al 3999 Errores que generan rechazo
+- Del 4000 en adelante Observaciones
+
+De acuerdo al tipo de error que se genera, el sistema responde de manera distinta al emisor. Las respuestas son:
+
+- Si es una EXCEPCION, el sistema responde como una excepción del programa, es decir, retorna el código de error con su descripción.
+- Si hay un ERROR QUE GENERA RECHAZO, el sistema genera una constancia de recepción (CDR) con estado rechazada, indicando que el comprobante no ha sido registrado en SUNAT por tener errores.
+- Si hay OBSERVACIONES, el sistema genera una constancia de recepción (CDR) con estado aceptada con advertencias, indicando que el comprobante ha sido correctamente enviado y registrado en SUNAT. Las advertencias se muestran en la constancia de recepción.
+- Finalmente, si no hay ningún tipo de error, se genera una constancia de recepción (CDR) aceptada, indicando que el comprobante ha sido correctamente enviado y registrado en SUNAT.
+
+**Nota:** La lista de errores puede ser descargada [aqui](http://cpe.sunat.gob.pe/sites/default/files/inline-images/AjustesValidacionesCPEv20180314.xlsx).
+
+###  Control de errores SUNAT
+Cuando una petición a BillService devuelve algun error es posible controlar esos errores haciendo uso de la interfaz:
+
+```
+interface ErrorBillServiceProviderFactory { ....}
+```
+
+![logo](./docs/images/bill-service-stack.jpg)
+
+**Nota**: Se recorrerá todos las instancias que implementen la interfaz **ErrorBillServiceProviderFactory** y se detendrá el recorrido cuando alguna instance devuelva un valor diferente a **null**.
+
+###  BillServiceProviderFactory por defecto
+ 
+ CLASE | DESCRIPCION | ACTIVO POR DEFECTO
+ --- | --- | ---
+ io.github.carlosthe19916.webservices.providers.errors.ErrorExcepcionBillServiceProviderFactory | Errores entre 100 y 1999 inclusive | SI
+ io.github.carlosthe19916.webservices.providers.errors.ErrorRechazoBillServiceProviderFactory | Errores entre 2000 y 3999 inclusive | SI
+ io.github.carlosthe19916.webservices.providers.errors.ErrorObservacionesBillServiceProviderFactory | Errores mayores a 4000 | SI
+ io.github.carlosthe19916.webservices.providers.errors.Error2324BillServiceProviderFactory | Error para el error 2324. Pone como aceptado un comprobante que ya fue comunicado como baja anteriormente | SI
+ io.github.carlosthe19916.webservices.providers.errors.Error1033BillServiceProviderFactory | Error para el error 1033. Permite recuperar el cdr de un comprobante que ya fue enviado anteriormente | NO
+
+
+### Extender la funcionalidad de acuerdo a tus necesidades
+En caso desees controlar los errores de la SUNAT deberás seguir los siguientes pasos:
+
+1. Crear una clase que implemente la interfaz ErrorBillServiceProviderFactory:
+```
+public class MyErrorHandlerFactory implements ErrorBillServiceProviderFactory { ... }
+```
+
+2. Crear el archivo:
+
+```
+META-INF/services/io.github.carlosthe19916.webservices.providers.ErrorBillServiceProviderFactory
+``` 
+
+3. Dentro del archivo creado en el paso anterior se deberá añadir una linea indicando el nombre de la clase (incluyendo el paquete en el que está ubicado) creada en el paso 1:
+
+```
+mipaquete.MyErrorHandlerFactory
+``` 
+

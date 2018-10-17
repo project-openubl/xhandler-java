@@ -32,7 +32,7 @@ public class ErrorBillServiceRegistry {
         for (ErrorBillServiceProviderFactory factory : ServiceLoader.load(ErrorBillServiceProviderFactory.class)) {
             this.factories.add(factory);
         }
-//        factories.sort((t1, t2) -> t2.getPriority() - t1.getPriority());
+        factories.sort((t1, t2) -> t2.getPriority() - t1.getPriority());
     }
 
     public static ErrorBillServiceRegistry getInstance() {

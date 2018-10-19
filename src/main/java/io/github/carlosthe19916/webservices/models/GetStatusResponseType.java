@@ -20,7 +20,7 @@ package io.github.carlosthe19916.webservices.models;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-public enum ConsultResponseType {
+public enum GetStatusResponseType {
 
     EXISTE_Y_ACEPTADO("0001", "El comprobante existe y está aceptado"),
     EXISTE_PERO_RECHAZADO("0002", "El comprobante existe pero está rechazado"),
@@ -39,7 +39,7 @@ public enum ConsultResponseType {
     private final String code;
     private final String description;
 
-    ConsultResponseType(String code, String description) {
+    GetStatusResponseType(String code, String description) {
         this.code = code;
         this.description = description;
     }
@@ -52,8 +52,8 @@ public enum ConsultResponseType {
         return description;
     }
 
-    public static Optional<ConsultResponseType> searchByCode(String code) {
-        return Stream.of(ConsultResponseType.values()).filter(p -> p.getCode().equals(code)).findFirst();
+    public static Optional<GetStatusResponseType> searchByCode(String code) {
+        return Stream.of(GetStatusResponseType.values()).filter(p -> p.getCode().equals(code)).findFirst();
     }
 
 }

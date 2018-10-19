@@ -17,8 +17,7 @@
 
 package io.github.carlosthe19916.webservices.providers.errors;
 
-import io.github.carlosthe19916.webservices.catalogs.Catalogo1;
-import io.github.carlosthe19916.webservices.models.ConsultResponseType;
+import io.github.carlosthe19916.webservices.models.GetStatusResponseType;
 import io.github.carlosthe19916.webservices.providers.AbstractErrorBillServiceProvider;
 import io.github.carlosthe19916.webservices.providers.BillServiceModel;
 import io.github.carlosthe19916.webservices.utils.Utils;
@@ -30,7 +29,6 @@ import service.sunat.gob.pe.billconsultservice.StatusResponse;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
 import java.io.IOException;
-import java.util.Optional;
 import java.util.regex.Matcher;
 
 public class Error1033BillServiceProvider extends AbstractErrorBillServiceProvider {
@@ -50,129 +48,67 @@ public class Error1033BillServiceProvider extends AbstractErrorBillServiceProvid
 
     @Override
     public BillServiceModel sendBill(String fileName, byte[] file, ServiceConfig config) {
-
-        // STEP: CHECK XML FILE
-//        boolean isXmlValid = checkXmlFileValidity(fileName, file, config.getUsername(), config.getPassword());
-//        if (!isXmlValid) {
-//            return null;
-//        }
-
-        // STEP: CHECK DOCUMENT VALIDITY
-        StatusResponse statusResponse = checkDocumentStatus(fileName, config.getUsername(), config.getPassword());
-        if (statusResponse == null) {
-            return null;
-        }
-
-        // STEP: PROCESS
-        BillServiceModel result = null;
-
-        Optional<ConsultResponseType> consultResponseType = ConsultResponseType.searchByCode(statusResponse.getStatusCode());
-        if (consultResponseType.isPresent()) {
-            try {
-                if (statusResponse.getContent() != null) {
-                    result = Utils.toModel(statusResponse.getContent());
-                    if (consultResponseType.get().equals(ConsultResponseType.EXISTE_PERO_DADO_DE_BAJA)) {
-                        result.setStatus(BillServiceModel.Status.BAJA);
-                    }
-                } else {
-                    result = new BillServiceModel();
-                    result.setDescription(statusResponse.getStatusMessage());
-                    switch (consultResponseType.get()) {
-                        case EXISTE_Y_ACEPTADO:
-                            result.setCode(0);
-                            result.setStatus(BillServiceModel.Status.ACEPTADO);
-                            break;
-                        case EXISTE_PERO_RECHAZADO:
-                            result.setCode(null);
-                            result.setStatus(BillServiceModel.Status.RECHAZADO);
-                            break;
-                        case EXISTE_PERO_DADO_DE_BAJA:
-                            result.setCode(0);
-                            result.setStatus(BillServiceModel.Status.BAJA);
-                            break;
-                    }
-                }
-            } catch (IOException | ParserConfigurationException | XPathExpressionException | SAXException e) {
-                throw new IllegalStateException(e);
-            }
-        }
-
-        return result;
-    }
-
-    protected StatusResponse checkDocumentStatus(String fileName, String username, String password) {
         String fileNameWithoutExtension = Utils.getFileNameWithoutExtension(fileName);
-
         Matcher matcher = Constants.FILENAME_STRUCTURE.matcher(fileNameWithoutExtension);
         if (matcher.matches()) {
-
-            ServiceConfig consultStatusServiceConfig = new ServiceConfig.Builder()
-                    .url(Constants.DEFAULT_BILL_CONSULT_URL)
-                    .username(username)
-                    .password(password)
-                    .build();
-
             String[] split = fileNameWithoutExtension.split("-");
 
+            String ruc = split[0];
+            String tipo = split[1];
+            String serie = split[2];
+            int numero = Integer.parseInt(split[3]);
 
-            StatusResponse result = BillConsultServiceWrapper.getStatus(
-                    consultStatusServiceConfig,
-                    split[0],
-                    split[1],
-                    split[2],
-                    Integer.parseInt(split[3])
-            );
+            ServiceConfig consultConfig = new ServiceConfig.Builder()
+                    .url(Constants.DEFAULT_BILL_CONSULT_URL)
+                    .username(config.getUsername())
+                    .password(config.getPassword())
+                    .build();
+            StatusResponse statusResponse = BillConsultServiceWrapper.getStatus(consultConfig, ruc, tipo, serie, numero);
+            StatusResponse statusCdrResponse = BillConsultServiceWrapper.getStatusCdr(consultConfig, ruc, tipo, serie, numero);
 
-            ConsultResponseType.searchByCode(result.getStatusCode()).ifPresent(consultResponseType -> {
-                if (
-                        Catalogo1.FACTURA.getCode().equals(split[1]) &&
-                                (
-                                        consultResponseType.equals(ConsultResponseType.EXISTE_Y_ACEPTADO) ||
-                                                consultResponseType.equals(ConsultResponseType.EXISTE_PERO_RECHAZADO) ||
-                                                consultResponseType.equals(ConsultResponseType.EXISTE_PERO_DADO_DE_BAJA)
-                                )
-                ) {
-                    StatusResponse statusCdr = BillConsultServiceWrapper.getStatusCdr(
-                            consultStatusServiceConfig,
-                            split[0],
-                            split[1],
-                            split[2],
-                            Integer.parseInt(split[3]));
-                    result.setContent(statusCdr.getContent());
+
+            BillServiceModel result = new BillServiceModel();
+
+            result.setCode(Integer.parseInt(statusResponse.getStatusCode()));
+            result.setDescription(statusResponse.getStatusMessage());
+            GetStatusResponseType.searchByCode(statusResponse.getStatusCode()).ifPresent(consultResponseType -> {
+                switch (consultResponseType) {
+                    case EXISTE_Y_ACEPTADO:
+                        result.setStatus(BillServiceModel.Status.ACEPTADO);
+                        break;
+                    case EXISTE_PERO_RECHAZADO:
+                        result.setStatus(BillServiceModel.Status.RECHAZADO);
+                        break;
+                    case EXISTE_PERO_DADO_DE_BAJA:
+                        result.setStatus(BillServiceModel.Status.BAJA);
+                        break;
                 }
             });
 
-            return result;
-        }
+            if (statusCdrResponse.getContent() != null) {
+                try {
+                    result.setCdr(statusCdrResponse.getContent());
 
-        return null;
+                    BillServiceModel cdrStatusModel = Utils.toModel(statusCdrResponse.getContent());
+
+                    result.setCode(cdrStatusModel.getCode());
+                    result.setDescription(cdrStatusModel.getDescription());
+                    if (result.getStatus() == null) {
+                        result.setStatus(cdrStatusModel.getStatus());
+                    }
+                } catch (IOException | ParserConfigurationException | SAXException | XPathExpressionException e) {
+                    throw new IllegalStateException(e);
+                }
+            }
+
+            if (result.getStatus() == null && result.getCdr() == null) {
+                result.setStatus(BillServiceModel.Status.RECHAZADO);
+            }
+
+            return result;
+        } else {
+            return null;
+        }
     }
 
-//    protected boolean checkXmlFileValidity(String fileName, byte[] file, String username, String password) {
-//        try {
-//            ServiceConfig validServiceConfig = new ServiceConfig.Builder()
-//                    .url(Constants.DEFAULT_BILL_VALID_URL)
-//                    .username(username)
-//                    .password(password)
-//                    .build();
-//
-//            byte[] xml = file;
-//            String xmlFileName = fileName;
-//            if (fileName.endsWith(".zip")) {
-//                xml = Utils.getFirstXmlFileFromZip(file);
-//                xmlFileName = fileName.substring(0, fileName.lastIndexOf(".")) + ".xml";
-//            }
-//
-//            assert xml != null;
-//            byte[] encode = Base64.getEncoder().encode(xml);
-//            String xmlBase64Encoded = new String(encode);
-//
-//            service.sunat.gob.pe.billvalidservice.StatusResponse statusResponse = BillValidServiceWrapper.getStatus(validServiceConfig, xmlFileName, xmlBase64Encoded);
-//            int statuscode = Integer.parseInt(statusResponse.getStatusCode());
-//
-//            return statuscode == 0;
-//        } catch (IOException e) {
-//            throw new IllegalStateException(e);
-//        }
-//    }
 }

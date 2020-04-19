@@ -1,6 +1,4 @@
-[![Build Status](https://travis-ci.org/projectopenubl/xml-sender-lib.svg?branch=master)](https://travis-ci.org/projectopenubl/xml-sender-lib)
-[![Coverage Status](https://coveralls.io/repos/github/projectopenubl/xml-sender-lib/badge.svg?branch=master)](https://coveralls.io/github/projectopenubl/xml-sender-lib?branch=master)
-[![Maintainability](https://sonarcloud.io/api/project_badges/measure?project=sunat-web-services&metric=alert_status)](https://sonarcloud.io/dashboard?id=sunat-web-services)
+![XML Builder CI](https://github.com/project-openubl/xml-sender-lib/workflows/CI/badge.svg)
 
 # SUNAT Web Services
 Libreria para realizar envíos de comprobantes electrónicos a los servicios web de la SUNAT y/o OSCE de acuerdo a lo especificado por la SUNAT: 

@@ -184,7 +184,7 @@ public class BillServiceManagerTest {
      */
     @Test
     public void test_sendSummary_voidedRetention() throws IOException, URISyntaxException {
-        final String FILE_NAME = "20494637074-RR-20180713-00001.xml";
+        final String FILE_NAME = "20603233591-RR-20180713-00001.xml";
         File file = Paths.get(getClass().getResource("/ubl/" + FILE_NAME).toURI()).toFile();
 
         BillServiceModel result = BillServiceManager.sendSummary(file, RETENTION_SERVICE_CONFIG);

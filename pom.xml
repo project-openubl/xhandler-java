@@ -60,9 +60,9 @@
     </developers>
 
     <scm>
-        <connection>scm:git:git://github.com/carlosthe19916/sunat-web-services.git</connection>
-        <developerConnection>scm:git:git@github.com:carlosthe19916/sunat-web-services.git</developerConnection>
-        <url>https://github.com/carlosthe19916/sunat-web-services/tree/master/</url>
+        <connection>scm:git:git://github.com/projectopenubl/xml-sender-lib.git</connection>
+        <developerConnection>scm:git:git@github.com:projectopenubl/xml-sender-lib.git</developerConnection>
+        <url>https://github.com/projectopenubl/xml-sender-lib/tree/master/</url>
     </scm>
 
     <distributionManagement>

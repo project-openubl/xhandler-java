@@ -1,5 +1,5 @@
-[![Build Status](https://travis-ci.org/carlosthe19916/sunat-web-services.svg?branch=master)](https://travis-ci.org/carlosthe19916/sunat-web-services)
-[![Coverage Status](https://coveralls.io/repos/github/carlosthe19916/sunat-web-services/badge.svg?branch=master)](https://coveralls.io/github/carlosthe19916/sunat-web-services?branch=master)
+[![Build Status](https://travis-ci.org/projectopenubl/xml-sender-lib.svg?branch=master)](https://travis-ci.org/projectopenubl/xml-sender-lib)
+[![Coverage Status](https://coveralls.io/repos/github/projectopenubl/xml-sender-lib/badge.svg?branch=master)](https://coveralls.io/github/projectopenubl/xml-sender-lib?branch=master)
 [![Maintainability](https://sonarcloud.io/api/project_badges/measure?project=sunat-web-services&metric=alert_status)](https://sonarcloud.io/dashboard?id=sunat-web-services)
 
 # SUNAT Web Services
@@ -13,13 +13,13 @@ Incluir la última version de la libreria. Si utiliza maven agrege las siguiente
 
 ```
 <dependency>
-    <groupId>io.github.carlosthe19916</groupId>
-    <artifactId>sunat-web-services</artifactId>
+    <groupId>io.github.projectopenubl</groupId>
+    <artifactId>xml-sender-lib</artifactId>
     <version>latestVersion</version>
 </dependency>
 ```
 
-Puede ver la lista de todos las disponibles [aqui](https://mvnrepository.com/artifact/io.github.carlosthe19916/sunat-web-services).
+Puede ver la lista de todos las disponibles [aqui](https://mvnrepository.com/artifact/io.github.projectopenubl/xml-sender-lib).
 
 ### BillService:sendBill
 Utilizado para enviar:

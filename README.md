@@ -210,11 +210,11 @@ interface ErrorBillServiceProviderFactory { ....}
  
  CLASE | DESCRIPCION | ACTIVO POR DEFECTO
  --- | --- | ---
- io.github.carlosthe19916.webservices.providers.errors.ErrorExcepcionBillServiceProviderFactory | Errores entre 100 y 1999 inclusive | SI
- io.github.carlosthe19916.webservices.providers.errors.ErrorRechazoBillServiceProviderFactory | Errores entre 2000 y 3999 inclusive | SI
- io.github.carlosthe19916.webservices.providers.errors.ErrorObservacionesBillServiceProviderFactory | Errores mayores a 4000 | SI
- io.github.carlosthe19916.webservices.providers.errors.Error2324BillServiceProviderFactory | Error para el error 2324. Pone como aceptado un comprobante que ya fue comunicado como baja anteriormente | SI
- io.github.carlosthe19916.webservices.providers.errors.Error1033BillServiceProviderFactory | Error para el error 1033. Permite recuperar el cdr de un comprobante que ya fue enviado anteriormente | NO
+ ErrorExcepcionBillServiceProviderFactory | Errores entre 100 y 1999 inclusive | SI
+ ErrorRechazoBillServiceProviderFactory | Errores entre 2000 y 3999 inclusive | SI
+ ErrorObservacionesBillServiceProviderFactory | Errores mayores a 4000 | SI
+ Error2324BillServiceProviderFactory | Error para el error 2324. Pone como aceptado un comprobante que ya fue comunicado como baja anteriormente | SI
+ Error1033BillServiceProviderFactory | Error para el error 1033. Permite recuperar el cdr de un comprobante que ya fue enviado anteriormente | NO
 
 
 ### Extender la funcionalidad de acuerdo a tus necesidades
@@ -228,7 +228,7 @@ public class MyErrorHandlerFactory implements ErrorBillServiceProviderFactory { 
 2. Crear el archivo:
 
 ```
-META-INF/services/io.github.carlosthe19916.webservices.providers.ErrorBillServiceProviderFactory
+META-INF/services/ErrorBillServiceProviderFactory
 ``` 
 
 3. Dentro del archivo creado en el paso anterior se deberá añadir una linea indicando el nombre de la clase (incluyendo el paquete en el que está ubicado) creada en el paso 1:

@@ -8,7 +8,7 @@
              targetNamespace="http://service.ws.consulta.comppago.electronico.registro.servicio2.sunat.gob.pe/"
              name="billConsultService">
     <import namespace="http://service.sunat.gob.pe"
-            location="https://www.sunat.gob.pe:443/ol-it-wsconscpegem/billConsultService?wsdl=1"/>
+            location="https://e-factura.sunat.gob.pe/ol-it-wsconscpegem/billConsultService?wsdl=1"/>
     <binding xmlns:ns1="http://service.sunat.gob.pe" name="BillConsultServicePortBinding" type="ns1:billService">
         <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
         <operation name="getStatusCdr">
@@ -32,7 +32,7 @@
     </binding>
     <service name="billConsultService">
         <port name="BillConsultServicePort" binding="tns:BillConsultServicePortBinding">
-            <soap:address location="https://www.sunat.gob.pe:443/ol-it-wsconscpegem/billConsultService"/>
+            <soap:address location="https://e-factura.sunat.gob.pe/ol-it-wsconscpegem/billConsultService"/>
         </port>
     </service>
 </definitions>

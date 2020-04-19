@@ -1,42 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  ~ Copyright 2017 Carlosthe19916, Inc. and/or its affiliates
-  ~ and other contributors as indicated by the @author tags.
-  ~
-  ~ Licensed under the Apache License, Version 2.0 (the "License");
-  ~ you may not use this file except in compliance with the License.
-  ~ You may obtain a copy of the License at
-  ~
-  ~ http://www.apache.org/licenses/LICENSE-2.0
-  ~
-  ~ Unless required by applicable law or agreed to in writing, software
-  ~ distributed under the License is distributed on an "AS IS" BASIS,
-  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  ~ See the License for the specific language governing permissions and
-  ~ limitations under the License.
-  -->
-
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>io.github.carlosthe19916</groupId>
-    <artifactId>sunat-web-services</artifactId>
-    <version>1.3.5-SNAPSHOT</version>
+    <groupId>io.github.projectopenubl</groupId>
+    <artifactId>xml-sender-lib</artifactId>
+    <version>2.0.0-SNAPSHOT</version>
 
-    <name>Sunat Web Services</name>
+    <name>XML Sender Lib :: Services</name>
     <description>Sunat Web Services Endpoints</description>
     <packaging>jar</packaging>
 
     <properties>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <cxf.version>3.2.5</cxf.version>
+        <cxf.version>3.3.6</cxf.version>
+
+        <license.dir>${basedir}</license.dir>
     </properties>
 
-    <url>http://carlosthe19916.com</url>
+    <url>https://project-openubl.github.io/</url>
 
     <licenses>
         <license>
@@ -60,9 +46,9 @@
     </developers>
 
     <scm>
-        <connection>scm:git:git://github.com/carlosthe19916/sunat-web-services.git</connection>
-        <developerConnection>scm:git:git@github.com:carlosthe19916/sunat-web-services.git</developerConnection>
-        <url>https://github.com/carlosthe19916/sunat-web-services/tree/master/</url>
+        <connection>scm:git:git://github.com/projectopenubl/xml-sender-lib.git</connection>
+        <developerConnection>scm:git:git@github.com:projectopenubl/xml-sender-lib.git</developerConnection>
+        <url>https://github.com/projectopenubl/xml-sender-lib/tree/master/</url>
     </scm>
 
     <distributionManagement>
@@ -101,19 +87,19 @@
         <dependency>
             <groupId>org.jodd</groupId>
             <artifactId>jodd-core</artifactId>
-            <version>5.0.3</version>
+            <version>5.1.4</version>
         </dependency>
 
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.12</version>
+            <version>4.13</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>2.22.0</version>
+            <version>3.3.3</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -123,7 +109,7 @@
             <plugin>
                 <groupId>org.apache.cxf</groupId>
                 <artifactId>cxf-codegen-plugin</artifactId>
-                <version>3.2.4</version>
+                <version>${cxf.version}</version>
                 <executions>
                     <execution>
                         <id>generate-sources</id>
@@ -177,7 +163,7 @@
             <plugin>
                 <groupId>org.sonatype.plugins</groupId>
                 <artifactId>nexus-staging-maven-plugin</artifactId>
-                <version>1.6.6</version>
+                <version>1.6.8</version>
                 <extensions>true</extensions>
                 <configuration>
                     <serverId>ossrh</serverId>
@@ -199,7 +185,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.1</version>
+                <version>0.8.5</version>
                 <executions>
                     <execution>
                         <id>prepare-agent</id>
@@ -273,7 +259,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
-                        <version>2.4</version>
+                        <version>3.2.1</version>
                         <executions>
                             <execution>
                                 <id>attach-sources</id>
@@ -286,7 +272,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>2.10.3</version>
+                        <version>3.2.0</version>
                         <executions>
                             <execution>
                                 <id>attach-javadocs</id>
@@ -303,6 +289,49 @@
         <profile>
             <id>release</id>
         </profile>
+        <profile>
+            <id>license</id>
+            <build>
+                <plugins>
+                    <!-- License information -->
+                    <!--mvn license:format -Plicense-->
+                    <plugin>
+                        <groupId>com.mycila.maven-license-plugin</groupId>
+                        <artifactId>maven-license-plugin</artifactId>
+                        <version>1.10.b1</version>
+                        <configuration>
+                            <header>license.txt</header>
+                            <properties>
+                                <project>${project.name}</project>
+                                <founder>${project.organization.name}</founder>
+                                <year>${project.inceptionYear}</year>
+                                <website>${founder-website}</website>
+                            </properties>
+                            <includes>
+                                <include>src/main/java/**</include>
+                                <include>src/test/java/**</include>
+                            </includes>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>format</goal>
+                                </goals>
+                                <phase>process-sources</phase>
+                            </execution>
+                        </executions>
+                        <dependencies>
+                            <dependency>
+                                <groupId>com.mycila</groupId>
+                                <artifactId>licenses</artifactId>
+                                <version>1</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
     </profiles>
 
 </project>

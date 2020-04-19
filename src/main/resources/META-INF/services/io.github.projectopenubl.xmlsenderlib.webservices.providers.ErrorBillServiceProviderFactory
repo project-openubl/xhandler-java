@@ -1,0 +1,4 @@
+io.github.projectopenubl.xmlsenderlib.webservices.providers.errors.ErrorExcepcionBillServiceProviderFactory
+io.github.projectopenubl.xmlsenderlib.webservices.providers.errors.ErrorRechazoBillServiceProviderFactory
+io.github.projectopenubl.xmlsenderlib.webservices.providers.errors.ErrorObservacionesBillServiceProviderFactory
+io.github.projectopenubl.xmlsenderlib.webservices.providers.errors.Error2324BillServiceProviderFactory

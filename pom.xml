@@ -17,6 +17,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
+        <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
+
         <cxf.version>3.3.6</cxf.version>
 
         <license.dir>${basedir}</license.dir>
@@ -107,6 +109,18 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven-surefire-plugin.version}</version>
+                <inherited>true</inherited>
+                <configuration>
+                    <excludes>
+                        <exclude>**/*KT.java</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+
+            <plugin>
                 <groupId>org.apache.cxf</groupId>
                 <artifactId>cxf-codegen-plugin</artifactId>
                 <version>${cxf.version}</version>
@@ -160,6 +174,7 @@
                 </executions>
             </plugin>
 
+            <!-- Nexus Staging Plugin -->
             <plugin>
                 <groupId>org.sonatype.plugins</groupId>
                 <artifactId>nexus-staging-maven-plugin</artifactId>
@@ -171,77 +186,83 @@
                     <autoReleaseAfterClose>true</autoReleaseAfterClose>
                 </configuration>
             </plugin>
-
-            <!--Cover-->
-            <plugin>
-                <groupId>org.eluder.coveralls</groupId>
-                <artifactId>coveralls-maven-plugin</artifactId>
-                <version>4.3.0</version>
-                <configuration>
-                    <repoToken>${coveralls.token}</repoToken>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.5</version>
-                <executions>
-                    <execution>
-                        <id>prepare-agent</id>
-                        <goals>
-                            <goal>prepare-agent</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>report</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>report</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>post-unit-test</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>report</goal>
-                        </goals>
-                        <configuration>
-                            <!-- Sets the path to the file which contains the execution data. -->
-                            <dataFile>target/jacoco.exec</dataFile>
-                            <!-- Sets the output directory for the code coverage report. -->
-                            <outputDirectory>target/jacoco-ut</outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-                <configuration>
-                    <systemPropertyVariables>
-                        <jacoco-agent.destfile>target/jacoco.exec</jacoco-agent.destfile>
-                    </systemPropertyVariables>
-                    <excludes>
-                        <exclude>pe/gob/sunat/**/*</exclude>
-                        <exclude>service/sunat/gob/pe/**/*</exclude>
-                    </excludes>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
 
     <profiles>
         <profile>
-            <id>sign</id>
+            <id>coverage</id>
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-gpg-plugin</artifactId>
-                        <version>1.6</version>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <version>0.8.5</version>
                         <executions>
                             <execution>
-                                <id>sign-artifacts</id>
+                                <id>prepare-agent</id>
+                                <goals>
+                                    <goal>prepare-agent</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>jacoco-post-unit-test-report</id>
+                                <phase>test</phase>
+                                <goals>
+                                    <goal>report</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>jacoco-check</id>
                                 <phase>verify</phase>
                                 <goals>
-                                    <goal>sign</goal>
+                                    <goal>check</goal>
+                                </goals>
+                                <configuration>
+                                    <rules>
+                                        <rule>
+                                            <element>BUNDLE</element>
+                                            <limits>
+                                                <limit>
+                                                    <counter>INSTRUCTION</counter>
+                                                    <value>COVEREDRATIO</value>
+                                                    <minimum>0.1</minimum>
+                                                </limit>
+                                            </limits>
+                                        </rule>
+                                    </rules>
+                                </configuration>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <excludes>
+                                <exclude>pe/gob/sunat/**/*</exclude>
+                                <exclude>service/sunat/gob/pe/**/*</exclude>
+                            </excludes>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>sonar</id>
+            <properties>
+                <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+                <sonar.organization>project-openubl</sonar.organization>
+                <sonar.projectKey>project-openubl_xml-sender-lib</sonar.projectKey>
+                <sonar.projectName>XML Sender Lib</sonar.projectName>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.sonarsource.scanner.maven</groupId>
+                        <artifactId>sonar-maven-plugin</artifactId>
+                        <version>3.7.0.1746</version>
+                        <executions>
+                            <execution>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sonar</goal>
                                 </goals>
                             </execution>
                         </executions>
@@ -250,12 +271,10 @@
             </build>
         </profile>
         <profile>
-            <id>build-extras</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
+            <id>deploy</id>
             <build>
                 <plugins>
+                    <!-- Source plugin -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
@@ -269,6 +288,8 @@
                             </execution>
                         </executions>
                     </plugin>
+
+                    <!-- Javadoc plugin -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
@@ -282,13 +303,33 @@
                             </execution>
                         </executions>
                     </plugin>
+
+                    <!-- GPG plugin -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.6</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                                <configuration>
+                                    <!-- Prevent `gpg` from using pinentry programs -->
+                                    <gpgArguments>
+                                        <arg>--pinentry-mode</arg>
+                                        <arg>loopback</arg>
+                                    </gpgArguments>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
                 </plugins>
             </build>
         </profile>
 
-        <profile>
-            <id>release</id>
-        </profile>
         <profile>
             <id>license</id>
             <build>

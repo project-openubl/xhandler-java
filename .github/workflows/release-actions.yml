@@ -1,0 +1,69 @@
+name: XML Builder Release
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  build-jdk11:
+    name: "JDK 11 Build"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 11
+        # Uses sha for added security since tags can be updated
+        uses: joschi/setup-jdk@b9cc6eabf7e7e3889766b5cee486f874c9e1bd2d
+        with:
+          java-version: 11
+      - name: Compute cache restore key
+        # Always recompute on a push so that the maven repo doesnt grow indefinitely with old versions
+        run: |
+           if ${{ github.event_name == 'pull_request' }}; then echo "::set-env name=COMPUTED_RESTORE_KEY::q2maven-"; fi
+      - name: Cache Maven Repository
+        id: cache-maven
+        uses: n1hility/cache@v2
+        with:
+          path: ~/.m2/repository
+          # Improves the reusability of the cache to limit key changes
+          key: q2maven-${{ hashFiles('pom.xml') }}
+          restore-keys: ${{ env.COMPUTED_RESTORE_KEY }}
+          restore-only: ${{ github.event_name == 'pull_request' }}
+      - name: Build
+        run: |
+          mvn -e -B  -DskipTests=true -DskipDocs clean install
+      - name: Tar Maven Repo
+        shell: bash
+        run: tar -czvf maven-repo.tgz -C ~ .m2/repository
+      - name: Persist Maven Repo
+        uses: actions/upload-artifact@v1
+        with:
+          name: maven-repo
+          path: maven-repo.tgz
+
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    needs: build-jdk11
+    steps:
+      - uses: actions/checkout@v2
+      - name: changelog
+        uses: heinrichreimer/github-changelog-generator-action@v2.1.1
+        id: Changelog
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          REPO: ${{ github.repository }}
+      - name: Create Release
+        id: create_release
+        # Uses sha for added security since tags can be updated
+        uses: actions/create-release@8f324cdc2e5470815db0a286b4b3aa7803c0e6ef
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: |
+            ${{ steps.Changelog.outputs.changelog }}
+          draft: false
+          prerelease: false

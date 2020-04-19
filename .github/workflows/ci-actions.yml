@@ -1,0 +1,140 @@
+name: XML Builder CI
+
+on:
+  push:
+    paths-ignore:
+      - 'README.md'
+  pull_request:
+    types: [assigned, opened, synchronize, reopened, ready_for_review, edited]
+    paths-ignore:
+      - 'README.md'
+  schedule:
+    - cron:  '0 0 * * *'
+
+jobs:
+  build-jdk11:
+    name: "JDK 11 Build"
+    runs-on: ubuntu-latest
+    # Skip draft PRs and those with WIP in the subject, rerun as soon as its removed
+    if: "github.event_name != 'pull_request' || ( \
+           github.event.pull_request.draft == false && \
+           github.event.pull_request.state != 'closed' && \
+           contains(github.event.pull_request.title, 'wip ') == false && \
+           contains(github.event.pull_request.title, '[wip]') == false && \
+           (
+             github.event.action != 'edited' || \
+             contains(github.event.changes.title.from, 'wip ') || \
+             contains(github.event.changes.title.from, '[wip]') \
+           ) \
+         )"
+    steps:
+      - uses: actions/checkout@v2
+      - uses: n1hility/cancel-previous-runs@v2
+        if: github.event_name == 'pull_request'
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set up JDK 11
+        # Uses sha for added security since tags can be updated
+        uses: joschi/setup-jdk@b9cc6eabf7e7e3889766b5cee486f874c9e1bd2d
+        with:
+          java-version: 11
+      - name: Compute cache restore key
+        # Always recompute on a push so that the maven repo doesnt grow indefinitely with old versions
+        run: |
+           if ${{ github.event_name == 'pull_request' }}; then echo "::set-env name=COMPUTED_RESTORE_KEY::q2maven-"; fi
+      - name: Cache Maven Repository
+        id: cache-maven
+        uses: n1hility/cache@v2
+        with:
+          path: ~/.m2/repository
+          # Improves the reusability of the cache to limit key changes
+          key: q2maven-${{ hashFiles('pom.xml') }}
+          restore-keys: ${{ env.COMPUTED_RESTORE_KEY }}
+          restore-only: ${{ github.event_name == 'pull_request' }}
+      - name: Build
+        run: |
+          mvn -e -B  -DskipTests=true -DskipDocs clean install
+      - name: Tar Maven Repo
+        shell: bash
+        run: tar -czvf maven-repo.tgz -C ~ .m2/repository
+      - name: Persist Maven Repo
+        uses: actions/upload-artifact@v1
+        with:
+          name: maven-repo
+          path: maven-repo.tgz
+
+  linux-jvm-tests:
+    name: JDK ${{matrix.java-version}} JVM Tests
+    timeout-minutes: 120
+    needs: build-jdk11
+    strategy:
+      fail-fast: false
+      matrix:
+        java-version: [8, 11, 13]
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK ${{ matrix.java-version }}
+        # Uses sha for added security since tags can be updated
+        uses: joschi/setup-jdk@b9cc6eabf7e7e3889766b5cee486f874c9e1bd2d
+        with:
+          java-version: ${{ matrix.java-version }}
+      - name: Download Maven Repo
+        uses: actions/download-artifact@v1
+        with:
+          name: maven-repo
+          path: .
+      - name: Extract Maven Repo
+        shell: bash
+        run: tar -xzvf maven-repo.tgz -C ~
+      - name: Build with Maven
+        run: mvn install
+      - name: Prepare failure archive (if maven failed)
+        if: failure()
+        shell: bash
+        run: find . -name '*-reports' -type d | tar -czvf test-reports.tgz -T -
+      - name: Upload failure Archive (if maven failed)
+        uses: actions/upload-artifact@v1
+        if: failure()
+        with:
+          name: test-reports-linux-jvm${{matrix.java-version}}
+          path: 'test-reports.tgz'
+
+  windows-jdk8-jvm-tests:
+    name: Windows JDK 8 JVM Tests
+    needs: build-jdk11
+    runs-on: windows-latest
+    timeout-minutes: 120
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 8
+        # Uses sha for added security since tags can be updated
+        uses: joschi/setup-jdk@b9cc6eabf7e7e3889766b5cee486f874c9e1bd2d
+        with:
+          java-version: 8
+      - name: Download Maven Repo
+        uses: actions/download-artifact@v1
+        with:
+          name: maven-repo
+          path: .
+      - name: Extract Maven Repo
+        shell: bash
+        run: tar -xzvf maven-repo.tgz -C ~
+      - name: Build with Maven
+        shell: bash
+        run: mvn -B -DskipSunat=true install
+      - name: Prepare failure archive (if maven failed)
+        if: failure()
+        shell: bash
+        run: |
+          # Disambiguate windows find from cygwin find
+          /usr/bin/find . -name '*-reports' -type d | tar -czvf test-reports.tgz -T -
+      - name: Upload failure Archive (if maven failed)
+        uses: actions/upload-artifact@v1
+        if: failure()
+        with:
+          name: test-reports-windows-jdk8-jvm
+          path: 'test-reports.tgz'

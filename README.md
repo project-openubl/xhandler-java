@@ -1,4 +1,4 @@
-![XML Builder CI](https://github.com/project-openubl/xml-sender-lib/workflows/CI/badge.svg)
+![CI](https://github.com/project-openubl/xml-sender-lib/workflows/CI/badge.svg)
 
 # SUNAT Web Services
 Libreria para realizar envíos de comprobantes electrónicos a los servicios web de la SUNAT y/o OSCE de acuerdo a lo especificado por la SUNAT: 

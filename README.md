@@ -1,4 +1,5 @@
 ![CI](https://github.com/project-openubl/xml-sender-lib/workflows/CI/badge.svg)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=project-openubl_xml-sender-lib&metric=alert_status)](https://sonarcloud.io/dashboard?id=project-openubl_xml-sender-lib)
 
 # SUNAT Web Services
 Libreria para realizar envíos de comprobantes electrónicos a los servicios web de la SUNAT y/o OSCE de acuerdo a lo especificado por la SUNAT: 

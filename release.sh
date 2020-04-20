@@ -27,16 +27,16 @@ read -s -p "Enter Github Password: " password
 mvn versions:set -DnewVersion="$releaseVersion"
 
 git add .
-git commit -m "Prepare release $releaseVersion"
-git push "https://$username:$password@github.com/projectopenubl/xml-sender-lib.git"
+git commit -m "Release $releaseVersion"
+git push "https://$username:$password@github.com/project-openubl/xml-sender-lib.git"
 
 # Create tag and push
 git tag "$releaseVersion"
-git push "https://$username:$password@github.com/projectopenubl/xml-sender-lib.git" --tags
+git push "https://$username:$password@github.com/project-openubl/xml-sender-lib.git" --tags
 
 # Create next snapshot
 mvn versions:set -DnewVersion="$nextVersion-SNAPSHOT"
 
 git add .
 git commit -m "Prepare next release $nextVersion-SNAPSHOT"
-git push "https://$username:$password@github.com/projectopenubl/xml-sender-lib.git"
+git push "https://$username:$password@github.com/project-openubl/xml-sender-lib.git"

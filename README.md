@@ -240,6 +240,6 @@ mipaquete.MyErrorHandlerFactory
 
 ## License
 
-Eclipse Public License - v 2.0
+- [Eclipse Public License - v 2.0](./LICENSE)
 
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fproject-openubl%2Fxml-sender-lib.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fproject-openubl%2Fxml-sender-lib?ref=badge_large)

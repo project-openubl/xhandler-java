@@ -1,4 +1,4 @@
-name: XML Builder Release
+name: Release
 
 on:
   push:

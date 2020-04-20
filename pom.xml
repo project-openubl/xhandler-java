@@ -66,9 +66,9 @@
     </developers>
 
     <scm>
-        <connection>scm:git:git://github.com/projectopenubl/xml-sender-lib.git</connection>
-        <developerConnection>scm:git:git@github.com:projectopenubl/xml-sender-lib.git</developerConnection>
-        <url>https://github.com/projectopenubl/xml-sender-lib/tree/master/</url>
+        <connection>scm:git:git://github.com/project-openubl/xml-sender-lib.git</connection>
+        <developerConnection>scm:git:git@github.com:project-openubl/xml-sender-lib.git</developerConnection>
+        <url>https://github.com/project-openubl/xml-sender-lib/tree/master/</url>
     </scm>
 
     <distributionManagement>

@@ -13,13 +13,13 @@ Incluir la última version de la libreria. Si utiliza maven agrege las siguiente
 
 ```
 <dependency>
-    <groupId>io.github.projectopenubl</groupId>
-    <artifactId>xml-sender-lib</artifactId>
+    <groupId>io.github.project-openubl</groupId>
+        <artifactId>xml-sender-ws</artifactId>
     <version>latestVersion</version>
 </dependency>
 ```
 
-Puede ver la lista de todos las disponibles [aqui](https://mvnrepository.com/artifact/io.github.projectopenubl/xml-sender-lib).
+Puede ver la lista de todos las disponibles [aqui](https://mvnrepository.com/artifact/io.github.project-openubl/xml-sender-lib).
 
 ### BillService:sendBill
 Utilizado para enviar:

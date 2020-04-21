@@ -66,9 +66,9 @@
     </developers>
 
     <scm>
-        <connection>scm:git:git://github.com/project-openubl/xml-sender-lib.git</connection>
-        <developerConnection>scm:git:git@github.com:project-openubl/xml-sender-lib.git</developerConnection>
-        <url>https://github.com/project-openubl/xml-sender-lib/tree/master/</url>
+        <connection>scm:git:git://github.com/project-openubl/xml-sender-ws.git</connection>
+        <developerConnection>scm:git:git@github.com:project-openubl/xml-sender-ws.git</developerConnection>
+        <url>https://github.com/project-openubl/xml-sender-ws/tree/master/</url>
     </scm>
 
     <distributionManagement>
@@ -295,7 +295,7 @@
             <properties>
                 <sonar.host.url>https://sonarcloud.io</sonar.host.url>
                 <sonar.organization>project-openubl</sonar.organization>
-                <sonar.projectKey>project-openubl_xml-sender-lib</sonar.projectKey>
+                <sonar.projectKey>project-openubl_xml-sender-ws</sonar.projectKey>
                 <sonar.projectName>XML Sender Lib</sonar.projectName>
             </properties>
             <build>

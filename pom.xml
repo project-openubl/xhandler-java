@@ -46,8 +46,8 @@
 
     <licenses>
         <license>
-            <name>Apache License, Version 2.0</name>
-            <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+            <name>Eclipse Public License - v 2.0</name>
+            <url>https://www.eclipse.org/legal/epl-2.0</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
@@ -66,9 +66,9 @@
     </developers>
 
     <scm>
+        <url>https://github.com/project-openubl/xml-sender-ws</url>
         <connection>scm:git:git://github.com/project-openubl/xml-sender-ws.git</connection>
         <developerConnection>scm:git:git@github.com:project-openubl/xml-sender-ws.git</developerConnection>
-        <url>https://github.com/project-openubl/xml-sender-ws/tree/master/</url>
     </scm>
 
     <distributionManagement>
@@ -296,7 +296,7 @@
                 <sonar.host.url>https://sonarcloud.io</sonar.host.url>
                 <sonar.organization>project-openubl</sonar.organization>
                 <sonar.projectKey>project-openubl_xml-sender-ws</sonar.projectKey>
-                <sonar.projectName>XML Sender Lib</sonar.projectName>
+                <sonar.projectName>XML Sender WS</sonar.projectName>
             </properties>
             <build>
                 <plugins>

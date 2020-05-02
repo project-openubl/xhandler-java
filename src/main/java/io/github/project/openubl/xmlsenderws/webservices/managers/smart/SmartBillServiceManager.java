@@ -43,19 +43,15 @@ public class SmartBillServiceManager {
         // Just static methods
     }
 
-    public static BillServiceModel send(File file, String username, String password) throws InvalidXMLFileException, UnsupportedDocumentTypeException {
+    public static SmartBillServiceModel send(File file, String username, String password) throws InvalidXMLFileException, UnsupportedDocumentTypeException, IOException {
         return send(file.toPath(), username, password);
     }
 
-    public static BillServiceModel send(Path path, String username, String password) throws InvalidXMLFileException, UnsupportedDocumentTypeException {
-        try {
-            return send(Files.readAllBytes(path), username, password);
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
-        }
+    public static SmartBillServiceModel send(Path path, String username, String password) throws InvalidXMLFileException, UnsupportedDocumentTypeException, IOException {
+        return send(Files.readAllBytes(path), username, password);
     }
 
-    public static BillServiceModel send(byte[] file, String username, String password) throws InvalidXMLFileException, UnsupportedDocumentTypeException {
+    public static SmartBillServiceModel send(byte[] file, String username, String password) throws InvalidXMLFileException, UnsupportedDocumentTypeException, IOException {
         XmlContentModel xmlContentModel;
         try {
             xmlContentModel = XmlContentProvider.getSunatDocument(new ByteArrayInputStream(file));
@@ -79,24 +75,60 @@ public class SmartBillServiceManager {
                 .password(password)
                 .build();
 
-        try {
-            switch (documentType) {
-                case INVOICE:
-                case CREDIT_NOTE:
-                case DEBIT_NOTE:
-                    return BillServiceManager.sendBill(fileNameWithoutExtension + ".xml", file, config);
-                case VOIDED_DOCUMENT:
-                case SUMMARY_DOCUMENT:
-                    return BillServiceManager.sendSummary(fileNameWithoutExtension + ".xml", file, config);
-                default:
-                    throw new IllegalStateException("Not supported document");
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
+        BillServiceModel billServiceModel;
+        switch (documentType) {
+            case INVOICE:
+            case CREDIT_NOTE:
+            case DEBIT_NOTE:
+            case PERCEPTION:
+            case RETENTION:
+            case DESPATCH_ADVICE:
+                billServiceModel = BillServiceManager.sendBill(fileNameWithoutExtension + ".xml", file, config);
+                break;
+            case VOIDED_DOCUMENT:
+            case SUMMARY_DOCUMENT:
+                billServiceModel = BillServiceManager.sendSummary(fileNameWithoutExtension + ".xml", file, config);
+                break;
+            default:
+                throw new IllegalStateException("Could not determine the correct service for the document");
         }
 
-        return null;
+        return new SmartBillServiceModel(xmlContentModel, billServiceModel);
+    }
+
+    public static BillServiceModel getStatus(String ticket, XmlContentModel xmlContentModel, String username, String password) {
+        SmartBillServiceConfig config = SmartBillServiceConfig.getInstance();
+
+        String deliveryURL = null;
+
+        // Only for voided-document
+        Optional<Catalogo1> catalogo1 = Catalogo1.valueOfCode(xmlContentModel.getVoidedLineDocumentTypeCode());
+        if (catalogo1.isPresent()) {
+            switch (catalogo1.get()) {
+                case PERCEPCION:
+                case RETENCION:
+                    deliveryURL = config.getPerceptionAndRetentionDeliveryURL();
+                    break;
+                // No se pueden dar bajas de guias de remision
+//                case GUIA_REMISION_REMITENTE:
+//                    deliveryURL = config.getDespatchAdviceDeliveryURL();
+//                    break;
+                default:
+                    deliveryURL = config.getInvoiceAndNoteDeliveryURL();
+            }
+        }
+
+        if (deliveryURL == null) {
+            deliveryURL = config.getInvoiceAndNoteDeliveryURL();
+        }
+
+        ServiceConfig serviceConfig = new ServiceConfig.Builder()
+                .url(deliveryURL)
+                .username(username)
+                .password(password)
+                .build();
+
+        return BillServiceManager.getStatus(ticket, serviceConfig);
     }
 
     private static String getDeliveryURL(DocumentType documentType, XmlContentModel xmlContentModel) {
@@ -113,7 +145,7 @@ public class SmartBillServiceManager {
                 if (catalog1.equals(Catalogo1.PERCEPCION) || catalog1.equals(Catalogo1.RETENCION)) {
                     return config.getPerceptionAndRetentionDeliveryURL();
                 } else if (catalog1.equals(Catalogo1.GUIA_REMISION_REMITENTE)) {
-                    return config.getPerceptionAndRetentionDeliveryURL();
+                    return config.getDespatchAdviceDeliveryURL();
                 }
                 return config.getInvoiceAndNoteDeliveryURL();
             case PERCEPTION:
@@ -131,23 +163,32 @@ public class SmartBillServiceManager {
         switch (type) {
             case INVOICE:
                 if (Pattern.compile("^[F|f].*$").matcher(documentID).find()) {
-                    codigoDocumento = "01";
+                    codigoDocumento = Catalogo1.FACTURA.getCode();
                 } else if (Pattern.compile("^[B|b].*$").matcher(documentID).find()) {
-                    codigoDocumento = "03";
+                    codigoDocumento = Catalogo1.BOLETA.getCode();
                 } else {
                     throw new IllegalStateException("Invalid Serie, can not detect code");
                 }
 
                 return MessageFormat.format("{0}-{1}-{2}", ruc, codigoDocumento, documentID);
             case CREDIT_NOTE:
-                codigoDocumento = "07";
+                codigoDocumento = Catalogo1.NOTA_CREDITO.getCode();
                 return MessageFormat.format("{0}-{1}-{2}", ruc, codigoDocumento, documentID);
             case DEBIT_NOTE:
-                codigoDocumento = "08";
+                codigoDocumento = Catalogo1.NOTA_DEBITO.getCode();
                 return MessageFormat.format("{0}-{1}-{2}", ruc, codigoDocumento, documentID);
             case VOIDED_DOCUMENT:
             case SUMMARY_DOCUMENT:
                 return MessageFormat.format("{0}-{1}", ruc, documentID);
+            case PERCEPTION:
+                codigoDocumento = Catalogo1.PERCEPCION.getCode();
+                return MessageFormat.format("{0}-{1}-{2}", ruc, codigoDocumento, documentID);
+            case RETENTION:
+                codigoDocumento = Catalogo1.RETENCION.getCode();
+                return MessageFormat.format("{0}-{1}-{2}", ruc, codigoDocumento, documentID);
+            case DESPATCH_ADVICE:
+                codigoDocumento = Catalogo1.GUIA_REMISION_REMITENTE.getCode();
+                return MessageFormat.format("{0}-{1}-{2}", ruc, codigoDocumento, documentID);
             default:
                 throw new IllegalStateException("Invalid type of UBL Document, can not extract Serie-Numero to create fileName");
         }

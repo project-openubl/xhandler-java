@@ -39,6 +39,9 @@ import java.util.regex.Pattern;
 
 public class SmartBillServiceManager {
 
+    private final static String FILENAME_FORMAT1 = "{0}-{1}-{2}";
+    private final static String FILENAME_FORMAT2 = "{0}-{1}";
+
     private SmartBillServiceManager() {
         // Just static methods
     }
@@ -51,7 +54,7 @@ public class SmartBillServiceManager {
         return send(Files.readAllBytes(path), username, password);
     }
 
-    public static SmartBillServiceModel send(byte[] file, String username, String password) throws InvalidXMLFileException, UnsupportedDocumentTypeException, IOException {
+    public static SmartBillServiceModel send(byte[] file, String username, String password) throws InvalidXMLFileException, UnsupportedDocumentTypeException {
         XmlContentModel xmlContentModel;
         try {
             xmlContentModel = XmlContentProvider.getSunatDocument(new ByteArrayInputStream(file));
@@ -101,7 +104,7 @@ public class SmartBillServiceManager {
 
         String deliveryURL = null;
 
-        // Only for voided-document
+        // Only for voided-document and not for summary-document
         Optional<Catalogo1> catalogo1 = Catalogo1.valueOfCode(xmlContentModel.getVoidedLineDocumentTypeCode());
         if (catalogo1.isPresent()) {
             switch (catalogo1.get()) {
@@ -118,6 +121,7 @@ public class SmartBillServiceManager {
             }
         }
 
+        // If summary-document
         if (deliveryURL == null) {
             deliveryURL = config.getInvoiceAndNoteDeliveryURL();
         }
@@ -170,25 +174,25 @@ public class SmartBillServiceManager {
                     throw new IllegalStateException("Invalid Serie, can not detect code");
                 }
 
-                return MessageFormat.format("{0}-{1}-{2}", ruc, codigoDocumento, documentID);
+                return MessageFormat.format(FILENAME_FORMAT1, ruc, codigoDocumento, documentID);
             case CREDIT_NOTE:
                 codigoDocumento = Catalogo1.NOTA_CREDITO.getCode();
-                return MessageFormat.format("{0}-{1}-{2}", ruc, codigoDocumento, documentID);
+                return MessageFormat.format(FILENAME_FORMAT1, ruc, codigoDocumento, documentID);
             case DEBIT_NOTE:
                 codigoDocumento = Catalogo1.NOTA_DEBITO.getCode();
-                return MessageFormat.format("{0}-{1}-{2}", ruc, codigoDocumento, documentID);
+                return MessageFormat.format(FILENAME_FORMAT1, ruc, codigoDocumento, documentID);
             case VOIDED_DOCUMENT:
             case SUMMARY_DOCUMENT:
-                return MessageFormat.format("{0}-{1}", ruc, documentID);
+                return MessageFormat.format(FILENAME_FORMAT2, ruc, documentID);
             case PERCEPTION:
                 codigoDocumento = Catalogo1.PERCEPCION.getCode();
-                return MessageFormat.format("{0}-{1}-{2}", ruc, codigoDocumento, documentID);
+                return MessageFormat.format(FILENAME_FORMAT1, ruc, codigoDocumento, documentID);
             case RETENTION:
                 codigoDocumento = Catalogo1.RETENCION.getCode();
-                return MessageFormat.format("{0}-{1}-{2}", ruc, codigoDocumento, documentID);
+                return MessageFormat.format(FILENAME_FORMAT1, ruc, codigoDocumento, documentID);
             case DESPATCH_ADVICE:
                 codigoDocumento = Catalogo1.GUIA_REMISION_REMITENTE.getCode();
-                return MessageFormat.format("{0}-{1}-{2}", ruc, codigoDocumento, documentID);
+                return MessageFormat.format(FILENAME_FORMAT1, ruc, codigoDocumento, documentID);
             default:
                 throw new IllegalStateException("Invalid type of UBL Document, can not extract Serie-Numero to create fileName");
         }

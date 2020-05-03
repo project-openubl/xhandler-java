@@ -16,14 +16,14 @@
  */
 package io.github.project.openubl.xmlsenderws.webservices.managers;
 
-
 import io.github.project.openubl.xmlsenderws.webservices.wrappers.ServiceConfig;
 import io.github.project.openubl.xmlsenderws.webservices.models.BillConsultModel;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.xml.ws.soap.SOAPFaultException;
 import java.io.IOException;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class BillConsultServiceManagerTest {
 
@@ -50,7 +50,7 @@ public class BillConsultServiceManagerTest {
             service.sunat.gob.pe.billconsultservice.StatusResponse response = BillConsultServiceManager.getStatus(consult, config);
         } catch (SOAPFaultException e) {
             // Las consultas deben de hacerse con un usuario y constraseña de produccion.
-            Assert.assertEquals(e.getMessage(), "El Usuario ingresado no existe");
+            assertEquals(e.getMessage(), "El Usuario ingresado no existe");
         }
     }
 
@@ -73,7 +73,7 @@ public class BillConsultServiceManagerTest {
             service.sunat.gob.pe.billconsultservice.StatusResponse response = BillConsultServiceManager.getStatusCdr(consult, config);
         } catch (SOAPFaultException e) {
             // Las consultas deben de hacerse con un usuario y constraseña de produccion.
-            Assert.assertEquals(e.getMessage(), "El Usuario ingresado no existe");
+            assertEquals(e.getMessage(), "El Usuario ingresado no existe");
         }
     }
 

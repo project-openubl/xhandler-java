@@ -18,8 +18,7 @@ package io.github.project.openubl.xmlsenderws.webservices.managers;
 
 import io.github.project.openubl.xmlsenderws.webservices.providers.BillServiceModel;
 import io.github.project.openubl.xmlsenderws.webservices.wrappers.ServiceConfig;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,6 +26,8 @@ import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class BillServiceManagerTest {
 
@@ -58,11 +59,11 @@ public class BillServiceManagerTest {
 
         BillServiceModel result = BillServiceManager.sendBill(file, BOLETA_FACTURA_SERVICE_CONFIG);
 
-        Assert.assertNotNull(result);
-        Assert.assertNotNull(result.getCdr());
-        Assert.assertEquals(Integer.valueOf(0), result.getCode());
-        Assert.assertEquals("La Factura numero F001-00000001, ha sido aceptada", result.getDescription());
-        Assert.assertEquals(BillServiceModel.Status.ACEPTADO, result.getStatus());
+        assertNotNull(result);
+        assertNotNull(result.getCdr());
+        assertEquals(Integer.valueOf(0), result.getCode());
+        assertEquals("La Factura numero F001-00000001, ha sido aceptada", result.getDescription());
+        assertEquals(BillServiceModel.Status.ACEPTADO, result.getStatus());
     }
 
     /**
@@ -76,11 +77,11 @@ public class BillServiceManagerTest {
 
         BillServiceModel result = BillServiceManager.sendBill(file, RETENTION_SERVICE_CONFIG);
 
-        Assert.assertNotNull(result);
-        Assert.assertNotNull(result.getCdr());
-        Assert.assertEquals(Integer.valueOf(0), result.getCode());
-        Assert.assertEquals("El Comprobante numero R001-00000001 ha sido aceptado", result.getDescription());
-        Assert.assertEquals(BillServiceModel.Status.ACEPTADO, result.getStatus());
+        assertNotNull(result);
+        assertNotNull(result.getCdr());
+        assertEquals(Integer.valueOf(0), result.getCode());
+        assertEquals("El Comprobante numero R001-00000001 ha sido aceptado", result.getDescription());
+        assertEquals(BillServiceModel.Status.ACEPTADO, result.getStatus());
     }
 
     /**
@@ -94,11 +95,11 @@ public class BillServiceManagerTest {
 
         BillServiceModel result = BillServiceManager.sendBill(file, BOLETA_FACTURA_SERVICE_CONFIG);
 
-        Assert.assertNotNull(result);
-        Assert.assertNull(result.getCdr());
-        Assert.assertEquals(Integer.valueOf(1_036), result.getCode());
-        Assert.assertEquals("Número de documento en el nombre del archivo no coincide con el consignado en el contenido del XML", result.getDescription());
-        Assert.assertEquals(BillServiceModel.Status.EXCEPCION, result.getStatus());
+        assertNotNull(result);
+        assertNull(result.getCdr());
+        assertEquals(Integer.valueOf(1_036), result.getCode());
+        assertEquals("Número de documento en el nombre del archivo no coincide con el consignado en el contenido del XML", result.getDescription());
+        assertEquals(BillServiceModel.Status.EXCEPCION, result.getStatus());
     }
 
 //    /**
@@ -112,11 +113,11 @@ public class BillServiceManagerTest {
 //
 //        BillServiceModel result = BillServiceManager.sendBill(file, BOLETA_FACTURA_SERVICE_CONFIG);
 //
-//        Assert.assertNotNull(result);
-//        Assert.assertNull(result.getCdr());
-//        Assert.assertEquals(Integer.valueOf(2_335), result.getCode());
-//        Assert.assertEquals("My mock message", result.getDescription());
-//        Assert.assertEquals(BillServiceModel.Status.RECHAZADO, result.getStatusWrapper());
+//        assertNotNull(result);
+//        assertNull(result.getCdr());
+//        assertEquals(Integer.valueOf(2_335), result.getCode());
+//        assertEquals("My mock message", result.getDescription());
+//        assertEquals(BillServiceModel.Status.RECHAZADO, result.getStatusWrapper());
 //    }
 
     /**
@@ -130,11 +131,11 @@ public class BillServiceManagerTest {
 
         BillServiceModel result = BillServiceManager.sendBill(file, BOLETA_FACTURA_SERVICE_CONFIG);
 
-        Assert.assertNotNull(result);
-        Assert.assertNull(result.getCdr());
-        Assert.assertEquals(Integer.valueOf(2_033), result.getCode());
-        Assert.assertEquals("El dato ingresado en TaxAmount de lalíneano cumple con el formato establecido", result.getDescription());
-        Assert.assertEquals(BillServiceModel.Status.RECHAZADO, result.getStatus());
+        assertNotNull(result);
+        assertNull(result.getCdr());
+        assertEquals(Integer.valueOf(2_033), result.getCode());
+        assertEquals("El dato ingresado en TaxAmount de lalíneano cumple con el formato establecido", result.getDescription());
+        assertEquals(BillServiceModel.Status.RECHAZADO, result.getStatus());
     }
 
     /**
@@ -148,17 +149,17 @@ public class BillServiceManagerTest {
 
         BillServiceModel ticketResult = BillServiceManager.sendSummary(file, BOLETA_FACTURA_SERVICE_CONFIG);
         String ticket = ticketResult.getTicket();
-        Assert.assertNotNull(ticket);
+        assertNotNull(ticket);
         Thread.sleep(1_000);
 
 
         BillServiceModel result = BillServiceManager.getStatus(ticket, BOLETA_FACTURA_SERVICE_CONFIG);
-        Assert.assertNotNull(result);
-        Assert.assertNotNull(result.getCdr());
-        Assert.assertEquals(ticket, result.getTicket());
-        Assert.assertEquals(Integer.valueOf(0), result.getCode());
-        Assert.assertEquals(BillServiceModel.Status.ACEPTADO, result.getStatus());
-        Assert.assertEquals("La Comunicacion de baja RA-20180316-00001, ha sido aceptada", result.getDescription());
+        assertNotNull(result);
+        assertNotNull(result.getCdr());
+        assertEquals(ticket, result.getTicket());
+        assertEquals(Integer.valueOf(0), result.getCode());
+        assertEquals(BillServiceModel.Status.ACEPTADO, result.getStatus());
+        assertEquals("La Comunicacion de baja RA-20180316-00001, ha sido aceptada", result.getDescription());
     }
 
     /**
@@ -172,8 +173,8 @@ public class BillServiceManagerTest {
 
         BillServiceModel result = BillServiceManager.sendSummary(file, BOLETA_FACTURA_SERVICE_CONFIG);
 
-        Assert.assertNotNull(result);
-        Assert.assertNotNull(result.getTicket());
+        assertNotNull(result);
+        assertNotNull(result.getTicket());
     }
 
     /**
@@ -187,8 +188,8 @@ public class BillServiceManagerTest {
 
         BillServiceModel result = BillServiceManager.sendSummary(file, RETENTION_SERVICE_CONFIG);
 
-        Assert.assertNotNull(result);
-        Assert.assertNotNull(result.getTicket());
+        assertNotNull(result);
+        assertNotNull(result.getTicket());
     }
 
     /**
@@ -211,14 +212,14 @@ public class BillServiceManagerTest {
 
         Thread.sleep(3_000);
 
-        Assert.assertNotNull(result);
-        Assert.assertNotNull(result.getTicket());
+        assertNotNull(result);
+        assertNotNull(result.getTicket());
 
-        Assert.assertEquals(BillServiceModel.Status.ACEPTADO, statusWrapper.getStatus());
-        Assert.assertNotNull(statusWrapper.getCdr());
-        Assert.assertEquals(Integer.valueOf(0), statusWrapper.getCode());
-        Assert.assertEquals("La Comunicacion de baja RA-20180316-00001, ha sido aceptada", statusWrapper.getDescription());
-        Assert.assertEquals(params, statusWrapper.getParams());
+        assertEquals(BillServiceModel.Status.ACEPTADO, statusWrapper.getStatus());
+        assertNotNull(statusWrapper.getCdr());
+        assertEquals(Integer.valueOf(0), statusWrapper.getCode());
+        assertEquals("La Comunicacion de baja RA-20180316-00001, ha sido aceptada", statusWrapper.getDescription());
+        assertEquals(params, statusWrapper.getParams());
     }
 
 }

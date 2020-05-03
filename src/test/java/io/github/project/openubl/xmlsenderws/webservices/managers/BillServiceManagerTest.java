@@ -54,7 +54,7 @@ public class BillServiceManagerTest {
      */
     @Test
     public void test_sendBill_invoice() throws IOException, URISyntaxException {
-        final String FILE_NAME = "20494637074-01-F001-00000001.xml";
+        final String FILE_NAME = "12345678912-01-F001-1.xml";
         File file = Paths.get(getClass().getResource("/ubl/" + FILE_NAME).toURI()).toFile();
 
         BillServiceModel result = BillServiceManager.sendBill(file, BOLETA_FACTURA_SERVICE_CONFIG);
@@ -62,7 +62,7 @@ public class BillServiceManagerTest {
         assertNotNull(result);
         assertNotNull(result.getCdr());
         assertEquals(Integer.valueOf(0), result.getCode());
-        assertEquals("La Factura numero F001-00000001, ha sido aceptada", result.getDescription());
+        assertEquals("La Factura numero F001-1, ha sido aceptada", result.getDescription());
         assertEquals(BillServiceModel.Status.ACEPTADO, result.getStatus());
     }
 
@@ -90,7 +90,7 @@ public class BillServiceManagerTest {
      */
     @Test
     public void test_sendBill_handleGeneric1036Exception() throws IOException, URISyntaxException {
-        final String FILE_NAME = "20494637074-01-F001-00000003.xml";
+        final String FILE_NAME = "12345678912-01-F001-2.xml";
         File file = Paths.get(getClass().getResource("/ubl/" + FILE_NAME).toURI()).toFile();
 
         BillServiceModel result = BillServiceManager.sendBill(file, BOLETA_FACTURA_SERVICE_CONFIG);
@@ -101,24 +101,6 @@ public class BillServiceManagerTest {
         assertEquals("Número de documento en el nombre del archivo no coincide con el consignado en el contenido del XML", result.getDescription());
         assertEquals(BillServiceModel.Status.EXCEPCION, result.getStatus());
     }
-
-//    /**
-//     * Should handle exception
-//     * {@link io.github.carlosthe19916.webservices.managers.BillServiceManager#sendBill(File, ServiceConfig)}
-//     */
-//    @Test
-//    public void test_sendBill_handleMocked2335Exception() throws IOException, URISyntaxException {
-//        final String FILE_NAME = "20494637074-01-F001-00000002.xml";
-//        File file = Paths.get(getClass().getResource("/ubl/" + FILE_NAME).toURI()).toFile();
-//
-//        BillServiceModel result = BillServiceManager.sendBill(file, BOLETA_FACTURA_SERVICE_CONFIG);
-//
-//        assertNotNull(result);
-//        assertNull(result.getCdr());
-//        assertEquals(Integer.valueOf(2_335), result.getCode());
-//        assertEquals("My mock message", result.getDescription());
-//        assertEquals(BillServiceModel.Status.RECHAZADO, result.getStatusWrapper());
-//    }
 
     /**
      * Should handle exception
@@ -144,7 +126,7 @@ public class BillServiceManagerTest {
      */
     @Test
     public void test_getStatus_ticket() throws URISyntaxException, IOException, InterruptedException {
-        final String FILE_NAME = "20494637074-RA-20180316-00001.xml";
+        final String FILE_NAME = "12345678912-RA-20200328-1.xml";
         File file = Paths.get(getClass().getResource("/ubl/" + FILE_NAME).toURI()).toFile();
 
         BillServiceModel ticketResult = BillServiceManager.sendSummary(file, BOLETA_FACTURA_SERVICE_CONFIG);
@@ -159,7 +141,7 @@ public class BillServiceManagerTest {
         assertEquals(ticket, result.getTicket());
         assertEquals(Integer.valueOf(0), result.getCode());
         assertEquals(BillServiceModel.Status.ACEPTADO, result.getStatus());
-        assertEquals("La Comunicacion de baja RA-20180316-00001, ha sido aceptada", result.getDescription());
+        assertEquals("La Comunicacion de baja RA-20200328-1, ha sido aceptada", result.getDescription());
     }
 
     /**
@@ -168,7 +150,7 @@ public class BillServiceManagerTest {
      */
     @Test
     public void test_sendSummary_voidedInvoice() throws IOException, URISyntaxException, InterruptedException {
-        final String FILE_NAME = "20494637074-RA-20180316-00001.xml";
+        final String FILE_NAME = "12345678912-RA-20200328-1.xml";
         File file = Paths.get(getClass().getResource("/ubl/" + FILE_NAME).toURI()).toFile();
 
         BillServiceModel result = BillServiceManager.sendSummary(file, BOLETA_FACTURA_SERVICE_CONFIG);
@@ -183,7 +165,7 @@ public class BillServiceManagerTest {
      */
     @Test
     public void test_sendSummary_voidedRetention() throws IOException, URISyntaxException {
-        final String FILE_NAME = "20603233591-RR-20180713-00001.xml";
+        final String FILE_NAME = "12345678912-RR-20200328-1.xml";
         File file = Paths.get(getClass().getResource("/ubl/" + FILE_NAME).toURI()).toFile();
 
         BillServiceModel result = BillServiceManager.sendSummary(file, RETENTION_SERVICE_CONFIG);
@@ -198,7 +180,7 @@ public class BillServiceManagerTest {
      */
     @Test
     public void test_sendSummary_andCallback() throws IOException, URISyntaxException, InterruptedException {
-        final String FILE_NAME = "20494637074-RA-20180316-00001.xml";
+        final String FILE_NAME = "12345678912-RA-20200328-1.xml";
         File file = Paths.get(getClass().getResource("/ubl/" + FILE_NAME).toURI()).toFile();
 
         MockBillServiceCallback callback = new MockBillServiceCallback();
@@ -218,7 +200,7 @@ public class BillServiceManagerTest {
         assertEquals(BillServiceModel.Status.ACEPTADO, statusWrapper.getStatus());
         assertNotNull(statusWrapper.getCdr());
         assertEquals(Integer.valueOf(0), statusWrapper.getCode());
-        assertEquals("La Comunicacion de baja RA-20180316-00001, ha sido aceptada", statusWrapper.getDescription());
+        assertEquals("La Comunicacion de baja RA-20200328-1, ha sido aceptada", statusWrapper.getDescription());
         assertEquals(params, statusWrapper.getParams());
     }
 

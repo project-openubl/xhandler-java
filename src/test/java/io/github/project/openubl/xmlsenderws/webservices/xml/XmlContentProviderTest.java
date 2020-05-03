@@ -47,7 +47,7 @@ public class XmlContentProviderTest {
     @Test
     public void getSunatDocument_invoice_withExtensionContent() throws IOException, SAXException, ParserConfigurationException {
         // Given
-        InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("ubl/20494637074-01-F001-00000001.xml");
+        InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("ubl/12345678912-01-F001-1.xml");
         assertNotNull(inputStream);
 
         // When
@@ -56,8 +56,8 @@ public class XmlContentProviderTest {
         // Then
         assertNotNull(model);
         assertEquals(DocumentType.INVOICE.getDocumentType(), model.getDocumentType());
-        assertEquals("F001-00000001", model.getDocumentID());
-        assertEquals("20494637074", model.getRuc());
+        assertEquals("F001-1", model.getDocumentID());
+        assertEquals("12345678912", model.getRuc());
         assertNull(model.getVoidedLineDocumentTypeCode());
     }
 

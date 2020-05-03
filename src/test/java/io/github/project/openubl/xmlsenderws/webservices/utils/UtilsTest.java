@@ -129,7 +129,7 @@ public class UtilsTest {
      */
     @Test
     public void getDocumentFromBytes() throws URISyntaxException, IOException, ParserConfigurationException, SAXException {
-        final File file = Paths.get(getClass().getResource("/ubl/F001-00005954.xml").toURI()).toFile();
+        final File file = Paths.get(getClass().getResource("/ubl/12345678912-01-F001-1.xml").toURI()).toFile();
         final byte[] bytes = Files.readAllBytes(file.toPath());
 
         Document document = Utils.getDocumentFromBytes(bytes);

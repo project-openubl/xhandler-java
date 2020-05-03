@@ -37,7 +37,7 @@ public class BillValidServiceManagerTest {
 
     @Test
     public void getStatus() throws IOException, URISyntaxException {
-        final String FILE_NAME = "F001-00005954.xml";
+        final String FILE_NAME = "12345678912-01-F001-1.xml";
         File file = Paths.get(getClass().getResource("/ubl/" + FILE_NAME).toURI()).toFile();
 
         ServiceConfig config = new ServiceConfig.Builder()

@@ -50,7 +50,7 @@ public class BillValidServiceManagerTest {
 
         try {
             StatusResponse status = BillValidServiceManager.getStatus(file, config);
-            assertNotEquals(status.getStatusCode(), "0000");
+            assertNotEquals("0000", status.getStatusCode());
         } catch (SOAPFaultException e) {
             // Las consultas deben de hacerse con un usuario y constraseña de produccion.
             exceptionWasThrew = true;

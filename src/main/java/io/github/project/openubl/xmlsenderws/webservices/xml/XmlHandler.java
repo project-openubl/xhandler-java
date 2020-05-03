@@ -105,11 +105,10 @@ public class XmlHandler extends DefaultHandler {
                     documentID = content;
                 }
 
-                if (isAccountingSupplierPartyBeingRead && isPartyBeingRead && isPartyIdentificationBeingRead) {
+                if ((isAccountingSupplierPartyBeingRead && isPartyBeingRead && isPartyIdentificationBeingRead)
+                        || (isAgentPartyBeingRead && isPartyIdentificationBeingRead)
+                ) {
                     // invoice, credit-note, debit-note
-                    ruc = content;
-                } else if (isAgentPartyBeingRead && isPartyIdentificationBeingRead) {
-                    // perception, retention
                     ruc = content;
                 }
             } else if (currentElement.equals(CUSTOMER_ASSIGNED_ACCOUNT_ID) && uri.equals(CBC)) {

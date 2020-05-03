@@ -29,19 +29,19 @@ public enum DocumentType {
     RETENTION("Retention"),
     DESPATCH_ADVICE("DespatchAdvice");
 
-    private final String documentType;
+    private final String type;
 
-    DocumentType(String documentType) {
-        this.documentType = documentType;
+    DocumentType(String type) {
+        this.type = type;
     }
 
-    public String getDocumentType() {
-        return documentType;
+    public String getType() {
+        return type;
     }
 
     public static Optional<DocumentType> valueFromDocumentType(String documentType) {
         return Stream.of(DocumentType.values())
-                .filter(p -> p.getDocumentType().equals(documentType))
+                .filter(p -> p.getType().equals(documentType))
                 .findFirst();
     }
 }

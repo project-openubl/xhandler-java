@@ -38,7 +38,7 @@ public class XmlContentProviderTest {
 
         // Then
         assertNotNull(model);
-        assertEquals(DocumentType.INVOICE.getDocumentType(), model.getDocumentType());
+        assertEquals(DocumentType.INVOICE.getType(), model.getDocumentType());
         assertEquals("F001-1", model.getDocumentID());
         assertEquals("12345678912", model.getRuc());
         assertNull(model.getVoidedLineDocumentTypeCode());
@@ -55,7 +55,7 @@ public class XmlContentProviderTest {
 
         // Then
         assertNotNull(model);
-        assertEquals(DocumentType.INVOICE.getDocumentType(), model.getDocumentType());
+        assertEquals(DocumentType.INVOICE.getType(), model.getDocumentType());
         assertEquals("F001-1", model.getDocumentID());
         assertEquals("12345678912", model.getRuc());
         assertNull(model.getVoidedLineDocumentTypeCode());
@@ -72,7 +72,7 @@ public class XmlContentProviderTest {
 
         // Then
         assertNotNull(model);
-        assertEquals(DocumentType.CREDIT_NOTE.getDocumentType(), model.getDocumentType());
+        assertEquals(DocumentType.CREDIT_NOTE.getType(), model.getDocumentType());
         assertEquals("BC01-1", model.getDocumentID());
         assertEquals("12345678912", model.getRuc());
         assertNull(model.getVoidedLineDocumentTypeCode());
@@ -89,7 +89,7 @@ public class XmlContentProviderTest {
 
         // Then
         assertNotNull(model);
-        assertEquals(DocumentType.DEBIT_NOTE.getDocumentType(), model.getDocumentType());
+        assertEquals(DocumentType.DEBIT_NOTE.getType(), model.getDocumentType());
         assertEquals("BD01-1", model.getDocumentID());
         assertEquals("12345678912", model.getRuc());
         assertNull(model.getVoidedLineDocumentTypeCode());
@@ -106,7 +106,7 @@ public class XmlContentProviderTest {
 
         // Then
         assertNotNull(model);
-        assertEquals(DocumentType.VOIDED_DOCUMENT.getDocumentType(), model.getDocumentType());
+        assertEquals(DocumentType.VOIDED_DOCUMENT.getType(), model.getDocumentType());
         assertEquals("RA-20191224-1", model.getDocumentID());
         assertEquals("12345678912", model.getRuc());
         assertEquals("01", model.getVoidedLineDocumentTypeCode());
@@ -123,7 +123,7 @@ public class XmlContentProviderTest {
 
         // Then
         assertNotNull(model);
-        assertEquals(DocumentType.SUMMARY_DOCUMENT.getDocumentType(), model.getDocumentType());
+        assertEquals(DocumentType.SUMMARY_DOCUMENT.getType(), model.getDocumentType());
         assertEquals("RC-20191224-1", model.getDocumentID());
         assertEquals("12345678912", model.getRuc());
         assertNull(model.getVoidedLineDocumentTypeCode());
@@ -140,7 +140,7 @@ public class XmlContentProviderTest {
 
         // Then
         assertNotNull(model);
-        assertEquals(DocumentType.PERCEPTION.getDocumentType(), model.getDocumentType());
+        assertEquals(DocumentType.PERCEPTION.getType(), model.getDocumentType());
         assertEquals("P001-1", model.getDocumentID());
         assertEquals("12345678912", model.getRuc());
         assertNull(model.getVoidedLineDocumentTypeCode());
@@ -157,7 +157,7 @@ public class XmlContentProviderTest {
 
         // Then
         assertNotNull(model);
-        assertEquals(DocumentType.RETENTION.getDocumentType(), model.getDocumentType());
+        assertEquals(DocumentType.RETENTION.getType(), model.getDocumentType());
         assertEquals("R001-1", model.getDocumentID());
         assertEquals("12345678912", model.getRuc());
         assertNull(model.getVoidedLineDocumentTypeCode());
@@ -174,7 +174,7 @@ public class XmlContentProviderTest {
 
         // Then
         assertNotNull(model);
-        assertEquals(DocumentType.DESPATCH_ADVICE.getDocumentType(), model.getDocumentType());
+        assertEquals(DocumentType.DESPATCH_ADVICE.getType(), model.getDocumentType());
         assertEquals("T001-123", model.getDocumentID());
         assertEquals("20123456789", model.getRuc());
         assertNull(model.getVoidedLineDocumentTypeCode());

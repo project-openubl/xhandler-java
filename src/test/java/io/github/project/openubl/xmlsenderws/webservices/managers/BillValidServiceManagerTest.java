@@ -17,9 +17,7 @@
 package io.github.project.openubl.xmlsenderws.webservices.managers;
 
 import io.github.project.openubl.xmlsenderws.webservices.wrappers.ServiceConfig;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import service.sunat.gob.pe.billvalidservice.StatusResponse;
 
 import javax.xml.ws.soap.SOAPFaultException;
@@ -28,16 +26,14 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
 
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 public class BillValidServiceManagerTest {
 
     private String USERNAME = "20494637074MODDATOS";
     private String PASSWORD = "MODDATOS";
     private String URL_CONSULTA = "https://e-factura.sunat.gob.pe/ol-it-wsconsvalidcpe/billValidService";
-
-    @Before
-    public void before() {
-
-    }
 
     @Test
     public void getStatus() throws IOException, URISyntaxException {
@@ -50,13 +46,16 @@ public class BillValidServiceManagerTest {
                 .password(PASSWORD)
                 .build();
 
+        boolean exceptionWasThrew = false;
+
         try {
             StatusResponse status = BillValidServiceManager.getStatus(file, config);
-            Assert.assertNotEquals(status.getStatusCode(), "0000");
+            assertNotEquals(status.getStatusCode(), "0000");
         } catch (SOAPFaultException e) {
             // Las consultas deben de hacerse con un usuario y constraseña de produccion.
-            Assert.assertTrue(true);
+            exceptionWasThrew = true;
         }
 
+        assertTrue(exceptionWasThrew);
     }
 }

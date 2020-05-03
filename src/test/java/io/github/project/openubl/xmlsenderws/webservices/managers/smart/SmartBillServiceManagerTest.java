@@ -21,22 +21,23 @@ import io.github.project.openubl.xmlsenderws.webservices.exceptions.UnsupportedD
 import io.github.project.openubl.xmlsenderws.webservices.exceptions.ValidationWebServiceException;
 import io.github.project.openubl.xmlsenderws.webservices.providers.BillServiceModel;
 import io.github.project.openubl.xmlsenderws.webservices.xml.XmlContentModel;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class SmartBillServiceManagerTest {
 
     private String USERNAME = "12345678912MODDATOS";
     private String PASSWORD = "MODDATOS";
 
-    @Before
-    public void before() {
+    @BeforeAll
+    public static void before() {
         SmartBillServiceConfig.getInstance()
                 .withInvoiceAndNoteDeliveryURL("https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService")
                 .withPerceptionAndRetentionDeliveryURL("https://e-beta.sunat.gob.pe/ol-ti-itemision-otroscpe-gem-beta/billService")
@@ -52,7 +53,7 @@ public class SmartBillServiceManagerTest {
             exceptionWasThrew = true;
         }
 
-        Assert.assertTrue(exceptionWasThrew);
+        assertTrue(exceptionWasThrew);
     }
 
 
@@ -67,7 +68,7 @@ public class SmartBillServiceManagerTest {
             exceptionWasThrew = true;
         }
 
-        Assert.assertTrue(exceptionWasThrew);
+        assertTrue(exceptionWasThrew);
     }
 
     @Test
@@ -77,18 +78,18 @@ public class SmartBillServiceManagerTest {
         SmartBillServiceModel smartBillServiceModel = SmartBillServiceManager.send(file, USERNAME, PASSWORD);
 
         XmlContentModel xmlContentModel = smartBillServiceModel.getXmlContentModel();
-        Assert.assertEquals("Invoice", xmlContentModel.getDocumentType());
-        Assert.assertEquals("F001-1", xmlContentModel.getDocumentID());
-        Assert.assertEquals("12345678912", xmlContentModel.getRuc());
-        Assert.assertNull(xmlContentModel.getVoidedLineDocumentTypeCode());
+        assertEquals("Invoice", xmlContentModel.getDocumentType());
+        assertEquals("F001-1", xmlContentModel.getDocumentID());
+        assertEquals("12345678912", xmlContentModel.getRuc());
+        assertNull(xmlContentModel.getVoidedLineDocumentTypeCode());
 
         BillServiceModel billServiceModel = smartBillServiceModel.getBillServiceModel();
-        Assert.assertNotNull(billServiceModel);
-        Assert.assertNotNull(billServiceModel.getCdr());
-        Assert.assertEquals(Integer.valueOf(0), billServiceModel.getCode());
-        Assert.assertEquals("La Factura numero F001-1, ha sido aceptada", billServiceModel.getDescription());
-        Assert.assertEquals(BillServiceModel.Status.ACEPTADO, billServiceModel.getStatus());
-        Assert.assertNull(billServiceModel.getTicket());
+        assertNotNull(billServiceModel);
+        assertNotNull(billServiceModel.getCdr());
+        assertEquals(Integer.valueOf(0), billServiceModel.getCode());
+        assertEquals("La Factura numero F001-1, ha sido aceptada", billServiceModel.getDescription());
+        assertEquals(BillServiceModel.Status.ACEPTADO, billServiceModel.getStatus());
+        assertNull(billServiceModel.getTicket());
     }
 
     @Test
@@ -98,18 +99,18 @@ public class SmartBillServiceManagerTest {
         SmartBillServiceModel smartBillServiceModel = SmartBillServiceManager.send(file, USERNAME, PASSWORD);
 
         XmlContentModel xmlContentModel = smartBillServiceModel.getXmlContentModel();
-        Assert.assertEquals("Invoice", xmlContentModel.getDocumentType());
-        Assert.assertEquals("B001-1", xmlContentModel.getDocumentID());
-        Assert.assertEquals("12345678912", xmlContentModel.getRuc());
-        Assert.assertNull(xmlContentModel.getVoidedLineDocumentTypeCode());
+        assertEquals("Invoice", xmlContentModel.getDocumentType());
+        assertEquals("B001-1", xmlContentModel.getDocumentID());
+        assertEquals("12345678912", xmlContentModel.getRuc());
+        assertNull(xmlContentModel.getVoidedLineDocumentTypeCode());
 
         BillServiceModel billServiceModel = smartBillServiceModel.getBillServiceModel();
-        Assert.assertNotNull(billServiceModel);
-        Assert.assertNotNull(billServiceModel.getCdr());
-        Assert.assertEquals(Integer.valueOf(0), billServiceModel.getCode());
-        Assert.assertEquals("La Boleta numero B001-1, ha sido aceptada", billServiceModel.getDescription());
-        Assert.assertEquals(BillServiceModel.Status.ACEPTADO, billServiceModel.getStatus());
-        Assert.assertNull(billServiceModel.getTicket());
+        assertNotNull(billServiceModel);
+        assertNotNull(billServiceModel.getCdr());
+        assertEquals(Integer.valueOf(0), billServiceModel.getCode());
+        assertEquals("La Boleta numero B001-1, ha sido aceptada", billServiceModel.getDescription());
+        assertEquals(BillServiceModel.Status.ACEPTADO, billServiceModel.getStatus());
+        assertNull(billServiceModel.getTicket());
     }
 
     @Test
@@ -119,18 +120,18 @@ public class SmartBillServiceManagerTest {
         SmartBillServiceModel smartBillServiceModel = SmartBillServiceManager.send(file, USERNAME, PASSWORD);
 
         XmlContentModel xmlContentModel = smartBillServiceModel.getXmlContentModel();
-        Assert.assertEquals("CreditNote", xmlContentModel.getDocumentType());
-        Assert.assertEquals("F001-1", xmlContentModel.getDocumentID());
-        Assert.assertEquals("12345678912", xmlContentModel.getRuc());
-        Assert.assertNull(xmlContentModel.getVoidedLineDocumentTypeCode());
+        assertEquals("CreditNote", xmlContentModel.getDocumentType());
+        assertEquals("F001-1", xmlContentModel.getDocumentID());
+        assertEquals("12345678912", xmlContentModel.getRuc());
+        assertNull(xmlContentModel.getVoidedLineDocumentTypeCode());
 
         BillServiceModel billServiceModel = smartBillServiceModel.getBillServiceModel();
-        Assert.assertNotNull(billServiceModel);
-        Assert.assertNotNull(billServiceModel.getCdr());
-        Assert.assertEquals(Integer.valueOf(0), billServiceModel.getCode());
-        Assert.assertEquals("La Nota de Credito numero F001-1, ha sido aceptada", billServiceModel.getDescription());
-        Assert.assertEquals(BillServiceModel.Status.ACEPTADO, billServiceModel.getStatus());
-        Assert.assertNull(billServiceModel.getTicket());
+        assertNotNull(billServiceModel);
+        assertNotNull(billServiceModel.getCdr());
+        assertEquals(Integer.valueOf(0), billServiceModel.getCode());
+        assertEquals("La Nota de Credito numero F001-1, ha sido aceptada", billServiceModel.getDescription());
+        assertEquals(BillServiceModel.Status.ACEPTADO, billServiceModel.getStatus());
+        assertNull(billServiceModel.getTicket());
     }
 
     @Test
@@ -140,18 +141,18 @@ public class SmartBillServiceManagerTest {
         SmartBillServiceModel smartBillServiceModel = SmartBillServiceManager.send(file, USERNAME, PASSWORD);
 
         XmlContentModel xmlContentModel = smartBillServiceModel.getXmlContentModel();
-        Assert.assertEquals("DebitNote", xmlContentModel.getDocumentType());
-        Assert.assertEquals("F001-1", xmlContentModel.getDocumentID());
-        Assert.assertEquals("12345678912", xmlContentModel.getRuc());
-        Assert.assertNull(xmlContentModel.getVoidedLineDocumentTypeCode());
+        assertEquals("DebitNote", xmlContentModel.getDocumentType());
+        assertEquals("F001-1", xmlContentModel.getDocumentID());
+        assertEquals("12345678912", xmlContentModel.getRuc());
+        assertNull(xmlContentModel.getVoidedLineDocumentTypeCode());
 
         BillServiceModel billServiceModel = smartBillServiceModel.getBillServiceModel();
-        Assert.assertNotNull(billServiceModel);
-        Assert.assertNotNull(billServiceModel.getCdr());
-        Assert.assertEquals(Integer.valueOf(0), billServiceModel.getCode());
-        Assert.assertEquals("La Nota de Debito numero F001-1, ha sido aceptada", billServiceModel.getDescription());
-        Assert.assertEquals(BillServiceModel.Status.ACEPTADO, billServiceModel.getStatus());
-        Assert.assertNull(billServiceModel.getTicket());
+        assertNotNull(billServiceModel);
+        assertNotNull(billServiceModel.getCdr());
+        assertEquals(Integer.valueOf(0), billServiceModel.getCode());
+        assertEquals("La Nota de Debito numero F001-1, ha sido aceptada", billServiceModel.getDescription());
+        assertEquals(BillServiceModel.Status.ACEPTADO, billServiceModel.getStatus());
+        assertNull(billServiceModel.getTicket());
     }
 
     @Test
@@ -161,27 +162,27 @@ public class SmartBillServiceManagerTest {
         SmartBillServiceModel smartBillServiceModel = SmartBillServiceManager.send(file, USERNAME, PASSWORD);
 
         XmlContentModel xmlContentModel = smartBillServiceModel.getXmlContentModel();
-        Assert.assertEquals("VoidedDocuments", xmlContentModel.getDocumentType());
-        Assert.assertEquals("RA-20200328-1", xmlContentModel.getDocumentID());
-        Assert.assertEquals("12345678912", xmlContentModel.getRuc());
-        Assert.assertEquals("01", xmlContentModel.getVoidedLineDocumentTypeCode());
+        assertEquals("VoidedDocuments", xmlContentModel.getDocumentType());
+        assertEquals("RA-20200328-1", xmlContentModel.getDocumentID());
+        assertEquals("12345678912", xmlContentModel.getRuc());
+        assertEquals("01", xmlContentModel.getVoidedLineDocumentTypeCode());
 
         BillServiceModel billServiceModel = smartBillServiceModel.getBillServiceModel();
-        Assert.assertNotNull(billServiceModel);
-        Assert.assertNull(billServiceModel.getCdr());
-        Assert.assertNull(billServiceModel.getCode());
-        Assert.assertNull(billServiceModel.getDescription());
-        Assert.assertNull(billServiceModel.getStatus());
-        Assert.assertNotNull(billServiceModel.getTicket());
+        assertNotNull(billServiceModel);
+        assertNull(billServiceModel.getCdr());
+        assertNull(billServiceModel.getCode());
+        assertNull(billServiceModel.getDescription());
+        assertNull(billServiceModel.getStatus());
+        assertNotNull(billServiceModel.getTicket());
 
         // Check ticket
         billServiceModel = SmartBillServiceManager.getStatus(billServiceModel.getTicket(), xmlContentModel, USERNAME, PASSWORD);
-        Assert.assertNotNull(billServiceModel);
-        Assert.assertNotNull(billServiceModel.getCdr());
-        Assert.assertEquals(Integer.valueOf(0), billServiceModel.getCode());
-        Assert.assertEquals("La Comunicacion de baja RA-20200328-1, ha sido aceptada", billServiceModel.getDescription());
-        Assert.assertEquals(BillServiceModel.Status.ACEPTADO, billServiceModel.getStatus());
-        Assert.assertNotNull(billServiceModel.getTicket());
+        assertNotNull(billServiceModel);
+        assertNotNull(billServiceModel.getCdr());
+        assertEquals(Integer.valueOf(0), billServiceModel.getCode());
+        assertEquals("La Comunicacion de baja RA-20200328-1, ha sido aceptada", billServiceModel.getDescription());
+        assertEquals(BillServiceModel.Status.ACEPTADO, billServiceModel.getStatus());
+        assertNotNull(billServiceModel.getTicket());
     }
 
     @Test
@@ -197,7 +198,7 @@ public class SmartBillServiceManagerTest {
             exceptionWasThrew = true;
         }
 
-        Assert.assertTrue(exceptionWasThrew);
+        assertTrue(exceptionWasThrew);
     }
 
     @Test
@@ -207,27 +208,27 @@ public class SmartBillServiceManagerTest {
         SmartBillServiceModel smartBillServiceModel = SmartBillServiceManager.send(file, USERNAME, PASSWORD);
 
         XmlContentModel xmlContentModel = smartBillServiceModel.getXmlContentModel();
-        Assert.assertEquals("VoidedDocuments", xmlContentModel.getDocumentType());
-        Assert.assertEquals("RR-20200328-1", xmlContentModel.getDocumentID());
-        Assert.assertEquals("12345678912", xmlContentModel.getRuc());
-        Assert.assertEquals("40", xmlContentModel.getVoidedLineDocumentTypeCode());
+        assertEquals("VoidedDocuments", xmlContentModel.getDocumentType());
+        assertEquals("RR-20200328-1", xmlContentModel.getDocumentID());
+        assertEquals("12345678912", xmlContentModel.getRuc());
+        assertEquals("40", xmlContentModel.getVoidedLineDocumentTypeCode());
 
         BillServiceModel billServiceModel = smartBillServiceModel.getBillServiceModel();
-        Assert.assertNotNull(billServiceModel);
-        Assert.assertNull(billServiceModel.getCdr());
-        Assert.assertNull(billServiceModel.getCode());
-        Assert.assertNull(billServiceModel.getDescription());
-        Assert.assertNull(billServiceModel.getStatus());
-        Assert.assertNotNull(billServiceModel.getTicket());
+        assertNotNull(billServiceModel);
+        assertNull(billServiceModel.getCdr());
+        assertNull(billServiceModel.getCode());
+        assertNull(billServiceModel.getDescription());
+        assertNull(billServiceModel.getStatus());
+        assertNotNull(billServiceModel.getTicket());
 
         // Check ticket
         billServiceModel = SmartBillServiceManager.getStatus(billServiceModel.getTicket(), xmlContentModel, USERNAME, PASSWORD);
-        Assert.assertNotNull(billServiceModel);
-        Assert.assertNotNull(billServiceModel.getCdr());
-        Assert.assertEquals(Integer.valueOf(0), billServiceModel.getCode());
-        Assert.assertEquals("El Comprobante numero RR-20200328-1 ha sido aceptado", billServiceModel.getDescription());
-        Assert.assertEquals(BillServiceModel.Status.ACEPTADO, billServiceModel.getStatus());
-        Assert.assertNotNull(billServiceModel.getTicket());
+        assertNotNull(billServiceModel);
+        assertNotNull(billServiceModel.getCdr());
+        assertEquals(Integer.valueOf(0), billServiceModel.getCode());
+        assertEquals("El Comprobante numero RR-20200328-1 ha sido aceptado", billServiceModel.getDescription());
+        assertEquals(BillServiceModel.Status.ACEPTADO, billServiceModel.getStatus());
+        assertNotNull(billServiceModel.getTicket());
     }
 
     @Test
@@ -237,27 +238,27 @@ public class SmartBillServiceManagerTest {
         SmartBillServiceModel smartBillServiceModel = SmartBillServiceManager.send(file, USERNAME, PASSWORD);
 
         XmlContentModel xmlContentModel = smartBillServiceModel.getXmlContentModel();
-        Assert.assertEquals("VoidedDocuments", xmlContentModel.getDocumentType());
-        Assert.assertEquals("RR-20200328-1", xmlContentModel.getDocumentID());
-        Assert.assertEquals("12345678912", xmlContentModel.getRuc());
-        Assert.assertEquals("20", xmlContentModel.getVoidedLineDocumentTypeCode());
+        assertEquals("VoidedDocuments", xmlContentModel.getDocumentType());
+        assertEquals("RR-20200328-1", xmlContentModel.getDocumentID());
+        assertEquals("12345678912", xmlContentModel.getRuc());
+        assertEquals("20", xmlContentModel.getVoidedLineDocumentTypeCode());
 
         BillServiceModel billServiceModel = smartBillServiceModel.getBillServiceModel();
-        Assert.assertNotNull(billServiceModel);
-        Assert.assertNull(billServiceModel.getCdr());
-        Assert.assertNull(billServiceModel.getCode());
-        Assert.assertNull(billServiceModel.getDescription());
-        Assert.assertNull(billServiceModel.getStatus());
-        Assert.assertNotNull(billServiceModel.getTicket());
+        assertNotNull(billServiceModel);
+        assertNull(billServiceModel.getCdr());
+        assertNull(billServiceModel.getCode());
+        assertNull(billServiceModel.getDescription());
+        assertNull(billServiceModel.getStatus());
+        assertNotNull(billServiceModel.getTicket());
 
         // Check ticket
         billServiceModel = SmartBillServiceManager.getStatus(billServiceModel.getTicket(), xmlContentModel, USERNAME, PASSWORD);
-        Assert.assertNotNull(billServiceModel);
-        Assert.assertNotNull(billServiceModel.getCdr());
-        Assert.assertEquals(Integer.valueOf(0), billServiceModel.getCode());
-        Assert.assertEquals("El Comprobante numero RR-20200328-1 ha sido aceptado", billServiceModel.getDescription());
-        Assert.assertEquals(BillServiceModel.Status.ACEPTADO, billServiceModel.getStatus());
-        Assert.assertNotNull(billServiceModel.getTicket());
+        assertNotNull(billServiceModel);
+        assertNotNull(billServiceModel.getCdr());
+        assertEquals(Integer.valueOf(0), billServiceModel.getCode());
+        assertEquals("El Comprobante numero RR-20200328-1 ha sido aceptado", billServiceModel.getDescription());
+        assertEquals(BillServiceModel.Status.ACEPTADO, billServiceModel.getStatus());
+        assertNotNull(billServiceModel.getTicket());
     }
 
     // No se puede dar de baja una guia de remision
@@ -268,27 +269,27 @@ public class SmartBillServiceManagerTest {
 //        SmartBillServiceModel smartBillServiceModel = SmartBillServiceManager.send(file, USERNAME, PASSWORD);
 //
 //        XmlContentModel xmlContentModel = smartBillServiceModel.getXmlContentModel();
-//        Assert.assertEquals("VoidedDocuments", xmlContentModel.getDocumentType());
-//        Assert.assertEquals("RR-20200328-1", xmlContentModel.getDocumentID());
-//        Assert.assertEquals("12345678912", xmlContentModel.getRuc());
-//        Assert.assertEquals("09", xmlContentModel.getVoidedLineDocumentTypeCode());
+//        assertEquals("VoidedDocuments", xmlContentModel.getDocumentType());
+//        assertEquals("RR-20200328-1", xmlContentModel.getDocumentID());
+//        assertEquals("12345678912", xmlContentModel.getRuc());
+//        assertEquals("09", xmlContentModel.getVoidedLineDocumentTypeCode());
 //
 //        BillServiceModel billServiceModel = smartBillServiceModel.getBillServiceModel();
-//        Assert.assertNotNull(billServiceModel);
-//        Assert.assertNull(billServiceModel.getCdr());
-//        Assert.assertNull(billServiceModel.getCode());
-//        Assert.assertNull(billServiceModel.getDescription());
-//        Assert.assertNull(billServiceModel.getStatus());
-//        Assert.assertNotNull(billServiceModel.getTicket());
+//        assertNotNull(billServiceModel);
+//        assertNull(billServiceModel.getCdr());
+//        assertNull(billServiceModel.getCode());
+//        assertNull(billServiceModel.getDescription());
+//        assertNull(billServiceModel.getStatus());
+//        assertNotNull(billServiceModel.getTicket());
 //
 //        // Check ticket
 //        billServiceModel = SmartBillServiceManager.getStatus(billServiceModel.getTicket(), xmlContentModel, USERNAME, PASSWORD);
-//        Assert.assertNotNull(billServiceModel);
-//        Assert.assertNotNull(billServiceModel.getCdr());
-//        Assert.assertEquals(Integer.valueOf(0), billServiceModel.getCode());
-//        Assert.assertEquals("El Comprobante numero RR-20200328-1 ha sido aceptado", billServiceModel.getDescription());
-//        Assert.assertEquals(BillServiceModel.Status.ACEPTADO, billServiceModel.getStatus());
-//        Assert.assertNotNull(billServiceModel.getTicket());
+//        assertNotNull(billServiceModel);
+//        assertNotNull(billServiceModel.getCdr());
+//        assertEquals(Integer.valueOf(0), billServiceModel.getCode());
+//        assertEquals("El Comprobante numero RR-20200328-1 ha sido aceptado", billServiceModel.getDescription());
+//        assertEquals(BillServiceModel.Status.ACEPTADO, billServiceModel.getStatus());
+//        assertNotNull(billServiceModel.getTicket());
 //    }
 
     @Test
@@ -298,27 +299,27 @@ public class SmartBillServiceManagerTest {
         SmartBillServiceModel smartBillServiceModel = SmartBillServiceManager.send(file, USERNAME, PASSWORD);
 
         XmlContentModel xmlContentModel = smartBillServiceModel.getXmlContentModel();
-        Assert.assertEquals("SummaryDocuments", xmlContentModel.getDocumentType());
-        Assert.assertEquals("RC-20200328-1", xmlContentModel.getDocumentID());
-        Assert.assertEquals("12345678912", xmlContentModel.getRuc());
-        Assert.assertNull(xmlContentModel.getVoidedLineDocumentTypeCode());
+        assertEquals("SummaryDocuments", xmlContentModel.getDocumentType());
+        assertEquals("RC-20200328-1", xmlContentModel.getDocumentID());
+        assertEquals("12345678912", xmlContentModel.getRuc());
+        assertNull(xmlContentModel.getVoidedLineDocumentTypeCode());
 
         BillServiceModel billServiceModel = smartBillServiceModel.getBillServiceModel();
-        Assert.assertNotNull(billServiceModel);
-        Assert.assertNull(billServiceModel.getCdr());
-        Assert.assertNull(billServiceModel.getCode());
-        Assert.assertNull(billServiceModel.getDescription());
-        Assert.assertNull(billServiceModel.getStatus());
-        Assert.assertNotNull(billServiceModel.getTicket());
+        assertNotNull(billServiceModel);
+        assertNull(billServiceModel.getCdr());
+        assertNull(billServiceModel.getCode());
+        assertNull(billServiceModel.getDescription());
+        assertNull(billServiceModel.getStatus());
+        assertNotNull(billServiceModel.getTicket());
 
         // Check ticket
         billServiceModel = SmartBillServiceManager.getStatus(billServiceModel.getTicket(), xmlContentModel, USERNAME, PASSWORD);
-        Assert.assertNotNull(billServiceModel);
-        Assert.assertNotNull(billServiceModel.getCdr());
-        Assert.assertEquals(Integer.valueOf(0), billServiceModel.getCode());
-        Assert.assertEquals("El Resumen diario RC-20200328-1, ha sido aceptado", billServiceModel.getDescription());
-        Assert.assertEquals(BillServiceModel.Status.ACEPTADO, billServiceModel.getStatus());
-        Assert.assertNotNull(billServiceModel.getTicket());
+        assertNotNull(billServiceModel);
+        assertNotNull(billServiceModel.getCdr());
+        assertEquals(Integer.valueOf(0), billServiceModel.getCode());
+        assertEquals("El Resumen diario RC-20200328-1, ha sido aceptado", billServiceModel.getDescription());
+        assertEquals(BillServiceModel.Status.ACEPTADO, billServiceModel.getStatus());
+        assertNotNull(billServiceModel.getTicket());
     }
 
     @Test
@@ -328,18 +329,18 @@ public class SmartBillServiceManagerTest {
         SmartBillServiceModel smartBillServiceModel = SmartBillServiceManager.send(file, USERNAME, PASSWORD);
 
         XmlContentModel xmlContentModel = smartBillServiceModel.getXmlContentModel();
-        Assert.assertEquals("Perception", xmlContentModel.getDocumentType());
-        Assert.assertEquals("P001-1", xmlContentModel.getDocumentID());
-        Assert.assertEquals("12345678912", xmlContentModel.getRuc());
-        Assert.assertNull(xmlContentModel.getVoidedLineDocumentTypeCode());
+        assertEquals("Perception", xmlContentModel.getDocumentType());
+        assertEquals("P001-1", xmlContentModel.getDocumentID());
+        assertEquals("12345678912", xmlContentModel.getRuc());
+        assertNull(xmlContentModel.getVoidedLineDocumentTypeCode());
 
         BillServiceModel billServiceModel = smartBillServiceModel.getBillServiceModel();
-        Assert.assertNotNull(billServiceModel);
-//        Assert.assertNotNull(billServiceModel.getCdr());
-        Assert.assertEquals(Integer.valueOf(2335), billServiceModel.getCode());
-        Assert.assertEquals("My mock message", billServiceModel.getDescription());
-        Assert.assertEquals(BillServiceModel.Status.RECHAZADO, billServiceModel.getStatus());
-        Assert.assertNull(billServiceModel.getTicket());
+        assertNotNull(billServiceModel);
+//        assertNotNull(billServiceModel.getCdr());
+        assertEquals(Integer.valueOf(2335), billServiceModel.getCode());
+        assertEquals("My mock message", billServiceModel.getDescription());
+        assertEquals(BillServiceModel.Status.RECHAZADO, billServiceModel.getStatus());
+        assertNull(billServiceModel.getTicket());
     }
 
     @Test
@@ -349,18 +350,18 @@ public class SmartBillServiceManagerTest {
         SmartBillServiceModel smartBillServiceModel = SmartBillServiceManager.send(file, USERNAME, PASSWORD);
 
         XmlContentModel xmlContentModel = smartBillServiceModel.getXmlContentModel();
-        Assert.assertEquals("Retention", xmlContentModel.getDocumentType());
-        Assert.assertEquals("R001-1", xmlContentModel.getDocumentID());
-        Assert.assertEquals("12345678912", xmlContentModel.getRuc());
-        Assert.assertNull(xmlContentModel.getVoidedLineDocumentTypeCode());
+        assertEquals("Retention", xmlContentModel.getDocumentType());
+        assertEquals("R001-1", xmlContentModel.getDocumentID());
+        assertEquals("12345678912", xmlContentModel.getRuc());
+        assertNull(xmlContentModel.getVoidedLineDocumentTypeCode());
 
         BillServiceModel billServiceModel = smartBillServiceModel.getBillServiceModel();
-        Assert.assertNotNull(billServiceModel);
-//        Assert.assertNotNull(billServiceModel.getCdr());
-        Assert.assertEquals(Integer.valueOf(2335), billServiceModel.getCode());
-        Assert.assertEquals("My mock message", billServiceModel.getDescription());
-        Assert.assertEquals(BillServiceModel.Status.RECHAZADO, billServiceModel.getStatus());
-        Assert.assertNull(billServiceModel.getTicket());
+        assertNotNull(billServiceModel);
+//        assertNotNull(billServiceModel.getCdr());
+        assertEquals(Integer.valueOf(2335), billServiceModel.getCode());
+        assertEquals("My mock message", billServiceModel.getDescription());
+        assertEquals(BillServiceModel.Status.RECHAZADO, billServiceModel.getStatus());
+        assertNull(billServiceModel.getTicket());
     }
 
     @Test
@@ -370,17 +371,17 @@ public class SmartBillServiceManagerTest {
         SmartBillServiceModel smartBillServiceModel = SmartBillServiceManager.send(file, USERNAME, PASSWORD);
 
         XmlContentModel xmlContentModel = smartBillServiceModel.getXmlContentModel();
-        Assert.assertEquals("DespatchAdvice", xmlContentModel.getDocumentType());
-        Assert.assertEquals("T001-123", xmlContentModel.getDocumentID());
-        Assert.assertEquals("20123456789", xmlContentModel.getRuc());
-        Assert.assertNull(xmlContentModel.getVoidedLineDocumentTypeCode());
+        assertEquals("DespatchAdvice", xmlContentModel.getDocumentType());
+        assertEquals("T001-123", xmlContentModel.getDocumentID());
+        assertEquals("20123456789", xmlContentModel.getRuc());
+        assertNull(xmlContentModel.getVoidedLineDocumentTypeCode());
 
         BillServiceModel billServiceModel = smartBillServiceModel.getBillServiceModel();
-        Assert.assertNotNull(billServiceModel);
-//        Assert.assertNotNull(billServiceModel.getCdr());
-        Assert.assertEquals(Integer.valueOf(2335), billServiceModel.getCode());
-        Assert.assertEquals("My mock message", billServiceModel.getDescription());
-        Assert.assertEquals(BillServiceModel.Status.RECHAZADO, billServiceModel.getStatus());
-        Assert.assertNull(billServiceModel.getTicket());
+        assertNotNull(billServiceModel);
+//        assertNotNull(billServiceModel.getCdr());
+        assertEquals(Integer.valueOf(2335), billServiceModel.getCode());
+        assertEquals("My mock message", billServiceModel.getDescription());
+        assertEquals(BillServiceModel.Status.RECHAZADO, billServiceModel.getStatus());
+        assertNull(billServiceModel.getTicket());
     }
 }

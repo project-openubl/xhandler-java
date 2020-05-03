@@ -16,12 +16,12 @@
  */
 package io.github.project.openubl.xmlsenderws.webservices.exceptions;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.xml.soap.SOAPFault;
 import javax.xml.ws.soap.SOAPFaultException;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -34,19 +34,19 @@ public class WebServiceExceptionFactoryTest {
         when(mockFault.getFaultCode()).thenReturn("100");
 
         AbstractWebServiceException webServiceException = WebServiceExceptionFactory.createWebServiceException(new SOAPFaultException(mockFault));
-        Assert.assertTrue(webServiceException instanceof ValidationWebServiceException);
+        assertTrue(webServiceException instanceof ValidationWebServiceException);
 
         ValidationWebServiceException validationWebServiceException = (ValidationWebServiceException) webServiceException;
-        Assert.assertEquals(Integer.valueOf(100), validationWebServiceException.getSUNATErrorCode());
-        Assert.assertEquals("El sistema no puede responder su solicitud. Intente nuevamente o comuníquese con su Administrador", validationWebServiceException.getSUNATErrorMessage());
-        Assert.assertEquals("El sistema", validationWebServiceException.getSUNATErrorMessage(10));
+        assertEquals(Integer.valueOf(100), validationWebServiceException.getSUNATErrorCode());
+        assertEquals("El sistema no puede responder su solicitud. Intente nuevamente o comuníquese con su Administrador", validationWebServiceException.getSUNATErrorMessage());
+        assertEquals("El sistema", validationWebServiceException.getSUNATErrorMessage(10));
 
 
         // Fault without code: for example when there is no internet
         mockFault = mock(SOAPFault.class);
 
         webServiceException = WebServiceExceptionFactory.createWebServiceException(new SOAPFaultException(mockFault));
-        Assert.assertTrue(webServiceException instanceof UnknownWebServiceException);
-        Assert.assertNotNull(webServiceException.getException());
+        assertTrue(webServiceException instanceof UnknownWebServiceException);
+        assertNotNull(webServiceException.getException());
     }
 }

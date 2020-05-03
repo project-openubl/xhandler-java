@@ -18,8 +18,7 @@ package io.github.project.openubl.xmlsenderws.webservices.utils;
 
 import io.github.project.openubl.xmlsenderws.webservices.providers.BillServiceModel;
 import io.github.project.openubl.xmlsenderws.webservices.models.CdrModel;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -38,6 +37,7 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 public class UtilsTest {
@@ -56,8 +56,8 @@ public class UtilsTest {
         Optional<Integer> result = Utils.getErrorCode(exception);
         verify(mockFault).getFaultCode();
 
-        Assert.assertTrue(result.isPresent());
-        Assert.assertEquals(100, (int) result.get());
+        assertTrue(result.isPresent());
+        assertEquals(100, (int) result.get());
 
 
         // Fault code: soap-env:Client.100
@@ -68,8 +68,8 @@ public class UtilsTest {
         result = Utils.getErrorCode(exception);
         verify(mockFault).getFaultCode();
 
-        Assert.assertTrue(result.isPresent());
-        Assert.assertEquals(100, (int) result.get());
+        assertTrue(result.isPresent());
+        assertEquals(100, (int) result.get());
 
 
         // exception message: 100
@@ -79,8 +79,8 @@ public class UtilsTest {
         result = Utils.getErrorCode(mockException);
         verify(mockFault).getFaultCode();
 
-        Assert.assertTrue(result.isPresent());
-        Assert.assertEquals(100, (int) result.get());
+        assertTrue(result.isPresent());
+        assertEquals(100, (int) result.get());
 
 
         // exception message: soap-env:Client.100
@@ -90,8 +90,8 @@ public class UtilsTest {
         result = Utils.getErrorCode(mockException);
         verify(mockFault).getFaultCode();
 
-        Assert.assertTrue(result.isPresent());
-        Assert.assertEquals(100, (int) result.get());
+        assertTrue(result.isPresent());
+        assertEquals(100, (int) result.get());
     }
 
     /**
@@ -100,10 +100,10 @@ public class UtilsTest {
      */
     @Test
     public void test_getFileNameWithoutExtension() {
-        Assert.assertEquals("file", Utils.getFileNameWithoutExtension("file"));
-        Assert.assertEquals("file", Utils.getFileNameWithoutExtension("file."));
-        Assert.assertEquals("file", Utils.getFileNameWithoutExtension("file.xml"));
-        Assert.assertEquals("file.md", Utils.getFileNameWithoutExtension("file.md.xml"));
+        assertEquals("file", Utils.getFileNameWithoutExtension("file"));
+        assertEquals("file", Utils.getFileNameWithoutExtension("file."));
+        assertEquals("file", Utils.getFileNameWithoutExtension("file.xml"));
+        assertEquals("file.md", Utils.getFileNameWithoutExtension("file.md.xml"));
     }
 
     /**
@@ -120,7 +120,7 @@ public class UtilsTest {
 
         final byte[] cdrExtractedBytes = Utils.getFirstXmlFileFromZip(cdrZipBytes);
 
-        Assert.assertTrue(Arrays.equals(cdrBytes, cdrExtractedBytes));
+        assertTrue(Arrays.equals(cdrBytes, cdrExtractedBytes));
     }
 
     /**
@@ -133,7 +133,7 @@ public class UtilsTest {
         final byte[] bytes = Files.readAllBytes(file.toPath());
 
         Document document = Utils.getDocumentFromBytes(bytes);
-        Assert.assertNotNull(document);
+        assertNotNull(document);
     }
 
     /**
@@ -152,9 +152,9 @@ public class UtilsTest {
 
         CdrModel response = Utils.extractResponse(document);
 
-        Assert.assertNotNull(response);
-        Assert.assertEquals(Integer.valueOf(0), response.getResponseCode());
-        Assert.assertEquals("La Factura numero F001-00000587, ha sido aceptada", response.getDescription());
+        assertNotNull(response);
+        assertEquals(Integer.valueOf(0), response.getResponseCode());
+        assertEquals("La Factura numero F001-00000587, ha sido aceptada", response.getDescription());
     }
 
     /**
@@ -168,10 +168,10 @@ public class UtilsTest {
 
         BillServiceModel result = Utils.toModel(cdrBytes);
 
-        Assert.assertNotNull(result.getCdr());
-        Assert.assertEquals(Integer.valueOf(0), result.getCode());
-        Assert.assertEquals("La Factura numero F001-00000587, ha sido aceptada", result.getDescription());
-        Assert.assertEquals(BillServiceModel.Status.ACEPTADO, result.getStatus());
+        assertNotNull(result.getCdr());
+        assertEquals(Integer.valueOf(0), result.getCode());
+        assertEquals("La Factura numero F001-00000587, ha sido aceptada", result.getDescription());
+        assertEquals(BillServiceModel.Status.ACEPTADO, result.getStatus());
     }
 
 }

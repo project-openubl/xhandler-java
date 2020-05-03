@@ -58,7 +58,7 @@ public class BillServiceManager {
      * @param file     archivo a ser enviado
      * @param config   Credenciales y URL de destino de la petición
      */
-    public static BillServiceModel sendBill(String fileName, byte[] file, ServiceConfig config) throws IOException {
+    public static BillServiceModel sendBill(String fileName, byte[] file, ServiceConfig config) {
         BillServiceProvider billServiceProvider = new DefaultBillServiceProvider();
         return billServiceProvider.sendBill(fileName, file, config);
     }
@@ -102,11 +102,11 @@ public class BillServiceManager {
      * @param file     archivo a ser enviado
      * @param config   Credenciales y URL de destino de la petición
      */
-    public static BillServiceModel sendSummary(String fileName, byte[] file, ServiceConfig config) throws IOException {
+    public static BillServiceModel sendSummary(String fileName, byte[] file, ServiceConfig config) {
         return sendSummary(fileName, file, config, Collections.emptyMap(),null, -1);
     }
 
-    public static BillServiceModel sendSummary(String fileName, byte[] file, ServiceConfig config, Map<String, Object> params, BillServiceCallback callback, long delay) throws IOException {
+    public static BillServiceModel sendSummary(String fileName, byte[] file, ServiceConfig config, Map<String, Object> params, BillServiceCallback callback, long delay) {
         BillServiceProvider billServiceProvider = new DefaultBillServiceProvider();
 
         BillServiceModel result;

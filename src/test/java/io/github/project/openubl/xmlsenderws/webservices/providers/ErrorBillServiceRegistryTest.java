@@ -18,10 +18,12 @@ package io.github.project.openubl.xmlsenderws.webservices.providers;
 
 import io.github.project.openubl.xmlsenderws.webservices.providers.errors.Error1033BillServiceProviderFactory;
 import io.github.project.openubl.xmlsenderws.webservices.providers.errors.ErrorExcepcionBillServiceProviderFactory;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ErrorBillServiceRegistryTest {
 
@@ -30,7 +32,7 @@ public class ErrorBillServiceRegistryTest {
         ErrorBillServiceRegistry instance1 = ErrorBillServiceRegistry.getInstance();
         ErrorBillServiceRegistry instance2 = ErrorBillServiceRegistry.getInstance();
 
-        Assert.assertEquals(instance1, instance2);
+        assertEquals(instance1, instance2);
     }
 
     @Test
@@ -51,7 +53,7 @@ public class ErrorBillServiceRegistryTest {
             index++;
         }
 
-        Assert.assertTrue(error1033Index < excepcionIndex);
+        assertTrue(error1033Index < excepcionIndex);
     }
 
 }

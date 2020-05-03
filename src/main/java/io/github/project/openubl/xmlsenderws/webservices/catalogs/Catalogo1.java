@@ -16,6 +16,7 @@
  */
 package io.github.project.openubl.xmlsenderws.webservices.catalogs;
 
+import java.util.Optional;
 import java.util.stream.Stream;
 
 public enum Catalogo1 {
@@ -47,11 +48,10 @@ public enum Catalogo1 {
         return code;
     }
 
-    public static Catalogo1 valueOfCode(String code) {
+    public static Optional<Catalogo1> valueOfCode(String code) {
         return Stream.of(Catalogo1.values())
-                .filter(p -> p.code.equals(code))
-                .findFirst()
-                .orElse(null);
+                .filter(p -> p.getCode().equals(code))
+                .findFirst();
     }
 
 }

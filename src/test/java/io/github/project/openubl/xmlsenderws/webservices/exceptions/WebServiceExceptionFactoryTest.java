@@ -36,12 +36,17 @@ public class WebServiceExceptionFactoryTest {
         AbstractWebServiceException webServiceException = WebServiceExceptionFactory.createWebServiceException(new SOAPFaultException(mockFault));
         Assert.assertTrue(webServiceException instanceof ValidationWebServiceException);
 
+        ValidationWebServiceException validationWebServiceException = (ValidationWebServiceException) webServiceException;
+        Assert.assertEquals(Integer.valueOf(100), validationWebServiceException.getSUNATErrorCode());
+        Assert.assertEquals("El sistema no puede responder su solicitud. Intente nuevamente o comuníquese con su Administrador", validationWebServiceException.getSUNATErrorMessage());
+        Assert.assertEquals("El sistema", validationWebServiceException.getSUNATErrorMessage(10));
+
 
         // Fault without code: for example when there is no internet
         mockFault = mock(SOAPFault.class);
 
         webServiceException = WebServiceExceptionFactory.createWebServiceException(new SOAPFaultException(mockFault));
         Assert.assertTrue(webServiceException instanceof UnknownWebServiceException);
-
+        Assert.assertNotNull(webServiceException.getException());
     }
 }

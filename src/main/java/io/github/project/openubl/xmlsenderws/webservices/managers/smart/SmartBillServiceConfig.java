@@ -18,7 +18,7 @@ package io.github.project.openubl.xmlsenderws.webservices.managers.smart;
 
 public class SmartBillServiceConfig {
 
-    private static volatile SmartBillServiceConfig instance;
+    private static SmartBillServiceConfig instance;
 
     private String invoiceAndNoteDeliveryURL;
     private String perceptionAndRetentionDeliveryURL;

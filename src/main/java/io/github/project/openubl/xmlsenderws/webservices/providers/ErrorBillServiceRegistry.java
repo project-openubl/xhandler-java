@@ -22,9 +22,9 @@ import java.util.stream.Collectors;
 
 public class ErrorBillServiceRegistry {
 
-    private static volatile ErrorBillServiceRegistry instance;
+    private static ErrorBillServiceRegistry instance;
 
-    private List<ErrorBillServiceProviderFactory> factories;
+    private final List<ErrorBillServiceProviderFactory> factories;
 
     private ErrorBillServiceRegistry() {
         factories = new LinkedList<>();

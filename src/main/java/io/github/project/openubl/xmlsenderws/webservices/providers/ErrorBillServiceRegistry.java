@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 public class ErrorBillServiceRegistry {
 
-    private static ErrorBillServiceRegistry instance;
+    private static volatile ErrorBillServiceRegistry instance;
 
     private final List<ErrorBillServiceProviderFactory> factories;
 

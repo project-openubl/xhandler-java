@@ -21,7 +21,7 @@ import java.util.TreeMap;
 
 public class SunatErrors {
 
-    private static SunatErrors instance;
+    private static volatile SunatErrors instance;
 
     private final Map<Integer, String> map = new TreeMap<>();
 

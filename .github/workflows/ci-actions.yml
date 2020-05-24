@@ -38,6 +38,91 @@ jobs:
         uses: joschi/setup-jdk@b9cc6eabf7e7e3889766b5cee486f874c9e1bd2d
         with:
           java-version: 11
+      - name: Compute cache restore key
+        # Always recompute on a push so that the maven repo doesnt grow indefinitely with old versions
+        run: |
+          if ${{ github.event_name == 'pull_request' }}; then echo "::set-env name=COMPUTED_RESTORE_KEY::q2maven-"; fi
+      - name: Cache Maven Repository
+        id: cache-maven
+        uses: n1hility/cache@v2
+        with:
+          path: ~/.m2/repository
+          # Improves the reusability of the cache to limit key changes
+          key: q2maven-${{ hashFiles('pom.xml') }}
+          restore-keys: ${{ env.COMPUTED_RESTORE_KEY }}
+          restore-only: ${{ github.event_name == 'pull_request' }}
+      - name: Build
+        run: |
+          mvn -e -B  -DskipTests=true -DskipDocs clean install
+      - name: Tar Maven Repo
+        shell: bash
+        run: tar -czvf maven-repo.tgz -C ~ .m2/repository
+      - name: Persist Maven Repo
+        uses: actions/upload-artifact@v1
+        with:
+          name: maven-repo
+          path: maven-repo.tgz
+
+  linux-jvm-tests:
+    name: JDK ${{matrix.java-version}} JVM Tests
+    timeout-minutes: 120
+    needs: build-jdk11
+    strategy:
+      fail-fast: false
+      matrix:
+        java-version: [8, 11, 13]
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK ${{ matrix.java-version }}
+        # Uses sha for added security since tags can be updated
+        uses: joschi/setup-jdk@b9cc6eabf7e7e3889766b5cee486f874c9e1bd2d
+        with:
+          java-version: ${{ matrix.java-version }}
+      - name: Download Maven Repo
+        uses: actions/download-artifact@v1
+        with:
+          name: maven-repo
+          path: .
+      - name: Extract Maven Repo
+        shell: bash
+        run: tar -xzvf maven-repo.tgz -C ~
+      - name: Build with Maven
+        run: mvn install
+      - name: Prepare failure archive (if maven failed)
+        if: failure()
+        shell: bash
+        run: find . -name '*-reports' -type d | tar -czvf test-reports.tgz -T -
+      - name: Upload failure Archive (if maven failed)
+        uses: actions/upload-artifact@v1
+        if: failure()
+        with:
+          name: test-reports-linux-jvm${{matrix.java-version}}
+          path: 'test-reports.tgz'
+
+  code-scan:
+    name: JDK 8 JVM Code Scan
+    timeout-minutes: 120
+    needs: build-jdk11
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 8
+        # Uses sha for added security since tags can be updated
+        uses: joschi/setup-jdk@b9cc6eabf7e7e3889766b5cee486f874c9e1bd2d
+        with:
+          java-version: 8
+      - name: Download Maven Repo
+        uses: actions/download-artifact@v1
+        with:
+          name: maven-repo
+          path: .
+      - name: Extract Maven Repo
+        shell: bash
+        run: tar -xzvf maven-repo.tgz -C ~
       - name: Build with Maven and Coverage
         if: github.event_name == 'pull_request'
         run: mvn verify -P coverage
@@ -57,5 +142,5 @@ jobs:
         uses: actions/upload-artifact@v1
         if: failure()
         with:
-          name: test-reports-linux-jvm11
+          name: test-reports-linux-jvm-codescan
           path: 'test-reports.tgz'

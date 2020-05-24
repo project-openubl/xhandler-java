@@ -6,16 +6,16 @@ on:
       - '*'
 
 jobs:
-  build-jdk11:
-    name: "JDK 11 Build"
+  build-jdk8:
+    name: "JDK 8 Build"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Set up JDK 11
+      - name: Set up JDK 8
         # Uses sha for added security since tags can be updated
         uses: joschi/setup-jdk@b9cc6eabf7e7e3889766b5cee486f874c9e1bd2d
         with:
-          java-version: 11
+          java-version: 8
       - name: Build
         run: |
           mvn -e -B  -DskipTests=true -DskipDocs clean install

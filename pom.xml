@@ -23,7 +23,7 @@
 
     <groupId>io.github.project-openubl</groupId>
     <artifactId>xml-sender-ws</artifactId>
-    <version>2.1.1-SNAPSHOT</version>
+    <version>2.1.1.Final</version>
 
     <name>XML Sender WS :: Services</name>
     <description>SUNAT Web Services Endpoints</description>

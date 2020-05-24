@@ -63,7 +63,7 @@ public class SmartBillServiceManager {
         }
 
         Optional<DocumentType> documentTypeOptional = DocumentType.valueFromDocumentType(xmlContentModel.getDocumentType());
-        if (documentTypeOptional.isEmpty()) {
+        if (!documentTypeOptional.isPresent()) {
             throw new UnsupportedDocumentTypeException(xmlContentModel.getDocumentType() + " is not supported yet");
         }
 

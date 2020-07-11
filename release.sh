@@ -28,15 +28,15 @@ mvn versions:set -DnewVersion="$releaseVersion"
 
 git add .
 git commit -m "Release $releaseVersion"
-git push "https://$username:$password@github.com/project-openubl/xml-sender-ws.git"
+git push "https://$username:$password@github.com/project-openubl/xsender.git"
 
 # Create tag and push
 git tag "$releaseVersion"
-git push "https://$username:$password@github.com/project-openubl/xml-sender-ws.git" --tags
+git push "https://$username:$password@github.com/project-openubl/xsender.git" --tags
 
 # Create next snapshot
 mvn versions:set -DnewVersion="$nextVersion-SNAPSHOT"
 
 git add .
 git commit -m "Prepare next release $nextVersion-SNAPSHOT"
-git push "https://$username:$password@github.com/project-openubl/xml-sender-ws.git"
+git push "https://$username:$password@github.com/project-openubl/xsender.git"

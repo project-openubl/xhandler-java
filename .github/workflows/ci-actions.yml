@@ -4,10 +4,12 @@ on:
   push:
     paths-ignore:
       - 'README.md'
+      - 'docusaurus/**'
   pull_request:
     types: [assigned, opened, synchronize, reopened, ready_for_review, edited]
     paths-ignore:
       - 'README.md'
+      - 'docusaurus/**'
   schedule:
     - cron:  '0 0 * * *'
 

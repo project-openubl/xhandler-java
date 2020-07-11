@@ -22,11 +22,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.github.project-openubl</groupId>
-    <artifactId>xml-sender-ws</artifactId>
+    <artifactId>xsender</artifactId>
     <version>2.1.2-SNAPSHOT</version>
 
-    <name>XML Sender WS :: Services</name>
-    <description>SUNAT Web Services Endpoints</description>
+    <name>XSender :: Parent</name>
+    <description>Java library for sending XML files to SUNAT</description>
     <packaging>jar</packaging>
 
     <properties>
@@ -42,7 +42,7 @@
         <license.dir>${basedir}</license.dir>
     </properties>
 
-    <url>https://project-openubl.github.io/</url>
+    <url>https://project-openubl.github.io/xsender-docs</url>
 
     <licenses>
         <license>
@@ -66,9 +66,9 @@
     </developers>
 
     <scm>
-        <url>https://github.com/project-openubl/xml-sender-ws</url>
-        <connection>scm:git:git://github.com/project-openubl/xml-sender-ws.git</connection>
-        <developerConnection>scm:git:git@github.com:project-openubl/xml-sender-ws.git</developerConnection>
+        <url>https://github.com/project-openubl/xsender</url>
+        <connection>scm:git:git://github.com/project-openubl/xsender.git</connection>
+        <developerConnection>scm:git:git@github.com:project-openubl/xsender.git</developerConnection>
     </scm>
 
     <distributionManagement>
@@ -194,7 +194,7 @@
                 <artifactId>license-maven-plugin</artifactId>
                 <version>3.0</version>
                 <configuration>
-                    <header>copyright.txt</header>
+                    <header>tools/copyright.txt</header>
                     <properties>
                         <owner>Project OpenUBL</owner>
                         <email>projectopenubl+subscribe@googlegroups.com</email>
@@ -204,6 +204,7 @@
                         <exclude>src/test/resources/**</exclude>
                         <exclude>src/main/resources/**</exclude>
                         <exclude>.github/**</exclude>
+                        <exclude>docusaurus/**</exclude>
                     </excludes>
                 </configuration>
                 <executions>
@@ -290,7 +291,7 @@
             <properties>
                 <sonar.host.url>https://sonarcloud.io</sonar.host.url>
                 <sonar.organization>project-openubl</sonar.organization>
-                <sonar.projectKey>project-openubl_xml-sender-ws</sonar.projectKey>
+                <sonar.projectKey>project-openubl_xsender</sonar.projectKey>
                 <sonar.projectName>XML Sender WS</sonar.projectName>
             </properties>
             <build>

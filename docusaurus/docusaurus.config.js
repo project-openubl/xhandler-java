@@ -66,10 +66,10 @@ module.exports = {
       copyright: `Copyright © ${new Date().getFullYear()} Project OpenUBL, Inc.`,
     },
     googleAnalytics: {
-      trackingID: "UA-152706512-4",
+      trackingID: "UA-152706512-2",
     },
     gtag: {
-      trackingID: 'UA-152706512-4',
+      trackingID: 'UA-152706512-2',
     },
   },
   stylesheets: [

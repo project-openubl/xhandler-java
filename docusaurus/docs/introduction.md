@@ -4,15 +4,15 @@ title: Introduction
 sidebar_label: Introduction
 ---
 
-_XBuilder Server_ is a Microservice that can create XML files based on the [Universal Bussiness Language](https://en.wikipedia.org/wiki/Universal_Business_Language) (UBL). It is based on [XBuilder](https://project-openubl.github.io/xbuilder-docs/)
+_XSender_ is a Java library that allows you to send XML files through SOAP.
 
-## Features
+## Supported countries
 
-_XBuilder Server_ is based on [XBuilder](https://project-openubl.github.io/xbuilder-docs/) so it offers the same core funtionalities. However, _XBuilder Server_ offers additional features that allows you to deploy it across different cloud platforms or bare-metals.
+- Perú - integration with _Superintendencia Nacional de Aduanas y de Administración Tributaria (SUNAT)_
 
 ## Staying informed
 
-- [GitHub](https://github.com/project-openubl/xbuilder-server)
+- [GitHub](https://github.com/project-openubl/xsender)
 - [Twitter](https://twitter.com/openubl)
 - [Youtube](https://www.youtube.com/channel/UChq3xxjyDgjcU346rp0bbtA)
 

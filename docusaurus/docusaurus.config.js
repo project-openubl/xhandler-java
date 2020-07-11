@@ -1,6 +1,6 @@
 module.exports = {
   title: "XSender",
-  tagline: "Microservice for creating and signing XML files based on Universal Bussiness Language (UBL)",
+  tagline: "Java library for sending XML files through SOAP - SUNAT",
   url: "https://project-openubl.github.io/xsender-docs/",
   baseUrl: "/xsender-docs/",
   favicon: "img/favicon.ico",

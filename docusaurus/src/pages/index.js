@@ -8,47 +8,26 @@ import styles from "./styles.module.css";
 
 const features = [
   {
-    title: <>Easy integration</>,
-    imageUrl: "img/integration.png",
+    title: <>No SOAP knowledge required</>,
+    imageUrl: "img/ws.png",
     description: (
       <>
-        <code>XBuilder Server</code> exposes a set of REST endpoints that can be
-        consumed by any programing language.
+        <code>XSender</code> exposes a set of Java classes and methods to make
+        it easy to interact with SOAP.
       </>
     ),
   },
   {
-    title: <>Hybrid</>,
-    imageUrl: "img/hybrid.png",
+    title: <>SUNAT</>,
+    imageUrl: "img/sunat.jpg",
     description: (
       <>
-        <code>XBuilder Server</code> can be deployed in mutiple cloud platforms
-        or bare-metals. You can go to the cloud and use <i>container images</i>{" "}
-        and/or go as <i>serveless</i>. If the cloud if not for you then you can
-        always deploy <code>XBuilder Server</code> in your own datacenter.
-      </>
-    ),
-  },
-  {
-    title: <>XBuilder</>,
-    imageUrl: "img/logo_icon.png",
-    description: (
-      <>
-        <code>XBuilder Server</code> supports 100% of features of{" "}
-        <a
-          href="https://project-openubl.github.io/xbuilder-docs/"
-          target="_blank"
-        >
-          XBuilder
-        </a>{" "}
-        so whenever a new feature or bug is solved into{" "}
-        <a
-          href="https://project-openubl.github.io/xbuilder-docs/"
-          target="_blank"
-        >
-          XBuilder
-        </a>{" "}
-        you will have it for free.
+        Integrate your software easy with
+        <i>
+          Superintendencia Nacional de Aduanas y de Administración Tributaria
+          (SUNAT, Perú)
+        </i>
+        . <code>XSender</code> exposes to you all SUNAT WS endpoints.
       </>
     ),
   },
@@ -57,7 +36,7 @@ const features = [
 function Feature({ imageUrl, title, description }) {
   const imgUrl = useBaseUrl(imageUrl);
   return (
-    <div className={clsx("col col--4", styles.feature)}>
+    <div className={clsx("col col--6", styles.feature)}>
       {imgUrl && (
         <div className="text--center">
           <img className={styles.featureImage} src={imgUrl} alt={title} />
@@ -79,10 +58,7 @@ function Home() {
     >
       <header className={clsx("hero hero--primary", styles.heroBanner)}>
         <div className="container">
-          <h1 className="hero__title">
-            {siteConfig.title}{" "}
-            <strong style={{ color: "#733a0f" }}>Server</strong>
-          </h1>
+          <h1 className="hero__title">{siteConfig.title}</h1>
           <p className="hero__subtitle">{siteConfig.tagline}</p>
           <div className={styles.buttons}>
             <Link

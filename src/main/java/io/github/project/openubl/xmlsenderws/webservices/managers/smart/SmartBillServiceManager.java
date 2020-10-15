@@ -20,7 +20,9 @@ import io.github.project.openubl.xmlsenderws.webservices.catalogs.Catalogo1;
 import io.github.project.openubl.xmlsenderws.webservices.exceptions.InvalidXMLFileException;
 import io.github.project.openubl.xmlsenderws.webservices.exceptions.UnsupportedDocumentTypeException;
 import io.github.project.openubl.xmlsenderws.webservices.managers.BillServiceManager;
+import io.github.project.openubl.xmlsenderws.webservices.models.DeliveryURLType;
 import io.github.project.openubl.xmlsenderws.webservices.providers.BillServiceModel;
+import io.github.project.openubl.xmlsenderws.webservices.utils.UBLUtils;
 import io.github.project.openubl.xmlsenderws.webservices.wrappers.ServiceConfig;
 import io.github.project.openubl.xmlsenderws.webservices.xml.DocumentType;
 import io.github.project.openubl.xmlsenderws.webservices.xml.XmlContentModel;
@@ -33,14 +35,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.text.MessageFormat;
 import java.util.Optional;
-import java.util.regex.Pattern;
 
 public class SmartBillServiceManager {
-
-    private final static String FILENAME_FORMAT1 = "{0}-{1}-{2}";
-    private final static String FILENAME_FORMAT2 = "{0}-{1}";
 
     private SmartBillServiceManager() {
         // Just static methods
@@ -70,7 +67,8 @@ public class SmartBillServiceManager {
         DocumentType documentType = documentTypeOptional.get();
 
         String deliveryURL = getDeliveryURL(documentType, xmlContentModel);
-        String fileNameWithoutExtension = getFileNameWithoutExtension(documentType, xmlContentModel.getRuc(), xmlContentModel.getDocumentID());
+        String fileNameWithoutExtension = UBLUtils.getFileNameWithoutExtension(documentType, xmlContentModel.getRuc(), xmlContentModel.getDocumentID())
+                .orElseThrow(() -> new IllegalStateException("Invalid type of UBL Document, can not extract Serie-Numero to create fileName"));
 
         ServiceConfig config = new ServiceConfig.Builder()
                 .url(deliveryURL)
@@ -137,64 +135,21 @@ public class SmartBillServiceManager {
 
     private static String getDeliveryURL(DocumentType documentType, XmlContentModel xmlContentModel) {
         SmartBillServiceConfig config = SmartBillServiceConfig.getInstance();
-        switch (documentType) {
-            case INVOICE:
-            case CREDIT_NOTE:
-            case DEBIT_NOTE:
-            case SUMMARY_DOCUMENT:
+
+        DeliveryURLType deliveryURLType = UBLUtils.getDeliveryURLType(documentType, xmlContentModel)
+                .orElseThrow(() -> new IllegalStateException("Invalid type of UBL Document, can not create Sunat Server URL"));
+
+        switch (deliveryURLType) {
+            case BASIC_DOCUMENTS_URL:
                 return config.getInvoiceAndNoteDeliveryURL();
-            case VOIDED_DOCUMENT:
-                String tipoDocumentoAfectado = xmlContentModel.getVoidedLineDocumentTypeCode();
-                Catalogo1 catalog1 = Catalogo1.valueOfCode(tipoDocumentoAfectado).orElseThrow(() -> new IllegalStateException("No se pudo convertir el valor del catálogo"));
-                if (catalog1.equals(Catalogo1.PERCEPCION) || catalog1.equals(Catalogo1.RETENCION)) {
-                    return config.getPerceptionAndRetentionDeliveryURL();
-                } else if (catalog1.equals(Catalogo1.GUIA_REMISION_REMITENTE)) {
-                    return config.getDespatchAdviceDeliveryURL();
-                }
-                return config.getInvoiceAndNoteDeliveryURL();
-            case PERCEPTION:
-            case RETENTION:
-                return config.getPerceptionAndRetentionDeliveryURL();
-            case DESPATCH_ADVICE:
+            case DESPATCH_DOCUMENT_URL:
                 return config.getDespatchAdviceDeliveryURL();
+            case PERCEPTION_RETENTION_URL:
+                return config.getPerceptionAndRetentionDeliveryURL();
             default:
-                throw new IllegalStateException("Invalid type of UBL Document, can not create Sunat Server URL");
+                throw new IllegalStateException("DeliveryURLType not configured to return a value");
         }
     }
 
-    private static String getFileNameWithoutExtension(DocumentType type, String ruc, String documentID) {
-        String codigoDocumento;
-        switch (type) {
-            case INVOICE:
-                if (Pattern.compile("^[F|f].*$").matcher(documentID).find()) {
-                    codigoDocumento = Catalogo1.FACTURA.getCode();
-                } else if (Pattern.compile("^[B|b].*$").matcher(documentID).find()) {
-                    codigoDocumento = Catalogo1.BOLETA.getCode();
-                } else {
-                    throw new IllegalStateException("Invalid Serie, can not detect code");
-                }
 
-                return MessageFormat.format(FILENAME_FORMAT1, ruc, codigoDocumento, documentID);
-            case CREDIT_NOTE:
-                codigoDocumento = Catalogo1.NOTA_CREDITO.getCode();
-                return MessageFormat.format(FILENAME_FORMAT1, ruc, codigoDocumento, documentID);
-            case DEBIT_NOTE:
-                codigoDocumento = Catalogo1.NOTA_DEBITO.getCode();
-                return MessageFormat.format(FILENAME_FORMAT1, ruc, codigoDocumento, documentID);
-            case VOIDED_DOCUMENT:
-            case SUMMARY_DOCUMENT:
-                return MessageFormat.format(FILENAME_FORMAT2, ruc, documentID);
-            case PERCEPTION:
-                codigoDocumento = Catalogo1.PERCEPCION.getCode();
-                return MessageFormat.format(FILENAME_FORMAT1, ruc, codigoDocumento, documentID);
-            case RETENTION:
-                codigoDocumento = Catalogo1.RETENCION.getCode();
-                return MessageFormat.format(FILENAME_FORMAT1, ruc, codigoDocumento, documentID);
-            case DESPATCH_ADVICE:
-                codigoDocumento = Catalogo1.GUIA_REMISION_REMITENTE.getCode();
-                return MessageFormat.format(FILENAME_FORMAT1, ruc, codigoDocumento, documentID);
-            default:
-                throw new IllegalStateException("Invalid type of UBL Document, can not extract Serie-Numero to create fileName");
-        }
-    }
 }

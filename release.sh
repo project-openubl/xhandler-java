@@ -20,23 +20,22 @@
 echo "===================================="
 read -p "Enter Release: " releaseVersion
 read -p "Enter Next Release (SNAPSHOT): " nextVersion
-read -p "Enter Github Username: " username
-read -s -p "Enter Github Password: " password
+read -s -p "Enter Github Token: " token
 
 # Update to release
 mvn versions:set -DnewVersion="$releaseVersion"
 
 git add .
 git commit -m "Release $releaseVersion"
-git push "https://$username:$password@github.com/project-openubl/xsender.git"
+git push "https://$token@github.com/project-openubl/xsender.git"
 
 # Create tag and push
 git tag "$releaseVersion"
-git push "https://$username:$password@github.com/project-openubl/xsender.git" --tags
+git push "https://$token@github.com/project-openubl/xsender.git" --tags
 
 # Create next snapshot
 mvn versions:set -DnewVersion="$nextVersion-SNAPSHOT"
 
 git add .
 git commit -m "Prepare next release $nextVersion-SNAPSHOT"
-git push "https://$username:$password@github.com/project-openubl/xsender.git"
+git push "https://$token@github.com/project-openubl/xsender.git"

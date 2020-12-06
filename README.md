@@ -1,6 +1,5 @@
 ![CI](https://github.com/project-openubl/xsender/workflows/CI/badge.svg)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=project-openubl_xsender&metric=alert_status)](https://sonarcloud.io/dashboard?id=project-openubl_xsender)
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fproject-openubl%2Fxsender.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fproject-openubl%2Fxsender?ref=badge_shield)
 
 # SUNAT Web Services
 Libreria para realizar envíos de comprobantes electrónicos a los servicios web de la SUNAT y/o OSCE de acuerdo a lo especificado por la SUNAT: 
@@ -241,5 +240,3 @@ mipaquete.MyErrorHandlerFactory
 ## License
 
 - [Eclipse Public License - v 2.0](./LICENSE)
-
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fproject-openubl%2Fxsender.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fproject-openubl%2Fxsender?ref=badge_large)

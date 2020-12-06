@@ -14,7 +14,7 @@ Incluir la última version de la libreria. Si utiliza maven agrege las siguiente
 <dependency>
     <groupId>io.github.project-openubl</groupId>
     <artifactId>xsender</artifactId>
-    <version>latestVersion</version>
+    <version>3.0.1.Final</version>
 </dependency>
 ```
 

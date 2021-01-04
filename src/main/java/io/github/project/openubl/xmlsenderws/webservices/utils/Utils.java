@@ -19,6 +19,8 @@ package io.github.project.openubl.xmlsenderws.webservices.utils;
 import io.github.project.openubl.xmlsenderws.webservices.models.CdrModel;
 import io.github.project.openubl.xmlsenderws.webservices.providers.BillServiceModel;
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import javax.xml.namespace.NamespaceContext;
@@ -31,7 +33,9 @@ import javax.xml.xpath.*;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Optional;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -139,7 +143,15 @@ public class Utils {
         XPathExpression descriptionXPathExpression = xPath.compile("//ar:ApplicationResponse/cac:DocumentResponse/cac:Response/cbc:Description");
         String description = (String) descriptionXPathExpression.evaluate(document, XPathConstants.STRING);
 
-        return new CdrModel(Integer.parseInt(code), description);
+        XPathExpression notesXPathExpression = xPath.compile("//ar:ApplicationResponse/cbc:Note");
+        NodeList noteNodes = (NodeList) notesXPathExpression.evaluate(document, XPathConstants.NODESET);
+        List<String> notes = new ArrayList<>();
+        for (int index = 0; index < noteNodes.getLength(); index++) {
+            Node node = noteNodes.item(index);
+            notes.add(node.getTextContent());
+        }
+
+        return new CdrModel(Integer.parseInt(code), description, notes);
     }
 
     public static BillServiceModel toModel(byte[] zip) throws IOException, ParserConfigurationException, SAXException, XPathExpressionException {
@@ -152,7 +164,7 @@ public class Utils {
         result.setCode(cdrContent.getResponseCode());
         result.setDescription(cdrContent.getDescription());
         result.setStatus(BillServiceModel.Status.fromCode(cdrContent.getResponseCode()));
-
+        result.setNotes(cdrContent.getNotes());
         return result;
     }
 

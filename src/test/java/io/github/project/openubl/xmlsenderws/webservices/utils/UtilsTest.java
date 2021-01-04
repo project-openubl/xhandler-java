@@ -38,6 +38,7 @@ import java.util.Arrays;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 public class UtilsTest {
@@ -155,6 +156,33 @@ public class UtilsTest {
         assertNotNull(response);
         assertEquals(Integer.valueOf(0), response.getResponseCode());
         assertEquals("La Factura numero F001-00000587, ha sido aceptada", response.getDescription());
+        assertEquals(0, response.getNotes().size());
+    }
+
+    /**
+     * Should extract info from document
+     * {@link Utils#extractResponse(Document)}
+     */
+    @Test
+    public void test_shouldExtractResponse_withNotes() throws Exception {
+        final File cdrFile = Paths.get(getClass().getResource("/ubl/cdr/R-20220557805-01-F001-22Openubl.XML").toURI()).toFile();
+        final byte[] cdrBytes = Files.readAllBytes(cdrFile.toPath());
+
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setNamespaceAware(true);
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        Document document = builder.parse(new ByteArrayInputStream(cdrBytes));
+
+        CdrModel response = Utils.extractResponse(document);
+
+        assertNotNull(response);
+        assertEquals(Integer.valueOf(0), response.getResponseCode());
+        assertEquals("La Factura numero F001-22, ha sido aceptada", response.getDescription());
+
+        assertEquals(8, response.getNotes().size());
+        assertEquals("4252 - El dato ingresado como atributo @listName es incorrecto. - INFO: 4252 (nodo: \"cbc:InvoiceTypeCode/listName\" valor: \"SUNAT:Identificador de Tipo de Documento\")", response.getNotes().get(0));
+        assertEquals("4252 - El dato ingresado como atributo @listName es incorrecto. - Error en la linea: 1: 4252 (nodo: \"cbc:PriceTypeCode/listName\" valor: \"SUNAT:Indicador de Tipo de Precio\")", response.getNotes().get(4));
+        assertEquals("4252 - El dato ingresado como atributo @listName es incorrecto. - Error en la linea: 2 Tributo: 1000: 4252 (nodo: \"cbc:TaxExemptionReasonCode/listName\" valor: \"SUNAT:Codigo de Tipo de Afectacion del IGV\")", response.getNotes().get(7));
     }
 
     /**
@@ -172,6 +200,29 @@ public class UtilsTest {
         assertEquals(Integer.valueOf(0), result.getCode());
         assertEquals("La Factura numero F001-00000587, ha sido aceptada", result.getDescription());
         assertEquals(BillServiceModel.Status.ACEPTADO, result.getStatus());
+        assertEquals(0, result.getNotes().size());
+    }
+
+    /**
+     * Should create the correct model from zip
+     * {@link Utils#toModel(byte[])}
+     */
+    @Test
+    public void test_createModelFromZip_withNotes() throws IOException, URISyntaxException, XPathExpressionException, SAXException, ParserConfigurationException {
+        final File cdrFile = Paths.get(getClass().getResource("/ubl/cdr/cdr_openubl.zip").toURI()).toFile();
+        final byte[] cdrBytes = Files.readAllBytes(cdrFile.toPath());
+
+        BillServiceModel result = Utils.toModel(cdrBytes);
+
+        assertNotNull(result.getCdr());
+        assertEquals(Integer.valueOf(0), result.getCode());
+        assertEquals("La Factura numero F001-22, ha sido aceptada", result.getDescription());
+        assertEquals(BillServiceModel.Status.ACEPTADO, result.getStatus());
+
+        assertEquals(8, result.getNotes().size());
+        assertEquals("4252 - El dato ingresado como atributo @listName es incorrecto. - INFO: 4252 (nodo: \"cbc:InvoiceTypeCode/listName\" valor: \"SUNAT:Identificador de Tipo de Documento\")", result.getNotes().get(0));
+        assertEquals("4252 - El dato ingresado como atributo @listName es incorrecto. - Error en la linea: 1: 4252 (nodo: \"cbc:PriceTypeCode/listName\" valor: \"SUNAT:Indicador de Tipo de Precio\")", result.getNotes().get(4));
+        assertEquals("4252 - El dato ingresado como atributo @listName es incorrecto. - Error en la linea: 2 Tributo: 1000: 4252 (nodo: \"cbc:TaxExemptionReasonCode/listName\" valor: \"SUNAT:Codigo de Tipo de Afectacion del IGV\")", result.getNotes().get(7));
     }
 
 }

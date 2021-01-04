@@ -16,14 +16,18 @@
  */
 package io.github.project.openubl.xmlsenderws.webservices.models;
 
+import java.util.List;
+
 public class CdrModel {
 
     private final Integer responseCode;
     private final String description;
+    private final List<String> notes;
 
-    public CdrModel(Integer responseCode, String description) {
+    public CdrModel(Integer responseCode, String description, List<String> notes) {
         this.responseCode = responseCode;
         this.description = description;
+        this.notes = notes;
     }
 
     public Integer getResponseCode() {
@@ -34,4 +38,7 @@ public class CdrModel {
         return description;
     }
 
+    public List<String> getNotes() {
+        return notes;
+    }
 }

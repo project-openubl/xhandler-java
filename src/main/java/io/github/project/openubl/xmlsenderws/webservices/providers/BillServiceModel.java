@@ -16,6 +16,8 @@
  */
 package io.github.project.openubl.xmlsenderws.webservices.providers;
 
+import java.util.List;
+
 public class BillServiceModel {
 
     private Status status;
@@ -23,6 +25,8 @@ public class BillServiceModel {
     private String description;
     private byte[] cdr;
     private String ticket;
+
+    private List<String> notes;
 
     public Status getStatus() {
         return status;
@@ -62,6 +66,14 @@ public class BillServiceModel {
 
     public void setTicket(String ticket) {
         this.ticket = ticket;
+    }
+
+    public List<String> getNotes() {
+        return notes;
+    }
+
+    public void setNotes(List<String> notes) {
+        this.notes = notes;
     }
 
     public enum Status {

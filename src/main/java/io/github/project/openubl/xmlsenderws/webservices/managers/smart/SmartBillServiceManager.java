@@ -44,44 +44,35 @@ public class SmartBillServiceManager {
 
     public static SmartBillServiceModel send(byte[] file, String username, String password) throws InvalidXMLFileException, UnsupportedDocumentTypeException {
         SmartBillServiceConfig config = SmartBillServiceConfig.getInstance();
-
-        return CustomSmartBillServiceManager.send(file, username, password, new CustomBillServiceConfig() {
-            @Override
-            public String getInvoiceAndNoteDeliveryURL() {
-                return config.getInvoiceAndNoteDeliveryURL();
-            }
-
-            @Override
-            public String getPerceptionAndRetentionDeliveryURL() {
-                return config.getPerceptionAndRetentionDeliveryURL();
-            }
-
-            @Override
-            public String getDespatchAdviceDeliveryURL() {
-                return config.getDespatchAdviceDeliveryURL();
-            }
-        });
+        return CustomSmartBillServiceManager.send(file, username, password, new BillServiceConfig(config));
     }
 
     public static BillServiceModel getStatus(String ticket, XmlContentModel xmlContentModel, String username, String password) {
         SmartBillServiceConfig config = SmartBillServiceConfig.getInstance();
-
-        return CustomSmartBillServiceManager.getStatus(ticket, xmlContentModel, username, password, new CustomBillServiceConfig() {
-            @Override
-            public String getInvoiceAndNoteDeliveryURL() {
-                return config.getInvoiceAndNoteDeliveryURL();
-            }
-
-            @Override
-            public String getPerceptionAndRetentionDeliveryURL() {
-                return config.getPerceptionAndRetentionDeliveryURL();
-            }
-
-            @Override
-            public String getDespatchAdviceDeliveryURL() {
-                return config.getDespatchAdviceDeliveryURL();
-            }
-        });
+        return CustomSmartBillServiceManager.getStatus(ticket, xmlContentModel, username, password, new BillServiceConfig(config));
     }
 
+    public static class BillServiceConfig implements CustomBillServiceConfig {
+
+        private final SmartBillServiceConfig config;
+
+        public BillServiceConfig(SmartBillServiceConfig config) {
+            this.config = config;
+        }
+
+        @Override
+        public String getInvoiceAndNoteDeliveryURL() {
+            return config.getInvoiceAndNoteDeliveryURL();
+        }
+
+        @Override
+        public String getPerceptionAndRetentionDeliveryURL() {
+            return config.getPerceptionAndRetentionDeliveryURL();
+        }
+
+        @Override
+        public String getDespatchAdviceDeliveryURL() {
+            return config.getDespatchAdviceDeliveryURL();
+        }
+    }
 }

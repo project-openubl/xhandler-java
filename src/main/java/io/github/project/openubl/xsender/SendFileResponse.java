@@ -1,6 +1,6 @@
 package io.github.project.openubl.xsender;
 
-public class SunatResponse {
+public class SendFileResponse {
 
     private byte[] cdr;
     private String ticket;

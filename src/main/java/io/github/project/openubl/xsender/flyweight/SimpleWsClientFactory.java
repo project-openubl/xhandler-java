@@ -1,9 +1,8 @@
 package io.github.project.openubl.xsender.flyweight;
 
-import io.github.project.openubl.xmlsenderws.webservices.wrappers.CacheLinkedHashMap;
+import io.github.project.openubl.xsender.cxf.ProxyClientServiceFactory;
 import io.github.project.openubl.xsender.cxf.WsClientAuth;
 import io.github.project.openubl.xsender.cxf.WsClientConfig;
-import io.github.project.openubl.xsender.cxf.ProxyClientServiceFactory;
 
 import java.util.Collections;
 import java.util.Map;

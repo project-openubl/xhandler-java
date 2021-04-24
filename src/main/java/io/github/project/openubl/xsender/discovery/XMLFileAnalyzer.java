@@ -1,3 +1,19 @@
+/**
+ * Copyright 2019 Project OpenUBL, Inc. and/or its affiliates
+ * and other contributors as indicated by the @author tags.
+ *
+ * Licensed under the Eclipse Public License - v 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * https://www.eclipse.org/legal/epl-2.0/
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package io.github.project.openubl.xsender.discovery;
 
 import io.github.project.openubl.xsender.company.CompanyURLs;
@@ -7,11 +23,16 @@ import io.github.project.openubl.xsender.discovery.xml.XmlContentProvider;
 import io.github.project.openubl.xsender.exceptions.UnsupportedXMLFileException;
 import io.github.project.openubl.xsender.sunat.catalog.Catalog1;
 import jodd.io.ZipBuilder;
+import org.apache.cxf.helpers.IOUtils;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.text.MessageFormat;
 import java.util.Optional;
 import java.util.regex.Pattern;
@@ -25,6 +46,18 @@ public class XMLFileAnalyzer implements FileAnalyzer {
     private final FileDeliveryTarget fileDeliveryTarget;
     private final TicketDeliveryTarget ticketDeliveryTarget;
 
+    public XMLFileAnalyzer(File file, CompanyURLs urLs) throws IOException, ParserConfigurationException, UnsupportedXMLFileException, SAXException {
+        this(file.toPath(), urLs);
+    }
+
+    public XMLFileAnalyzer(Path path, CompanyURLs urLs) throws IOException, ParserConfigurationException, UnsupportedXMLFileException, SAXException {
+        this(Files.readAllBytes(path), urLs);
+    }
+
+    public XMLFileAnalyzer(InputStream is, CompanyURLs urLs) throws IOException, ParserConfigurationException, UnsupportedXMLFileException, SAXException {
+        this(IOUtils.readBytesFromStream(is), urLs);
+    }
+
     public XMLFileAnalyzer(byte[] file, CompanyURLs urls) throws ParserConfigurationException, IOException, SAXException, UnsupportedXMLFileException {
         XmlContentModel xmlContentModel = XmlContentProvider.getSunatDocument(new ByteArrayInputStream(file));
 
@@ -35,13 +68,14 @@ public class XMLFileAnalyzer implements FileAnalyzer {
         TicketDeliveryTarget ticketDeliveryTarget = XMLFileAnalyzer.getTicketDeliveryTarget(urls, xmlContentModel)
                 .orElse(null);
 
+        String zipFileName = fileNameWithoutExtension + ".zip";
         byte[] zipFile = ZipBuilder.createZipInMemory()
                 .add(file)
-                .path(fileNameWithoutExtension + ".zip")
+                .path(fileNameWithoutExtension + ".xml")
                 .save()
                 .toBytes();
 
-        this.zipFile = new ZipFile(zipFile, fileNameWithoutExtension);
+        this.zipFile = new ZipFile(zipFile, zipFileName);
         this.fileDeliveryTarget = fileDeliveryTarget;
         this.ticketDeliveryTarget = ticketDeliveryTarget;
     }

@@ -14,31 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.project.openubl.xsender.response;
+package io.github.project.openubl.xsender.sunat;
 
-import java.util.List;
+public class VerifyTicketResponse {
 
-public class CdrModel {
+    private String statusCode;
+    private byte[] cdr;
 
-    private final Integer responseCode;
-    private final String description;
-    private final List<String> notes;
-
-    public CdrModel(Integer responseCode, String description, List<String> notes) {
-        this.responseCode = responseCode;
-        this.description = description;
-        this.notes = notes;
+    public String getStatusCode() {
+        return statusCode;
     }
 
-    public Integer getResponseCode() {
-        return responseCode;
+    public void setStatusCode(String statusCode) {
+        this.statusCode = statusCode;
     }
 
-    public String getDescription() {
-        return description;
+    public byte[] getCdr() {
+        return cdr;
     }
 
-    public List<String> getNotes() {
-        return notes;
+    public void setCdr(byte[] cdr) {
+        this.cdr = cdr;
     }
 }

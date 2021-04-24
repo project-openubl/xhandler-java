@@ -14,31 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.project.openubl.xsender.response;
+package io.github.project.openubl.xsender;
 
-import java.util.List;
+import io.github.project.openubl.xsender.response.CdrReader;
 
-public class CdrModel {
+public class XSenderFileResponse {
+    private final CdrReader cdrReader;
+    private final String ticket;
 
-    private final Integer responseCode;
-    private final String description;
-    private final List<String> notes;
-
-    public CdrModel(Integer responseCode, String description, List<String> notes) {
-        this.responseCode = responseCode;
-        this.description = description;
-        this.notes = notes;
+    public XSenderFileResponse(CdrReader cdrReader, String ticket) {
+        this.cdrReader = cdrReader;
+        this.ticket = ticket;
     }
 
-    public Integer getResponseCode() {
-        return responseCode;
+    public CdrReader getCdrReader() {
+        return cdrReader;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public List<String> getNotes() {
-        return notes;
+    public String getTicket() {
+        return ticket;
     }
 }

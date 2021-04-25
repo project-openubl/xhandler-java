@@ -17,12 +17,12 @@
 package io.github.project.openubl.xsender.manager;
 
 import io.github.project.openubl.xsender.discovery.ZipFile;
+import org.apache.cxf.attachment.ByteDataSource;
 import service.sunat.gob.pe.billservice.BillService;
 import service.sunat.gob.pe.billservice.StatusResponse;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
-import javax.mail.util.ByteArrayDataSource;
 
 public class BillServiceAdapter {
 
@@ -35,19 +35,19 @@ public class BillServiceAdapter {
     }
 
     public byte[] sendBill(ZipFile zipFile) {
-        DataSource dataSource = new ByteArrayDataSource(zipFile.getFile(), ZIP_MYME_TYPE);
+        DataSource dataSource = new ByteDataSource(zipFile.getFile(), ZIP_MYME_TYPE);
         DataHandler dataHandler = new DataHandler(dataSource);
         return billService.sendBill(zipFile.getFilename(), dataHandler, null);
     }
 
     public String sendSummary(ZipFile zipFile) {
-        DataSource dataSource = new ByteArrayDataSource(zipFile.getFile(), ZIP_MYME_TYPE);
+        DataSource dataSource = new ByteDataSource(zipFile.getFile(), ZIP_MYME_TYPE);
         DataHandler dataHandler = new DataHandler(dataSource);
         return billService.sendSummary(zipFile.getFilename(), dataHandler, null);
     }
 
     public String sendPack(ZipFile zipFile) {
-        DataSource dataSource = new ByteArrayDataSource(zipFile.getFile(), ZIP_MYME_TYPE);
+        DataSource dataSource = new ByteDataSource(zipFile.getFile(), ZIP_MYME_TYPE);
         DataHandler dataHandler = new DataHandler(dataSource);
         return billService.sendPack(zipFile.getFilename(), dataHandler, null);
     }

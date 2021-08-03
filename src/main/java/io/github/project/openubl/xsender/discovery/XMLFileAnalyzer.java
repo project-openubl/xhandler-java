@@ -1,13 +1,13 @@
 /**
  * Copyright 2019 Project OpenUBL, Inc. and/or its affiliates
  * and other contributors as indicated by the @author tags.
- *
+ * <p>
  * Licensed under the Eclipse Public License - v 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * <p>
  * https://www.eclipse.org/legal/epl-2.0/
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -60,6 +60,14 @@ public class XMLFileAnalyzer implements FileAnalyzer {
 
     public XMLFileAnalyzer(byte[] file, CompanyURLs urls) throws ParserConfigurationException, IOException, SAXException, UnsupportedXMLFileException {
         XmlContentModel xmlContentModel = XmlContentProvider.getSunatDocument(new ByteArrayInputStream(file));
+
+        if (xmlContentModel.getDocumentType().equals(DocumentType.VOIDED_DOCUMENT)) {
+            String voidedLineDocumentTypeCode = xmlContentModel.getVoidedLineDocumentTypeCode();
+            Optional<Catalog1> catalog1Optional = Catalog1.valueOfCode(voidedLineDocumentTypeCode);
+            if (catalog1Optional.isPresent() && catalog1Optional.get().equals(Catalog1.BOLETA)) {
+
+            }
+        }
 
         String fileNameWithoutExtension = XMLFileAnalyzer.getFileNameWithoutExtension(xmlContentModel)
                 .orElseThrow(() -> new UnsupportedXMLFileException("Couldn't infer the file name"));
@@ -187,11 +195,11 @@ public class XMLFileAnalyzer implements FileAnalyzer {
     }
 
     private static Optional<TicketDeliveryTarget> getTicketDeliveryTarget(CompanyURLs urls, XmlContentModel xmlContentModel) {
-        boolean shouldVerifyTicket = true;
+        boolean shouldVerifyTicket = false;
         switch (xmlContentModel.getDocumentType()) {
             case DocumentType.VOIDED_DOCUMENT:
             case DocumentType.SUMMARY_DOCUMENT:
-                shouldVerifyTicket = false;
+                shouldVerifyTicket = true;
                 break;
         }
 

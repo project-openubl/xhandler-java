@@ -154,7 +154,7 @@ public class XmlHandler extends DefaultHandler {
     }
 
     public XmlContentModel getModel() {
-        return XmlContentModel.Builder.aXmlContentModel()
+        return XmlContentModelBuilder.aXmlContentModel()
                 .withDocumentType(documentType)
                 .withDocumentID(documentID)
                 .withRuc(ruc)

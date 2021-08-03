@@ -55,46 +55,5 @@ public class XmlContentModel {
         this.voidedLineDocumentTypeCode = voidedLineDocumentTypeCode;
     }
 
-    public static final class Builder {
-        private String documentType;
-        private String documentID;
-        private String ruc;
-        private String voidedLineDocumentTypeCode;
 
-        private Builder() {
-        }
-
-        public static Builder aXmlContentModel() {
-            return new Builder();
-        }
-
-        public Builder withDocumentType(String documentType) {
-            this.documentType = documentType;
-            return this;
-        }
-
-        public Builder withDocumentID(String documentID) {
-            this.documentID = documentID;
-            return this;
-        }
-
-        public Builder withRuc(String ruc) {
-            this.ruc = ruc;
-            return this;
-        }
-
-        public Builder withVoidedLineDocumentTypeCode(String voidedLineDocumentTypeCode) {
-            this.voidedLineDocumentTypeCode = voidedLineDocumentTypeCode;
-            return this;
-        }
-
-        public XmlContentModel build() {
-            XmlContentModel xmlContentModel = new XmlContentModel();
-            xmlContentModel.setDocumentType(documentType);
-            xmlContentModel.setDocumentID(documentID);
-            xmlContentModel.setRuc(ruc);
-            xmlContentModel.setVoidedLineDocumentTypeCode(voidedLineDocumentTypeCode);
-            return xmlContentModel;
-        }
-    }
 }

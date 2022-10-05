@@ -37,7 +37,7 @@
 
         <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
 
-        <cxf.version>3.4.3</cxf.version>
+        <cxf.version>3.4.4</cxf.version>
 
         <license.dir>${basedir}</license.dir>
     </properties>

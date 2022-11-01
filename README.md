@@ -1,3 +1,4 @@
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.project-openubl/xsender)](https://search.maven.org/artifact/io.github.project-openubl/xsender/)
 ![CI](https://github.com/project-openubl/xsender/workflows/CI/badge.svg)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=project-openubl_xsender&metric=alert_status)](https://sonarcloud.io/dashboard?id=project-openubl_xsender)
 
@@ -14,7 +15,7 @@ Incluir la última version de la libreria. Si utiliza maven agrege las siguiente
 <dependency>
     <groupId>io.github.project-openubl</groupId>
     <artifactId>xsender</artifactId>
-    <version>3.0.1.Final</version>
+    <version>3.0.4.Final</version>
 </dependency>
 ```
 

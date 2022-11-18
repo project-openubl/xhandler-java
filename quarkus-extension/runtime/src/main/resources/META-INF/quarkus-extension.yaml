@@ -1,0 +1,10 @@
+name: "Quarkus XSender"
+description: "XSender support."
+metadata:
+  keywords:
+    - quarkus-xsender
+    - openubl
+#  guide: ...
+  categories:
+    - "miscellaneous"
+  status: "preview"

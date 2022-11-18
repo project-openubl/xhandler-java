@@ -16,24 +16,16 @@
  */
 package io.github.project.openubl.xsender.sunat;
 
-public class VerifyTicketResponse {
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class VerifyTicketResponse {
     private String statusCode;
     private byte[] cdr;
-
-    public String getStatusCode() {
-        return statusCode;
-    }
-
-    public void setStatusCode(String statusCode) {
-        this.statusCode = statusCode;
-    }
-
-    public byte[] getCdr() {
-        return cdr;
-    }
-
-    public void setCdr(byte[] cdr) {
-        this.cdr = cdr;
-    }
 }

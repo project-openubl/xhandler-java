@@ -19,7 +19,6 @@ package io.github.project.openubl.xsender.response;
 import java.util.Optional;
 
 public enum CdrStatus {
-
     ACEPTADO,
     RECHAZADO,
     BAJA,

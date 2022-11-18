@@ -20,7 +20,6 @@ import io.github.project.openubl.xsender.company.CompanyCredentials;
 import io.github.project.openubl.xsender.cxf.ProxyClientServiceFactory;
 import io.github.project.openubl.xsender.cxf.SimpleClientServiceFactory;
 import io.github.project.openubl.xsender.cxf.WsClientConfig;
-import io.github.project.openubl.xsender.cxf.WsClientConfigBuilder;
 import io.github.project.openubl.xsender.discovery.*;
 import io.github.project.openubl.xsender.flyweight.SimpleWsClientFactory;
 import io.github.project.openubl.xsender.flyweight.WsClientFactory;
@@ -42,9 +41,9 @@ public class XSender {
 
     private XSender() {
         ProxyClientServiceFactory proxyClientServiceFactory = new SimpleClientServiceFactory();
-        WsClientConfig wsClientConfig = WsClientConfigBuilder.aWsClientConfig()
-                .withConnectionTimeout(15_000L)
-                .withReceiveTimeout(10_000L)
+        WsClientConfig wsClientConfig = WsClientConfig.builder()
+                .connectionTimeout(15_000L)
+                .receiveTimeout(10_000L)
                 .build();
 
         this.wsClientFactory = new SimpleWsClientFactory(proxyClientServiceFactory, wsClientConfig);
@@ -68,7 +67,8 @@ public class XSender {
         byte[] cdr = fileResponse.getCdr();
         String ticket = fileResponse.getTicket();
 
-        return new XSenderFileResponse(new CdrReader(cdr), ticket);
+        CdrReader cdrReader = cdr != null ? new CdrReader(cdr) : null;
+        return new XSenderFileResponse(cdrReader, ticket);
     }
 
     public XSenderTicketResponse ticket(String ticket, TicketDeliveryTarget deliveryTarget, CompanyCredentials credentials) throws XPathExpressionException, IOException, ParserConfigurationException, SAXException {

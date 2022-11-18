@@ -10,13 +10,13 @@ public class SimpleClientServiceFactoryTest {
     @Test
     public void createsProxy() {
         // Given
-        WsClientAuth auth = WsClientAuthBuilder.aWsClientAuth()
-                .withUsername("myUsername")
-                .withPassword("myPassword")
-                .withAddress("myAddress")
+        WsClientAuth auth = WsClientAuth.builder()
+                .username("myUsername")
+                .password("myPassword")
+                .address("myAddress")
                 .build();
 
-        WsClientConfig client = WsClientConfigBuilder.aWsClientConfig()
+        WsClientConfig client = WsClientConfig.builder()
                 .build();
 
         // Then

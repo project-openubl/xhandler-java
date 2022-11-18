@@ -16,24 +16,16 @@
  */
 package io.github.project.openubl.xsender.sunat;
 
-public class SendFileResponse {
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class SendFileResponse {
     private byte[] cdr;
     private String ticket;
-
-    public byte[] getCdr() {
-        return cdr;
-    }
-
-    public void setCdr(byte[] cdr) {
-        this.cdr = cdr;
-    }
-
-    public String getTicket() {
-        return ticket;
-    }
-
-    public void setTicket(String ticket) {
-        this.ticket = ticket;
-    }
 }

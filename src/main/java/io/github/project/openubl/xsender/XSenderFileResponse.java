@@ -17,21 +17,15 @@
 package io.github.project.openubl.xsender;
 
 import io.github.project.openubl.xsender.response.CdrReader;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@Builder
+@AllArgsConstructor
 public class XSenderFileResponse {
     private final CdrReader cdrReader;
     private final String ticket;
-
-    public XSenderFileResponse(CdrReader cdrReader, String ticket) {
-        this.cdrReader = cdrReader;
-        this.ticket = ticket;
-    }
-
-    public CdrReader getCdrReader() {
-        return cdrReader;
-    }
-
-    public String getTicket() {
-        return ticket;
-    }
 }

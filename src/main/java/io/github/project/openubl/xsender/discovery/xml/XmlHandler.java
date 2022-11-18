@@ -154,11 +154,11 @@ public class XmlHandler extends DefaultHandler {
     }
 
     public XmlContentModel getModel() {
-        return XmlContentModelBuilder.aXmlContentModel()
-                .withDocumentType(documentType)
-                .withDocumentID(documentID)
-                .withRuc(ruc)
-                .withVoidedLineDocumentTypeCode(voidedLineDocumentTypeCode)
+        return XmlContentModel.builder()
+                .documentType(documentType)
+                .documentID(documentID)
+                .ruc(ruc)
+                .voidedLineDocumentTypeCode(voidedLineDocumentTypeCode)
                 .build();
     }
 

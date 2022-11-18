@@ -16,44 +16,18 @@
  */
 package io.github.project.openubl.xsender.discovery.xml;
 
-public class XmlContentModel {
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class XmlContentModel {
     private String documentType;
     private String documentID;
     private String ruc;
     private String voidedLineDocumentTypeCode;
-
-    public String getDocumentType() {
-        return documentType;
-    }
-
-    public void setDocumentType(String documentType) {
-        this.documentType = documentType;
-    }
-
-    public String getDocumentID() {
-        return documentID;
-    }
-
-    public void setDocumentID(String documentID) {
-        this.documentID = documentID;
-    }
-
-    public String getRuc() {
-        return ruc;
-    }
-
-    public void setRuc(String ruc) {
-        this.ruc = ruc;
-    }
-
-    public String getVoidedLineDocumentTypeCode() {
-        return voidedLineDocumentTypeCode;
-    }
-
-    public void setVoidedLineDocumentTypeCode(String voidedLineDocumentTypeCode) {
-        this.voidedLineDocumentTypeCode = voidedLineDocumentTypeCode;
-    }
-
-
 }

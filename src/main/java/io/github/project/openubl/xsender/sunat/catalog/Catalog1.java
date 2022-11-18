@@ -20,7 +20,6 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 public enum Catalog1 {
-
     FACTURA("01"),
     BOLETA("03"),
     NOTA_CREDITO("07"),

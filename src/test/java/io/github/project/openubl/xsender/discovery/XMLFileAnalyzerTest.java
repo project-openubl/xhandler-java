@@ -1,25 +1,21 @@
 package io.github.project.openubl.xsender.discovery;
 
 import io.github.project.openubl.xsender.company.CompanyURLs;
-import io.github.project.openubl.xsender.company.CompanyURLsBuilder;
-import io.github.project.openubl.xsender.exceptions.UnsupportedXMLFileException;
 import org.junit.jupiter.api.Test;
-import org.xml.sax.SAXException;
 
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.file.Paths;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class XMLFileAnalyzerTest {
 
-    private final CompanyURLs urls = CompanyURLsBuilder.aCompanyURLs()
-            .withInvoice("invoiceUrl")
-            .withPerceptionRetention("perceptionRetentionUrl")
-            .withDespatch("despatchUrl")
+    private final CompanyURLs urls = CompanyURLs.builder()
+            .invoice("invoiceUrl")
+            .perceptionRetention("perceptionRetentionUrl")
+            .despatch("despatchUrl")
             .build();
 
     protected void assertZipFile(XMLFileAnalyzer xmlFileAnalyzer, String expectedZipFileName) {

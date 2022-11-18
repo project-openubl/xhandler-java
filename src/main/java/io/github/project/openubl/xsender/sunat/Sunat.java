@@ -18,7 +18,6 @@ package io.github.project.openubl.xsender.sunat;
 
 import io.github.project.openubl.xsender.company.CompanyCredentials;
 import io.github.project.openubl.xsender.cxf.WsClientAuth;
-import io.github.project.openubl.xsender.cxf.WsClientAuthBuilder;
 import io.github.project.openubl.xsender.discovery.FileDeliveryTarget;
 import io.github.project.openubl.xsender.discovery.TicketDeliveryTarget;
 import io.github.project.openubl.xsender.discovery.ZipFile;
@@ -36,10 +35,10 @@ public class Sunat {
     }
 
     public SendFileResponse sendFile(ZipFile zipFile, FileDeliveryTarget fileDeliveryTarget, CompanyCredentials credentials) {
-        WsClientAuth clientAuth = WsClientAuthBuilder.aWsClientAuth()
-                .withAddress(fileDeliveryTarget.getUrl())
-                .withUsername(credentials.getUsername())
-                .withPassword(credentials.getPassword())
+        WsClientAuth clientAuth = WsClientAuth.builder()
+                .address(fileDeliveryTarget.getUrl())
+                .username(credentials.getUsername())
+                .password(credentials.getPassword())
                 .build();
 
         BillService billService = wsClientFactory.getInstance(BillService.class, clientAuth);
@@ -69,10 +68,10 @@ public class Sunat {
     }
 
     public VerifyTicketResponse verifyTicketStatus(String ticket, TicketDeliveryTarget target, CompanyCredentials credentials)  {
-        WsClientAuth clientAuth = WsClientAuthBuilder.aWsClientAuth()
-                .withAddress(target.getUrl())
-                .withUsername(credentials.getUsername())
-                .withPassword(credentials.getPassword())
+        WsClientAuth clientAuth = WsClientAuth.builder()
+                .address(target.getUrl())
+                .username(credentials.getUsername())
+                .password(credentials.getPassword())
                 .build();
 
         BillService billService = wsClientFactory.getInstance(BillService.class, clientAuth);

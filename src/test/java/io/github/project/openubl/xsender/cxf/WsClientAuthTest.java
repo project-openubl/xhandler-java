@@ -8,15 +8,15 @@ public class WsClientAuthTest {
 
     @Test
     public void givenSameData_shouldBeEquals() {
-        WsClientAuth client1 = WsClientAuthBuilder.aWsClientAuth()
-                .withUsername("username")
-                .withPassword("password")
-                .withAddress("address")
+        WsClientAuth client1 = WsClientAuth.builder()
+                .username("username")
+                .password("password")
+                .address("address")
                 .build();
-        WsClientAuth client2 = WsClientAuthBuilder.aWsClientAuth()
-                .withUsername("username")
-                .withPassword("password")
-                .withAddress("address")
+        WsClientAuth client2 = WsClientAuth.builder()
+                .username("username")
+                .password("password")
+                .address("address")
                 .build();
 
         assertEquals(client1, client2);
@@ -24,15 +24,15 @@ public class WsClientAuthTest {
 
     @Test
     public void givenDifferentData_shouldBeEquals() {
-        WsClientAuth client1 = WsClientAuthBuilder.aWsClientAuth()
-                .withUsername("username")
-                .withPassword("password")
-                .withAddress("address1")
+        WsClientAuth client1 = WsClientAuth.builder()
+                .username("username")
+                .password("password")
+                .address("address1")
                 .build();
-        WsClientAuth client2 = WsClientAuthBuilder.aWsClientAuth()
-                .withUsername("username")
-                .withPassword("password")
-                .withAddress("address2")
+        WsClientAuth client2 =  WsClientAuth.builder()
+                .username("username")
+                .password("password")
+                .address("address2")
                 .build();
 
         assertNotEquals(client1, client2);

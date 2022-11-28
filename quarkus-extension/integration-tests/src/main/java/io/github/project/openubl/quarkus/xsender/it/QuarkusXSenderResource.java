@@ -20,7 +20,7 @@ import io.github.project.openubl.xsender.XSender;
 import io.github.project.openubl.xsender.XSenderFileResponse;
 import io.github.project.openubl.xsender.company.CompanyCredentials;
 import io.github.project.openubl.xsender.company.CompanyURLs;
-import io.github.project.openubl.xsender.discovery.XMLFileAnalyzer;
+import io.github.project.openubl.xsender.files.XMLFileAnalyzer;
 import java.io.InputStream;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;

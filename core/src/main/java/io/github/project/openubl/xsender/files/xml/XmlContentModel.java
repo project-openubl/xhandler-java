@@ -14,19 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.project.openubl.quarkus.xsender.runtime;
+package io.github.project.openubl.xsender.files.xml;
 
-import io.quarkus.runtime.annotations.ConfigItem;
-import io.quarkus.runtime.annotations.ConfigPhase;
-import io.quarkus.runtime.annotations.ConfigRoot;
-import java.util.Optional;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@ConfigRoot(name = "xsender", phase = ConfigPhase.RUN_TIME)
-public class XSenderConfig {
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class XmlContentModel {
 
-    /**
-     * Default moneda
-     */
-    @ConfigItem
-    public boolean logEnabled;
+    private String documentType;
+    private String documentID;
+    private String ruc;
+    private String voidedLineDocumentTypeCode;
 }

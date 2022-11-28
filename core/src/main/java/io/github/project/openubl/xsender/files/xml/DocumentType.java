@@ -14,19 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.project.openubl.quarkus.xsender.runtime;
+package io.github.project.openubl.xsender.files.xml;
 
-import io.quarkus.runtime.annotations.ConfigItem;
-import io.quarkus.runtime.annotations.ConfigPhase;
-import io.quarkus.runtime.annotations.ConfigRoot;
-import java.util.Optional;
+public class DocumentType {
 
-@ConfigRoot(name = "xsender", phase = ConfigPhase.RUN_TIME)
-public class XSenderConfig {
-
-    /**
-     * Default moneda
-     */
-    @ConfigItem
-    public boolean logEnabled;
+    public static final String INVOICE = "Invoice";
+    public static final String CREDIT_NOTE = "CreditNote";
+    public static final String DEBIT_NOTE = "DebitNote";
+    public static final String VOIDED_DOCUMENT = "VoidedDocuments";
+    public static final String SUMMARY_DOCUMENT = "SummaryDocuments";
+    public static final String PERCEPTION = "Perception";
+    public static final String RETENTION = "Retention";
+    public static final String DESPATCH_ADVICE = "DespatchAdvice";
 }

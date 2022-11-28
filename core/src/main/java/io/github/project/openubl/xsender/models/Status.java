@@ -14,19 +14,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.project.openubl.quarkus.xsender.runtime;
+package io.github.project.openubl.xsender.models;
 
-import io.quarkus.runtime.annotations.ConfigItem;
-import io.quarkus.runtime.annotations.ConfigPhase;
-import io.quarkus.runtime.annotations.ConfigRoot;
-import java.util.Optional;
+public enum Status {
+    ACEPTADO,
+    RECHAZADO,
+    BAJA,
+    EXCEPCION,
+    EN_PROCESO,
+    UNKNOWN;
 
-@ConfigRoot(name = "xsender", phase = ConfigPhase.RUN_TIME)
-public class XSenderConfig {
-
-    /**
-     * Default moneda
-     */
-    @ConfigItem
-    public boolean logEnabled;
+    public static Status fromCode(int code) {
+        if (code == 0) {
+            return Status.ACEPTADO;
+        } else if (code >= 100 && code < 2_000) {
+            return Status.EXCEPCION;
+        } else if (code >= 2000 && code < 4000) {
+            return Status.RECHAZADO;
+        } else if (code >= 4000) {
+            return Status.ACEPTADO;
+        } else {
+            return Status.UNKNOWN;
+        }
+    }
 }

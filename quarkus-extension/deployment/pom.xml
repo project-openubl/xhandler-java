@@ -34,10 +34,6 @@
             <artifactId>quarkus-arc-deployment</artifactId>
         </dependency>
         <dependency>
-            <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-qute-deployment</artifactId>
-        </dependency>
-        <dependency>
             <groupId>io.github.project-openubl</groupId>
             <artifactId>quarkus-xsender</artifactId>
             <version>${project.version}</version>

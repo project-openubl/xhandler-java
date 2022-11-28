@@ -14,19 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.project.openubl.quarkus.xsender.runtime;
+package io.github.project.openubl.xsender.files.exceptions;
 
-import io.quarkus.runtime.annotations.ConfigItem;
-import io.quarkus.runtime.annotations.ConfigPhase;
-import io.quarkus.runtime.annotations.ConfigRoot;
-import java.util.Optional;
+public class UnsupportedXMLFileException extends Exception {
 
-@ConfigRoot(name = "xsender", phase = ConfigPhase.RUN_TIME)
-public class XSenderConfig {
-
-    /**
-     * Default moneda
-     */
-    @ConfigItem
-    public boolean logEnabled;
+    public UnsupportedXMLFileException(String message) {
+        super(message);
+    }
 }

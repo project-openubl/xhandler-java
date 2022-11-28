@@ -14,19 +14,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.project.openubl.quarkus.xsender.runtime;
+package io.github.project.openubl.xsender.camel.routes;
 
-import io.quarkus.runtime.annotations.ConfigItem;
-import io.quarkus.runtime.annotations.ConfigPhase;
-import io.quarkus.runtime.annotations.ConfigRoot;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+import java.util.Arrays;
 import java.util.Optional;
 
-@ConfigRoot(name = "xsender", phase = ConfigPhase.RUN_TIME)
-public class XSenderConfig {
+@Getter
+@AllArgsConstructor
+public enum TicketResponseType {
+    PROCESO_CORRECTAMENTE(0, "Procesó correctamente"),
+    EN_PROCESO(98, "En proceso"),
+    PROCESO_CON_ERRORES(99, "Procesó con errores");
 
-    /**
-     * Default moneda
-     */
-    @ConfigItem
-    public boolean logEnabled;
+    private final int code;
+    private final String description;
+
+    public static Optional<TicketResponseType> getFromCode(int code) {
+        return Arrays.stream(TicketResponseType.values()).filter(f -> f.getCode() == code).findFirst();
+    }
 }

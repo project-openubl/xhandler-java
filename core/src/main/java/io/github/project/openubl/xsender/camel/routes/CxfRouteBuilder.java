@@ -14,19 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.project.openubl.quarkus.xsender.runtime;
+package io.github.project.openubl.xsender.camel.routes;
 
-import io.quarkus.runtime.annotations.ConfigItem;
-import io.quarkus.runtime.annotations.ConfigPhase;
-import io.quarkus.runtime.annotations.ConfigRoot;
-import java.util.Optional;
+import org.apache.camel.builder.RouteBuilder;
+import org.apache.cxf.binding.soap.SoapFault;
 
-@ConfigRoot(name = "xsender", phase = ConfigPhase.RUN_TIME)
-public class XSenderConfig {
+public class CxfRouteBuilder extends RouteBuilder {
 
-    /**
-     * Default moneda
-     */
-    @ConfigItem
-    public boolean logEnabled;
+    public static final String XSENDER_URI = "direct:xsender";
+
+    @Override
+    public void configure() {
+        from(XSENDER_URI)
+                .id("xsender")
+                .to("cxf://bean:cxfEndpoint?dataFormat=POJO")
+                .process(new SunatResponseProcessor())
+                .onException(SoapFault.class).handled(true).process(new SunatErrorResponseProcessor()).end().end();
+    }
 }

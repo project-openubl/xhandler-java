@@ -57,12 +57,10 @@ class QuarkusXsenderProcessor {
     }
 
     @BuildStep
-    ReflectiveClassBuildItem reflection() {
+    ReflectiveClassBuildItem projectReflection() {
         return new ReflectiveClassBuildItem(
                 true,
-                true,
-                org.apache.cxf.binding.soap.SoapFault.class,
-
+                false,
                 io.github.project.openubl.xsender.camel.routes.CxfEndpointConfiguration.class,
                 io.github.project.openubl.xsender.camel.routes.CxfRouteBuilder.class,
                 io.github.project.openubl.xsender.camel.routes.SunatErrorResponseProcessor.class,
@@ -98,6 +96,39 @@ class QuarkusXsenderProcessor {
                 io.github.project.openubl.xsender.sunat.catalog.Catalog1.class,
                 io.github.project.openubl.xsender.utils.ByteUtils.class,
                 io.github.project.openubl.xsender.utils.CdrReader.class
+        );
+    }
+
+    @BuildStep
+    ReflectiveClassBuildItem soapReflection() {
+        return new ReflectiveClassBuildItem(
+                true,
+                false,
+                org.apache.cxf.binding.soap.SoapFault.class
+        );
+    }
+
+    @BuildStep
+    ReflectiveClassBuildItem sunatReflection() {
+        return new ReflectiveClassBuildItem(
+                true,
+                true,
+                pe.gob.sunat.service.BillService.class,
+                pe.gob.sunat.service.StatusResponse.class,
+
+                pe.gob.sunat.service.GetStatus.class,
+                pe.gob.sunat.service.GetStatusResponse.class,
+
+                pe.gob.sunat.service.SendBill.class,
+                pe.gob.sunat.service.SendBillResponse.class,
+
+                pe.gob.sunat.service.SendPack.class,
+                pe.gob.sunat.service.SendPackResponse.class,
+
+                pe.gob.sunat.service.SendSummary.class,
+                pe.gob.sunat.service.SendSummaryResponse.class,
+
+                pe.gob.sunat.service.ObjectFactory.class
         );
     }
 }

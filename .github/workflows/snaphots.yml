@@ -1,0 +1,47 @@
+name: Snapshots
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+    inputs: { }
+
+env:
+  CI: true
+
+jobs:
+  test:
+    name: JDK JVM Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          distribution: "temurin"
+          java-version: 11
+          cache: maven
+      - name: Build with Maven
+        run: mvn verify
+
+  snapshots:
+    needs: [ test ]
+    name: Snapshots
+    if: ${{ github.event_name != 'pull_request' && github.repository_owner == 'project-openubl' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      # OSSRH
+      - uses: actions/setup-java@v3
+        with:
+          distribution: "temurin"
+          java-version: 11
+          cache: maven
+          server-id: ossrh
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_PASSWORD
+      - name: OSSRH Snapshot
+        run: mvn --batch-mode source:jar javadoc:jar deploy -Possrh -DskipTests
+        env:
+          MAVEN_USERNAME: ${{ secrets.nexus_username }}
+          MAVEN_PASSWORD: ${{ secrets.nexus_password }}

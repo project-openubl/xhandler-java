@@ -1,0 +1,83 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Release version"
+        required: true
+      next:
+        description: "Next version"
+        required: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Set release version
+        env:
+          RELEASE_VERSION: ${{ github.event.inputs.version }}
+        run: |
+          mvn -B versions:set versions:commit -DnewVersion=$RELEASE_VERSION -Pprepare-release
+          git config --global user.email "project.openubl.preview.bot@gmail.com"
+          git config --global user.name "Project-Openubl Bot"
+          git commit --signoff --allow-empty -a -m "🏁 Releasing version $RELEASE_VERSION"
+          git push origin HEAD:master
+
+      # OSSRH
+      - uses: actions/setup-java@v3
+        with:
+          distribution: "temurin"
+          java-version: 11
+          server-id: ossrh
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_PASSWORD
+          gpg-private-key: ${{ secrets.gpg_private_key }}
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
+      - name: OSSRH Release
+        run: mvn --batch-mode clean source:jar javadoc:jar deploy -P ossrh,release -DskipTests
+        env:
+          MAVEN_USERNAME: ${{ secrets.nexus_username }}
+          MAVEN_PASSWORD: ${{ secrets.nexus_password }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.gpg_passphrase }}
+
+#      # GitHub
+#      - uses: actions/setup-java@v3
+#        with:
+#          distribution: "temurin"
+#          java-version: 11
+#          gpg-passphrase: MAVEN_GPG_PASSPHRASE
+#      - name: GitHub Release
+#        run: mvn --batch-mode clean source:jar javadoc:jar deploy -P github,release -DskipTests
+#        env:
+#          GITHUB_TOKEN: ${{ github.token }}
+#          MAVEN_GPG_PASSPHRASE: ${{ secrets.gpg_passphrase }}
+
+      - name: JReleaser
+        uses: jreleaser/release-action@v2
+        env:
+          JRELEASER_GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+          JRELEASER_PROJECT_VERSION: ${{ github.event.inputs.version }}
+          JRELEASER_PRERELEASE_PATTERN: .*(?:Alpha|alpha|Beta|beta)[0-9]
+          JRELEASER_ZULIP_API_KEY: ${{ secrets.JRELEASER_ZULIP_API_KEY }}
+          JRELEASER_TWITTER_CONSUMER_KEY: ${{ secrets.JRELEASER_TWITTER_CONSUMER_KEY }}
+          JRELEASER_TWITTER_CONSUMER_SECRET: ${{ secrets.JRELEASER_TWITTER_CONSUMER_SECRET }}
+          JRELEASER_TWITTER_ACCESS_TOKEN: ${{ secrets.JRELEASER_TWITTER_ACCESS_TOKEN }}
+          JRELEASER_TWITTER_ACCESS_TOKEN_SECRET: ${{ secrets.JRELEASER_TWITTER_ACCESS_TOKEN_SECRET }}
+          JRELEASER_SLACK_TOKEN: ${{ secrets.JRELEASER_SLACK_TOKEN }}
+          JRELEASER_SLACK_WEBHOOK: ${{ secrets.JRELEASER_SLACK_WEBHOOK }}
+          JRELEASER_MAIL_PASSWORD: ${{ secrets.JRELEASER_MAIL_PASSWORD }}
+          JRELEASER_ARTICLE_GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+
+      - name: Set next version
+        env:
+          NEXT_VERSION: ${{ github.event.inputs.next }}
+        run: |
+          mvn -B versions:set versions:commit -DnewVersion=$NEXT_VERSION -Pprepare-release
+          git config --global user.email "project.openubl.preview.bot@gmail.com"
+          git config --global user.name "Project-Openubl Bot"
+          git commit --signoff -a -m "⬆️  Next version $NEXT_VERSION"
+          git push origin HEAD:master

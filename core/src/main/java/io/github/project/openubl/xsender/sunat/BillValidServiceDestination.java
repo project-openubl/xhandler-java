@@ -14,12 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.project.openubl.xsender.files;
+package io.github.project.openubl.xsender.sunat;
 
-public interface FileAnalyzer {
-    ZipFile getZipFile();
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.Getter;
 
-    FileDestination getSendFileDestination();
-
-    TicketDestination getVerifyTicketDestination();
+@Data
+@Builder
+@AllArgsConstructor
+public class BillValidServiceDestination {
+    private final String url;
 }

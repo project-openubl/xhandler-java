@@ -18,6 +18,8 @@ package io.github.project.openubl.quarkus.xsender.deployment;
 
 import io.github.project.openubl.quarkus.xsender.XSender;
 import io.github.project.openubl.xsender.camel.routes.CxfRouteBuilder;
+import io.github.project.openubl.xsender.files.BillServiceFileAnalyzer;
+import io.github.project.openubl.xsender.files.BillServiceXMLFileAnalyzer;
 import io.quarkus.arc.deployment.AdditionalBeanBuildItem;
 import io.quarkus.arc.processor.DotNames;
 import io.quarkus.deployment.annotations.BuildProducer;
@@ -51,7 +53,9 @@ class QuarkusXsenderProcessor {
     void registerTemplates(BuildProducer<NativeImageResourceBuildItem> resource) throws URISyntaxException {
         resource.produce(
                 new NativeImageResourceBuildItem(
-                        "wsdl/billService.wsdl"
+                        "wsdl/billService.wsdl",
+                        "wsdl/billConsultService.wsdl",
+                        "wsdl/billValidService.wsdl"
                 )
         );
     }
@@ -61,6 +65,7 @@ class QuarkusXsenderProcessor {
         return new ReflectiveClassBuildItem(
                 true,
                 false,
+                io.github.project.openubl.xsender.Constants.class,
                 io.github.project.openubl.xsender.camel.routes.CxfEndpointConfiguration.class,
                 io.github.project.openubl.xsender.camel.routes.CxfRouteBuilder.class,
                 io.github.project.openubl.xsender.camel.routes.SunatErrorResponseProcessor.class,
@@ -73,12 +78,8 @@ class QuarkusXsenderProcessor {
                 io.github.project.openubl.xsender.company.CompanyCredentials.CompanyCredentialsBuilder.class,
                 io.github.project.openubl.xsender.company.CompanyURLs.class,
                 io.github.project.openubl.xsender.company.CompanyURLs.CompanyURLsBuilder.class,
-                io.github.project.openubl.xsender.files.FileAnalyzer.class,
-                io.github.project.openubl.xsender.files.FileDestination.class,
-                io.github.project.openubl.xsender.files.FileDestination.FileDestinationBuilder.class,
-                io.github.project.openubl.xsender.files.TicketDestination.class,
-                io.github.project.openubl.xsender.files.TicketDestination.TicketDestinationBuilder.class,
-                io.github.project.openubl.xsender.files.XMLFileAnalyzer.class,
+                io.github.project.openubl.xsender.files.BillServiceFileAnalyzer.class,
+                io.github.project.openubl.xsender.files.BillServiceXMLFileAnalyzer.class,
                 io.github.project.openubl.xsender.files.ZipFile.class,
                 io.github.project.openubl.xsender.files.ZipFile.ZipFileBuilder.class,
                 io.github.project.openubl.xsender.files.exceptions.UnsupportedXMLFileException.class,
@@ -93,6 +94,12 @@ class QuarkusXsenderProcessor {
                 io.github.project.openubl.xsender.models.Sunat.SunatBuilder.class,
                 io.github.project.openubl.xsender.models.SunatResponse.class,
                 io.github.project.openubl.xsender.models.SunatResponse.SunatResponseBuilder.class,
+                io.github.project.openubl.xsender.sunat.BillServiceDestination.class,
+                io.github.project.openubl.xsender.sunat.BillServiceDestination.BillServiceDestinationBuilder.class,
+                io.github.project.openubl.xsender.sunat.BillServiceDestination.Operation.class,
+                io.github.project.openubl.xsender.sunat.BillConsultServiceDestination.class,
+                io.github.project.openubl.xsender.sunat.BillConsultServiceDestination.BillConsultServiceDestinationBuilder.class,
+                io.github.project.openubl.xsender.sunat.BillConsultServiceDestination.Operation.class,
                 io.github.project.openubl.xsender.sunat.catalog.Catalog1.class,
                 io.github.project.openubl.xsender.utils.ByteUtils.class,
                 io.github.project.openubl.xsender.utils.CdrReader.class
@@ -113,22 +120,33 @@ class QuarkusXsenderProcessor {
         return new ReflectiveClassBuildItem(
                 true,
                 true,
-                pe.gob.sunat.service.BillService.class,
-                pe.gob.sunat.service.StatusResponse.class,
+                service.sunat.gob.pe.billservice.BillService.class,
+                service.sunat.gob.pe.billservice.StatusResponse.class,
+                service.sunat.gob.pe.billservice.GetStatus.class,
+                service.sunat.gob.pe.billservice.GetStatusResponse.class,
+                service.sunat.gob.pe.billservice.SendBill.class,
+                service.sunat.gob.pe.billservice.SendBillResponse.class,
+                service.sunat.gob.pe.billservice.SendPack.class,
+                service.sunat.gob.pe.billservice.SendPackResponse.class,
+                service.sunat.gob.pe.billservice.SendSummary.class,
+                service.sunat.gob.pe.billservice.SendSummaryResponse.class,
+                service.sunat.gob.pe.billservice.ObjectFactory.class,
 
-                pe.gob.sunat.service.GetStatus.class,
-                pe.gob.sunat.service.GetStatusResponse.class,
+                service.sunat.gob.pe.billconsultservice.BillService.class,
+                service.sunat.gob.pe.billconsultservice.StatusResponse.class,
+                service.sunat.gob.pe.billconsultservice.GetStatus.class,
+                service.sunat.gob.pe.billconsultservice.GetStatusResponse.class,
+                service.sunat.gob.pe.billconsultservice.GetStatusCdr.class,
+                service.sunat.gob.pe.billconsultservice.GetStatusCdrResponse.class,
+                service.sunat.gob.pe.billconsultservice.ObjectFactory.class,
 
-                pe.gob.sunat.service.SendBill.class,
-                pe.gob.sunat.service.SendBillResponse.class,
-
-                pe.gob.sunat.service.SendPack.class,
-                pe.gob.sunat.service.SendPackResponse.class,
-
-                pe.gob.sunat.service.SendSummary.class,
-                pe.gob.sunat.service.SendSummaryResponse.class,
-
-                pe.gob.sunat.service.ObjectFactory.class
+                service.sunat.gob.pe.billvalidservice.BillValidService.class,
+                service.sunat.gob.pe.billvalidservice.StatusResponse.class,
+                service.sunat.gob.pe.billvalidservice.ValidaCDPcriterios.class,
+                service.sunat.gob.pe.billvalidservice.ValidaCDPcriteriosResponse.class,
+                service.sunat.gob.pe.billvalidservice.VerificaCPEarchivo.class,
+                service.sunat.gob.pe.billvalidservice.VerificaCPEarchivoResponse.class,
+                service.sunat.gob.pe.billvalidservice.ObjectFactory.class
         );
     }
 }

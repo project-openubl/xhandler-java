@@ -17,9 +17,10 @@
 package io.github.project.openubl.xsender.camel.utils;
 
 import io.github.project.openubl.xsender.company.CompanyCredentials;
-import io.github.project.openubl.xsender.files.FileDestination;
-import io.github.project.openubl.xsender.files.TicketDestination;
+import io.github.project.openubl.xsender.sunat.BillConsultServiceDestination;
+import io.github.project.openubl.xsender.sunat.BillServiceDestination;
 import io.github.project.openubl.xsender.files.ZipFile;
+import io.github.project.openubl.xsender.sunat.BillValidServiceDestination;
 import org.apache.camel.component.cxf.common.message.CxfConstants;
 import org.apache.cxf.attachment.ByteDataSource;
 import org.apache.cxf.binding.soap.SoapHeader;
@@ -32,9 +33,12 @@ import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.xml.namespace.QName;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class CamelUtils {
 
@@ -44,54 +48,129 @@ public class CamelUtils {
     public static final String USERNAMETOKEN_NS = "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0";
     public static final String PASSWORD_TEXT = USERNAMETOKEN_NS + "#PasswordText";
 
-    public static CamelData getCamelData(ZipFile zipFile, FileDestination destination, CompanyCredentials credentials) {
-        List<Object> body = createFileBody(zipFile);
-        Map<String, Object> headers = createHeaders(destination, credentials);
-
-        return CamelData.builder()
-                .body(body)
-                .headers(headers)
-                .build();
-    }
-
-    public static CamelData getCamelData(String ticket, TicketDestination destination, CompanyCredentials credentials) {
-        String uri = destination.getOperation().getName();
-        List<Object> body = createTicketBody(ticket);
-        Map<String, Object> headers = createHeaders(destination, credentials);
-
-        return CamelData.builder()
-                .body(body)
-                .headers(headers)
-                .build();
-    }
-
-    private static List<Object> createFileBody(ZipFile zipFile) {
+    public static CamelData getBillServiceCamelData(ZipFile zipFile, BillServiceDestination destination, CompanyCredentials credentials) {
         DataSource dataSource = new ByteDataSource(zipFile.getFile(), "application/zip");
         DataHandler dataHandler = new DataHandler(dataSource);
 
-        return Arrays.asList(zipFile.getFilename(), dataHandler, null);
+        Map<String, Object> headers = createBillServiceHeaders(destination.getUrl(), destination.getOperation().getWebMethod(), credentials);
+        List<Object> body = Arrays.asList(zipFile.getFilename(), dataHandler, null);
+
+        return CamelData.builder()
+                .body(body)
+                .headers(headers)
+                .build();
     }
 
-    private static List<Object> createTicketBody(String ticket) {
-        return Collections.singletonList(ticket);
+    public static CamelData getBillServiceCamelData(String ticket, BillServiceDestination destination, CompanyCredentials credentials) {
+        Map<String, Object> headers = createBillServiceHeaders(destination.getUrl(), destination.getOperation().getWebMethod(), credentials);
+        List<Object> body = Collections.singletonList(ticket);;
+
+        return CamelData.builder()
+                .body(body)
+                .headers(headers)
+                .build();
     }
 
-    private static Map<String, Object> createHeaders(FileDestination destination, CompanyCredentials credentials) {
-        return createHeaders(destination.getUrl(), destination.getOperation().getName(), credentials);
-    }
-
-    private static Map<String, Object> createHeaders(
-            TicketDestination destination,
+    public static CamelData getBillConsultService(
+            String ruc,
+            String tipoComprobante,
+            String serie,
+            int numero,
+            BillConsultServiceDestination destination,
             CompanyCredentials credentials
     ) {
-        return createHeaders(destination.getUrl(), destination.getOperation().getName(), credentials);
+        Map<String, Object> securityHeaders = createSecurityHeaders(credentials);
+        Map<String, Object> serviceHeaders = Map.of(
+                CxfConstants.OPERATION_NAME, destination.getOperation().getWebMethod(),
+                CxfConstants.DESTINATION_OVERRIDE_URL, destination.getUrl()
+        );
+
+        Map<String, Object> headers = Stream.concat(securityHeaders.entrySet().stream(), serviceHeaders.entrySet().stream())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        List<Object> body = Arrays.asList(ruc, tipoComprobante, serie, numero);
+
+        return CamelData.builder()
+                .body(body)
+                .headers(headers)
+                .build();
     }
 
-    private static Map<String, Object> createHeaders(
-            String destinationUrl,
-            String operationName,
+    public static CamelData getBillValidService(
+            String ruc,
+            String tipoComprobante,
+            String serie,
+            String numero,
+            String tipoDocIdReceptor,
+            String numeroDocIdReceptor,
+            String fechaEmision,
+            double importeTotal,
+            String nroAutorizacion,
+            BillValidServiceDestination destination,
             CompanyCredentials credentials
-    ) throws RuntimeException {
+    ) {
+        Map<String, Object> securityHeaders = createSecurityHeaders(credentials);
+        Map<String, Object> serviceHeaders = Map.of(
+                CxfConstants.OPERATION_NAME, "validaCDPcriterios",
+                CxfConstants.DESTINATION_OVERRIDE_URL, destination.getUrl()
+        );
+
+        Map<String, Object> headers = Stream.concat(securityHeaders.entrySet().stream(), serviceHeaders.entrySet().stream())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        List<Object> body = Arrays.asList(
+                ruc,
+                tipoComprobante,
+                serie,
+                numero,
+                tipoDocIdReceptor,
+                numeroDocIdReceptor,
+                fechaEmision,
+                importeTotal,
+                nroAutorizacion
+        );
+
+        return CamelData.builder()
+                .body(body)
+                .headers(headers)
+                .build();
+    }
+
+    public static CamelData getBillValidService(
+            String filename,
+            byte[] file,
+            BillValidServiceDestination destination,
+            CompanyCredentials credentials
+    ) {
+        byte[] fileEncode = Base64.getEncoder().encode(file);
+        String fileBase64Encoded = new String(fileEncode);
+
+        Map<String, Object> securityHeaders = createSecurityHeaders(credentials);
+        Map<String, Object> serviceHeaders = Map.of(
+                CxfConstants.OPERATION_NAME, "verificaCPEarchivo",
+                CxfConstants.DESTINATION_OVERRIDE_URL, destination.getUrl()
+        );
+
+        Map<String, Object> headers = Stream.concat(securityHeaders.entrySet().stream(), serviceHeaders.entrySet().stream())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        List<Object> body = Arrays.asList(filename, fileBase64Encoded);
+
+        return CamelData.builder()
+                .body(body)
+                .headers(headers)
+                .build();
+    }
+
+    private static Map<String, Object> createBillServiceHeaders(String destinationUrl, String operationName, CompanyCredentials credentials) {
+        Map<String, Object> securityHeaders = createSecurityHeaders(credentials);
+        Map<String, Object> serviceHeaders = Map.of(
+                CxfConstants.OPERATION_NAME, operationName,
+                CxfConstants.DESTINATION_OVERRIDE_URL, destinationUrl
+        );
+
+        return Stream.concat(securityHeaders.entrySet().stream(), serviceHeaders.entrySet().stream())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
+
+    private static Map<String, Object> createSecurityHeaders(CompanyCredentials credentials) {
         QName security = new QName(WSSE_NS, "Security");
 
         Document xmlDocument = DOMUtils.createDocument();
@@ -113,10 +192,6 @@ public class CamelUtils {
 
         SoapHeader securitySoapHeader = new SoapHeader(security, securityEl);
 
-        return Map.of(
-                Header.HEADER_LIST, List.of(securitySoapHeader),
-                CxfConstants.OPERATION_NAME, operationName,
-                CxfConstants.DESTINATION_OVERRIDE_URL, destinationUrl
-        );
+        return Map.of(Header.HEADER_LIST, List.of(securitySoapHeader));
     }
 }

@@ -36,7 +36,9 @@ public class SunatErrorResponseProcessor implements Processor {
 
         QName qName = fault.getFaultCode();
         String localPart = qName.getLocalPart();
-        String errorCode = localPart.replaceAll("Client.", "");
+        String errorCode = localPart
+                .replaceAll("Client.", "")
+                .replaceAll("Server.", "");
         int errorCodeInt = Integer.parseInt(errorCode);
 
         Metadata metadata = Metadata.builder()

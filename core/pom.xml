@@ -144,6 +144,26 @@
                                 <wsdlOption>
                                     <wsdl>${basedir}/src/main/resources/wsdl/billService.wsdl</wsdl>
                                     <wsdlLocation>classpath:wsdl/billService.wsdl</wsdlLocation>
+                                    <extraargs>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>http://service.sunat.gob.pe=service.sunat.gob.pe.billservice</extraarg>
+                                    </extraargs>
+                                </wsdlOption>
+                                <wsdlOption>
+                                    <wsdl>${basedir}/src/main/resources/wsdl/billConsultService.wsdl</wsdl>
+                                    <wsdlLocation>classpath:wsdl/billConsultService.wsdl</wsdlLocation>
+                                    <extraargs>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>http://service.sunat.gob.pe=service.sunat.gob.pe.billconsultservice</extraarg>
+                                    </extraargs>
+                                </wsdlOption>
+                                <wsdlOption>
+                                    <wsdl>${basedir}/src/main/resources/wsdl/billValidService.wsdl</wsdl>
+                                    <wsdlLocation>classpath:wsdl/billValidService.wsdl</wsdlLocation>
+                                    <extraargs>
+                                        <extraarg>-p</extraarg>
+                                        <extraarg>http://service.sunat.gob.pe=service.sunat.gob.pe.billvalidservice</extraarg>
+                                    </extraargs>
                                 </wsdlOption>
                             </wsdlOptions>
                         </configuration>

@@ -16,19 +16,27 @@
  */
 package io.github.project.openubl.xsender.camel.routes;
 
+import io.github.project.openubl.xsender.Constants;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.cxf.binding.soap.SoapFault;
 
 public class CxfRouteBuilder extends RouteBuilder {
 
-    public static final String XSENDER_URI = "direct:xsender";
 
     @Override
     public void configure() {
-        from(XSENDER_URI)
-                .id("xsender")
-                .to("cxf://bean:cxfEndpoint?dataFormat=POJO")
+        from(Constants.XSENDER_BILL_SERVICE_URI)
+                .id("xsender-billService")
+                .to("cxf://bean:cxfBillServiceEndpoint?dataFormat=POJO")
                 .process(new SunatResponseProcessor())
                 .onException(SoapFault.class).handled(true).process(new SunatErrorResponseProcessor()).end().end();
+
+        from(Constants.XSENDER_BILL_CONSULT_SERVICE_URI)
+                .id("xsender-billConsultService")
+                .to("cxf://bean:cxfBillConsultServiceEndpoint?dataFormat=POJO");
+
+        from(Constants.XSENDER_BILL_VALID_SERVICE_URI)
+                .id("xsender-billValidService")
+                .to("cxf://bean:cxfBillValidServiceEndpoint?dataFormat=POJO");
     }
 }

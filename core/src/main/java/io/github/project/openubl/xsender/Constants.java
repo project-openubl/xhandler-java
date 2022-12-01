@@ -14,25 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.project.openubl.xsender.files;
+package io.github.project.openubl.xsender;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.Getter;
+public class Constants {
 
-@Data
-@Builder
-@AllArgsConstructor
-public class TicketDestination {
-    private final String url;
-    private final Operation operation;
+    public static final String XSENDER_BILL_SERVICE_URI = "direct:xsender-billService";
+    public static final String XSENDER_BILL_CONSULT_SERVICE_URI = "direct:xsender-billConsultService";
+    public static final String XSENDER_BILL_VALID_SERVICE_URI = "direct:xsender-billValidService";
 
-    @Getter
-    @AllArgsConstructor
-    public enum Operation {
-        GET_STATUS("getStatus");
-
-        private final String name;
-    }
 }

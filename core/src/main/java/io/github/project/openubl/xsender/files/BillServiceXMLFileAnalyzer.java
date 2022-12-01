@@ -22,6 +22,7 @@ import io.github.project.openubl.xsender.files.xml.DocumentType;
 import io.github.project.openubl.xsender.files.xml.XmlContentModel;
 import io.github.project.openubl.xsender.files.xml.XmlContentProvider;
 import io.github.project.openubl.xsender.sunat.catalog.Catalog1;
+import io.github.project.openubl.xsender.sunat.BillServiceDestination;
 import jodd.io.ZipBuilder;
 import org.apache.cxf.helpers.IOUtils;
 import org.xml.sax.SAXException;
@@ -37,31 +38,31 @@ import java.text.MessageFormat;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
-public class XMLFileAnalyzer implements FileAnalyzer {
+public class BillServiceXMLFileAnalyzer implements BillServiceFileAnalyzer {
 
     private static final String FILENAME_FORMAT1 = "{0}-{1}-{2}";
     private static final String FILENAME_FORMAT2 = "{0}-{1}";
 
     private final ZipFile zipFile;
-    private final FileDestination fileDestination;
-    private final TicketDestination ticketDestination;
+    private final BillServiceDestination fileDestination;
+    private final BillServiceDestination ticketDestination;
 
-    public XMLFileAnalyzer(File file, CompanyURLs urLs)
+    public BillServiceXMLFileAnalyzer(File file, CompanyURLs urLs)
             throws IOException, ParserConfigurationException, UnsupportedXMLFileException, SAXException {
         this(file.toPath(), urLs);
     }
 
-    public XMLFileAnalyzer(Path path, CompanyURLs urLs)
+    public BillServiceXMLFileAnalyzer(Path path, CompanyURLs urLs)
             throws IOException, ParserConfigurationException, UnsupportedXMLFileException, SAXException {
         this(Files.readAllBytes(path), urLs);
     }
 
-    public XMLFileAnalyzer(InputStream is, CompanyURLs urLs)
+    public BillServiceXMLFileAnalyzer(InputStream is, CompanyURLs urLs)
             throws IOException, ParserConfigurationException, UnsupportedXMLFileException, SAXException {
         this(IOUtils.readBytesFromStream(is), urLs);
     }
 
-    public XMLFileAnalyzer(byte[] file, CompanyURLs urls)
+    public BillServiceXMLFileAnalyzer(byte[] file, CompanyURLs urls)
             throws ParserConfigurationException, IOException, SAXException, UnsupportedXMLFileException {
         XmlContentModel xmlContentModel = XmlContentProvider.getSunatDocument(new ByteArrayInputStream(file));
 
@@ -72,13 +73,13 @@ public class XMLFileAnalyzer implements FileAnalyzer {
             }
         }
 
-        String fileNameWithoutExtension = XMLFileAnalyzer
+        String fileNameWithoutExtension = BillServiceXMLFileAnalyzer
                 .getFileNameWithoutExtension(xmlContentModel)
                 .orElseThrow(() -> new UnsupportedXMLFileException("Couldn't infer the file name"));
-        FileDestination fileDestination = XMLFileAnalyzer
+        BillServiceDestination fileDestination = BillServiceXMLFileAnalyzer
                 .getFileDeliveryTarget(urls, xmlContentModel)
                 .orElseThrow(() -> new UnsupportedXMLFileException("Couldn't infer the delivery data"));
-        TicketDestination ticketDestination = XMLFileAnalyzer
+        BillServiceDestination ticketDestination = BillServiceXMLFileAnalyzer
                 .getTicketDeliveryTarget(urls, xmlContentModel)
                 .orElse(null);
 
@@ -101,12 +102,12 @@ public class XMLFileAnalyzer implements FileAnalyzer {
     }
 
     @Override
-    public FileDestination getSendFileDestination() {
+    public BillServiceDestination getSendFileDestination() {
         return fileDestination;
     }
 
     @Override
-    public TicketDestination getVerifyTicketDestination() {
+    public BillServiceDestination getVerifyTicketDestination() {
         return ticketDestination;
     }
 
@@ -158,17 +159,17 @@ public class XMLFileAnalyzer implements FileAnalyzer {
         return Optional.ofNullable(result);
     }
 
-    private static Optional<FileDestination> getFileDeliveryTarget(CompanyURLs urls, XmlContentModel xmlContentModel) {
-        FileDestination fileDeliveryTarget = null;
+    private static Optional<BillServiceDestination> getFileDeliveryTarget(CompanyURLs urls, XmlContentModel xmlContentModel) {
+        BillServiceDestination fileDeliveryTarget = null;
 
         switch (xmlContentModel.getDocumentType()) {
             case DocumentType.INVOICE:
             case DocumentType.CREDIT_NOTE:
             case DocumentType.DEBIT_NOTE:
-                fileDeliveryTarget = new FileDestination(urls.getInvoice(), FileDestination.Operation.SEND_BILL);
+                fileDeliveryTarget = new BillServiceDestination(urls.getInvoice(), BillServiceDestination.Operation.SEND_BILL);
                 break;
             case DocumentType.SUMMARY_DOCUMENT:
-                fileDeliveryTarget = new FileDestination(urls.getInvoice(), FileDestination.Operation.SEND_SUMMARY);
+                fileDeliveryTarget = new BillServiceDestination(urls.getInvoice(), BillServiceDestination.Operation.SEND_SUMMARY);
                 break;
             case DocumentType.VOIDED_DOCUMENT:
                 String tipoDocumentoAfectado = xmlContentModel.getVoidedLineDocumentTypeCode();
@@ -187,22 +188,22 @@ public class XMLFileAnalyzer implements FileAnalyzer {
                     deliveryUrl = urls.getInvoice();
                 }
 
-                fileDeliveryTarget = new FileDestination(deliveryUrl, FileDestination.Operation.SEND_SUMMARY);
+                fileDeliveryTarget = new BillServiceDestination(deliveryUrl, BillServiceDestination.Operation.SEND_SUMMARY);
                 break;
             case DocumentType.PERCEPTION:
             case DocumentType.RETENTION:
                 fileDeliveryTarget =
-                        new FileDestination(urls.getPerceptionRetention(), FileDestination.Operation.SEND_BILL);
+                        new BillServiceDestination(urls.getPerceptionRetention(), BillServiceDestination.Operation.SEND_BILL);
                 break;
             case DocumentType.DESPATCH_ADVICE:
-                fileDeliveryTarget = new FileDestination(urls.getDespatch(), FileDestination.Operation.SEND_BILL);
+                fileDeliveryTarget = new BillServiceDestination(urls.getDespatch(), BillServiceDestination.Operation.SEND_BILL);
                 break;
         }
 
         return Optional.ofNullable(fileDeliveryTarget);
     }
 
-    private static Optional<TicketDestination> getTicketDeliveryTarget(
+    private static Optional<BillServiceDestination> getTicketDeliveryTarget(
             CompanyURLs urls,
             XmlContentModel xmlContentModel
     ) {
@@ -218,7 +219,7 @@ public class XMLFileAnalyzer implements FileAnalyzer {
             return Optional.empty();
         }
 
-        TicketDestination ticketDeliveryTarget;
+        BillServiceDestination ticketDeliveryTarget;
 
         Catalog1 catalog1 = Catalog1
                 .valueOfCode(xmlContentModel.getVoidedLineDocumentTypeCode())
@@ -227,7 +228,7 @@ public class XMLFileAnalyzer implements FileAnalyzer {
             case PERCEPCION:
             case RETENCION:
                 ticketDeliveryTarget =
-                        new TicketDestination(urls.getPerceptionRetention(), TicketDestination.Operation.GET_STATUS);
+                        new BillServiceDestination(urls.getPerceptionRetention(), BillServiceDestination.Operation.GET_STATUS);
                 break;
             //            // No se pueden dar bajas de guias de remision
             //            case GUIA_REMISION_REMITENTE:
@@ -235,7 +236,7 @@ public class XMLFileAnalyzer implements FileAnalyzer {
             //                break;
             default:
                 ticketDeliveryTarget =
-                        new TicketDestination(urls.getInvoice(), TicketDestination.Operation.GET_STATUS);
+                        new BillServiceDestination(urls.getInvoice(), BillServiceDestination.Operation.GET_STATUS);
         }
 
         return Optional.of(ticketDeliveryTarget);

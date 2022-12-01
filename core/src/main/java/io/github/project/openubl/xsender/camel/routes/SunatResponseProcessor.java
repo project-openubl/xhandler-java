@@ -24,7 +24,7 @@ import io.github.project.openubl.xsender.utils.CdrReader;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.cxf.message.MessageContentsList;
-import pe.gob.sunat.service.StatusResponse;
+import service.sunat.gob.pe.billservice.StatusResponse;
 
 import java.util.Collections;
 import java.util.Optional;

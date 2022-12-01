@@ -28,10 +28,10 @@ import org.junit.jupiter.api.Test;
 public class QuarkusXSenderResourceTest {
 
     @Test
-    public void testInvoice() {
+    public void sendInvoice() {
         given()
                 .when()
-                .get("/quarkus-xsender/invoice")
+                .post("/quarkus-xsender/bill-service/send-invoice")
                 .then()
                 .statusCode(200)
                 .body(is(Status.ACEPTADO.toString()));
@@ -41,7 +41,47 @@ public class QuarkusXSenderResourceTest {
     public void sendVoidedDocument() {
         given()
                 .when()
-                .get("/quarkus-xsender/voided-document")
+                .post("/quarkus-xsender/bill-service/send-voided-document")
+                .then()
+                .statusCode(200)
+                .body(is(notNullValue()));
+    }
+
+    @Test
+    public void consultService_getStatus() {
+        given()
+                .when()
+                .post("/quarkus-xsender/consult-service/get-status")
+                .then()
+                .statusCode(200)
+                .body(is(notNullValue()));
+    }
+
+    @Test
+    public void consultService_getStatusCdr() {
+        given()
+                .when()
+                .post("/quarkus-xsender/consult-service/get-status-cdr")
+                .then()
+                .statusCode(200)
+                .body(is(notNullValue()));
+    }
+
+    @Test
+    public void consultValidService_validateData() {
+        given()
+                .when()
+                .post("/quarkus-xsender/consult-valid-service/validate-data")
+                .then()
+                .statusCode(200)
+                .body(is(notNullValue()));
+    }
+
+    @Test
+    public void consultValidService_validateFile() {
+        given()
+                .when()
+                .post("/quarkus-xsender/consult-valid-service/validate-file")
                 .then()
                 .statusCode(200)
                 .body(is(notNullValue()));

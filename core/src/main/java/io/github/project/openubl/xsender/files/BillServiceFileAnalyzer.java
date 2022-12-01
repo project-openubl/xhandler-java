@@ -16,25 +16,12 @@
  */
 package io.github.project.openubl.xsender.files;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.Getter;
+import io.github.project.openubl.xsender.sunat.BillServiceDestination;
 
-@Data
-@Builder
-@AllArgsConstructor
-public class FileDestination {
-    private final String url;
-    private final Operation operation;
+public interface BillServiceFileAnalyzer {
+    ZipFile getZipFile();
 
-    @Getter
-    @AllArgsConstructor
-    public enum Operation {
-        SEND_BILL("sendBill"),
-        SEND_SUMMARY("sendSummary"),
-        SEND_PACK("sendPack");
+    BillServiceDestination getSendFileDestination();
 
-        private final String name;
-    }
+    BillServiceDestination getVerifyTicketDestination();
 }

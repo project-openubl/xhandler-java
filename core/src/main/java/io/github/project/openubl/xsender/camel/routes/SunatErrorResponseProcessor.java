@@ -18,7 +18,6 @@ package io.github.project.openubl.xsender.camel.routes;
 
 import io.github.project.openubl.xsender.models.Metadata;
 import io.github.project.openubl.xsender.models.Status;
-import io.github.project.openubl.xsender.utils.CdrReader;
 import io.github.project.openubl.xsender.models.SunatResponse;
 import org.apache.camel.Exchange;
 import org.apache.camel.ExchangePropertyKey;

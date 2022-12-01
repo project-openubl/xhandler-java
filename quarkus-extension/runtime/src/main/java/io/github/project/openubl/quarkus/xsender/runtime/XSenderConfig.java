@@ -19,14 +19,13 @@ package io.github.project.openubl.quarkus.xsender.runtime;
 import io.quarkus.runtime.annotations.ConfigItem;
 import io.quarkus.runtime.annotations.ConfigPhase;
 import io.quarkus.runtime.annotations.ConfigRoot;
-import java.util.Optional;
 
 @ConfigRoot(name = "xsender", phase = ConfigPhase.RUN_TIME)
 public class XSenderConfig {
 
     /**
-     * Default moneda
+     * Enable logging feature
      */
     @ConfigItem
-    public boolean logEnabled;
+    public boolean enableLoggingFeature;
 }

@@ -54,11 +54,6 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-ws-security</artifactId>
-            <version>3.5.4</version>
-        </dependency>
-        <dependency>
             <groupId>org.jodd</groupId>
             <artifactId>jodd-core</artifactId>
             <version>5.3.0</version>
@@ -83,17 +78,7 @@
         </dependency>
         <dependency>
             <groupId>org.apache.camel</groupId>
-            <artifactId>camel-log</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.camel</groupId>
             <artifactId>camel-cxf-soap</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-slf4j-impl</artifactId>
-            <version>2.13.3</version>
-            <scope>runtime</scope>
         </dependency>
 
         <dependency>

@@ -16,8 +16,25 @@
  */
 package io.github.project.openubl.quarkus.xsender;
 
-import javax.inject.Singleton;
+import io.github.project.openubl.quarkus.xsender.runtime.XSenderConfig;
+import io.github.project.openubl.xsender.camel.routes.CxfEndpointConfiguration;
+import org.apache.camel.component.cxf.jaxws.CxfEndpoint;
 
-@Singleton
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+import javax.inject.Named;
+
 public class XSender {
+
+    @Inject
+    XSenderConfig config;
+
+    @Produces
+    @ApplicationScoped
+    @Named("cxfEndpoint")
+    CxfEndpoint produceCxfEndpoint() {
+        return new CxfEndpointConfiguration().cxfEndpoint(config.enableLoggingFeature);
+    }
+
 }

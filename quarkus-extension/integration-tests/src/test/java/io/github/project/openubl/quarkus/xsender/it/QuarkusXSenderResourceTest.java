@@ -20,6 +20,7 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 
+import io.github.project.openubl.xsender.models.Status;
 import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Test;
 
@@ -28,6 +29,21 @@ public class QuarkusXSenderResourceTest {
 
     @Test
     public void testInvoice() {
-        given().when().get("/quarkus-xsender/invoice").then().statusCode(200).body(is(notNullValue()));
+        given()
+                .when()
+                .get("/quarkus-xsender/invoice")
+                .then()
+                .statusCode(200)
+                .body(is(Status.ACEPTADO.toString()));
+    }
+
+    @Test
+    public void sendVoidedDocument() {
+        given()
+                .when()
+                .get("/quarkus-xsender/voided-document")
+                .then()
+                .statusCode(200)
+                .body(is(notNullValue()));
     }
 }

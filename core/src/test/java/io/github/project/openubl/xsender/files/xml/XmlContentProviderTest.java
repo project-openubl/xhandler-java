@@ -16,13 +16,16 @@
  */
 package io.github.project.openubl.xsender.files.xml;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import java.io.IOException;
-import java.io.InputStream;
-import javax.xml.parsers.ParserConfigurationException;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
+
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
+import java.io.InputStream;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class XmlContentProviderTest {
 

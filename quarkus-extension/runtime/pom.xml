@@ -33,10 +33,28 @@
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-arc</artifactId>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>io.github.project-openubl</groupId>-->
-<!--            <artifactId>xsender</artifactId>-->
-<!--        </dependency>-->
+
+        <dependency>
+            <groupId>org.apache.camel.quarkus</groupId>
+            <artifactId>camel-quarkus-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel.quarkus</groupId>
+            <artifactId>camel-quarkus-bean</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel.quarkus</groupId>
+            <artifactId>camel-quarkus-direct</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel.quarkus</groupId>
+            <artifactId>camel-quarkus-cxf-soap</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.project-openubl</groupId>
+            <artifactId>xsender</artifactId>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

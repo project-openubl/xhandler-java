@@ -16,23 +16,30 @@
  */
 package io.github.project.openubl.quarkus.xsender.it;
 
-import io.github.project.openubl.xsender.XSender;
-import io.github.project.openubl.xsender.XSenderFileResponse;
+import io.github.project.openubl.xsender.camel.utils.CamelData;
 import io.github.project.openubl.xsender.company.CompanyCredentials;
 import io.github.project.openubl.xsender.company.CompanyURLs;
+import io.github.project.openubl.xsender.files.FileDestination;
 import io.github.project.openubl.xsender.files.XMLFileAnalyzer;
-import java.io.InputStream;
+import io.github.project.openubl.xsender.files.ZipFile;
+import io.github.project.openubl.xsender.models.SunatResponse;
+import org.apache.camel.ProducerTemplate;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import java.io.InputStream;
+
+import static io.github.project.openubl.xsender.camel.routes.CxfRouteBuilder.XSENDER_URI;
+import static io.github.project.openubl.xsender.camel.utils.CamelUtils.getCamelData;
 
 @Path("/quarkus-xsender")
 @ApplicationScoped
 public class QuarkusXSenderResource {
 
     @Inject
-    XSender xsender;
+    ProducerTemplate producerTemplate;
 
     CompanyURLs companyURLs = CompanyURLs
         .builder()
@@ -53,15 +60,38 @@ public class QuarkusXSenderResource {
         InputStream is = Thread
             .currentThread()
             .getContextClassLoader()
-            .getResourceAsStream("templates/12345678912-RA-20200328-1.xml");
+            .getResourceAsStream("xmls/12345678912-01-F001-1.xml");
 
-        XMLFileAnalyzer xmlFileAnalyzer = new XMLFileAnalyzer(is, companyURLs);
-        XSenderFileResponse response = xsender.sendXmlFile(
-            xmlFileAnalyzer.getZipFile(),
-            xmlFileAnalyzer.getFileDeliveryTarget(),
-            credentials
-        );
+        XMLFileAnalyzer fileAnalyzer = new XMLFileAnalyzer(is, companyURLs);
 
-        return response.getTicket();
+        ZipFile zipFile = fileAnalyzer.getZipFile();
+        FileDestination destination = fileAnalyzer.getSendFileDestination();
+        CamelData camelData = getCamelData(zipFile, destination, credentials);
+
+        SunatResponse sunatResponse = producerTemplate
+                .requestBodyAndHeaders(XSENDER_URI, camelData.getBody(), camelData.getHeaders(), SunatResponse.class);
+
+
+        return sunatResponse.getStatus().toString();
+    }
+
+    @GET
+    @Path("voided-document")
+    public String sendVoidedDocument() throws Exception {
+        InputStream is = Thread
+            .currentThread()
+            .getContextClassLoader()
+            .getResourceAsStream("xmls/12345678912-RA-20200328-1.xml");
+
+        XMLFileAnalyzer fileAnalyzer = new XMLFileAnalyzer(is, companyURLs);
+
+        ZipFile zipFile = fileAnalyzer.getZipFile();
+        FileDestination destination = fileAnalyzer.getSendFileDestination();
+        CamelData camelData = getCamelData(zipFile, destination, credentials);
+
+        SunatResponse sunatResponse = producerTemplate
+                .requestBodyAndHeaders(XSENDER_URI, camelData.getBody(), camelData.getHeaders(), SunatResponse.class);
+
+        return sunatResponse.getSunat().getTicket();
     }
 }

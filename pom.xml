@@ -118,6 +118,7 @@
                     <version>${maven-javadoc-plugin.version}</version>
                     <configuration>
                         <show>private</show>
+                        <doclint>none</doclint>
                     </configuration>
                     <executions>
                         <execution>

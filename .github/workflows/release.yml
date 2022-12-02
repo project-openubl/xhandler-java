@@ -38,7 +38,7 @@ jobs:
           gpg-private-key: ${{ secrets.gpg_private_key }}
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
       - name: OSSRH Release
-        run: mvn --batch-mode clean source:jar javadoc:jar deploy -P ossrh,release -DskipTests
+        run: mvn --batch-mode clean compile source:jar javadoc:jar deploy -P ossrh,release -DskipTests
         env:
           MAVEN_USERNAME: ${{ secrets.nexus_username }}
           MAVEN_PASSWORD: ${{ secrets.nexus_password }}
@@ -51,7 +51,7 @@ jobs:
 #          java-version: 11
 #          gpg-passphrase: MAVEN_GPG_PASSPHRASE
 #      - name: GitHub Release
-#        run: mvn --batch-mode clean source:jar javadoc:jar deploy -P github,release -DskipTests
+#        run: mvn --batch-mode clean compile source:jar javadoc:jar deploy -P github,release -DskipTests
 #        env:
 #          GITHUB_TOKEN: ${{ github.token }}
 #          MAVEN_GPG_PASSPHRASE: ${{ secrets.gpg_passphrase }}

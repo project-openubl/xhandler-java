@@ -267,7 +267,7 @@
                 <sonar.host.url>https://sonarcloud.io</sonar.host.url>
                 <sonar.organization>project-openubl</sonar.organization>
                 <sonar.projectKey>project-openubl_xsender</sonar.projectKey>
-                <sonar.moduleKey>${artifactId}</sonar.moduleKey>
+                <sonar.moduleKey>${project.artifactId}</sonar.moduleKey>
                 <sonar.projectName>XBuider</sonar.projectName>
             </properties>
             <build>

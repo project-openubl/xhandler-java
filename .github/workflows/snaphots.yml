@@ -41,7 +41,7 @@ jobs:
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
       - name: OSSRH Snapshot
-        run: mvn --batch-mode source:jar javadoc:jar deploy -Possrh -DskipTests
+        run: mvn --batch-mode compile source:jar javadoc:jar deploy -Possrh -DskipTests
         env:
           MAVEN_USERNAME: ${{ secrets.nexus_username }}
           MAVEN_PASSWORD: ${{ secrets.nexus_password }}

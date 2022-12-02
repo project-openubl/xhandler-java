@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+    branches-ignore:
+      - "dependabot/**"
+    paths-ignore:
+      - 'README.md'
+  pull_request:
+    paths-ignore:
+      - 'README.md'
+
+env:
+  CI: true
+
+jobs:
+  test:
+    name: JDK ${{matrix.java-version}} JVM Tests
+    strategy:
+      matrix:
+        java-version: [ 11, 17 ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          distribution: "temurin"
+          java-version: ${{ matrix.java-version }}
+          cache: maven
+      - name: Build with Maven
+        run: mvn verify
+
+  quarkus-extension:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: 11
+          distribution: temurin
+          cache: maven
+      - name: Build with Maven
+        run: mvn -Pnative install
+      - name: Build with Maven
+        run: mvn -Pnative-image install -f quarkus-extension/integration-tests/

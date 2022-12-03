@@ -33,9 +33,9 @@ public class XmlContentProviderTest {
     public void getSunatDocument_invoice() throws IOException, SAXException, ParserConfigurationException {
         // Given
         InputStream inputStream = Thread
-            .currentThread()
-            .getContextClassLoader()
-            .getResourceAsStream("xmls/invoice.xml");
+                .currentThread()
+                .getContextClassLoader()
+                .getResourceAsStream("xmls/invoice.xml");
         assertNotNull(inputStream);
 
         // When
@@ -51,12 +51,12 @@ public class XmlContentProviderTest {
 
     @Test
     public void getSunatDocument_invoice_withExtensionContent()
-        throws IOException, SAXException, ParserConfigurationException {
+            throws IOException, SAXException, ParserConfigurationException {
         // Given
         InputStream inputStream = Thread
-            .currentThread()
-            .getContextClassLoader()
-            .getResourceAsStream("ubl/12345678912-01-F001-1.xml");
+                .currentThread()
+                .getContextClassLoader()
+                .getResourceAsStream("ubl/12345678912-01-F001-1.xml");
         assertNotNull(inputStream);
 
         // When
@@ -74,9 +74,9 @@ public class XmlContentProviderTest {
     public void getSunatDocument_creditNote() throws IOException, SAXException, ParserConfigurationException {
         // Given
         InputStream inputStream = Thread
-            .currentThread()
-            .getContextClassLoader()
-            .getResourceAsStream("xmls/credit-note.xml");
+                .currentThread()
+                .getContextClassLoader()
+                .getResourceAsStream("xmls/credit-note.xml");
         assertNotNull(inputStream);
 
         // When
@@ -94,9 +94,9 @@ public class XmlContentProviderTest {
     public void getSunatDocument_debitNote() throws IOException, SAXException, ParserConfigurationException {
         // Given
         InputStream inputStream = Thread
-            .currentThread()
-            .getContextClassLoader()
-            .getResourceAsStream("xmls/debit-note.xml");
+                .currentThread()
+                .getContextClassLoader()
+                .getResourceAsStream("xmls/debit-note.xml");
         assertNotNull(inputStream);
 
         // When
@@ -114,9 +114,9 @@ public class XmlContentProviderTest {
     public void getSunatDocument_voidedDocument() throws IOException, SAXException, ParserConfigurationException {
         // Given
         InputStream inputStream = Thread
-            .currentThread()
-            .getContextClassLoader()
-            .getResourceAsStream("xmls/voided-document.xml");
+                .currentThread()
+                .getContextClassLoader()
+                .getResourceAsStream("xmls/voided-document.xml");
         assertNotNull(inputStream);
 
         // When
@@ -134,9 +134,9 @@ public class XmlContentProviderTest {
     public void getSunatDocument_summaryDocument() throws IOException, SAXException, ParserConfigurationException {
         // Given
         InputStream inputStream = Thread
-            .currentThread()
-            .getContextClassLoader()
-            .getResourceAsStream("xmls/summary-document.xml");
+                .currentThread()
+                .getContextClassLoader()
+                .getResourceAsStream("xmls/summary-document.xml");
         assertNotNull(inputStream);
 
         // When
@@ -154,9 +154,9 @@ public class XmlContentProviderTest {
     public void getSunatDocument_perception() throws IOException, SAXException, ParserConfigurationException {
         // Given
         InputStream inputStream = Thread
-            .currentThread()
-            .getContextClassLoader()
-            .getResourceAsStream("xmls/perception.xml");
+                .currentThread()
+                .getContextClassLoader()
+                .getResourceAsStream("xmls/perception.xml");
         assertNotNull(inputStream);
 
         // When
@@ -174,9 +174,9 @@ public class XmlContentProviderTest {
     public void getSunatDocument_retention() throws IOException, SAXException, ParserConfigurationException {
         // Given
         InputStream inputStream = Thread
-            .currentThread()
-            .getContextClassLoader()
-            .getResourceAsStream("xmls/retention.xml");
+                .currentThread()
+                .getContextClassLoader()
+                .getResourceAsStream("xmls/retention.xml");
         assertNotNull(inputStream);
 
         // When
@@ -194,9 +194,9 @@ public class XmlContentProviderTest {
     public void getSunatDocument_despatchAdvice() throws IOException, SAXException, ParserConfigurationException {
         // Given
         InputStream inputStream = Thread
-            .currentThread()
-            .getContextClassLoader()
-            .getResourceAsStream("xmls/despatch-advice.xml");
+                .currentThread()
+                .getContextClassLoader()
+                .getResourceAsStream("xmls/despatch-advice.xml");
         assertNotNull(inputStream);
 
         // When

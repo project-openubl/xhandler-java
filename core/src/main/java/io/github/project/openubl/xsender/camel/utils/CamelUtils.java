@@ -63,7 +63,7 @@ public class CamelUtils {
 
     public static CamelData getBillServiceCamelData(String ticket, BillServiceDestination destination, CompanyCredentials credentials) {
         Map<String, Object> headers = createBillServiceHeaders(destination.getUrl(), destination.getOperation().getWebMethod(), credentials);
-        List<Object> body = Collections.singletonList(ticket);;
+        List<Object> body = Collections.singletonList(ticket);
 
         return CamelData.builder()
                 .body(body)

@@ -30,11 +30,11 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 public class XMLBillServiceFileAnalyzerTest {
 
     private final CompanyURLs urls = CompanyURLs
-        .builder()
-        .invoice("invoiceUrl")
-        .perceptionRetention("perceptionRetentionUrl")
-        .despatch("despatchUrl")
-        .build();
+            .builder()
+            .invoice("invoiceUrl")
+            .perceptionRetention("perceptionRetentionUrl")
+            .despatch("despatchUrl")
+            .build();
 
     protected void assertZipFile(BillServiceXMLFileAnalyzer xmlFileAnalyzer, String expectedZipFileName) {
         ZipFile zipFile = xmlFileAnalyzer.getZipFile();
@@ -45,9 +45,9 @@ public class XMLBillServiceFileAnalyzerTest {
     }
 
     protected void assertFileDeliveryTarget(
-        BillServiceXMLFileAnalyzer xmlFileAnalyzer,
-        String expectedUrl,
-        BillServiceDestination.Operation expectedMethod
+            BillServiceXMLFileAnalyzer xmlFileAnalyzer,
+            String expectedUrl,
+            BillServiceDestination.Operation expectedMethod
     ) {
         BillServiceDestination fileDeliveryTarget = xmlFileAnalyzer.getSendFileDestination();
 

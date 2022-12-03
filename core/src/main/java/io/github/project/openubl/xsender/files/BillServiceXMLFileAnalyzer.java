@@ -49,23 +49,19 @@ public class BillServiceXMLFileAnalyzer implements BillServiceFileAnalyzer {
 
     private final XmlContent xmlContent;
 
-    public BillServiceXMLFileAnalyzer(File file, CompanyURLs urLs)
-            throws IOException, ParserConfigurationException, UnsupportedXMLFileException, SAXException {
+    public BillServiceXMLFileAnalyzer(File file, CompanyURLs urLs) throws IOException, ParserConfigurationException, UnsupportedXMLFileException, SAXException {
         this(file.toPath(), urLs);
     }
 
-    public BillServiceXMLFileAnalyzer(Path path, CompanyURLs urLs)
-            throws IOException, ParserConfigurationException, UnsupportedXMLFileException, SAXException {
+    public BillServiceXMLFileAnalyzer(Path path, CompanyURLs urLs) throws IOException, ParserConfigurationException, UnsupportedXMLFileException, SAXException {
         this(Files.readAllBytes(path), urLs);
     }
 
-    public BillServiceXMLFileAnalyzer(InputStream is, CompanyURLs urLs)
-            throws IOException, ParserConfigurationException, UnsupportedXMLFileException, SAXException {
+    public BillServiceXMLFileAnalyzer(InputStream is, CompanyURLs urLs) throws IOException, ParserConfigurationException, UnsupportedXMLFileException, SAXException {
         this(IOUtils.readBytesFromStream(is), urLs);
     }
 
-    public BillServiceXMLFileAnalyzer(byte[] file, CompanyURLs urls)
-            throws ParserConfigurationException, IOException, SAXException, UnsupportedXMLFileException {
+    public BillServiceXMLFileAnalyzer(byte[] file, CompanyURLs urls) throws ParserConfigurationException, IOException, SAXException, UnsupportedXMLFileException {
         this.xmlContent = XmlContentProvider.getSunatDocument(new ByteArrayInputStream(file));
 
         if (xmlContent.getDocumentType().equals(DocumentType.VOIDED_DOCUMENT)) {
@@ -166,7 +162,7 @@ public class BillServiceXMLFileAnalyzer implements BillServiceFileAnalyzer {
         return Optional.ofNullable(result);
     }
 
-    private static Optional<BillServiceDestination> getFileDeliveryTarget(CompanyURLs urls, XmlContent xmlContent) {
+    public static Optional<BillServiceDestination> getFileDeliveryTarget(CompanyURLs urls, XmlContent xmlContent) {
         BillServiceDestination fileDeliveryTarget = null;
 
         switch (xmlContent.getDocumentType()) {
@@ -210,7 +206,7 @@ public class BillServiceXMLFileAnalyzer implements BillServiceFileAnalyzer {
         return Optional.ofNullable(fileDeliveryTarget);
     }
 
-    private static Optional<BillServiceDestination> getTicketDeliveryTarget(
+    public static Optional<BillServiceDestination> getTicketDeliveryTarget(
             CompanyURLs urls,
             XmlContent xmlContent
     ) {

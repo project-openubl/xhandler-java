@@ -18,8 +18,6 @@ package io.github.project.openubl.quarkus.xsender.deployment;
 
 import io.github.project.openubl.quarkus.xsender.XSender;
 import io.github.project.openubl.xsender.camel.routes.CxfRouteBuilder;
-import io.github.project.openubl.xsender.files.BillServiceFileAnalyzer;
-import io.github.project.openubl.xsender.files.BillServiceXMLFileAnalyzer;
 import io.quarkus.arc.deployment.AdditionalBeanBuildItem;
 import io.quarkus.arc.processor.DotNames;
 import io.quarkus.deployment.annotations.BuildProducer;
@@ -84,7 +82,7 @@ class QuarkusXsenderProcessor {
                 io.github.project.openubl.xsender.files.ZipFile.ZipFileBuilder.class,
                 io.github.project.openubl.xsender.files.exceptions.UnsupportedXMLFileException.class,
                 io.github.project.openubl.xsender.files.xml.DocumentType.class,
-                io.github.project.openubl.xsender.files.xml.XmlContentModel.class,
+                io.github.project.openubl.xsender.files.xml.XmlContent.class,
                 io.github.project.openubl.xsender.files.xml.XmlContentProvider.class,
                 io.github.project.openubl.xsender.files.xml.XmlHandler.class,
                 io.github.project.openubl.xsender.models.Metadata.class,

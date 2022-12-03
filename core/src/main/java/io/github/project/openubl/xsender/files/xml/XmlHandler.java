@@ -152,8 +152,8 @@ public class XmlHandler extends DefaultHandler {
         }
     }
 
-    public XmlContentModel getModel() {
-        return XmlContentModel
+    public XmlContent getModel() {
+        return XmlContent
                 .builder()
                 .documentType(documentType)
                 .documentID(documentID)

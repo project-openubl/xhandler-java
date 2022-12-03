@@ -39,7 +39,7 @@ public class XmlContentProviderTest {
         assertNotNull(inputStream);
 
         // When
-        XmlContentModel model = XmlContentProvider.getSunatDocument(inputStream);
+        XmlContent model = XmlContentProvider.getSunatDocument(inputStream);
 
         // Then
         assertNotNull(model);
@@ -60,7 +60,7 @@ public class XmlContentProviderTest {
         assertNotNull(inputStream);
 
         // When
-        XmlContentModel model = XmlContentProvider.getSunatDocument(inputStream);
+        XmlContent model = XmlContentProvider.getSunatDocument(inputStream);
 
         // Then
         assertNotNull(model);
@@ -80,7 +80,7 @@ public class XmlContentProviderTest {
         assertNotNull(inputStream);
 
         // When
-        XmlContentModel model = XmlContentProvider.getSunatDocument(inputStream);
+        XmlContent model = XmlContentProvider.getSunatDocument(inputStream);
 
         // Then
         assertNotNull(model);
@@ -100,7 +100,7 @@ public class XmlContentProviderTest {
         assertNotNull(inputStream);
 
         // When
-        XmlContentModel model = XmlContentProvider.getSunatDocument(inputStream);
+        XmlContent model = XmlContentProvider.getSunatDocument(inputStream);
 
         // Then
         assertNotNull(model);
@@ -120,7 +120,7 @@ public class XmlContentProviderTest {
         assertNotNull(inputStream);
 
         // When
-        XmlContentModel model = XmlContentProvider.getSunatDocument(inputStream);
+        XmlContent model = XmlContentProvider.getSunatDocument(inputStream);
 
         // Then
         assertNotNull(model);
@@ -140,7 +140,7 @@ public class XmlContentProviderTest {
         assertNotNull(inputStream);
 
         // When
-        XmlContentModel model = XmlContentProvider.getSunatDocument(inputStream);
+        XmlContent model = XmlContentProvider.getSunatDocument(inputStream);
 
         // Then
         assertNotNull(model);
@@ -160,7 +160,7 @@ public class XmlContentProviderTest {
         assertNotNull(inputStream);
 
         // When
-        XmlContentModel model = XmlContentProvider.getSunatDocument(inputStream);
+        XmlContent model = XmlContentProvider.getSunatDocument(inputStream);
 
         // Then
         assertNotNull(model);
@@ -180,7 +180,7 @@ public class XmlContentProviderTest {
         assertNotNull(inputStream);
 
         // When
-        XmlContentModel model = XmlContentProvider.getSunatDocument(inputStream);
+        XmlContent model = XmlContentProvider.getSunatDocument(inputStream);
 
         // Then
         assertNotNull(model);
@@ -200,7 +200,7 @@ public class XmlContentProviderTest {
         assertNotNull(inputStream);
 
         // When
-        XmlContentModel model = XmlContentProvider.getSunatDocument(inputStream);
+        XmlContent model = XmlContentProvider.getSunatDocument(inputStream);
 
         // Then
         assertNotNull(model);

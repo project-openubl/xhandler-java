@@ -19,10 +19,10 @@ package io.github.project.openubl.xsender.files;
 import io.github.project.openubl.xsender.company.CompanyURLs;
 import io.github.project.openubl.xsender.files.exceptions.UnsupportedXMLFileException;
 import io.github.project.openubl.xsender.files.xml.DocumentType;
-import io.github.project.openubl.xsender.files.xml.XmlContentModel;
+import io.github.project.openubl.xsender.files.xml.XmlContent;
 import io.github.project.openubl.xsender.files.xml.XmlContentProvider;
-import io.github.project.openubl.xsender.sunat.catalog.Catalog1;
 import io.github.project.openubl.xsender.sunat.BillServiceDestination;
+import io.github.project.openubl.xsender.sunat.catalog.Catalog1;
 import jodd.io.ZipBuilder;
 import org.apache.cxf.helpers.IOUtils;
 import org.xml.sax.SAXException;
@@ -47,6 +47,8 @@ public class BillServiceXMLFileAnalyzer implements BillServiceFileAnalyzer {
     private final BillServiceDestination fileDestination;
     private final BillServiceDestination ticketDestination;
 
+    private final XmlContent xmlContent;
+
     public BillServiceXMLFileAnalyzer(File file, CompanyURLs urLs)
             throws IOException, ParserConfigurationException, UnsupportedXMLFileException, SAXException {
         this(file.toPath(), urLs);
@@ -64,23 +66,23 @@ public class BillServiceXMLFileAnalyzer implements BillServiceFileAnalyzer {
 
     public BillServiceXMLFileAnalyzer(byte[] file, CompanyURLs urls)
             throws ParserConfigurationException, IOException, SAXException, UnsupportedXMLFileException {
-        XmlContentModel xmlContentModel = XmlContentProvider.getSunatDocument(new ByteArrayInputStream(file));
+        this.xmlContent = XmlContentProvider.getSunatDocument(new ByteArrayInputStream(file));
 
-        if (xmlContentModel.getDocumentType().equals(DocumentType.VOIDED_DOCUMENT)) {
-            String voidedLineDocumentTypeCode = xmlContentModel.getVoidedLineDocumentTypeCode();
+        if (xmlContent.getDocumentType().equals(DocumentType.VOIDED_DOCUMENT)) {
+            String voidedLineDocumentTypeCode = xmlContent.getVoidedLineDocumentTypeCode();
             Optional<Catalog1> catalog1Optional = Catalog1.valueOfCode(voidedLineDocumentTypeCode);
             if (catalog1Optional.isPresent() && catalog1Optional.get().equals(Catalog1.BOLETA)) {
             }
         }
 
         String fileNameWithoutExtension = BillServiceXMLFileAnalyzer
-                .getFileNameWithoutExtension(xmlContentModel)
+                .getFileNameWithoutExtension(xmlContent)
                 .orElseThrow(() -> new UnsupportedXMLFileException("Couldn't infer the file name"));
         BillServiceDestination fileDestination = BillServiceXMLFileAnalyzer
-                .getFileDeliveryTarget(urls, xmlContentModel)
+                .getFileDeliveryTarget(urls, xmlContent)
                 .orElseThrow(() -> new UnsupportedXMLFileException("Couldn't infer the delivery data"));
         BillServiceDestination ticketDestination = BillServiceXMLFileAnalyzer
-                .getTicketDeliveryTarget(urls, xmlContentModel)
+                .getTicketDeliveryTarget(urls, xmlContent)
                 .orElse(null);
 
         String zipFileName = fileNameWithoutExtension + ".zip";
@@ -111,10 +113,15 @@ public class BillServiceXMLFileAnalyzer implements BillServiceFileAnalyzer {
         return ticketDestination;
     }
 
-    private static Optional<String> getFileNameWithoutExtension(XmlContentModel xmlContentModel) {
-        String documentType = xmlContentModel.getDocumentType();
-        String documentID = xmlContentModel.getDocumentID();
-        String ruc = xmlContentModel.getRuc();
+    @Override
+    public XmlContent getXmlContent() {
+        return xmlContent;
+    }
+
+    private static Optional<String> getFileNameWithoutExtension(XmlContent xmlContent) {
+        String documentType = xmlContent.getDocumentType();
+        String documentID = xmlContent.getDocumentID();
+        String ruc = xmlContent.getRuc();
 
         String result = null;
         String codigoDocumento;
@@ -159,10 +166,10 @@ public class BillServiceXMLFileAnalyzer implements BillServiceFileAnalyzer {
         return Optional.ofNullable(result);
     }
 
-    private static Optional<BillServiceDestination> getFileDeliveryTarget(CompanyURLs urls, XmlContentModel xmlContentModel) {
+    private static Optional<BillServiceDestination> getFileDeliveryTarget(CompanyURLs urls, XmlContent xmlContent) {
         BillServiceDestination fileDeliveryTarget = null;
 
-        switch (xmlContentModel.getDocumentType()) {
+        switch (xmlContent.getDocumentType()) {
             case DocumentType.INVOICE:
             case DocumentType.CREDIT_NOTE:
             case DocumentType.DEBIT_NOTE:
@@ -172,7 +179,7 @@ public class BillServiceXMLFileAnalyzer implements BillServiceFileAnalyzer {
                 fileDeliveryTarget = new BillServiceDestination(urls.getInvoice(), BillServiceDestination.Operation.SEND_SUMMARY);
                 break;
             case DocumentType.VOIDED_DOCUMENT:
-                String tipoDocumentoAfectado = xmlContentModel.getVoidedLineDocumentTypeCode();
+                String tipoDocumentoAfectado = xmlContent.getVoidedLineDocumentTypeCode();
                 Optional<Catalog1> catalog1Optional = Catalog1.valueOfCode(tipoDocumentoAfectado);
                 if (!catalog1Optional.isPresent()) {
                     return Optional.empty();
@@ -205,10 +212,10 @@ public class BillServiceXMLFileAnalyzer implements BillServiceFileAnalyzer {
 
     private static Optional<BillServiceDestination> getTicketDeliveryTarget(
             CompanyURLs urls,
-            XmlContentModel xmlContentModel
+            XmlContent xmlContent
     ) {
         boolean shouldVerifyTicket = false;
-        switch (xmlContentModel.getDocumentType()) {
+        switch (xmlContent.getDocumentType()) {
             case DocumentType.VOIDED_DOCUMENT:
             case DocumentType.SUMMARY_DOCUMENT:
                 shouldVerifyTicket = true;
@@ -222,7 +229,7 @@ public class BillServiceXMLFileAnalyzer implements BillServiceFileAnalyzer {
         BillServiceDestination ticketDeliveryTarget;
 
         Catalog1 catalog1 = Catalog1
-                .valueOfCode(xmlContentModel.getVoidedLineDocumentTypeCode())
+                .valueOfCode(xmlContent.getVoidedLineDocumentTypeCode())
                 .orElse(Catalog1.FACTURA);
         switch (catalog1) {
             case PERCEPCION:

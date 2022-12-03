@@ -25,7 +25,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class XmlContentModel {
+public class XmlContent {
 
     private String documentType;
     private String documentID;

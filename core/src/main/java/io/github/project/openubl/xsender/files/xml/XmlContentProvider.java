@@ -30,8 +30,7 @@ public class XmlContentProvider {
         // Only static methods
     }
 
-    public static XmlContentModel getSunatDocument(InputStream is)
-            throws ParserConfigurationException, SAXException, IOException {
+    public static XmlContent getSunatDocument(InputStream is) throws ParserConfigurationException, SAXException, IOException {
         XmlHandler handler = new XmlHandler();
         SAXParserFactory factory = SAXParserFactory.newInstance();
         factory.setNamespaceAware(true);

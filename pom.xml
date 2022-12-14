@@ -45,7 +45,7 @@
         <license.dir>${basedir}</license.dir>
 
         <lombok.version>1.18.24</lombok.version>
-        <quarkus.version>2.14.2.Final</quarkus.version>
+        <quarkus.version>2.14.3.Final</quarkus.version>
         <camel.version>3.18.3</camel.version>
     </properties>
 

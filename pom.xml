@@ -46,7 +46,7 @@
 
         <lombok.version>1.18.24</lombok.version>
         <quarkus.version>2.15.0.Final</quarkus.version>
-        <camel.version>3.18.3</camel.version>
+        <camel.version>3.19.0</camel.version>
     </properties>
 
     <url>https://project-openubl.github.io/</url>

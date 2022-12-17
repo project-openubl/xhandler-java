@@ -18,6 +18,8 @@ package io.github.project.openubl.xsender.files.xml;
 
 import org.xml.sax.SAXException;
 
+import javax.xml.XMLConstants;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -32,10 +34,14 @@ public class XmlContentProvider {
 
     public static XmlContent getSunatDocument(InputStream is) throws ParserConfigurationException, SAXException, IOException {
         XmlHandler handler = new XmlHandler();
+
         SAXParserFactory factory = SAXParserFactory.newInstance();
+        factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
         factory.setNamespaceAware(true);
+
         SAXParser parser = factory.newSAXParser();
         parser.parse(is, handler);
+
         return handler.getModel();
     }
 }

@@ -269,7 +269,7 @@
                 <sonar.organization>project-openubl</sonar.organization>
                 <sonar.projectKey>project-openubl_xsender</sonar.projectKey>
                 <sonar.moduleKey>${project.artifactId}</sonar.moduleKey>
-                <sonar.projectName>XBuider</sonar.projectName>
+                <sonar.projectName>XSender</sonar.projectName>
             </properties>
             <build>
                 <plugins>

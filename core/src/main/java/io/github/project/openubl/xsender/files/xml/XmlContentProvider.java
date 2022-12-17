@@ -36,10 +36,12 @@ public class XmlContentProvider {
         XmlHandler handler = new XmlHandler();
 
         SAXParserFactory factory = SAXParserFactory.newInstance();
+        factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
         factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
         factory.setNamespaceAware(true);
 
         SAXParser parser = factory.newSAXParser();
+        parser.getXMLReader().setFeature("http://xml.org/sax/features/external-general-entities", false);
         parser.parse(is, handler);
 
         return handler.getModel();

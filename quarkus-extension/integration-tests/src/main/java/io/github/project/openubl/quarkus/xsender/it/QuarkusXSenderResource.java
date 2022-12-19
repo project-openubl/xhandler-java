@@ -50,7 +50,7 @@ public class QuarkusXSenderResource {
     CompanyURLs companyURLs = CompanyURLs
             .builder()
             .invoice("https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService")
-            .despatch("https://e-beta.sunat.gob.pe/ol-ti-itemision-otroscpe-gem-beta/billService")
+            .despatch("https://e-beta.sunat.gob.pe/ol-ti-itemision-guia-gem-beta/billService")
             .perceptionRetention("https://e-beta.sunat.gob.pe/ol-ti-itemision-guia-gem-beta/billService")
             .build();
 

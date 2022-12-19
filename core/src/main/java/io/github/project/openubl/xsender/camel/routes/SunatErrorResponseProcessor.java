@@ -26,8 +26,17 @@ import org.apache.cxf.binding.soap.SoapFault;
 
 import javax.xml.namespace.QName;
 import java.util.Collections;
+import java.util.regex.Pattern;
 
 public class SunatErrorResponseProcessor implements Processor {
+    private static Pattern pattern = Pattern.compile("-?\\d+(\\.\\d+)?");
+
+    public boolean isNumeric(String strNum) {
+        if (strNum == null) {
+            return false;
+        }
+        return pattern.matcher(strNum).matches();
+    }
 
     @Override
     public void process(Exchange exchange) throws Exception {
@@ -36,10 +45,18 @@ public class SunatErrorResponseProcessor implements Processor {
 
         QName qName = fault.getFaultCode();
         String localPart = qName.getLocalPart();
-        String errorCode = localPart
+
+        int errorCodeInt;
+        String errorCodeString = localPart
                 .replaceAll("Client.", "")
                 .replaceAll("Server.", "");
-        int errorCodeInt = Integer.parseInt(errorCode);
+        if (isNumeric(errorCodeString)) {
+            errorCodeInt = Integer.parseInt(errorCodeString);
+        } else if (isNumeric(message)) {
+            errorCodeInt = Integer.parseInt(message);
+        } else {
+            throw new IllegalStateException("Could not extract sunat error code", fault);
+        }
 
         Metadata metadata = Metadata.builder()
                 .notes(Collections.emptyList())

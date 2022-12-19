@@ -70,7 +70,6 @@ announce:
     repository:
       owner: project-openubl
       name: website
-    templateDirectory: jreleaser/templates/article
     files:
       - path: 'release.md'
         transform: 'blog/{{#f_now}}YYYY-MM-dd{{/f_now}}/{{projectName}}-{{#f_dash}}{{projectVersion}}{{/f_dash}}-released.md'

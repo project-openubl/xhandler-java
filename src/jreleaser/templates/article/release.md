@@ -10,4 +10,4 @@ Acabamos de lanzar {{projectNameCapitalized}} {{projectEffectiveVersion}} con un
 
 ## Full changelog
 
-Puedes ver {{releaseNotesUrl}}[the full changelog of {{projectEffectiveVersion}} on GitHub].
+Puedes ver [the full changelog of {{projectEffectiveVersion}} on GitHub]({{releaseNotesUrl}}).

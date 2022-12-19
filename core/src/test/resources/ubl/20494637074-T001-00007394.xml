@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="ISO-8859-1"?><DespatchAdvice xmlns="urn:oasis:names:specification:ubl:schema:xsd:DespatchAdvice-2" xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2" xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2" xmlns:ext="urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2">
+    <ext:UBLExtensions>
+        <ext:UBLExtension>
+            <ext:ExtensionContent><ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" Id="PROJECT-OPENUBL"><ds:SignedInfo><ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/><ds:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/><ds:Reference URI=""><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><ds:DigestValue>0foeDunivtTPD7730tmzX+HK7Vo=</ds:DigestValue></ds:Reference></ds:SignedInfo><ds:SignatureValue>DAXH8YvHOEMz9rPrQsa3ds3/8WWaEOOab49TwabJmLKl0hlXpenSZwiDZoVCJkQnfCu/W/OWu6s6&#13;
+1nwpn3OBXccVPhY2R14sl2LANsPJF97j83ECK/YUH3kq9aGulpbhcCunOVdeZqQYfWD8e7uNUaj3&#13;
+Rz3bFj3Pn5S0js8EgIy21P7GLy76gjNYRsAZo2UVDKQw8o8TaUCcKmlIHa8K3pGXiGuEEI8qjV3w&#13;
+lEhc77Ggq+gpcXQ5HiUE/QoAW/Qvs5jm3PkogMM/NdOulDBgcLB1sTvPrOIsFjx9cEcyzMsQNKUV&#13;
+xqbJWUONEkvIHrdEBVJMFdjBE9KmEehNBQ8p+Q==</ds:SignatureValue><ds:KeyInfo><ds:X509Data><ds:X509Certificate>MIIE+DCCA+CgAwIBAgIJALURz7AYmJ5+MA0GCSqGSIb3DQEBBQUAMIIBDTEbMBkGCgmSJomT8ixk&#13;
+ARkWC0xMQU1BLlBFIFNBMQswCQYDVQQGEwJQRTENMAsGA1UECAwETElNQTENMAsGA1UEBwwETElN&#13;
+QTEYMBYGA1UECgwPVFUgRU1QUkVTQSBTLkEuMUUwQwYDVQQLDDxETkkgOTk5OTk5OSBSVUMgMTA0&#13;
+Njc3OTM1NDkgLSBDRVJUSUZJQ0FETyBQQVJBIERFTU9TVFJBQ0nDk04xRDBCBgNVBAMMO05PTUJS&#13;
+RSBSRVBSRVNFTlRBTlRFIExFR0FMIC0gQ0VSVElGSUNBRE8gUEFSQSBERU1PU1RSQUNJw5NOMRww&#13;
+GgYJKoZIhvcNAQkBFg1kZW1vQGxsYW1hLnBlMB4XDTE5MTEwODEyNTY1MFoXDTIxMTEwNzEyNTY1&#13;
+MFowggENMRswGQYKCZImiZPyLGQBGRYLTExBTUEuUEUgU0ExCzAJBgNVBAYTAlBFMQ0wCwYDVQQI&#13;
+DARMSU1BMQ0wCwYDVQQHDARMSU1BMRgwFgYDVQQKDA9UVSBFTVBSRVNBIFMuQS4xRTBDBgNVBAsM&#13;
+PEROSSA5OTk5OTk5IFJVQyAxMDQ2Nzc5MzU0OSAtIENFUlRJRklDQURPIFBBUkEgREVNT1NUUkFD&#13;
+ScOTTjFEMEIGA1UEAww7Tk9NQlJFIFJFUFJFU0VOVEFOVEUgTEVHQUwgLSBDRVJUSUZJQ0FETyBQ&#13;
+QVJBIERFTU9TVFJBQ0nDk04xHDAaBgkqhkiG9w0BCQEWDWRlbW9AbGxhbWEucGUwggEiMA0GCSqG&#13;
+SIb3DQEBAQUAA4IBDwAwggEKAoIBAQCuE7cfjyUaRE1w82EDq5N3zTg2czEGRcopOBHwOV1fy9Oa&#13;
+t/Qmo0YwvFSWpIbUqVF6UdBe8jPsZY7Q2ATQNn14wRQtLtLxgy6PpFkUK50Nv9pqzEfIK+NV90ol&#13;
+QXgEg88o3Z2+MUEBDPh8j/f89x6m0irPDOX7xKvJcRsmABSaNpLY84TrlF49Egg05XVWLuXC8vMf&#13;
+RmXWyv6jK06dcAjVhGUpmGBxLm/ld5f+p9GlshB2rFyWhUBBf++g3xCwtPpyFmv+ARltScOzYcPb&#13;
+zr9fODbtHDwHDLschuGEpg8rZOwVqekyGxNW0LeDGnq6YtvcW5qVrtEELvqcNkL0D73lAgMBAAGj&#13;
+VzBVMB0GA1UdDgQWBBTe18LHVKkeRrWs3Bxp1ikK50l96jAfBgNVHSMEGDAWgBTe18LHVKkeRrWs&#13;
+3Bxp1ikK50l96jATBgNVHSUEDDAKBggrBgEFBQcDATANBgkqhkiG9w0BAQUFAAOCAQEASBWcP4Ai&#13;
+qUUZSG2/Z3RU3BgvOVV3if8xYAaZT99n5PsvyBiZ3Gh6VpAW9ezoe25ZNSqGMmGfq+R4mEuiqK4h&#13;
+6jDJp0fN47IwRhWjttB9dwpxIDEkWW7zPdueGx+BY8EuyfNDWR/C7GPfu6azSHiapzeKC57AAZ8x&#13;
+o8kDdhXxDy8hTqNGolkqnc6QutW8cYPeonqyhi2THN163lZ3Cx5OV8vGFQ3ou2msF0klY9qXopI9&#13;
+i8wQjEeOG6bCvVxdID9ZjTbuGbO9pAN9hH7hZ41XEG/CspSWbFf1/Wbnlfusne9v9NgRj0MM+LAH&#13;
+M7AO5/7j1XwRq4x+U9TSVPgpoU9l5Q==</ds:X509Certificate></ds:X509Data></ds:KeyInfo></ds:Signature></ext:ExtensionContent>
+        </ext:UBLExtension>
+    </ext:UBLExtensions>
+    <cbc:UBLVersionID>2.1</cbc:UBLVersionID>
+    <cbc:CustomizationID>1.0</cbc:CustomizationID>
+    <cbc:ID>T001-00007394</cbc:ID>
+    <cbc:IssueDate>2022-12-15</cbc:IssueDate>
+    <cbc:DespatchAdviceTypeCode>09</cbc:DespatchAdviceTypeCode>
+    <cbc:Note>observacion</cbc:Note>
+    <cac:Signature>
+        <cbc:ID>12345678912</cbc:ID>
+        <cac:SignatoryParty>
+            <cac:PartyIdentification>
+                <cbc:ID>12345678912</cbc:ID>
+            </cac:PartyIdentification>
+            <cac:PartyName>
+                <cbc:Name>Softgreen S.A.C</cbc:Name>
+            </cac:PartyName>
+        </cac:SignatoryParty>
+        <cac:DigitalSignatureAttachment>
+            <cac:ExternalReference>
+                <cbc:URI>#PROJECT-OPENUBL-SIGN</cbc:URI>
+            </cac:ExternalReference>
+        </cac:DigitalSignatureAttachment>
+    </cac:Signature>
+    <cac:DespatchSupplierParty>
+        <cbc:CustomerAssignedAccountID schemeID="6">12345678912</cbc:CustomerAssignedAccountID>
+        <cac:Party>
+            <cac:PostalAddress>
+                <cbc:ID>0000</cbc:ID>
+                <cbc:StreetName>AV.BUENA VISTA 123</cbc:StreetName>
+                <cbc:CitySubdivisionName>-</cbc:CitySubdivisionName>
+                <cbc:CityName>HUAMANGA</cbc:CityName>
+                <cbc:CountrySubentity>AYACUCHO</cbc:CountrySubentity>
+                <cbc:District>AYACUCHO</cbc:District>
+                <cac:Country>
+                    <cbc:IdentificationCode>PE</cbc:IdentificationCode>
+                </cac:Country>
+            </cac:PostalAddress>
+            <cac:PartyLegalEntity>
+                <cbc:RegistrationName>Softgreen S.A.C</cbc:RegistrationName>
+            </cac:PartyLegalEntity>
+        </cac:Party>
+    </cac:DespatchSupplierParty>
+    <cac:DeliveryCustomerParty>
+        <cbc:CustomerAssignedAccountID schemeID="6">12345678912</cbc:CustomerAssignedAccountID>
+        <cac:Party>
+            <cac:PartyLegalEntity>
+                <cbc:RegistrationName>Softgreen S.A.C</cbc:RegistrationName>
+            </cac:PartyLegalEntity>
+        </cac:Party>
+    </cac:DeliveryCustomerParty>
+    <cac:Shipment>
+        <cbc:ID>1</cbc:ID>
+        <cbc:HandlingCode>13</cbc:HandlingCode>
+        <cbc:Information>TRASLADO A OBRA</cbc:Information>
+        <cbc:GrossWeightMeasure unitCode="KGM">26.000</cbc:GrossWeightMeasure>
+        <cbc:SplitConsignmentIndicator>false</cbc:SplitConsignmentIndicator>
+        <cac:ShipmentStage>
+            <cbc:TransportModeCode>02</cbc:TransportModeCode>
+            <cac:TransitPeriod>
+                <cbc:StartDate>2022-12-15</cbc:StartDate>
+            </cac:TransitPeriod>
+            <cac:CarrierParty>
+                <cac:PartyIdentification>
+                    <cbc:ID schemeID="6">12345678912</cbc:ID>
+                </cac:PartyIdentification>
+                <cac:PartyName>
+                    <cbc:Name>Softgreen S.A.C</cbc:Name>
+                </cac:PartyName>
+            </cac:CarrierParty>
+            <cac:TransportMeans>
+                <cac:RoadTransport>
+                    <cbc:LicensePlateID>BBA-803</cbc:LicensePlateID>
+                </cac:RoadTransport>
+            </cac:TransportMeans>
+            <cac:DriverPerson>
+                <cbc:ID schemeID="1">71988046</cbc:ID>
+            </cac:DriverPerson>
+        </cac:ShipmentStage>
+        <cac:Delivery>
+            <cac:DeliveryAddress>
+                <cbc:ID>080910</cbc:ID>
+                <cbc:StreetName>AV. AVIACION</cbc:StreetName>
+                <cac:Country>
+                    <cbc:IdentificationCode>PE</cbc:IdentificationCode>
+                </cac:Country>
+            </cac:DeliveryAddress>
+        </cac:Delivery>
+        <cac:OriginAddress>
+            <cbc:ID>080910</cbc:ID>
+            <cbc:StreetName>S/N CENTRO POB. PICHARI</cbc:StreetName>
+            <cac:Country>
+                <cbc:IdentificationCode>PE</cbc:IdentificationCode>
+            </cac:Country>
+        </cac:OriginAddress>
+    </cac:Shipment>
+    <cac:DespatchLine>
+        <cbc:ID>1</cbc:ID>
+        <cbc:DeliveredQuantity unitCode="NIU">3</cbc:DeliveredQuantity>
+        <cac:OrderLineReference>
+            <cbc:LineID>1</cbc:LineID>
+        </cac:OrderLineReference>
+        <cac:Item>
+            <cbc:Name>ESPATULA DE 3""</cbc:Name>
+            <cac:SellersItemIdentification>
+                <cbc:ID>3121190200070403</cbc:ID>
+            </cac:SellersItemIdentification>
+        </cac:Item>
+    </cac:DespatchLine>
+    <cac:DespatchLine>
+        <cbc:ID>2</cbc:ID>
+        <cbc:DeliveredQuantity unitCode="BG">1</cbc:DeliveredQuantity>
+        <cac:OrderLineReference>
+            <cbc:LineID>1</cbc:LineID>
+        </cac:OrderLineReference>
+        <cac:Item>
+            <cbc:Name>TEMPLE PATO BLANCO X 25 KG</cbc:Name>
+            <cac:SellersItemIdentification>
+                <cbc:ID>250811</cbc:ID>
+            </cac:SellersItemIdentification>
+        </cac:Item>
+    </cac:DespatchLine>
+</DespatchAdvice>

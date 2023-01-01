@@ -14,21 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.project.openubl.xsender.company;
+package io.github.project.openubl.xsender.models.rest;
+
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.ZonedDateTime;
 
 @Data
 @Builder
+@NoArgsConstructor
 @AllArgsConstructor
-public class CompanyCredentials {
+public class ResponseAccessTokenSuccessDto {
 
-    private final String username;
-    private final String password;
-    private final String clientId;
-    private final String clientSecret;
-    private final String token;
-    
+    private String access_token;
+    private int expires_in;
+    private ZonedDateTime created_in;
+
 }

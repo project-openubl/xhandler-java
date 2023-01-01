@@ -154,7 +154,13 @@ public class BillServiceXMLFileAnalyzer implements BillServiceFileAnalyzer {
                 result = MessageFormat.format(FILENAME_FORMAT1, ruc, codigoDocumento, documentID);
                 break;
             case DocumentType.DESPATCH_ADVICE:
-                codigoDocumento = Catalog1.GUIA_REMISION_REMITENTE.getCode();
+                if (Pattern.compile("^[T|t].*$").matcher(documentID).find()) {
+                    codigoDocumento = Catalog1.GUIA_REMISION_REMITENTE.getCode();
+                } else if (Pattern.compile("^[V|v].*$").matcher(documentID).find()) {
+                    codigoDocumento = Catalog1.GUIA_REMISION_TRANSPORTISTA.getCode();
+                } else {
+                    throw new IllegalStateException("Invalid Serie, can not detect code");
+                }
                 result = MessageFormat.format(FILENAME_FORMAT1, ruc, codigoDocumento, documentID);
                 break;
         }
@@ -169,10 +175,16 @@ public class BillServiceXMLFileAnalyzer implements BillServiceFileAnalyzer {
             case DocumentType.INVOICE:
             case DocumentType.CREDIT_NOTE:
             case DocumentType.DEBIT_NOTE:
-                fileDeliveryTarget = new BillServiceDestination(urls.getInvoice(), BillServiceDestination.Operation.SEND_BILL);
+                fileDeliveryTarget = BillServiceDestination.builder()
+                        .url(urls.getInvoice())
+                        .soapOperation(BillServiceDestination.SoapOperation.SEND_BILL)
+                        .build();
                 break;
             case DocumentType.SUMMARY_DOCUMENT:
-                fileDeliveryTarget = new BillServiceDestination(urls.getInvoice(), BillServiceDestination.Operation.SEND_SUMMARY);
+                fileDeliveryTarget = BillServiceDestination.builder()
+                        .url(urls.getInvoice())
+                        .soapOperation(BillServiceDestination.SoapOperation.SEND_SUMMARY)
+                        .build();
                 break;
             case DocumentType.VOIDED_DOCUMENT:
                 String tipoDocumentoAfectado = xmlContent.getVoidedLineDocumentTypeCode();
@@ -191,15 +203,23 @@ public class BillServiceXMLFileAnalyzer implements BillServiceFileAnalyzer {
                     deliveryUrl = urls.getInvoice();
                 }
 
-                fileDeliveryTarget = new BillServiceDestination(deliveryUrl, BillServiceDestination.Operation.SEND_SUMMARY);
+                fileDeliveryTarget = BillServiceDestination.builder()
+                        .url(deliveryUrl)
+                        .soapOperation(BillServiceDestination.SoapOperation.SEND_SUMMARY)
+                        .build();
                 break;
             case DocumentType.PERCEPTION:
             case DocumentType.RETENTION:
-                fileDeliveryTarget =
-                        new BillServiceDestination(urls.getPerceptionRetention(), BillServiceDestination.Operation.SEND_BILL);
+                fileDeliveryTarget = BillServiceDestination.builder()
+                        .url(urls.getPerceptionRetention())
+                        .soapOperation(BillServiceDestination.SoapOperation.SEND_BILL)
+                        .build();
                 break;
             case DocumentType.DESPATCH_ADVICE:
-                fileDeliveryTarget = new BillServiceDestination(urls.getDespatch(), BillServiceDestination.Operation.SEND_BILL);
+                fileDeliveryTarget = BillServiceDestination.builder()
+                        .url(urls.getDespatch())
+                        .restOperation(BillServiceDestination.RestOperation.SEND_DOCUMENT)
+                        .build();
                 break;
         }
 
@@ -210,38 +230,62 @@ public class BillServiceXMLFileAnalyzer implements BillServiceFileAnalyzer {
             CompanyURLs urls,
             XmlContent xmlContent
     ) {
-        boolean shouldVerifyTicket = false;
-        switch (xmlContent.getDocumentType()) {
-            case DocumentType.VOIDED_DOCUMENT:
-            case DocumentType.SUMMARY_DOCUMENT:
-                shouldVerifyTicket = true;
-                break;
-        }
-
-        if (!shouldVerifyTicket) {
-            return Optional.empty();
-        }
-
         BillServiceDestination ticketDeliveryTarget;
 
-        Catalog1 catalog1 = Catalog1
-                .valueOfCode(xmlContent.getVoidedLineDocumentTypeCode())
-                .orElse(Catalog1.FACTURA);
-        switch (catalog1) {
-            case PERCEPCION:
-            case RETENCION:
-                ticketDeliveryTarget =
-                        new BillServiceDestination(urls.getPerceptionRetention(), BillServiceDestination.Operation.GET_STATUS);
+        switch (xmlContent.getDocumentType()) {
+            case DocumentType.VOIDED_DOCUMENT: {
+                Catalog1 catalog1 = Catalog1
+                        .valueOfCode(xmlContent.getVoidedLineDocumentTypeCode())
+                        .orElse(Catalog1.FACTURA);
+
+                switch (catalog1) {
+                    case PERCEPCION:
+                    case RETENCION: {
+                        ticketDeliveryTarget = BillServiceDestination.builder()
+                                .url(urls.getPerceptionRetention())
+                                .soapOperation(BillServiceDestination.SoapOperation.GET_STATUS)
+                                .build();
+                    }
+                    break;
+                    case GUIA_REMISION_REMITENTE:
+                    case GUIA_REMISION_TRANSPORTISTA: {
+                        // Bajas de Guias de Remision no son soportadas por la SUNAT
+//                        ticketDeliveryTarget = BillServiceDestination.builder()
+//                                .url(urls.getDespatch())
+//                                .soapOperation(BillServiceDestination.SoapOperation.GET_STATUS)
+//                                .build();
+                        ticketDeliveryTarget = null;
+                        break;
+                    }
+                    default: {
+                        ticketDeliveryTarget = BillServiceDestination.builder()
+                                .url(urls.getInvoice())
+                                .soapOperation(BillServiceDestination.SoapOperation.GET_STATUS)
+                                .build();
+                    }
+                }
+
                 break;
-            //            // No se pueden dar bajas de guias de remision
-            //            case GUIA_REMISION_REMITENTE:
-            //                ticketDeliveryTarget = new TicketDeliveryTarget(urls.getDespatch());
-            //                break;
-            default:
-                ticketDeliveryTarget =
-                        new BillServiceDestination(urls.getInvoice(), BillServiceDestination.Operation.GET_STATUS);
+            }
+            case DocumentType.SUMMARY_DOCUMENT: {
+                ticketDeliveryTarget = BillServiceDestination.builder()
+                        .url(urls.getInvoice())
+                        .soapOperation(BillServiceDestination.SoapOperation.GET_STATUS)
+                        .build();
+                break;
+            }
+            case DocumentType.DESPATCH_ADVICE: {
+                ticketDeliveryTarget = BillServiceDestination.builder()
+                        .url(urls.getDespatch())
+                        .restOperation(BillServiceDestination.RestOperation.VERIFY_TICKET)
+                        .build();
+                break;
+            }
+            default: {
+                ticketDeliveryTarget = null;
+            }
         }
 
-        return Optional.of(ticketDeliveryTarget);
+        return Optional.ofNullable(ticketDeliveryTarget);
     }
 }

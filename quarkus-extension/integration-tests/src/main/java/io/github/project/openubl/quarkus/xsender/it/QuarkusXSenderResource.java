@@ -32,7 +32,6 @@ import org.apache.camel.ProducerTemplate;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import java.io.InputStream;
@@ -50,14 +49,15 @@ public class QuarkusXSenderResource {
     CompanyURLs companyURLs = CompanyURLs
             .builder()
             .invoice("https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService")
-            .despatch("https://e-beta.sunat.gob.pe/ol-ti-itemision-guia-gem-beta/billService")
             .perceptionRetention("https://e-beta.sunat.gob.pe/ol-ti-itemision-guia-gem-beta/billService")
+            .despatch("https://api-cpe.sunat.gob.pe")
             .build();
 
     CompanyCredentials credentials = CompanyCredentials
             .builder()
             .username("12345678959MODDATOS")
             .password("MODDATOS")
+            .token("myToken")
             .build();
 
     @POST
@@ -147,6 +147,30 @@ public class QuarkusXSenderResource {
         try {
             service.sunat.gob.pe.billconsultservice.StatusResponse sunatResponse = producerTemplate
                     .requestBodyAndHeaders(Constants.XSENDER_BILL_CONSULT_SERVICE_URI, camelData.getBody(), camelData.getHeaders(), service.sunat.gob.pe.billconsultservice.StatusResponse.class);
+        } catch (CamelExecutionException e) {
+            return e.getCause().getMessage();
+        }
+
+        throw new IllegalStateException("Excepcion no atrapada");
+    }
+
+    @POST
+    @Path("bill-service/send-despatch-advice")
+    public String sendDespatchAdvice() throws Exception {
+        InputStream is = Thread
+                .currentThread()
+                .getContextClassLoader()
+                .getResourceAsStream("xmls/20000000001-31-VVV1-1.xml");
+
+        BillServiceXMLFileAnalyzer fileAnalyzer = new BillServiceXMLFileAnalyzer(is, companyURLs);
+
+        ZipFile zipFile = fileAnalyzer.getZipFile();
+        BillServiceDestination destination = fileAnalyzer.getSendFileDestination();
+        CamelData camelData = CamelUtils.getBillServiceCamelData(zipFile, destination, credentials);
+
+        try {
+            SunatResponse sunatResponse = producerTemplate
+                    .requestBodyAndHeaders(Constants.XSENDER_BILL_SERVICE_URI, camelData.getBody(), camelData.getHeaders(), SunatResponse.class);
         } catch (CamelExecutionException e) {
             return e.getCause().getMessage();
         }

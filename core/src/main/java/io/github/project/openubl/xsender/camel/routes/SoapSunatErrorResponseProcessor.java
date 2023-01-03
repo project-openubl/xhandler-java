@@ -28,7 +28,7 @@ import javax.xml.namespace.QName;
 import java.util.Collections;
 import java.util.regex.Pattern;
 
-public class SunatErrorResponseProcessor implements Processor {
+public class SoapSunatErrorResponseProcessor implements Processor {
     private static Pattern pattern = Pattern.compile("-?\\d+(\\.\\d+)?");
 
     public boolean isNumeric(String strNum) {

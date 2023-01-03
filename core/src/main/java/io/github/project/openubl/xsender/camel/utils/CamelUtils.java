@@ -18,10 +18,12 @@ package io.github.project.openubl.xsender.camel.utils;
 
 import io.github.project.openubl.xsender.company.CompanyCredentials;
 import io.github.project.openubl.xsender.files.ZipFile;
+import io.github.project.openubl.xsender.models.rest.PayloadDocumentDto;
 import io.github.project.openubl.xsender.sunat.BillConsultServiceDestination;
 import io.github.project.openubl.xsender.sunat.BillServiceDestination;
 import io.github.project.openubl.xsender.sunat.BillValidServiceDestination;
 import org.apache.camel.component.cxf.common.message.CxfConstants;
+import org.apache.camel.component.http.HttpConstants;
 import org.apache.cxf.attachment.ByteDataSource;
 import org.apache.cxf.binding.soap.SoapHeader;
 import org.apache.cxf.headers.Header;
@@ -48,12 +50,35 @@ public class CamelUtils {
     public static final String USERNAMETOKEN_NS = "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0";
     public static final String PASSWORD_TEXT = USERNAMETOKEN_NS + "#PasswordText";
 
-    public static CamelData getBillServiceCamelData(ZipFile zipFile, BillServiceDestination destination, CompanyCredentials credentials) {
-        DataSource dataSource = new ByteDataSource(zipFile.getFile(), "application/zip");
-        DataHandler dataHandler = new DataHandler(dataSource);
+    public static CamelData getBillServiceCamelData(
+            ZipFile zipFile,
+            BillServiceDestination destination,
+            CompanyCredentials credentials
+    ) {
+        Map<String, Object> headers;
+        Object body;
+        if (destination.getSoapOperation() != null) {
+            DataSource dataSource = new ByteDataSource(zipFile.getFile(), "application/zip");
+            DataHandler dataHandler = new DataHandler(dataSource);
 
-        Map<String, Object> headers = createBillServiceHeaders(destination.getUrl(), destination.getOperation().getWebMethod(), credentials);
-        List<Object> body = Arrays.asList(zipFile.getFilename(), dataHandler, null);
+            headers = createBillServiceHeaders(destination.getUrl(), destination.getSoapOperation().getWebMethod(), credentials);
+            body = Arrays.asList(zipFile.getFilename(), dataHandler, null);
+        } else if (destination.getRestOperation() != null) {
+            BillServiceDestination.RestOperation restOperation = destination.getRestOperation();
+            String filenameWithoutExtension = zipFile.getFilename().replace(".zip", "");
+
+            headers = Map.of(
+                    HttpConstants.HTTP_METHOD, restOperation.getMethod(),
+                    HttpConstants.HTTP_URI, destination.getUrl(),
+                    HttpConstants.HTTP_PATH, restOperation.getPath() + "/" + filenameWithoutExtension,
+                    HttpConstants.CONTENT_TYPE, "application/json",
+                    "Authorization", "Bearer " + credentials.getToken()
+            );
+
+            body = PayloadDocumentDto.build(zipFile);
+        } else {
+            throw new IllegalStateException("Not supported destination type, neither SOAP nor REST has been identified");
+        }
 
         return CamelData.builder()
                 .body(body)
@@ -62,8 +87,27 @@ public class CamelUtils {
     }
 
     public static CamelData getBillServiceCamelData(String ticket, BillServiceDestination destination, CompanyCredentials credentials) {
-        Map<String, Object> headers = createBillServiceHeaders(destination.getUrl(), destination.getOperation().getWebMethod(), credentials);
-        List<Object> body = Collections.singletonList(ticket);
+        Map<String, Object> headers;
+        Object body;
+
+        if (destination.getSoapOperation() != null) {
+            headers = createBillServiceHeaders(destination.getUrl(), destination.getSoapOperation().getWebMethod(), credentials);
+            body = Collections.singletonList(ticket);
+        } else if (destination.getRestOperation() != null) {
+            BillServiceDestination.RestOperation restOperation = destination.getRestOperation();
+
+            headers = Map.of(
+                    HttpConstants.HTTP_METHOD, restOperation.getMethod(),
+                    HttpConstants.HTTP_URI, destination.getUrl(),
+                    HttpConstants.HTTP_PATH, restOperation.getPath() + "/" + ticket,
+                    HttpConstants.CONTENT_TYPE, "application/json",
+                    "Authorization", "Bearer " + credentials.getToken()
+            );
+
+            body = null;
+        } else {
+            throw new IllegalStateException("Not supported destination type, neither SOAP nor REST has been identified");
+        }
 
         return CamelData.builder()
                 .body(body)
@@ -79,7 +123,7 @@ public class CamelUtils {
             BillConsultServiceDestination destination,
             CompanyCredentials credentials
     ) {
-        Map<String, Object> securityHeaders = createSecurityHeaders(credentials);
+        Map<String, Object> securityHeaders = createSoapSecurityHeaders(credentials);
         Map<String, Object> serviceHeaders = Map.of(
                 CxfConstants.OPERATION_NAME, destination.getOperation().getWebMethod(),
                 CxfConstants.DESTINATION_OVERRIDE_URL, destination.getUrl()
@@ -108,7 +152,7 @@ public class CamelUtils {
             BillValidServiceDestination destination,
             CompanyCredentials credentials
     ) {
-        Map<String, Object> securityHeaders = createSecurityHeaders(credentials);
+        Map<String, Object> securityHeaders = createSoapSecurityHeaders(credentials);
         Map<String, Object> serviceHeaders = Map.of(
                 CxfConstants.OPERATION_NAME, "validaCDPcriterios",
                 CxfConstants.DESTINATION_OVERRIDE_URL, destination.getUrl()
@@ -143,7 +187,7 @@ public class CamelUtils {
         byte[] fileEncode = Base64.getEncoder().encode(file);
         String fileBase64Encoded = new String(fileEncode);
 
-        Map<String, Object> securityHeaders = createSecurityHeaders(credentials);
+        Map<String, Object> securityHeaders = createSoapSecurityHeaders(credentials);
         Map<String, Object> serviceHeaders = Map.of(
                 CxfConstants.OPERATION_NAME, "verificaCPEarchivo",
                 CxfConstants.DESTINATION_OVERRIDE_URL, destination.getUrl()
@@ -160,7 +204,7 @@ public class CamelUtils {
     }
 
     private static Map<String, Object> createBillServiceHeaders(String destinationUrl, String operationName, CompanyCredentials credentials) {
-        Map<String, Object> securityHeaders = createSecurityHeaders(credentials);
+        Map<String, Object> securityHeaders = createSoapSecurityHeaders(credentials);
         Map<String, Object> serviceHeaders = Map.of(
                 CxfConstants.OPERATION_NAME, operationName,
                 CxfConstants.DESTINATION_OVERRIDE_URL, destinationUrl
@@ -170,7 +214,7 @@ public class CamelUtils {
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
-    private static Map<String, Object> createSecurityHeaders(CompanyCredentials credentials) {
+    private static Map<String, Object> createSoapSecurityHeaders(CompanyCredentials credentials) {
         QName security = new QName(WSSE_NS, "Security");
 
         Document xmlDocument = DOMUtils.createDocument();

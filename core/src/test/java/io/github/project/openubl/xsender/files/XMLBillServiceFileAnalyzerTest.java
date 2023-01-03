@@ -47,13 +47,25 @@ public class XMLBillServiceFileAnalyzerTest {
     protected void assertFileDeliveryTarget(
             BillServiceXMLFileAnalyzer xmlFileAnalyzer,
             String expectedUrl,
-            BillServiceDestination.Operation expectedMethod
+            BillServiceDestination.SoapOperation expectedMethod
     ) {
         BillServiceDestination fileDeliveryTarget = xmlFileAnalyzer.getSendFileDestination();
 
         assertNotNull(fileDeliveryTarget);
         assertEquals(expectedUrl, fileDeliveryTarget.getUrl());
-        assertEquals(expectedMethod, fileDeliveryTarget.getOperation());
+        assertEquals(expectedMethod, fileDeliveryTarget.getSoapOperation());
+    }
+
+    protected void assertFileDeliveryTarget(
+            BillServiceXMLFileAnalyzer xmlFileAnalyzer,
+            String expectedUrl,
+            BillServiceDestination.RestOperation expectedMethod
+    ) {
+        BillServiceDestination fileDeliveryTarget = xmlFileAnalyzer.getSendFileDestination();
+
+        assertNotNull(fileDeliveryTarget);
+        assertEquals(expectedUrl, fileDeliveryTarget.getUrl());
+        assertEquals(expectedMethod, fileDeliveryTarget.getRestOperation());
     }
 
     protected void assertTicketEmpty(BillServiceXMLFileAnalyzer xmlFileAnalyzer) {
@@ -75,7 +87,7 @@ public class XMLBillServiceFileAnalyzerTest {
         BillServiceXMLFileAnalyzer xmlFileAnalyzer = new BillServiceXMLFileAnalyzer(file, urls);
 
         assertZipFile(xmlFileAnalyzer, "12345678912-01-F001-1.zip");
-        assertFileDeliveryTarget(xmlFileAnalyzer, urls.getInvoice(), BillServiceDestination.Operation.SEND_BILL);
+        assertFileDeliveryTarget(xmlFileAnalyzer, urls.getInvoice(), BillServiceDestination.SoapOperation.SEND_BILL);
         assertTicketEmpty(xmlFileAnalyzer);
     }
 
@@ -85,7 +97,7 @@ public class XMLBillServiceFileAnalyzerTest {
         BillServiceXMLFileAnalyzer xmlFileAnalyzer = new BillServiceXMLFileAnalyzer(file, urls);
 
         assertZipFile(xmlFileAnalyzer, "12345678912-03-B001-1.zip");
-        assertFileDeliveryTarget(xmlFileAnalyzer, urls.getInvoice(), BillServiceDestination.Operation.SEND_BILL);
+        assertFileDeliveryTarget(xmlFileAnalyzer, urls.getInvoice(), BillServiceDestination.SoapOperation.SEND_BILL);
         assertTicketEmpty(xmlFileAnalyzer);
     }
 
@@ -97,7 +109,7 @@ public class XMLBillServiceFileAnalyzerTest {
         BillServiceXMLFileAnalyzer xmlFileAnalyzer = new BillServiceXMLFileAnalyzer(file, urls);
 
         assertZipFile(xmlFileAnalyzer, "12345678912-01-F001-00000001.zip");
-        assertFileDeliveryTarget(xmlFileAnalyzer, urls.getInvoice(), BillServiceDestination.Operation.SEND_BILL);
+        assertFileDeliveryTarget(xmlFileAnalyzer, urls.getInvoice(), BillServiceDestination.SoapOperation.SEND_BILL);
         assertTicketEmpty(xmlFileAnalyzer);
     }
 
@@ -109,7 +121,7 @@ public class XMLBillServiceFileAnalyzerTest {
         BillServiceXMLFileAnalyzer xmlFileAnalyzer = new BillServiceXMLFileAnalyzer(file, urls);
 
         assertZipFile(xmlFileAnalyzer, "12345678912-07-FC01-1.zip");
-        assertFileDeliveryTarget(xmlFileAnalyzer, urls.getInvoice(), BillServiceDestination.Operation.SEND_BILL);
+        assertFileDeliveryTarget(xmlFileAnalyzer, urls.getInvoice(), BillServiceDestination.SoapOperation.SEND_BILL);
         assertTicketEmpty(xmlFileAnalyzer);
     }
 
@@ -119,7 +131,7 @@ public class XMLBillServiceFileAnalyzerTest {
         BillServiceXMLFileAnalyzer xmlFileAnalyzer = new BillServiceXMLFileAnalyzer(file, urls);
 
         assertZipFile(xmlFileAnalyzer, "12345678912-07-BC01-1.zip");
-        assertFileDeliveryTarget(xmlFileAnalyzer, urls.getInvoice(), BillServiceDestination.Operation.SEND_BILL);
+        assertFileDeliveryTarget(xmlFileAnalyzer, urls.getInvoice(), BillServiceDestination.SoapOperation.SEND_BILL);
         assertTicketEmpty(xmlFileAnalyzer);
     }
 
@@ -129,7 +141,7 @@ public class XMLBillServiceFileAnalyzerTest {
         BillServiceXMLFileAnalyzer xmlFileAnalyzer = new BillServiceXMLFileAnalyzer(file, urls);
 
         assertZipFile(xmlFileAnalyzer, "12345678912-08-FD01-1.zip");
-        assertFileDeliveryTarget(xmlFileAnalyzer, urls.getInvoice(), BillServiceDestination.Operation.SEND_BILL);
+        assertFileDeliveryTarget(xmlFileAnalyzer, urls.getInvoice(), BillServiceDestination.SoapOperation.SEND_BILL);
         assertTicketEmpty(xmlFileAnalyzer);
     }
 
@@ -139,7 +151,7 @@ public class XMLBillServiceFileAnalyzerTest {
         BillServiceXMLFileAnalyzer xmlFileAnalyzer = new BillServiceXMLFileAnalyzer(file, urls);
 
         assertZipFile(xmlFileAnalyzer, "12345678912-08-BD01-1.zip");
-        assertFileDeliveryTarget(xmlFileAnalyzer, urls.getInvoice(), BillServiceDestination.Operation.SEND_BILL);
+        assertFileDeliveryTarget(xmlFileAnalyzer, urls.getInvoice(), BillServiceDestination.SoapOperation.SEND_BILL);
         assertTicketEmpty(xmlFileAnalyzer);
     }
 
@@ -149,7 +161,7 @@ public class XMLBillServiceFileAnalyzerTest {
         BillServiceXMLFileAnalyzer xmlFileAnalyzer = new BillServiceXMLFileAnalyzer(file, urls);
 
         assertZipFile(xmlFileAnalyzer, "12345678912-RA-20191224-1.zip");
-        assertFileDeliveryTarget(xmlFileAnalyzer, urls.getInvoice(), BillServiceDestination.Operation.SEND_SUMMARY);
+        assertFileDeliveryTarget(xmlFileAnalyzer, urls.getInvoice(), BillServiceDestination.SoapOperation.SEND_SUMMARY);
         assertTicketDeliveryTarget(xmlFileAnalyzer, urls.getInvoice());
     }
 
@@ -159,7 +171,37 @@ public class XMLBillServiceFileAnalyzerTest {
         BillServiceXMLFileAnalyzer xmlFileAnalyzer = new BillServiceXMLFileAnalyzer(file, urls);
 
         assertZipFile(xmlFileAnalyzer, "12345678912-RA-20191224-1.zip");
-        assertFileDeliveryTarget(xmlFileAnalyzer, urls.getInvoice(), BillServiceDestination.Operation.SEND_SUMMARY);
+        assertFileDeliveryTarget(xmlFileAnalyzer, urls.getInvoice(), BillServiceDestination.SoapOperation.SEND_SUMMARY);
         assertTicketDeliveryTarget(xmlFileAnalyzer, urls.getInvoice());
+    }
+
+    @Test
+    public void summaryDocument() throws Exception {
+        File file = Paths.get(getClass().getResource("/xmls/summary-document.xml").toURI()).toFile();
+        BillServiceXMLFileAnalyzer xmlFileAnalyzer = new BillServiceXMLFileAnalyzer(file, urls);
+
+        assertZipFile(xmlFileAnalyzer, "12345678912-RC-20191224-1.zip");
+        assertFileDeliveryTarget(xmlFileAnalyzer, urls.getInvoice(), BillServiceDestination.SoapOperation.SEND_SUMMARY);
+        assertTicketDeliveryTarget(xmlFileAnalyzer, urls.getInvoice());
+    }
+
+    @Test
+    public void despatchAdvice_Tserie() throws Exception {
+        File file = Paths.get(getClass().getResource("/xmls/despatch-advice-T.xml").toURI()).toFile();
+        BillServiceXMLFileAnalyzer xmlFileAnalyzer = new BillServiceXMLFileAnalyzer(file, urls);
+
+        assertZipFile(xmlFileAnalyzer, "20123456789-09-T001-123.zip");
+        assertFileDeliveryTarget(xmlFileAnalyzer, urls.getDespatch(), BillServiceDestination.RestOperation.SEND_DOCUMENT);
+        assertTicketDeliveryTarget(xmlFileAnalyzer, urls.getDespatch());
+    }
+
+    @Test
+    public void despatchAdvice_Vserie() throws Exception {
+        File file = Paths.get(getClass().getResource("/xmls/despatch-advice-V.xml").toURI()).toFile();
+        BillServiceXMLFileAnalyzer xmlFileAnalyzer = new BillServiceXMLFileAnalyzer(file, urls);
+
+        assertZipFile(xmlFileAnalyzer, "20000000001-31-VVV1-1.zip");
+        assertFileDeliveryTarget(xmlFileAnalyzer, urls.getDespatch(), BillServiceDestination.RestOperation.SEND_DOCUMENT);
+        assertTicketDeliveryTarget(xmlFileAnalyzer, urls.getDespatch());
     }
 }

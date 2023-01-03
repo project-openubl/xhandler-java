@@ -29,11 +29,11 @@ import service.sunat.gob.pe.billservice.StatusResponse;
 import java.util.Collections;
 import java.util.Optional;
 
-public class SunatResponseProcessor implements Processor {
+public class SoapSunatResponseProcessor implements Processor {
 
     @Override
     public void process(Exchange exchange) throws Exception {
-        MessageContentsList messageContentsList = (MessageContentsList) exchange.getIn().getBody();
+        MessageContentsList messageContentsList = exchange.getIn().getBody(MessageContentsList.class);
         if (messageContentsList != null && !messageContentsList.isEmpty()) {
             Object messageContent = messageContentsList.get(0);
 

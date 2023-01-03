@@ -196,7 +196,7 @@ public class XmlContentProviderTest {
         InputStream inputStream = Thread
                 .currentThread()
                 .getContextClassLoader()
-                .getResourceAsStream("xmls/despatch-advice.xml");
+                .getResourceAsStream("xmls/despatch-advice-T.xml");
         assertNotNull(inputStream);
 
         // When

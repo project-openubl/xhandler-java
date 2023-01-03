@@ -40,7 +40,7 @@ public class ApiCredentialsTest {
     CompanyURLs companyURLs = CompanyURLs
             .builder()
             .invoice("https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService")
-            .despatch("https://api-cpe.sunat.gob.pe")
+            .despatch("https://api-cpe.sunat.gob.pe/v1/contribuyente/gem")
             .perceptionRetention("https://e-beta.sunat.gob.pe/ol-ti-itemision-otroscpe-gem-beta/billService")
             .build();
 

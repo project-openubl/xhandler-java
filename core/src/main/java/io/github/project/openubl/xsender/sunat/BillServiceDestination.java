@@ -44,8 +44,8 @@ public class BillServiceDestination {
     @Getter
     @AllArgsConstructor
     public enum RestOperation {
-        SEND_DOCUMENT(HttpMethods.POST, "/v1/contribuyente/gem/comprobantes"),
-        VERIFY_TICKET(HttpMethods.GET, "/v1/contribuyente/gem/comprobantes/envios");
+        SEND_DOCUMENT(HttpMethods.POST, "/comprobantes"),
+        VERIFY_TICKET(HttpMethods.GET, "/comprobantes/envios");
 
         private final HttpMethods method;
         private final String path;

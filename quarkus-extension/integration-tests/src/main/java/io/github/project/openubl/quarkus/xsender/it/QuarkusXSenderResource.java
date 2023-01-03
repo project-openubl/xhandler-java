@@ -50,7 +50,7 @@ public class QuarkusXSenderResource {
             .builder()
             .invoice("https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService")
             .perceptionRetention("https://e-beta.sunat.gob.pe/ol-ti-itemision-guia-gem-beta/billService")
-            .despatch("https://api-cpe.sunat.gob.pe")
+            .despatch("https://api-cpe.sunat.gob.pe/v1/contribuyente/gem")
             .build();
 
     CompanyCredentials credentials = CompanyCredentials

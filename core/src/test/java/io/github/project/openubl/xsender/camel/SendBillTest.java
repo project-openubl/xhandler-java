@@ -57,8 +57,8 @@ public class SendBillTest {
     CompanyURLs companyURLs = CompanyURLs
             .builder()
             .invoice("https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService")
-            .despatch("https://api-cpe.sunat.gob.pe")
             .perceptionRetention("https://e-beta.sunat.gob.pe/ol-ti-itemision-otroscpe-gem-beta/billService")
+            .despatch("https://api-cpe.sunat.gob.pe/v1/contribuyente/gem")
             .build();
 
     CompanyCredentials credentials = CompanyCredentials

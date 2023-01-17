@@ -66,7 +66,7 @@ public class RestSunatResponseProcessor implements Processor {
 
                 Metadata metadata = Metadata.builder()
                         .responseCode(responseErrorCode.map(Integer::parseInt).orElse(statusCode))
-                        .description(responseErrorDescription.orElseGet(null))
+                        .description(responseErrorDescription.orElse(null))
                         .notes(Collections.emptyList())
                         .build();
 

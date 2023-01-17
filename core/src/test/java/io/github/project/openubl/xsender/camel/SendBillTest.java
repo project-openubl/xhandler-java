@@ -203,8 +203,6 @@ public class SendBillTest {
         assertEquals(1085, sunatResponse.getMetadata().getResponseCode()); // Debe enviar las guias de remisión por el nuevo sistema de recepción de guias electronicas
     }
 
-    // TODO verify when GET STATUS get back to work
-    @Disabled
     @Test
     public void billService_getStatus() throws Exception {
         InputStream xmlFileIS = Thread

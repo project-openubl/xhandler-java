@@ -41,7 +41,7 @@
     </modules>
 
     <properties>
-        <failsafe-plugin.version>${surefire-plugin.version}</failsafe-plugin.version>
+        <failsafe-plugin.version>3.0.0-M8</failsafe-plugin.version>
         <main.basedir>${maven.multiModuleProjectDirectory}</main.basedir>
     </properties>
 

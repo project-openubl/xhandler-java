@@ -33,6 +33,9 @@ public class ResponseDocumentErrorDto {
     private String msg;
     private String exc;
 
+    private String status;
+    private String message;
+
     @Singular
     private List<Error> errors;
 

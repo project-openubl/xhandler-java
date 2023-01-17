@@ -26,6 +26,7 @@ import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.cxf.common.message.CxfConstants;
 import org.apache.camel.component.http.HttpConstants;
 import org.apache.camel.component.http.HttpMethods;
+import org.apache.camel.component.jackson.JacksonDataFormat;
 import org.apache.camel.http.base.HttpOperationFailedException;
 import org.apache.camel.model.dataformat.JsonLibrary;
 import org.apache.camel.util.URISupport;
@@ -53,7 +54,7 @@ public class SunatRouteBuilder extends RouteBuilder {
                     .when(header(HttpConstants.HTTP_METHOD).isNotNull())
                         .marshal().json(JsonLibrary.Jackson)
                         .to("https://api-cpe.sunat.gob.pe")
-                        .convertBodyTo(ResponseDocumentSuccessDto.class)
+                        .unmarshal(new JacksonDataFormat(ResponseDocumentSuccessDto.class))
                         .process(new RestSunatResponseProcessor())
                     .endChoice()
                     // Otherwise
@@ -73,12 +74,17 @@ public class SunatRouteBuilder extends RouteBuilder {
                         HttpOperationFailedException httpException = exchange.getProperty(Exchange.EXCEPTION_CAUGHT, HttpOperationFailedException.class);
                         String contentType = httpException.getResponseHeaders().getOrDefault("Content-Type", "");
 
+                        boolean isResponseJson = Objects.equals(contentType, "application/json");
+                        if (isResponseJson) {
+                            exchange.getIn().setBody(httpException.getResponseBody());
+                        }
+
                         exchange.getIn().setHeader("HttpResponseHeader_ContentType", contentType);
-                        return Objects.equals(contentType, "application/json");
+                        return isResponseJson;
                     })
                     .choice()
                         .when(header("HttpResponseHeader_ContentType").isEqualTo("application/json"))
-                            .convertBodyTo(ResponseDocumentErrorDto.class)
+                            .unmarshal(new JacksonDataFormat(ResponseDocumentErrorDto.class))
                             .process(new RestSunatErrorResponseProcessor())
                         .endChoice()
                         .otherwise()
@@ -124,7 +130,7 @@ public class SunatRouteBuilder extends RouteBuilder {
                             }
                         })
                         .to("https://api-seguridad.sunat.gob.pe")
-                        .convertBodyTo(ResponseAccessTokenSuccessDto.class)
+                        .unmarshal(new JacksonDataFormat(ResponseAccessTokenSuccessDto.class))
                         .process(exchange -> {
                             ResponseAccessTokenSuccessDto response = exchange.getIn().getBody(ResponseAccessTokenSuccessDto.class);
                             response.setCreated_in(ZonedDateTime.now());

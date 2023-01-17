@@ -24,7 +24,9 @@ import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.http.base.HttpOperationFailedException;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class RestSunatErrorResponseProcessor implements Processor {
@@ -34,21 +36,29 @@ public class RestSunatErrorResponseProcessor implements Processor {
         HttpOperationFailedException httpException = exchange.getProperty(Exchange.EXCEPTION_CAUGHT, HttpOperationFailedException.class);
         ResponseDocumentErrorDto responseDocumentErrorDto = exchange.getIn().getBody(ResponseDocumentErrorDto.class);
 
-        int errorCodeInt = Integer.parseInt(responseDocumentErrorDto.getCod());
-        List<String> notes = responseDocumentErrorDto.getErrors().stream()
+        String responseCode = Optional.ofNullable(responseDocumentErrorDto.getCod())
+                .orElse(responseDocumentErrorDto.getStatus());
+        int responseCodeInt = Integer.parseInt(responseCode);
+
+        String responseDescription = Optional.ofNullable(responseDocumentErrorDto.getMsg())
+                .orElse(responseDocumentErrorDto.getMessage());
+
+        List<String> notes = Optional.ofNullable(responseDocumentErrorDto.getErrors())
+                .orElse(Collections.emptyList())
+                .stream()
                 .map(error -> error.getCod() + " - " + error.getMsg())
                 .collect(Collectors.toList());
 
-        Metadata metadata = Metadata.builder()
-                .notes(notes)
-                .responseCode(Integer.parseInt(responseDocumentErrorDto.getCod()))
-                .description(responseDocumentErrorDto.getMsg())
+        SunatResponse sunatResponse = SunatResponse.builder()
+                .status(Status.fromCode(responseCodeInt))
+                .metadata(Metadata.builder()
+                        .notes(notes)
+                        .responseCode(responseCodeInt)
+                        .description(responseDescription)
+                        .build()
+                )
                 .build();
 
-        SunatResponse sunatResponse = SunatResponse.builder()
-                .status(Status.fromCode(errorCodeInt))
-                .metadata(metadata)
-                .build();
         exchange.getIn().setBody(sunatResponse);
     }
 

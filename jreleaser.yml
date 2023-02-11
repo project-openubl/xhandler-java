@@ -54,6 +54,8 @@ release:
         - label: 'dependencies'
           title: 'regex:(?:\(deps\)(?:\(.*\))?!?):\s.*'
         - label: 'dependencies'
+          title: 'regex:(?:\(deps-dev\)(?:\(.*\))?!?):\s.*'
+        - label: 'dependencies'
           title: 'regex:^Bump\s'
       categories:
         - title: '⚙️  Dependencies'

@@ -36,6 +36,38 @@ release:
     branch: master
     overwrite: true
     discussionCategoryName: Announcements
+    issues:
+      enabled: true
+    changelog:
+      formatted: ALWAYS
+      preset: conventional-commits
+      labelers:
+        - label: 'feat'
+          title: 'regex:^(?:\(feat\)(?:\(.*\))?!?):\s.*'
+        - label: 'fix'
+          title: 'regex:^(?:\(fix\)(?:\(.*\))?!?):\s.*'
+        - label: 'chore'
+          title: '(chore)'
+
+        - label: 'dependencies'
+          title: '(deps)'
+        - label: 'dependencies'
+          title: 'regex:(?:\(deps\)(?:\(.*\))?!?):\s.*'
+        - label: 'dependencies'
+          title: 'regex:^Bump\s'
+      categories:
+        - title: '⚙️  Dependencies'
+          key: 'dependencies'
+          labels:
+            - 'dependencies'
+      hide:
+        categories:
+          - 'merge'
+          - 'build'
+          - 'dependencies'
+        contributors:
+          - 'GitHub'
+          - 'dependabot'
 
 announce:
   zulip:

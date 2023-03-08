@@ -47,7 +47,7 @@ jobs:
       - name: Maven tests
         run: mvn -Pnative install
       - name: Maven IT tests
-        run: mvn -Pnative-image install -pl quarkus-extension/integration-tests/
+        run: mvn -Pnative-image install -f quarkus-extension/integration-tests/
 
   quarkus-supported-v:
     needs: [ quarkus-extension ]
@@ -66,7 +66,7 @@ jobs:
       - name: Maven tests
         run: mvn -Pnative install
       - name: Maven IT tests
-        run: mvn -Pnative-image install -pl quarkus-extension/integration-tests/ -Dquarkus.version=${{ matrix.quarkus-version }}
+        run: mvn -Pnative-image install -f quarkus-extension/integration-tests/ -Dquarkus.version=${{ matrix.quarkus-version }}
 
   springboot-extension:
     needs: [ test ]
@@ -85,7 +85,7 @@ jobs:
       - name: Maven tests
         run: mvn install -DskipTests
       - name: Maven IT tests
-        run: mvn install -pl spring-boot-extension/integration-tests/
+        run: mvn install -f spring-boot-extension/integration-tests/
 
   springboot-supported-v:
     needs: [ springboot-extension ]
@@ -104,4 +104,4 @@ jobs:
       - name: Maven tests
         run: mvn install -DskipTests
       - name: Maven IT tests
-        run: mvn install -pl spring-boot-extension/integration-tests/ -Dspringboot.version=${{ matrix.springboot-version }}
+        run: mvn install -f spring-boot-extension/integration-tests/ -Dspringboot.version=${{ matrix.springboot-version }}

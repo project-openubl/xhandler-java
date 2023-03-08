@@ -27,7 +27,7 @@ jobs:
           distribution: "temurin"
           java-version: ${{ matrix.java-version }}
           cache: maven
-      - name: Build with Maven
+      - name: Maven tests
         run: mvn verify
 
   quarkus-extension:
@@ -44,12 +44,12 @@ jobs:
           java-version: ${{ matrix.java-version }}
           distribution: temurin
           cache: maven
-      - name: Build with Maven
+      - name: Maven tests
         run: mvn -Pnative install
-      - name: Build with Maven
+      - name: Maven IT tests
         run: mvn -Pnative-image install -f quarkus-extension/integration-tests/
 
-  quarkus-supported-versions:
+  quarkus-supported-v:
     needs: [ quarkus-extension ]
     runs-on: ubuntu-latest
     strategy:
@@ -63,9 +63,9 @@ jobs:
           java-version: ${{ matrix.java-version }}
           distribution: temurin
           cache: maven
-      - name: Build with Maven
+      - name: Maven tests
         run: mvn -Pnative install
-      - name: Build with Maven
+      - name: Maven IT tests
         run: mvn -Pnative-image install -f quarkus-extension/integration-tests/ -Dquarkus.version=${{ matrix.quarkus-version }}
 
   springboot-extension:
@@ -82,12 +82,12 @@ jobs:
           java-version: ${{ matrix.java-version }}
           distribution: temurin
           cache: maven
-      - name: Build with Maven
+      - name: Maven tests
         run: mvn install -DskipTests
-      - name: Build with Maven
+      - name: Maven IT tests
         run: mvn install -f spring-boot-extension/integration-tests/
 
-  springboot-supported-versions:
+  springboot-supported-v:
     needs: [ springboot-extension ]
     runs-on: ubuntu-latest
     strategy:
@@ -101,7 +101,7 @@ jobs:
           java-version: 11
           distribution: temurin
           cache: maven
-      - name: Build with Maven
+      - name: Maven tests
         run: mvn install -DskipTests
-      - name: Build with Maven
+      - name: Maven IT tests
         run: mvn install -f spring-boot-extension/integration-tests/ -Dspringboot.version=${{ matrix.springboot-version }}

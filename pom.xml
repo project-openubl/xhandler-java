@@ -46,7 +46,7 @@
 
         <lombok.version>1.18.26</lombok.version>
         <quarkus.version>2.16.4.Final</quarkus.version>
-        <camel.version>3.20.2</camel.version>
+        <camel.version>3.20.3</camel.version>
         <springboot.version>2.7.9</springboot.version>
     </properties>
 

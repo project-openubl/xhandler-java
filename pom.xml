@@ -47,7 +47,7 @@
         <lombok.version>1.18.26</lombok.version>
         <quarkus.version>2.16.6.Final</quarkus.version>
         <camel.version>3.20.3</camel.version>
-        <springboot.version>2.7.9</springboot.version>
+        <springboot.version>3.0.6</springboot.version>
     </properties>
 
     <url>https://project-openubl.github.io/</url>

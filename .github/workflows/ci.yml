@@ -57,6 +57,7 @@ jobs:
     strategy:
       matrix:
         quarkus-version: [ 3.0.0.CR2, 3.0.0.Final ]
+      fail-fast: false
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK
@@ -96,6 +97,7 @@ jobs:
     strategy:
       matrix:
         springboot-version: [ 3.0.0, 3.0.6 ]
+      fail-fast: false
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK

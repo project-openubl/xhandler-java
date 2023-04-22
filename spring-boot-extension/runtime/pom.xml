@@ -24,7 +24,7 @@
     <parent>
         <groupId>io.github.project-openubl</groupId>
         <artifactId>spring-boot-xsender-parent</artifactId>
-        <version>4.1.4</version>
+        <version>4.1.5-SNAPSHOT</version>
     </parent>
     <artifactId>spring-boot-xsender</artifactId>
     <name>Spring Boot XSender - Runtime</name>

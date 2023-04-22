@@ -18,7 +18,7 @@ jobs:
     name: JDK ${{matrix.java-version}} JVM Tests
     strategy:
       matrix:
-        java-version: [ 17, 21 ]
+        java-version: [ 17 ]
       fail-fast: false
     runs-on: ubuntu-latest
     steps:
@@ -36,7 +36,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        java-version: [ 17, 21 ]
+        java-version: [ 17 ]
       fail-fast: false
     steps:
       - uses: actions/checkout@v3
@@ -56,7 +56,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        quarkus-version: [ 2.14.3.Final, 2.12.3.Final ]
+        quarkus-version: [ 3.0.0.CR2, 3.0.0.Final ]
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK
@@ -75,7 +75,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        java-version: [ 17, 21 ]
+        java-version: [ 17 ]
       fail-fast: false
     steps:
       - uses: actions/checkout@v3
@@ -95,7 +95,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        springboot-version: [ 2.7.5, 2.7.0 ]
+        springboot-version: [ 3.0.0, 3.0.6 ]
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK

@@ -18,7 +18,7 @@ jobs:
     name: JDK ${{matrix.java-version}} JVM Tests
     strategy:
       matrix:
-        java-version: [ 11, 17 ]
+        java-version: [ 17, 21 ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -35,10 +35,10 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        java-version: [ 11, 17 ]
+        java-version: [ 17, 21 ]
     steps:
       - uses: actions/checkout@v3
-      - name: Set up JDK 11
+      - name: Set up JDK
         uses: actions/setup-java@v3
         with:
           java-version: ${{ matrix.java-version }}
@@ -57,10 +57,10 @@ jobs:
         quarkus-version: [ 2.14.3.Final, 2.12.3.Final ]
     steps:
       - uses: actions/checkout@v3
-      - name: Set up JDK 11
+      - name: Set up JDK
         uses: actions/setup-java@v3
         with:
-          java-version: 11
+          java-version: 17
           distribution: temurin
           cache: maven
       - name: Maven tests
@@ -73,10 +73,10 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        java-version: [ 11, 17 ]
+        java-version: [ 17, 21 ]
     steps:
       - uses: actions/checkout@v3
-      - name: Set up JDK 11
+      - name: Set up JDK
         uses: actions/setup-java@v3
         with:
           java-version: ${{ matrix.java-version }}
@@ -95,10 +95,10 @@ jobs:
         springboot-version: [ 2.7.5, 2.7.0 ]
     steps:
       - uses: actions/checkout@v3
-      - name: Set up JDK 11
+      - name: Set up JDK
         uses: actions/setup-java@v3
         with:
-          java-version: 11
+          java-version: 17
           distribution: temurin
           cache: maven
       - name: Maven tests

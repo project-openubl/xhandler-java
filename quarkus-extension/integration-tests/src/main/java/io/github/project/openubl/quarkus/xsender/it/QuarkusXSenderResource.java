@@ -30,10 +30,10 @@ import io.github.project.openubl.xsender.sunat.BillValidServiceDestination;
 import org.apache.camel.CamelExecutionException;
 import org.apache.camel.ProducerTemplate;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
 import java.io.InputStream;
 
 import static io.github.project.openubl.xsender.camel.utils.CamelUtils.getBillConsultService;

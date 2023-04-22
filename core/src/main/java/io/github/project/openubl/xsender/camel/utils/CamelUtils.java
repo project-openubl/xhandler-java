@@ -31,8 +31,8 @@ import org.apache.cxf.helpers.DOMUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import javax.activation.DataHandler;
-import javax.activation.DataSource;
+import jakarta.activation.DataHandler;
+import jakarta.activation.DataSource;
 import javax.xml.namespace.QName;
 import java.util.Arrays;
 import java.util.Base64;

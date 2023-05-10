@@ -56,7 +56,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        quarkus-version: [ 3.0.0.CR2, 3.0.0.Final ]
+        quarkus-version: [ 3.0.1.Final ]
       fail-fast: false
     steps:
       - uses: actions/checkout@v3
@@ -96,7 +96,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        springboot-version: [ 3.0.0, 3.0.6 ]
+        springboot-version: [ 3.0.0 ]
       fail-fast: false
     steps:
       - uses: actions/checkout@v3

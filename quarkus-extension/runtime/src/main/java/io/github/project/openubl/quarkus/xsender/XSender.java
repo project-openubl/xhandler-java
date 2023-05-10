@@ -20,10 +20,10 @@ import io.github.project.openubl.quarkus.xsender.runtime.XSenderConfig;
 import io.github.project.openubl.xsender.camel.routes.CxfEndpointConfiguration;
 import org.apache.camel.component.cxf.jaxws.CxfEndpoint;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Produces;
-import javax.inject.Inject;
-import javax.inject.Named;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Produces;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 public class XSender {
 

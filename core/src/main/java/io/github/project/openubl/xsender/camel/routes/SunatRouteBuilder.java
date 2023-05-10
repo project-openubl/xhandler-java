@@ -65,12 +65,12 @@ public class SunatRouteBuilder extends RouteBuilder {
 
                 // SOAP Exception
                 .onException(SoapFault.class)
-                    .handled(true)
+                    .continued(true)
                     .process(new SoapSunatErrorResponseProcessor())
                 .end()
                 // REST exception
                 .onException(HttpOperationFailedException.class)
-                    .handled(exchange -> {
+                    .continued(exchange -> {
                         HttpOperationFailedException httpException = exchange.getProperty(Exchange.EXCEPTION_CAUGHT, HttpOperationFailedException.class);
                         String contentType = httpException.getResponseHeaders().getOrDefault("Content-Type", "");
 

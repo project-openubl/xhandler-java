@@ -17,6 +17,7 @@ jobs:
   test:
     name: JDK ${{matrix.java-version}} JVM Tests
     strategy:
+      fail-fast: false
       matrix:
         java-version: [ 11, 17 ]
     runs-on: ubuntu-latest
@@ -34,6 +35,7 @@ jobs:
     needs: [ test ]
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         java-version: [ 11, 17 ]
     steps:
@@ -53,6 +55,7 @@ jobs:
     needs: [ quarkus-extension ]
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         quarkus-version: [ 2.14.3.Final, 2.12.3.Final ]
     steps:
@@ -72,6 +75,7 @@ jobs:
     needs: [ test ]
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         java-version: [ 11, 17 ]
     steps:
@@ -91,6 +95,7 @@ jobs:
     needs: [ springboot-extension ]
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         springboot-version: [ 2.7.5, 2.7.0 ]
     steps:

@@ -33,7 +33,6 @@ release:
   github:
     owner: project-openubl
     name: xsender
-    branch: master
     overwrite: true
     discussionCategoryName: Announcements
     issues:

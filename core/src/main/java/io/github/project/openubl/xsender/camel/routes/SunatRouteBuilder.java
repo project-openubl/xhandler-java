@@ -17,6 +17,9 @@
 package io.github.project.openubl.xsender.camel.routes;
 
 import io.github.project.openubl.xsender.Constants;
+import io.github.project.openubl.xsender.models.Metadata;
+import io.github.project.openubl.xsender.models.Status;
+import io.github.project.openubl.xsender.models.SunatResponse;
 import io.github.project.openubl.xsender.models.rest.ResponseAccessTokenSuccessDto;
 import io.github.project.openubl.xsender.models.rest.ResponseDocumentErrorDto;
 import io.github.project.openubl.xsender.models.rest.ResponseDocumentSuccessDto;
@@ -31,9 +34,11 @@ import org.apache.camel.http.base.HttpOperationFailedException;
 import org.apache.camel.model.dataformat.JsonLibrary;
 import org.apache.camel.util.URISupport;
 import org.apache.cxf.binding.soap.SoapFault;
+import org.apache.cxf.transport.http.HTTPException;
 
 import java.net.URISyntaxException;
 import java.time.ZonedDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -68,6 +73,25 @@ public class SunatRouteBuilder extends RouteBuilder {
                     .continued(true)
                     .process(new SoapSunatErrorResponseProcessor())
                 .end()
+                .onException(HTTPException.class)
+                    .continued(true)
+                    .maximumRedeliveries(1)
+                    .useOriginalMessage()
+                    .process(exchange -> {
+                        Throwable throwable = exchange.getProperty(Exchange.EXCEPTION_CAUGHT, Throwable.class);
+
+                        SunatResponse sunatResponse = SunatResponse.builder()
+                                .status(Status.UNKNOWN)
+                                .metadata(Metadata.builder()
+                                        .notes(Collections.emptyList())
+                                        .description(throwable.getMessage())
+                                        .build())
+                                .build();
+
+                        exchange.getIn().setBody(sunatResponse);
+                    })
+                .end()
+
                 // REST exception
                 .onException(HttpOperationFailedException.class)
                     .continued(exchange -> {

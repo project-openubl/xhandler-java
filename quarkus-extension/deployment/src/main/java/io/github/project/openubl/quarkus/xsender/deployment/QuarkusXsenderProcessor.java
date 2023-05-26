@@ -17,10 +17,7 @@
 package io.github.project.openubl.quarkus.xsender.deployment;
 
 import io.github.project.openubl.quarkus.xsender.XSender;
-import io.github.project.openubl.xsender.camel.routes.SoapSunatErrorResponseProcessor;
-import io.github.project.openubl.xsender.camel.routes.SoapSunatResponseProcessor;
 import io.github.project.openubl.xsender.camel.routes.SunatRouteBuilder;
-import io.github.project.openubl.xsender.sunat.BillServiceDestination;
 import io.quarkus.arc.deployment.AdditionalBeanBuildItem;
 import io.quarkus.arc.processor.DotNames;
 import io.quarkus.deployment.annotations.BuildProducer;
@@ -134,7 +131,8 @@ class QuarkusXsenderProcessor {
         return new ReflectiveClassBuildItem(
                 true,
                 false,
-                org.apache.cxf.binding.soap.SoapFault.class
+                org.apache.cxf.binding.soap.SoapFault.class,
+                org.apache.cxf.transport.http.HTTPException.class
         );
     }
 

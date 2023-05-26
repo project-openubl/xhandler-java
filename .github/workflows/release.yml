@@ -31,7 +31,7 @@ jobs:
           git config --global user.email "project.openubl.preview.bot@gmail.com"
           git config --global user.name "Project-Openubl Bot"
           git commit --signoff --allow-empty -a -m "🏁 Releasing version $RELEASE_VERSION"
-          git push origin HEAD:master
+          git push origin HEAD:${{ github.event.inputs.branch }}
 
       # OSSRH
       - uses: actions/setup-java@v3
@@ -86,4 +86,4 @@ jobs:
           git config --global user.email "project.openubl.preview.bot@gmail.com"
           git config --global user.name "Project-Openubl Bot"
           git commit --signoff -a -m "⬆️  Next version $NEXT_VERSION"
-          git push origin HEAD:master
+          git push origin HEAD:${{ github.event.inputs.branch }}

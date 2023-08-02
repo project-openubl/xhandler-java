@@ -38,7 +38,7 @@
 
         <compiler-plugin.version>3.11.0</compiler-plugin.version>
         <surefire-plugin.version>3.1.2</surefire-plugin.version>
-        <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
+        <maven-source-plugin.version>3.3.0</maven-source-plugin.version>
         <maven-javadoc-plugin.version>3.5.0</maven-javadoc-plugin.version>
         <maven-gpg-plugin.version>3.1.0</maven-gpg-plugin.version>
 

@@ -37,17 +37,17 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <compiler-plugin.version>3.11.0</compiler-plugin.version>
-        <surefire-plugin.version>3.1.2</surefire-plugin.version>
-        <maven-source-plugin.version>3.3.0</maven-source-plugin.version>
+        <surefire-plugin.version>3.0.0</surefire-plugin.version>
+        <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
         <maven-javadoc-plugin.version>3.5.0</maven-javadoc-plugin.version>
         <maven-gpg-plugin.version>3.1.0</maven-gpg-plugin.version>
 
         <license.dir>${basedir}</license.dir>
 
         <lombok.version>1.18.26</lombok.version>
-        <quarkus.version>3.2.2.Final</quarkus.version>
-        <camel.version>4.0.0-RC2</camel.version>
-        <springboot.version>3.1.2</springboot.version>
+        <quarkus.version>3.3.2</quarkus.version>
+        <camel.version>4.0.0-M3</camel.version>
+        <springboot.version>3.0.6</springboot.version>
     </properties>
 
     <url>https://project-openubl.github.io/</url>

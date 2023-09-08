@@ -147,7 +147,11 @@ public class SunatRouteBuilder extends RouteBuilder {
                         .setBody(exchange -> {
                             List<?> body = exchange.getIn().getBody(List.class);
                             Map<String, Object> map = (Map<String, Object>) body.get(1);
-                            return URISupport.createQueryString(map);
+                            try {
+                                return URISupport.createQueryString(map);
+                            } catch (URISyntaxException e) {
+                                throw new RuntimeException(e);
+                            }
                         })
                         .to("https://api-seguridad.sunat.gob.pe")
                         .unmarshal(new JacksonDataFormat(ResponseAccessTokenSuccessDto.class))

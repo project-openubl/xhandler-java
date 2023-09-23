@@ -27,6 +27,7 @@
 
     <name>XHandler - Parent</name>
     <description>Java library for Creating, Sending XML files to SUNAT</description>
+    <url>https://github.com/project-openubl/xhandler</url>
     <packaging>pom</packaging>
 
     <properties>

@@ -19,15 +19,15 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.inputs.branch }}
       - uses: actions/setup-java@v3
         with:
           java-version: 17
           distribution: temurin
           cache: maven
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          ref: ${{ github.event.inputs.branch }}
       - name: Set release version
         env:
           RELEASE_VERSION: ${{ github.event.inputs.version }}

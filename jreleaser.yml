@@ -6,7 +6,7 @@ project:
     - Carlos E. Feria Vila
   license: Apache-2
   java:
-    groupId: io.github.project.openubl.xhandler
+    groupId: io.github.project-openubl
     version: '17'
   inceptionYear: '2019'
   links:

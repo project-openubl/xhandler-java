@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Invoice xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
+         {#include ubl/standard/include/namespaces.xml /}
+>
+    {#include ubl/standard/include/ubl-extensions.xml /}
+    {#include ubl/standard/include/general-data.xml item=this /}
+    {#if fechaVencimiento}
+    <cbc:DueDate>{fechaVencimiento}</cbc:DueDate>
+    {/if}
+    <cbc:InvoiceTypeCode listID="{tipoOperacion}" listAgencyName="PE:SUNAT" listName="Tipo de Documento" listURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo01">{tipoComprobante}</cbc:InvoiceTypeCode>
+    {#if leyendas}
+    {#for key in leyendas.keySet}
+    <cbc:Note languageLocaleID="{key}"><![CDATA[{leyendas.get(key).raw}]]></cbc:Note>
+    {/for}
+    {/if}
+    {#if observaciones}
+    <cbc:Note><![CDATA[{observaciones.raw}]]></cbc:Note>
+    {/if}
+    <cbc:DocumentCurrencyCode listID="ISO 4217 Alpha" listAgencyName="United Nations Economic Commission for Europe" listName="Currency">{moneda}</cbc:DocumentCurrencyCode>
+    {#if ordenDeCompra}
+    <cac:OrderReference>
+        <cbc:ID>{ordenDeCompra}</cbc:ID>
+    </cac:OrderReference>
+    {/if}
+    {#include ubl/standard/include/guias.xml item=this /}
+    {#include ubl/standard/include/documentos-relacionados.xml item=this /}
+    {#each anticipos.orEmpty}
+    <cac:AdditionalDocumentReference>
+        <cbc:ID>{it.comprobanteSerieNumero}</cbc:ID>
+        <cbc:DocumentTypeCode listAgencyName="PE:SUNAT" listName="Documento Relacionado" listURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo12">{it.comprobanteTipo}</cbc:DocumentTypeCode>
+        <cbc:DocumentStatusCode listName="Anticipo" listAgencyName="PE:SUNAT">{it_index.add(1)}</cbc:DocumentStatusCode>
+        <cac:IssuerParty>
+            <cac:PartyIdentification>
+                <cbc:ID schemeID="6" schemeName="Documento de Identidad" schemeAgencyName="PE:SUNAT" schemeURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06">{proveedor.ruc}</cbc:ID>
+            </cac:PartyIdentification>
+        </cac:IssuerParty>
+    </cac:AdditionalDocumentReference>
+    {/each}
+    {#include ubl/common/signature.xml firmante=this.firmante /}
+    {#include ubl/standard/include/supplier.xml proveedor=this.proveedor /}
+    {#include ubl/standard/include/customer.xml cliente=this.cliente /}
+    {#if direccionEntrega}
+    <cac:Delivery>
+        <cac:DeliveryLocation>
+            <cac:Address>
+                {#include ubl/standard/include/address.xml direccion=direccionEntrega /}
+            </cac:Address>
+        </cac:DeliveryLocation>
+    </cac:Delivery>
+    {/if}
+    {#if detraccion}
+    <cac:PaymentMeans>
+        <cbc:ID>Detraccion</cbc:ID>
+        <cbc:PaymentMeansCode>{detraccion.medioDePago}</cbc:PaymentMeansCode>
+        <cac:PayeeFinancialAccount>
+            <cbc:ID>{detraccion.cuentaBancaria}</cbc:ID>
+        </cac:PayeeFinancialAccount>
+    </cac:PaymentMeans>
+    <cac:PaymentTerms>
+        <cbc:ID>Detraccion</cbc:ID>
+        <cbc:PaymentMeansID>{detraccion.tipoBienDetraido}</cbc:PaymentMeansID>
+        <cbc:PaymentPercent>{detraccion.porcentaje.multiplyByInt(100).scale(2)}</cbc:PaymentPercent>
+        <cbc:Amount currencyID="{moneda}">{detraccion.monto.scale(2)}</cbc:Amount>
+    </cac:PaymentTerms>
+    {/if}
+    {#if percepcion}
+    <cac:PaymentTerms>
+        <cbc:ID>Percepcion</cbc:ID>
+        <cbc:Amount currencyID="PEN">{percepcion.montoTotal.scale(2)}</cbc:Amount>
+    </cac:PaymentTerms>
+    {/if}
+    {#include ubl/standard/include/payment-terms.xml item=this.formaDePago /}
+    {#each anticipos.orEmpty}
+    <cac:PrepaidPayment>
+        <cbc:ID>{it_index.add(1)}</cbc:ID>
+        <cbc:PaidAmount currencyID="{moneda}">{it.monto}</cbc:PaidAmount>
+    </cac:PrepaidPayment>
+    {/each}
+    {#each anticipos.orEmpty}
+    <cac:AllowanceCharge>
+        <cbc:ChargeIndicator>false</cbc:ChargeIndicator>
+        <cbc:AllowanceChargeReasonCode>{it.tipo}</cbc:AllowanceChargeReasonCode>
+        <cbc:MultiplierFactorNumeric>1</cbc:MultiplierFactorNumeric>
+        <cbc:Amount currencyID="{moneda}">{it.monto}</cbc:Amount>
+        <cbc:BaseAmount currencyID="{moneda}">{it.monto}</cbc:BaseAmount>
+    </cac:AllowanceCharge>
+    {/each}
+    {#each descuentos.orEmpty}
+    <cac:AllowanceCharge>
+        <cbc:ChargeIndicator>false</cbc:ChargeIndicator>
+        <cbc:AllowanceChargeReasonCode>{it.tipoDescuento}</cbc:AllowanceChargeReasonCode>
+        {#if it.factor}
+        <cbc:MultiplierFactorNumeric>{it.factor.scale(2)}</cbc:MultiplierFactorNumeric>
+        {/if}
+        <cbc:Amount currencyID="{moneda}">{it.monto.scale(2)}</cbc:Amount>
+        <cbc:BaseAmount currencyID="{moneda}">{it.montoBase.scale(2)}</cbc:BaseAmount>
+    </cac:AllowanceCharge>
+    {/each}
+    {#if percepcion}
+    <cac:AllowanceCharge>
+        <cbc:ChargeIndicator>true</cbc:ChargeIndicator>
+        <cbc:AllowanceChargeReasonCode>{percepcion.tipo}</cbc:AllowanceChargeReasonCode>
+        <cbc:MultiplierFactorNumeric>{percepcion.porcentaje.scale(2)}</cbc:MultiplierFactorNumeric>
+        <cbc:Amount currencyID="PEN">{percepcion.monto.scale(2)}</cbc:Amount>
+        <cbc:BaseAmount currencyID="PEN">{percepcion.montoBase.scale(2)}</cbc:BaseAmount>
+    </cac:AllowanceCharge>
+    {/if}
+    {#include ubl/standard/include/tax-total.xml totalImpuestos=this.totalImpuestos /}
+    <cac:LegalMonetaryTotal>
+        <cbc:LineExtensionAmount currencyID="{moneda}">{totalImporte.importeSinImpuestos.scale(2)}</cbc:LineExtensionAmount>
+        <cbc:TaxInclusiveAmount currencyID="{moneda}">{totalImporte.importeConImpuestos.scale(2)}</cbc:TaxInclusiveAmount>
+        <cbc:AllowanceTotalAmount currencyID="{moneda}">{totalImporte.descuentos}</cbc:AllowanceTotalAmount>
+        <cbc:PrepaidAmount currencyID="{moneda}">{totalImporte.anticipos}</cbc:PrepaidAmount>
+        <cbc:PayableAmount currencyID="{moneda}">{totalImporte.importe.scale(2)}</cbc:PayableAmount>
+    </cac:LegalMonetaryTotal>
+    {#each detalles.orEmpty}
+    <cac:InvoiceLine>
+        <cbc:ID>{it_index.add(1)}</cbc:ID>
+        <cbc:InvoicedQuantity unitCode="{it.unidadMedida}" unitCodeListAgencyName="United Nations Economic Commission for Europe" unitCodeListID="UN/ECE rec 20">{it.cantidad}</cbc:InvoicedQuantity>
+        {#include ubl/standard/include/document-line.xml item=it /}
+    </cac:InvoiceLine>
+    {/each}
+</Invoice>

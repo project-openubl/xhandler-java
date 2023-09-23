@@ -1,0 +1,76 @@
+# Header
+## Enrich - commons
+io.github.project.openubl.xbuilder.enricher.kie.rules.enrich.header.MonedaRule
+io.github.project.openubl.xbuilder.enricher.kie.rules.enrich.header.TasaIgvRule
+io.github.project.openubl.xbuilder.enricher.kie.rules.enrich.header.TasaIcbRule
+io.github.project.openubl.xbuilder.enricher.kie.rules.enrich.header.TasaIvapRule
+io.github.project.openubl.xbuilder.enricher.kie.rules.enrich.header.FechaEmisionRule
+io.github.project.openubl.xbuilder.enricher.kie.rules.enrich.header.FirmanteRule
+io.github.project.openubl.xbuilder.enricher.kie.rules.enrich.header.TipoDocumentoIdentidadClienteRule
+io.github.project.openubl.xbuilder.enricher.kie.rules.enrich.header.ProveedorDireccionRule
+
+## Enrich - Invoice
+io.github.project.openubl.xbuilder.enricher.kie.rules.enrich.header.invoice.FormaDePagoRule
+io.github.project.openubl.xbuilder.enricher.kie.rules.enrich.header.invoice.FormaDePagoTipoRule
+io.github.project.openubl.xbuilder.enricher.kie.rules.enrich.header.invoice.FormaDePagoTotalRule
+io.github.project.openubl.xbuilder.enricher.kie.rules.enrich.header.invoice.TipoComprobanteRule
+io.github.project.openubl.xbuilder.enricher.kie.rules.enrich.header.invoice.DireccionDeEntregaRule
+io.github.project.openubl.xbuilder.enricher.kie.rules.enrich.header.invoice.DetraccionRule
+io.github.project.openubl.xbuilder.enricher.kie.rules.enrich.header.invoice.TipoOperacionRule
+io.github.project.openubl.xbuilder.enricher.kie.rules.enrich.header.invoice.PercepcionRule
+
+## Enrich - Note
+io.github.project.openubl.xbuilder.enricher.kie.rules.enrich.header.note.ComprobanteAfectadoTipoRule
+io.github.project.openubl.xbuilder.enricher.kie.rules.enrich.header.note.creditnote.TipoNotaCreditoRule
+io.github.project.openubl.xbuilder.enricher.kie.rules.enrich.header.note.debitnote.TipoNotaDebitoRule
+
+## Summary
+io.github.project.openubl.xbuilder.enricher.kie.rules.summary.header.LeyendasRule
+
+## Summary - Invoice
+io.github.project.openubl.xbuilder.enricher.kie.rules.summary.header.invoice.TotalImporteRule
+io.github.project.openubl.xbuilder.enricher.kie.rules.summary.header.invoice.TotalImpuestosRule
+io.github.project.openubl.xbuilder.enricher.kie.rules.summary.header.invoice.DetraccionRule
+io.github.project.openubl.xbuilder.enricher.kie.rules.summary.header.invoice.PercepcionRule
+
+## Summary - Note
+io.github.project.openubl.xbuilder.enricher.kie.rules.summary.header.note.TotalImporteRule
+io.github.project.openubl.xbuilder.enricher.kie.rules.summary.header.note.TotalImpuestosRule
+
+
+# Body
+## Enrich - Detalle
+io.github.project.openubl.xbuilder.enricher.kie.rules.enrich.body.detalle.UnidadDeMedidaRule
+io.github.project.openubl.xbuilder.enricher.kie.rules.enrich.body.detalle.IgvTipoRule
+io.github.project.openubl.xbuilder.enricher.kie.rules.enrich.body.detalle.IscTipoRule
+io.github.project.openubl.xbuilder.enricher.kie.rules.enrich.body.detalle.PrecioDeReferenciaTipoRule
+io.github.project.openubl.xbuilder.enricher.kie.rules.enrich.body.detalle.TasaIcbRule
+io.github.project.openubl.xbuilder.enricher.kie.rules.enrich.body.detalle.TasaIgvRule
+io.github.project.openubl.xbuilder.enricher.kie.rules.enrich.body.detalle.TasaIscRule
+
+## Enrich - Anticipos
+io.github.project.openubl.xbuilder.enricher.kie.rules.enrich.body.anticipo.TipoAnticipoRule
+io.github.project.openubl.xbuilder.enricher.kie.rules.enrich.body.anticipo.ComprobanteTipoAnticipoRule
+
+## Enrich - Descuentos
+io.github.project.openubl.xbuilder.enricher.kie.rules.enrich.body.descuento.TipoDescuentoRule
+io.github.project.openubl.xbuilder.enricher.kie.rules.enrich.body.descuento.FactorRule
+io.github.project.openubl.xbuilder.enricher.kie.rules.enrich.body.descuento.MontoBaseRule
+
+## Enrich - VoidedDocuments
+io.github.project.openubl.xbuilder.enricher.kie.rules.enrich.body.voidedDocumentItem.TipoComprobanteRule
+
+## Enrich - SummaryDocuments
+io.github.project.openubl.xbuilder.enricher.kie.rules.enrich.body.summaryDocumentItem.TipoOperacionRule
+io.github.project.openubl.xbuilder.enricher.kie.rules.enrich.body.summaryDocumentItem.MonedaRule
+
+## Process - Detalle
+io.github.project.openubl.xbuilder.enricher.kie.rules.process.body.detalle.PrecioDeReferenciaRule
+io.github.project.openubl.xbuilder.enricher.kie.rules.process.body.detalle.PrecioRule
+io.github.project.openubl.xbuilder.enricher.kie.rules.process.body.detalle.IcbRule
+io.github.project.openubl.xbuilder.enricher.kie.rules.process.body.detalle.IcbAplicaRule
+io.github.project.openubl.xbuilder.enricher.kie.rules.process.body.detalle.IgvBaseImponibleRule
+io.github.project.openubl.xbuilder.enricher.kie.rules.process.body.detalle.IgvRule
+io.github.project.openubl.xbuilder.enricher.kie.rules.process.body.detalle.IscBaseImponibleRule
+io.github.project.openubl.xbuilder.enricher.kie.rules.process.body.detalle.IscRule
+io.github.project.openubl.xbuilder.enricher.kie.rules.process.body.detalle.TotalImpuestosRule

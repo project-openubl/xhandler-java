@@ -1,0 +1,10 @@
+name: "Quarkus XBuilder"
+description: "XBuilder support."
+metadata:
+  keywords:
+    - quarkus-xbuilder
+    - openubl
+#  guide: ...
+  categories:
+    - "miscellaneous"
+  status: "preview"

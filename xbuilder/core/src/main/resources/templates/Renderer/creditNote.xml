@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<CreditNote xmlns="urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2"
+            {#include ubl/standard/include/namespaces.xml /}
+>
+    {#include ubl/standard/include/ubl-extensions.xml /}
+    {#include ubl/standard/include/general-data.xml item=this /}
+    {#for key in leyendas.keySet}
+    <cbc:Note languageLocaleID="{key}"><![CDATA[{leyendas.get(key).raw}]]></cbc:Note>
+    {/for}
+    <cbc:DocumentCurrencyCode listID="ISO 4217 Alpha" listAgencyName="United Nations Economic Commission for Europe" listName="Currency">{moneda}</cbc:DocumentCurrencyCode>
+    {#include "ubl/standard/include/note/invoice-reference.xml" item=this /}
+    {#include ubl/standard/include/guias.xml item=this /}
+    {#include ubl/standard/include/documentos-relacionados.xml item=this /}
+    {#include ubl/common/signature.xml firmante=this.firmante /}
+    {#include ubl/standard/include/supplier.xml proveedor=this.proveedor /}
+    {#include ubl/standard/include/customer.xml cliente=this.cliente /}
+    {#include ubl/standard/include/tax-total.xml totalImpuestos=this.totalImpuestos /}
+    <cac:LegalMonetaryTotal>
+        {#include ubl/standard/include/monetary-total.xml totalImporte=this.totalImporte /}
+    </cac:LegalMonetaryTotal>
+    {#each detalles.orEmpty}
+    <cac:CreditNoteLine>
+        <cbc:ID>{it_index.add(1)}</cbc:ID>
+        <cbc:CreditedQuantity unitCode="{it.unidadMedida}" unitCodeListAgencyName="United Nations Economic Commission for Europe" unitCodeListID="UN/ECE rec 20">{it.cantidad}</cbc:CreditedQuantity>
+        {#include ubl/standard/include/document-line.xml item=it /}
+    </cac:CreditNoteLine>
+    {/each}
+</CreditNote>

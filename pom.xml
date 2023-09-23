@@ -22,11 +22,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.github.project-openubl</groupId>
-    <artifactId>xsender-parent</artifactId>
+    <artifactId>xhandler-parent</artifactId>
     <version>5.0.1-SNAPSHOT</version>
 
-    <name>XSender - Parent</name>
-    <description>Java library for sending XML files to SUNAT</description>
+    <name>XHandler - Parent</name>
+    <description>Java library for Creating, Sending XML files to SUNAT</description>
     <packaging>pom</packaging>
 
     <properties>
@@ -36,15 +36,18 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <compiler-plugin.version>3.11.0</compiler-plugin.version>
+        <compiler-plugin.version>3.10.0</compiler-plugin.version>
         <surefire-plugin.version>3.0.0</surefire-plugin.version>
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
-        <maven-javadoc-plugin.version>3.5.0</maven-javadoc-plugin.version>
+        <maven-javadoc-plugin.version>3.2.0</maven-javadoc-plugin.version>
         <maven-gpg-plugin.version>3.1.0</maven-gpg-plugin.version>
 
         <license.dir>${basedir}</license.dir>
 
         <lombok.version>1.18.30</lombok.version>
+        <mapstruct.version>1.5.5.Final</mapstruct.version>
+        <xmlunit.version>2.9.1</xmlunit.version>
+
         <quarkus.version>3.4.1</quarkus.version>
         <camel.version>4.0.0</camel.version>
         <springboot.version>3.0.6</springboot.version>
@@ -74,9 +77,10 @@
     </developers>
 
     <scm>
-        <url>https://github.com/project-openubl/xsender</url>
-        <connection>scm:git:git://github.com/project-openubl/xsender.git</connection>
-        <developerConnection>scm:git:git@github.com:project-openubl/xsender.git</developerConnection>
+        <url>https://github.com/project-openubl/xhandler</url>
+        <connection>scm:git:git://github.com/project-openubl/xhandler.git</connection>
+        <developerConnection>scm:git:git@github.com:project-openubl/xhandler.git</developerConnection>
+        <tag>HEAD</tag>
     </scm>
 
     <dependencyManagement>
@@ -86,73 +90,41 @@
                 <artifactId>xsender</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>io.github.project-openubl</groupId>
+                <artifactId>xbuilder</artifactId>
+                <version>${project.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
     <modules>
-        <module>core</module>
-        <module>quarkus-extension</module>
-        <module>spring-boot-extension</module>
+        <module>xbuilder</module>
+        <module>xsender</module>
     </modules>
 
     <build>
         <pluginManagement>
             <plugins>
-                <!-- Source plugin -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-source-plugin</artifactId>
-                    <version>${maven-source-plugin.version}</version>
-                    <executions>
-                        <execution>
-                            <id>attach-sources</id>
-                            <goals>
-                                <goal>jar-no-fork</goal>
-                            </goals>
-                        </execution>
-                    </executions>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>3.0.0</version>
                 </plugin>
-
-                <!-- Javadoc plugin -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${compiler-plugin.version}</version>
+                </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
                     <version>${maven-javadoc-plugin.version}</version>
-                    <configuration>
-                        <show>private</show>
-                        <doclint>none</doclint>
-                    </configuration>
-                    <executions>
-                        <execution>
-                            <id>attach-javadocs</id>
-                            <goals>
-                                <goal>jar</goal>
-                            </goals>
-                        </execution>
-                    </executions>
                 </plugin>
-
-                <!-- GPG plugin -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-gpg-plugin</artifactId>
-                    <version>${maven-gpg-plugin.version}</version>
-                    <executions>
-                        <execution>
-                            <id>sign-artifacts</id>
-                            <phase>verify</phase>
-                            <goals>
-                                <goal>sign</goal>
-                            </goals>
-                            <configuration>
-                                <!-- Prevent `gpg` from using pinentry programs -->
-                                <gpgArguments>
-                                    <arg>--pinentry-mode</arg>
-                                    <arg>loopback</arg>
-                                </gpgArguments>
-                            </configuration>
-                        </execution>
-                    </executions>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>${maven-source-plugin.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -160,7 +132,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>${compiler-plugin.version}</version>
                 <configuration>
                     <source>${maven.compiler.source}</source>
                     <target>${maven.compiler.target}</target>
@@ -190,13 +161,7 @@
                         <owner>Project OpenUBL</owner>
                         <email>projectopenubl+subscribe@googlegroups.com</email>
                     </properties>
-                    <excludes>
-                        <exclude>**/README</exclude>
-                        <exclude>src/test/resources/**</exclude>
-                        <exclude>src/main/resources/**</exclude>
-                        <exclude>.github/**</exclude>
-                        <exclude>**/*.xml</exclude>
-                    </excludes>
+                    <includes>**/*.java</includes>
                 </configuration>
                 <executions>
                     <execution>
@@ -269,9 +234,9 @@
             <properties>
                 <sonar.host.url>https://sonarcloud.io</sonar.host.url>
                 <sonar.organization>project-openubl</sonar.organization>
-                <sonar.projectKey>project-openubl_xsender</sonar.projectKey>
+                <sonar.projectKey>project-openubl_xhandler</sonar.projectKey>
                 <sonar.moduleKey>${project.artifactId}</sonar.moduleKey>
-                <sonar.projectName>xsender</sonar.projectName>
+                <sonar.projectName>xhandler</sonar.projectName>
             </properties>
             <build>
                 <plugins>
@@ -291,69 +256,44 @@
                 </plugins>
             </build>
         </profile>
-        <profile>
-            <id>ossrh</id>
-            <distributionManagement>
-                <repository>
-                    <id>ossrh</id>
-                    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-                </repository>
-                <snapshotRepository>
-                    <id>ossrh</id>
-                    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-                </snapshotRepository>
-            </distributionManagement>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-source-plugin</artifactId>
-                    </plugin>
 
-                    <!-- Nexus Staging Plugin -->
-                    <plugin>
-                        <groupId>org.sonatype.plugins</groupId>
-                        <artifactId>nexus-staging-maven-plugin</artifactId>
-                        <version>1.6.13</version>
-                        <extensions>true</extensions>
-                        <configuration>
-                            <serverId>ossrh</serverId>
-                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
         <profile>
-            <id>github</id>
-            <distributionManagement>
-                <repository>
-                    <id>github</id>
-                    <name>GitHub Project OpenUBL Apache Maven Packages</name>
-                    <url>https://maven.pkg.github.com/project-openubl/xsender</url>
-                </repository>
-            </distributionManagement>
+            <id>publication</id>
+            <properties>
+                <altDeploymentRepository>local::file:./target/staging-deploy</altDeploymentRepository>
+            </properties>
             <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-source-plugin</artifactId>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>release</id>
-            <build>
+                <defaultGoal>deploy</defaultGoal>
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                                <configuration>
+                                    <attach>true</attach>
+                                </configuration>
+                            </execution>
+                        </executions>
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-gpg-plugin</artifactId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                                <configuration>
+                                    <attach>true</attach>
+                                </configuration>
+                            </execution>
+                        </executions>
                     </plugin>
                 </plugins>
             </build>

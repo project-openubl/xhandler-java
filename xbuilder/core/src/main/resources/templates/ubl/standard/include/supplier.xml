@@ -1,0 +1,23 @@
+    <cac:AccountingSupplierParty>
+        <cac:Party>
+            <cac:PartyIdentification>
+                <cbc:ID schemeID="6" schemeAgencyName="PE:SUNAT" schemeName="Documento de Identidad" schemeURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06">{proveedor.ruc}</cbc:ID>
+            </cac:PartyIdentification>
+            {#if proveedor.nombreComercial}
+            <cac:PartyName>
+                <cbc:Name>{proveedor.nombreComercial}</cbc:Name>
+            </cac:PartyName>
+            {/if}
+            <cac:PartyLegalEntity>
+                <cbc:RegistrationName><![CDATA[{proveedor.razonSocial.raw}]]></cbc:RegistrationName>
+                {#if proveedor.direccion}
+                <cac:RegistrationAddress>
+                    {#include ubl/standard/include/address.xml direccion=proveedor.direccion /}
+                </cac:RegistrationAddress>
+                {/if}
+            </cac:PartyLegalEntity>
+            {#if proveedor.contacto}
+            {#include ubl/standard/include/contact.xml contacto=proveedor.contacto /}
+            {/if}
+        </cac:Party>
+    </cac:AccountingSupplierParty>

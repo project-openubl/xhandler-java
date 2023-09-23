@@ -1,38 +1,21 @@
-#
-# Copyright 2019 Project OpenUBL, Inc. and/or its affiliates
-# and other contributors as indicated by the @author tags.
-#
-# Licensed under the Apache License - 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-# https://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
-
 project:
-  name: xsender
-  description: Libreria para enviar XMLs a la SUNAT
-  longDescription: Libreria para enviar comprobantes electrónicos a los servicios web de la SUNAT y/o OSCE
+  name: xhandler
+  description: Libreria para crear y enviar XMLs a la SUNAT
+  longDescription: Libreria para crear y enviar comprobantes electrónicos a los servicios web de la SUNAT y/o OSCE
   authors:
     - Carlos E. Feria Vila
   license: Apache-2
   java:
-    groupId: io.github.project.openubl.xsender
-    version: 11
-  inceptionYear: 2019
+    groupId: io.github.project.openubl.xhandler
+    version: '17'
+  inceptionYear: '2019'
   links:
     homepage: https://project-openubl.github.io/
 
 release:
   github:
     owner: project-openubl
-    name: xsender
+    name: xhandler
     overwrite: true
     discussionCategoryName: Announcements
     issues:
@@ -70,6 +53,22 @@ release:
           - 'GitHub'
           - 'dependabot'
 
+signing:
+  active: ALWAYS
+  armored: true
+
+deploy:
+  maven:
+    nexus2:
+      maven-central:
+        active: ALWAYS
+        url: https://s01.oss.sonatype.org/service/local
+        snapshotUrl: https://s01.oss.sonatype.org/content/repositories/snapshots/
+        closeRepository: true
+        releaseRepository: true
+        stagingRepositories:
+          - target/staging-deploy
+
 announce:
   zulip:
     active: RELEASE
@@ -78,26 +77,10 @@ announce:
     channel: announcements
     subject: '{{projectNameCapitalized}} {{projectVersion}} released!'
     message: '🚀 {{projectNameCapitalized}} {{projectVersion}} has been released! {{releaseNotesUrl}}'
-  twitter:
-    active: RELEASE
-    status: '🚀 {{projectNameCapitalized}} {{projectVersion}} has been released! {{releaseNotesUrl}}'
   slack:
     active: RELEASE
     channel: '#notifications'
     message: '🚀 {{projectNameCapitalized}} {{projectVersion}} has been released! {{releaseNotesUrl}}'
-  mail:
-    active: RELEASE
-    mimeType: TEXT
-    port: 587
-    auth: true
-    host: smtp.gmail.com
-    username: projectopenubl@gmail.com
-    from: projectopenubl@gmail.com
-    to: projectopenubl@googlegroups.com
-    subject: '{{projectNameCapitalized}} {{projectVersion}} released!'
-    message: |
-      Acabamos de lanzar {{projectNameCapitalized}} {{projectVersion}}!
-      {{changelog}}
   article:
     active: RELEASE
     repository:

@@ -1,0 +1,28 @@
+                    {#if direccion.ubigeo}
+                    <cbc:ID>{direccion.ubigeo}</cbc:ID>
+                    {/if}
+                    {#if direccion.codigoLocal}
+                    <cbc:AddressTypeCode>{direccion.codigoLocal}</cbc:AddressTypeCode>
+                    {/if}
+                    {#if direccion.urbanizacion}
+                    <cbc:CitySubdivisionName>{direccion.urbanizacion}</cbc:CitySubdivisionName>
+                    {/if}
+                    {#if direccion.provincia}
+                    <cbc:CityName>{direccion.provincia}</cbc:CityName>
+                    {/if}
+                    {#if direccion.departamento}
+                    <cbc:CountrySubentity>{direccion.departamento}</cbc:CountrySubentity>
+                    {/if}
+                    {#if direccion.distrito}
+                    <cbc:District>{direccion.distrito}</cbc:District>
+                    {/if}
+                    {#if direccion.direccion}
+                    <cac:AddressLine>
+                        <cbc:Line><![CDATA[{direccion.direccion.raw}]]></cbc:Line>
+                    </cac:AddressLine>
+                    {/if}
+                    {#if direccion.codigoPais}
+                    <cac:Country>
+                        <cbc:IdentificationCode>{direccion.codigoPais}</cbc:IdentificationCode>
+                    </cac:Country>
+                    {/if}

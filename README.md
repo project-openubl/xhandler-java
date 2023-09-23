@@ -9,6 +9,27 @@
 | XSender                   | [![Maven Central](https://img.shields.io/maven-central/v/io.github.project-openubl/xsender)](https://search.maven.org/artifact/io.github.project-openubl/xsender/)                 |
 | XSender Quarkus extension | [![Maven Central](https://img.shields.io/maven-central/v/io.github.project-openubl/quarkus-xsender)](https://search.maven.org/artifact/io.github.project-openubl/quarkus-xsender/) |
 
+# XBuilder
+
+Librería Java para crear XMLs basados en UBL y los estándares de la SUNAT respecto a la facturación electrónica.
+
+XBuilder esta diseñado para que puedas crear XMLs fácilmente.
+
+- Crea XMLs sin que necesites conocer nada sobre manejo de archivos XMLs.
+- Hace cálculos internos por ti.
+- Requiere solamente datos mínimos.
+
+## ¿Qué puedes hacer con XBuilder?
+
+- Crear XMLs
+- Firmar XMLs
+
+### Update snapshots
+
+```shell
+mvn clean test -Dxbuilder.snapshot.update
+```
+
 # XSender
 
 Libreria para realizar envíos de comprobantes electrónicos a los servicios web de la SUNAT y/o OSCE de acuerdo a lo

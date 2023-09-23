@@ -1,0 +1,13 @@
+    <cac:AgentParty>
+        <cac:PartyIdentification>
+            <cbc:ID schemeID="6">{proveedor.ruc}</cbc:ID>
+        </cac:PartyIdentification>
+        {#if proveedor.nombreComercial}
+        <cac:PartyName>
+            <cbc:Name><![CDATA[{proveedor.nombreComercial.raw}]]></cbc:Name>
+        </cac:PartyName>
+        {/if}
+        <cac:PartyLegalEntity>
+            <cbc:RegistrationName><![CDATA[{proveedor.razonSocial.raw}]]></cbc:RegistrationName>
+        </cac:PartyLegalEntity>
+    </cac:AgentParty>

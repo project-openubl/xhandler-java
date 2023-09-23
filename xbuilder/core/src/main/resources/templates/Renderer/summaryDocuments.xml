@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<SummaryDocuments xmlns="urn:sunat:names:specification:ubl:peru:schema:xsd:SummaryDocuments-1"
+                  xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"
+                  xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2"
+                  xmlns:ccts="urn:un:unece:uncefact:documentation:2" xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
+                  xmlns:ext="urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2"
+                  xmlns:ns11="urn:sunat:names:specification:ubl:peru:schema:xsd:Perception-1"
+                  xmlns:qdt="urn:oasis:names:specification:ubl:schema:xsd:QualifiedDatatypes-2"
+                  xmlns:sac="urn:sunat:names:specification:ubl:peru:schema:xsd:SunatAggregateComponents-1"
+                  xmlns:udt="urn:un:unece:uncefact:data:specification:UnqualifiedDataTypesSchemaModule:2"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <ext:UBLExtensions>
+        <ext:UBLExtension>
+            <ext:ExtensionContent />
+        </ext:UBLExtension>
+    </ext:UBLExtensions>
+    <cbc:UBLVersionID>2.0</cbc:UBLVersionID>
+    <cbc:CustomizationID>1.1</cbc:CustomizationID>
+    <cbc:ID>RC-{fechaEmision.format('yyyyMMdd')}-{numero}</cbc:ID>
+    <cbc:ReferenceDate>{fechaEmisionComprobantes}</cbc:ReferenceDate>
+    <cbc:IssueDate>{fechaEmision}</cbc:IssueDate>
+    {#include ubl/common/signature.xml firmante=this.firmante /}
+    {#include ubl/sunat/include/supplier.xml proveedor=this.proveedor /}
+    {#each comprobantes.orEmpty}
+    <sac:SummaryDocumentsLine>
+        <cbc:LineID>{it_index.add(1)}</cbc:LineID>
+        <cbc:DocumentTypeCode>{it.comprobante.tipoComprobante}</cbc:DocumentTypeCode>
+        <cbc:ID>{it.comprobante.serieNumero}</cbc:ID>
+        <cac:AccountingCustomerParty>
+            <cbc:CustomerAssignedAccountID>{it.comprobante.cliente.numeroDocumentoIdentidad}</cbc:CustomerAssignedAccountID>
+            <cbc:AdditionalAccountID>{it.comprobante.cliente.tipoDocumentoIdentidad}</cbc:AdditionalAccountID>
+        </cac:AccountingCustomerParty>
+        {#if it.comprobante.comprobanteAfectado}
+        <cac:BillingReference>
+            <cac:InvoiceDocumentReference>
+                <cbc:ID>{it.comprobante.comprobanteAfectado.serieNumero}</cbc:ID>
+                <cbc:DocumentTypeCode>{it.comprobante.comprobanteAfectado.tipoComprobante}</cbc:DocumentTypeCode>
+            </cac:InvoiceDocumentReference>
+        </cac:BillingReference>
+        {/if}
+        <cac:Status>
+            <cbc:ConditionCode>{it.tipoOperacion}</cbc:ConditionCode>
+        </cac:Status>
+        <sac:TotalAmount currencyID="{it.comprobante.moneda}">{it.comprobante.valorVenta.importeTotal}</sac:TotalAmount>
+        {#if it.comprobante.valorVenta.gravado}
+        <sac:BillingPayment>
+            <cbc:PaidAmount currencyID="{it.comprobante.moneda}">{it.comprobante.valorVenta.gravado}</cbc:PaidAmount>
+            <cbc:InstructionID>01</cbc:InstructionID>
+        </sac:BillingPayment>
+        {/if}
+        {#if it.comprobante.valorVenta.exonerado}
+        <sac:BillingPayment>
+            <cbc:PaidAmount currencyID="{it.comprobante.moneda}">{it.comprobante.valorVenta.exonerado}</cbc:PaidAmount>
+            <cbc:InstructionID>02</cbc:InstructionID>
+        </sac:BillingPayment>
+        {/if}
+        {#if it.comprobante.valorVenta.inafecto}
+        <sac:BillingPayment>
+            <cbc:PaidAmount currencyID="{it.comprobante.moneda}">{it.comprobante.valorVenta.inafecto}</cbc:PaidAmount>
+            <cbc:InstructionID>03</cbc:InstructionID>
+        </sac:BillingPayment>
+        {/if}
+        {#if it.comprobante.valorVenta.gratuito}
+        <sac:BillingPayment>
+            <cbc:PaidAmount currencyID="{it.comprobante.moneda}">{it.comprobante.valorVenta.gratuito}</cbc:PaidAmount>
+            <cbc:InstructionID>05</cbc:InstructionID>
+        </sac:BillingPayment>
+        {/if}
+        {#if it.comprobante.valorVenta.otrosCargos}
+        <cac:AllowanceCharge>
+            <cbc:ChargeIndicator>true</cbc:ChargeIndicator>
+            <cbc:Amount currencyID="{it.comprobante.moneda}">{it.comprobante.valorVenta.otrosCargos}</cbc:Amount>
+        </cac:AllowanceCharge>
+        {/if}
+        {#if it.comprobante.impuestos.igv}
+        <cac:TaxTotal>
+            <cbc:TaxAmount currencyID="{it.comprobante.moneda}">{it.comprobante.impuestos.igv}</cbc:TaxAmount>
+            <cac:TaxSubtotal>
+                <cbc:TaxAmount currencyID="{it.comprobante.moneda}">{it.comprobante.impuestos.igv}</cbc:TaxAmount>
+                <cac:TaxCategory>
+                    <cac:TaxScheme>
+                        <cbc:ID>1000</cbc:ID>
+                        <cbc:Name>IGV</cbc:Name>
+                        <cbc:TaxTypeCode>VAT</cbc:TaxTypeCode>
+                    </cac:TaxScheme>
+                </cac:TaxCategory>
+            </cac:TaxSubtotal>
+        </cac:TaxTotal>
+        {/if}
+        {#if it.comprobante.impuestos.icb}
+        <cac:TaxTotal>
+            <cbc:TaxAmount currencyID="{it.comprobante.moneda}">{it.comprobante.impuestos.icb}</cbc:TaxAmount>
+            <cac:TaxSubtotal>
+                <cbc:TaxAmount currencyID="{it.comprobante.moneda}">{it.comprobante.impuestos.icb}</cbc:TaxAmount>
+                <cac:TaxCategory>
+                    <cac:TaxScheme>
+                        <cbc:ID>7152</cbc:ID>
+                        <cbc:Name>ICBPER</cbc:Name>
+                        <cbc:TaxTypeCode>OTH</cbc:TaxTypeCode>
+                    </cac:TaxScheme>
+                </cac:TaxCategory>
+            </cac:TaxSubtotal>
+        </cac:TaxTotal>
+        {/if}
+    </sac:SummaryDocumentsLine>
+    {/each}
+</SummaryDocuments>

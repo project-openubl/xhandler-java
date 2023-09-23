@@ -1,0 +1,8 @@
+            <cac:Contact>
+                {#if contacto.telefono}
+                <cbc:Telephone>{contacto.telefono}</cbc:Telephone>
+                {/if}
+                {#if contacto.email}
+                <cbc:ElectronicMail>{contacto.email}</cbc:ElectronicMail>
+                {/if}
+            </cac:Contact>

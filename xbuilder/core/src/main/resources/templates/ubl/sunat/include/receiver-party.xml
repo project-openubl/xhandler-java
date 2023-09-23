@@ -1,0 +1,8 @@
+    <cac:ReceiverParty>
+        <cac:PartyIdentification>
+            <cbc:ID schemeID="{cliente.tipoDocumentoIdentidad}">{cliente.numeroDocumentoIdentidad}</cbc:ID>
+        </cac:PartyIdentification>
+        <cac:PartyLegalEntity>
+            <cbc:RegistrationName><![CDATA[{cliente.nombre.raw}]]></cbc:RegistrationName>
+        </cac:PartyLegalEntity>
+    </cac:ReceiverParty>

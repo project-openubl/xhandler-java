@@ -1,0 +1,7 @@
+    <cbc:UBLVersionID>2.1</cbc:UBLVersionID>
+    <cbc:CustomizationID>2.0</cbc:CustomizationID>
+    <cbc:ID>{item.serie}-{item.numero}</cbc:ID>
+    <cbc:IssueDate>{item.fechaEmision}</cbc:IssueDate>
+    {#if item.horaEmision}
+    <cbc:IssueTime>{item.horaEmision.format('HH:mm:ss')}</cbc:IssueTime>
+    {/if}

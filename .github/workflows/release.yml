@@ -34,7 +34,7 @@ jobs:
           git push origin HEAD:${{ github.event.inputs.branch }}
 
       - name: Prepare files
-        run: mvn -Ppublication
+        run: mvn -Ppublication -DskipTests
 
       - name: JReleaser
         uses: jreleaser/release-action@v2

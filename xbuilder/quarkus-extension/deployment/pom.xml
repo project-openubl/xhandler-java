@@ -28,6 +28,7 @@
     </parent>
     <artifactId>quarkus-xbuilder-deployment</artifactId>
     <name>Quarkus Xbuilder - Deployment</name>
+    <description>Quarkus Xbuilder - Deployment</description>
     <dependencies>
         <dependency>
             <groupId>io.quarkus</groupId>

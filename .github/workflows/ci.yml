@@ -34,7 +34,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: xbuilder-e2e-yaml
-          path: xbuilder/quarkus-extension/integration/tests/src/test/resources/e2e
+          path: xbuilder/quarkus-extension/integration-tests/src/test/resources/e2e/
 
   quarkus-extension:
     needs: [ test ]

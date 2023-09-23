@@ -53,6 +53,8 @@ jobs:
           JRELEASER_ARTICLE_GITHUB_TOKEN: ${{ secrets.GH_PAT }}
           JRELEASER_GPG_SECRET_KEY: ${{ secrets.gpg_private_key }}
           JRELEASER_GPG_PASSPHRASE: ${{ secrets.gpg_passphrase }}
+          JRELEASER_NEXUS2_MAVEN_CENTRAL_URL: ${{ secrets.MAVEN_CENTRAL_URL }}
+          JRELEASER_NEXUS2_MAVEN_CENTRAL_SNAPSHOT_URL: ${{ secrets.MAVEN_CENTRAL_URL }}
           JRELEASER_NEXUS2_MAVEN_CENTRAL_USERNAME: ${{ secrets.nexus_username }}
           JRELEASER_NEXUS2_MAVEN_CENTRAL_PASSWORD: ${{ secrets.nexus_password }}
 

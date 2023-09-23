@@ -19,6 +19,11 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: temurin
+          cache: maven
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -34,7 +39,7 @@ jobs:
           git push origin HEAD:${{ github.event.inputs.branch }}
 
       - name: Prepare files
-        run: mvn -Ppublication
+        run: mvn -Ppublication -DskipTests
 
       - name: JReleaser
         uses: jreleaser/release-action@v2

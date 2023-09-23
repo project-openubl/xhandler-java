@@ -1,0 +1,63 @@
+        {#if item.iscBaseImponible}
+        <cbc:LineExtensionAmount currencyID="{moneda}">{item.iscBaseImponible.scale(2)}</cbc:LineExtensionAmount>
+        {#else}
+        <cbc:LineExtensionAmount currencyID="{moneda}">{item.igvBaseImponible.scale(2)}</cbc:LineExtensionAmount>
+        {/if}
+        <cac:PricingReference>
+            <cac:AlternativeConditionPrice>
+                <cbc:PriceAmount currencyID="{moneda}">{item.precioReferencia.scale(2)}</cbc:PriceAmount>
+                <cbc:PriceTypeCode listAgencyName="PE:SUNAT" listName="Tipo de Precio" listURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo16">{item.precioReferenciaTipo}</cbc:PriceTypeCode>
+            </cac:AlternativeConditionPrice>
+        </cac:PricingReference>
+        <cac:TaxTotal>
+            <cbc:TaxAmount currencyID="{moneda}">{item.totalImpuestos.scale(2)}</cbc:TaxAmount>
+            {#if item.isc}
+            <cac:TaxSubtotal>
+                <cbc:TaxableAmount currencyID="{moneda}">{item.iscBaseImponible.scale(2)}</cbc:TaxableAmount>
+                <cbc:TaxAmount currencyID="{moneda}">{item.isc.scale(2)}</cbc:TaxAmount>
+                <cac:TaxCategory>
+                    <cbc:Percent>{item.tasaIsc.multiplyByInt(100).scale(2)}</cbc:Percent>
+                    <cbc:TierRange>{item.iscTipo}</cbc:TierRange>
+                    <cac:TaxScheme>
+                        <cbc:ID>2000</cbc:ID>
+                        <cbc:Name>ISC</cbc:Name>
+                        <cbc:TaxTypeCode>EXC</cbc:TaxTypeCode>
+                    </cac:TaxScheme>
+                </cac:TaxCategory>
+            </cac:TaxSubtotal>
+            {/if}
+            <cac:TaxSubtotal>
+                <cbc:TaxableAmount currencyID="{moneda}">{item.igvBaseImponible.scale(2)}</cbc:TaxableAmount>
+                <cbc:TaxAmount currencyID="{moneda}">{item.igv.scale(2)}</cbc:TaxAmount>
+                <cac:TaxCategory>
+                    <cbc:ID schemeAgencyName="United Nations Economic Commission for Europe" schemeID="UN/ECE 5305" schemeName="Tax Category Identifier">{item.igvTipo.toCatalog7.taxCategory.categoria}</cbc:ID>
+                    <cbc:Percent>{item.tasaIgv.multiplyByInt(100).scale(2)}</cbc:Percent>
+                    <cbc:TaxExemptionReasonCode listAgencyName="PE:SUNAT" listName="Afectacion del IGV" listURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo07">{item.igvTipo.toCatalog7.code}</cbc:TaxExemptionReasonCode>
+                    <cac:TaxScheme>
+                        <cbc:ID schemeAgencyName="PE:SUNAT" schemeID="UN/ECE 5153" schemeName="Codigo de tributos">{item.igvTipo.toCatalog7.taxCategory.code}</cbc:ID>
+                        <cbc:Name>{item.igvTipo.toCatalog7.taxCategory.nombre}</cbc:Name>
+                        <cbc:TaxTypeCode>{item.igvTipo.toCatalog7.taxCategory.tipo}</cbc:TaxTypeCode>
+                    </cac:TaxScheme>
+                </cac:TaxCategory>
+            </cac:TaxSubtotal>
+            {#if item.icb}
+            <cac:TaxSubtotal>
+                <cbc:TaxAmount currencyID="{moneda}">{item.icb.scale(2)}</cbc:TaxAmount>
+                <cbc:BaseUnitMeasure unitCode="{item.unidadMedida}">{item.cantidad}</cbc:BaseUnitMeasure>
+                <cac:TaxCategory>
+                    <cbc:PerUnitAmount currencyID="{moneda}">{item.tasaIcb.scale(2)}</cbc:PerUnitAmount>
+                    <cac:TaxScheme>
+                        <cbc:ID schemeAgencyName="PE:SUNAT" schemeID="UN/ECE 5153" schemeName="Codigo de tributos">7152</cbc:ID>
+                        <cbc:Name>ICBPER</cbc:Name>
+                        <cbc:TaxTypeCode>OTH</cbc:TaxTypeCode>
+                    </cac:TaxScheme>
+                </cac:TaxCategory>
+            </cac:TaxSubtotal>
+            {/if}
+        </cac:TaxTotal>
+        <cac:Item>
+            <cbc:Description><![CDATA[{item.descripcion.raw}]]></cbc:Description>
+        </cac:Item>
+        <cac:Price>
+            <cbc:PriceAmount currencyID="{moneda}">{item.precio.scale(2)}</cbc:PriceAmount>
+        </cac:Price>

@@ -1,0 +1,18 @@
+    <cac:AccountingCustomerParty>
+        <cac:Party>
+            <cac:PartyIdentification>
+                <cbc:ID schemeID="{cliente.tipoDocumentoIdentidad}" schemeAgencyName="PE:SUNAT" schemeName="Documento de Identidad" schemeURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06">{cliente.numeroDocumentoIdentidad}</cbc:ID>
+            </cac:PartyIdentification>
+            <cac:PartyLegalEntity>
+                <cbc:RegistrationName><![CDATA[{cliente.nombre.raw}]]></cbc:RegistrationName>
+                {#if cliente.direccion}
+                <cac:RegistrationAddress>
+                    {#include ubl/standard/include/address.xml direccion=cliente.direccion /}
+                </cac:RegistrationAddress>
+                {/if}
+            </cac:PartyLegalEntity>
+            {#if cliente.contacto}
+            {#include ubl/standard/include/contact.xml contacto=cliente.contacto /}
+            {/if}
+        </cac:Party>
+    </cac:AccountingCustomerParty>

@@ -22,11 +22,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.github.project-openubl</groupId>
-    <artifactId>xsender-parent</artifactId>
+    <artifactId>xhandler-parent</artifactId>
     <version>5.0.1-SNAPSHOT</version>
 
-    <name>XSender - Parent</name>
-    <description>Java library for sending XML files to SUNAT</description>
+    <name>XHandler - Parent</name>
+    <description>Java library for Creating, Sending XML files to SUNAT</description>
     <packaging>pom</packaging>
 
     <properties>
@@ -45,6 +45,9 @@
         <license.dir>${basedir}</license.dir>
 
         <lombok.version>1.18.30</lombok.version>
+        <mapstruct.version>1.5.5.Final</mapstruct.version>
+        <xmlunit.version>2.9.1</xmlunit.version>
+
         <quarkus.version>3.4.1</quarkus.version>
         <camel.version>4.0.0</camel.version>
         <springboot.version>3.0.6</springboot.version>
@@ -74,9 +77,9 @@
     </developers>
 
     <scm>
-        <url>https://github.com/project-openubl/xsender</url>
-        <connection>scm:git:git://github.com/project-openubl/xsender.git</connection>
-        <developerConnection>scm:git:git@github.com:project-openubl/xsender.git</developerConnection>
+        <url>https://github.com/project-openubl/xhandler</url>
+        <connection>scm:git:git://github.com/project-openubl/xhandler.git</connection>
+        <developerConnection>scm:git:git@github.com:project-openubl/xhandler.git</developerConnection>
     </scm>
 
     <dependencyManagement>
@@ -86,13 +89,17 @@
                 <artifactId>xsender</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>io.github.project-openubl</groupId>
+                <artifactId>xbuilder</artifactId>
+                <version>${project.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
     <modules>
-        <module>core</module>
-        <module>quarkus-extension</module>
-        <module>spring-boot-extension</module>
+        <module>xbuilder</module>
+        <module>xsender</module>
     </modules>
 
     <build>
@@ -190,13 +197,7 @@
                         <owner>Project OpenUBL</owner>
                         <email>projectopenubl+subscribe@googlegroups.com</email>
                     </properties>
-                    <excludes>
-                        <exclude>**/README</exclude>
-                        <exclude>src/test/resources/**</exclude>
-                        <exclude>src/main/resources/**</exclude>
-                        <exclude>.github/**</exclude>
-                        <exclude>**/*.xml</exclude>
-                    </excludes>
+                    <includes>**/*.java</includes>
                 </configuration>
                 <executions>
                     <execution>
@@ -269,9 +270,9 @@
             <properties>
                 <sonar.host.url>https://sonarcloud.io</sonar.host.url>
                 <sonar.organization>project-openubl</sonar.organization>
-                <sonar.projectKey>project-openubl_xsender</sonar.projectKey>
+                <sonar.projectKey>project-openubl_xhandler</sonar.projectKey>
                 <sonar.moduleKey>${project.artifactId}</sonar.moduleKey>
-                <sonar.projectName>xsender</sonar.projectName>
+                <sonar.projectName>xhandler</sonar.projectName>
             </properties>
             <build>
                 <plugins>
@@ -331,7 +332,7 @@
                 <repository>
                     <id>github</id>
                     <name>GitHub Project OpenUBL Apache Maven Packages</name>
-                    <url>https://maven.pkg.github.com/project-openubl/xsender</url>
+                    <url>https://maven.pkg.github.com/project-openubl/xhandler</url>
                 </repository>
             </distributionManagement>
             <build>

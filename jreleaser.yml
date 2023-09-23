@@ -16,23 +16,23 @@
 #
 
 project:
-  name: xsender
-  description: Libreria para enviar XMLs a la SUNAT
-  longDescription: Libreria para enviar comprobantes electrónicos a los servicios web de la SUNAT y/o OSCE
+  name: xhandler
+  description: Libreria para crear y enviar XMLs a la SUNAT
+  longDescription: Libreria para crear y enviar comprobantes electrónicos a los servicios web de la SUNAT y/o OSCE
   authors:
     - Carlos E. Feria Vila
   license: Apache-2
   java:
-    groupId: io.github.project.openubl.xsender
-    version: 11
-  inceptionYear: 2019
+    groupId: io.github.project.openubl.xhandler
+    version: '17'
+  inceptionYear: '2019'
   links:
     homepage: https://project-openubl.github.io/
 
 release:
   github:
     owner: project-openubl
-    name: xsender
+    name: xhandler
     overwrite: true
     discussionCategoryName: Announcements
     issues:
@@ -78,26 +78,10 @@ announce:
     channel: announcements
     subject: '{{projectNameCapitalized}} {{projectVersion}} released!'
     message: '🚀 {{projectNameCapitalized}} {{projectVersion}} has been released! {{releaseNotesUrl}}'
-  twitter:
-    active: RELEASE
-    status: '🚀 {{projectNameCapitalized}} {{projectVersion}} has been released! {{releaseNotesUrl}}'
   slack:
     active: RELEASE
     channel: '#notifications'
     message: '🚀 {{projectNameCapitalized}} {{projectVersion}} has been released! {{releaseNotesUrl}}'
-  mail:
-    active: RELEASE
-    mimeType: TEXT
-    port: 587
-    auth: true
-    host: smtp.gmail.com
-    username: projectopenubl@gmail.com
-    from: projectopenubl@gmail.com
-    to: projectopenubl@googlegroups.com
-    subject: '{{projectNameCapitalized}} {{projectVersion}} released!'
-    message: |
-      Acabamos de lanzar {{projectNameCapitalized}} {{projectVersion}}!
-      {{changelog}}
   article:
     active: RELEASE
     repository:

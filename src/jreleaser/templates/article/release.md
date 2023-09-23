@@ -3,7 +3,7 @@ title: {{projectNameCapitalized}} {{projectEffectiveVersion}} released!
 description: {{projectEffectiveVersion}} es el último release.
 date: {{#f_now}}YYYY-MM-dd{{/f_now}}
 authors: [carlosthe19916]
-tags: [xsender, release]
+tags: [xbuilder, release]
 ---
 
 Acabamos de lanzar {{projectNameCapitalized}} {{projectEffectiveVersion}} con un conjunto de nuevas funcionalidades, corrección de errores, y mejor documentación.

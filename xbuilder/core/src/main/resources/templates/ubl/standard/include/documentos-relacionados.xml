@@ -1,0 +1,6 @@
+    {#each item.documentosRelacionados.orEmpty}
+    <cac:AdditionalDocumentReference>
+        <cbc:ID>{it.serieNumero}</cbc:ID>
+        <cbc:DocumentTypeCode>{it.tipoDocumento}</cbc:DocumentTypeCode>
+    </cac:AdditionalDocumentReference>
+    {/each}

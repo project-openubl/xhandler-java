@@ -56,6 +56,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: xbuilder-e2e-yaml
+          path: xbuilder/quarkus-extension/integration-tests/src/test/resources/e2e/
       - name: Maven IT tests
         run: mvn -Pnative-image install -f ${{ matrix.module }}/quarkus-extension/integration-tests/
 
@@ -81,6 +82,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: xbuilder-e2e-yaml
+          path: xbuilder/quarkus-extension/integration-tests/src/test/resources/e2e/
       - name: Maven IT tests
         run: mvn -Pnative-image install -f ${{ matrix.module }}/quarkus-extension/integration-tests/ -Dquarkus.version=${{ matrix.quarkus-version }}
 

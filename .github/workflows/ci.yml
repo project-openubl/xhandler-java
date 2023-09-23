@@ -69,7 +69,7 @@ jobs:
           distribution: temurin
           cache: maven
       - name: Maven tests
-        run: mvn install -DskipTests
+        run: mvn install
       - name: Maven IT tests
         run: mvn -Pnative-image install -f ${{ matrix.module }}/quarkus-extension/integration-tests/ -Dquarkus.version=${{ matrix.quarkus-version }}
 

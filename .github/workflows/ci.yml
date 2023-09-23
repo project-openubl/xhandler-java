@@ -30,6 +30,11 @@ jobs:
           cache: maven
       - name: Maven tests
         run: mvn verify
+      - name: Upload XBuilder e2e Yaml files
+        uses: actions/upload-artifact@v3
+        with:
+          name: xbuilder-e2e-yaml
+          path: xbuilder/quarkus-extension/integration/tests/src/test/resources/e2e
 
   quarkus-extension:
     needs: [ test ]
@@ -47,18 +52,20 @@ jobs:
           cache: maven
       - name: Maven tests
         run: mvn install -DskipTests
+      - name: Download XBuilder e2e Yaml files
+        uses: actions/download-artifact@v3
+        with:
+          name: xbuilder-e2e-yaml
       - name: Maven IT tests
-        run: |
-          mvn -Pnative-image install -f ${{ matrix.module }}/quarkus-extension/integration-tests/
-          mvn -Pnative-image install -f ${{ matrix.module }}/quarkus-extension/integration-tests/
+        run: mvn -Pnative-image install -f ${{ matrix.module }}/quarkus-extension/integration-tests/
 
   quarkus-supported-v:
-    needs: [ quarkus-extension ]
+    needs: [ test ]
     runs-on: ubuntu-latest
     strategy:
       matrix:
         module: [ xbuilder, xsender ]
-        quarkus-version: [ 3.0.4.Final, 3.2.6.Final, 3.3.3, 3.4.1 ]
+        quarkus-version: [ 3.0.4.Final, 3.2.6.Final, 3.3.3 ]
       fail-fast: false
     steps:
       - uses: actions/checkout@v4
@@ -69,7 +76,11 @@ jobs:
           distribution: temurin
           cache: maven
       - name: Maven tests
-        run: mvn install
+        run: mvn install -DskipTests
+      - name: Download XBuilder e2e Yaml files
+        uses: actions/download-artifact@v3
+        with:
+          name: xbuilder-e2e-yaml
       - name: Maven IT tests
         run: mvn -Pnative-image install -f ${{ matrix.module }}/quarkus-extension/integration-tests/ -Dquarkus.version=${{ matrix.quarkus-version }}
 

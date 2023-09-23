@@ -28,6 +28,7 @@
     </parent>
     <artifactId>quarkus-xbuilder</artifactId>
     <name>Quarkus Xbuilder - Runtime</name>
+    <description>Quarkus Xbuilder - Runtime</description>
     <dependencies>
         <dependency>
             <groupId>io.quarkus</groupId>

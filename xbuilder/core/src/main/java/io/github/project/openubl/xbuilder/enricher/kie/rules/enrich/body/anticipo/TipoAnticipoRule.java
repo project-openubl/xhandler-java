@@ -44,7 +44,7 @@ public class TipoAnticipoRule extends AbstractBodyRule {
     public void modify(Object object) {
         Consumer<Anticipo> consumer = anticipo -> {
             String tipoAnticipo;
-            if (anticipo.getComprobanteTipo() == null) {
+            if (anticipo.getTipo() == null) {
                 tipoAnticipo =
                         Catalog53_Anticipo.DESCUENTO_GLOBAL_POR_ANTICIPOS_GRAVADOS_AFECTA_BASE_IMPONIBLE_IGV_IVAP.getCode();
             } else {

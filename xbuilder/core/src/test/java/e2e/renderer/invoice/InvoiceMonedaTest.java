@@ -26,7 +26,7 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 
-public class InvoiceMoneda extends AbstractTest {
+public class InvoiceMonedaTest extends AbstractTest {
 
     @Test
     public void testCustomMoneda() throws Exception {

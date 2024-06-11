@@ -69,18 +69,5 @@
                 </cac:TaxCategory>
             </cac:TaxSubtotal>
         </cac:TaxTotal>
-        <cac:TaxTotal>
-            <cbc:TaxAmount currencyID="PEN">2</cbc:TaxAmount>
-            <cac:TaxSubtotal>
-                <cbc:TaxAmount currencyID="PEN">2</cbc:TaxAmount>
-                <cac:TaxCategory>
-                    <cac:TaxScheme>
-                        <cbc:ID>7152</cbc:ID>
-                        <cbc:Name>ICBPER</cbc:Name>
-                        <cbc:TaxTypeCode>OTH</cbc:TaxTypeCode>
-                    </cac:TaxScheme>
-                </cac:TaxCategory>
-            </cac:TaxSubtotal>
-        </cac:TaxTotal>
     </sac:SummaryDocumentsLine>
 </SummaryDocuments>

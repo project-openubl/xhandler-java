@@ -24,7 +24,7 @@
     <parent>
         <groupId>io.github.project-openubl</groupId>
         <artifactId>spring-boot-xsender-parent</artifactId>
-        <version>5.0.2-SNAPSHOT</version>
+        <version>5.0.2</version>
     </parent>
     <artifactId>spring-boot-xsender-integration-tests</artifactId>
     <name>Spring Boot XSender - Integration Tests</name>

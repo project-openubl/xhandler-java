@@ -23,7 +23,7 @@
 
     <groupId>io.github.project-openubl</groupId>
     <artifactId>xhandler-parent</artifactId>
-    <version>5.0.2-SNAPSHOT</version>
+    <version>5.0.2</version>
 
     <name>XHandler - Parent</name>
     <description>Java library for Creating, Sending XML files to SUNAT</description>

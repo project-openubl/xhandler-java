@@ -105,4 +105,44 @@ public class SummaryDocumentsTest extends AbstractTest {
         assertInput(input, "summaryDocuments.xml");
     }
 
+    @Test
+    public void testVoidedDocument_anularBoletaExonerada() throws Exception {
+        // Given
+        SummaryDocuments input = SummaryDocuments.builder()
+                .numero(1)
+                .fechaEmisionComprobantes(dateProvider.now().minusDays(2))
+                .proveedor(Proveedor.builder()
+                        .ruc("12345678912")
+                        .razonSocial("Softgreen S.A.C.")
+                        .build()
+                )
+                .comprobante(SummaryDocumentsItem.builder()
+                        .tipoOperacion(Catalog19.ANULADO.toString())
+                        .comprobante(Comprobante.builder()
+                                .tipoComprobante(Catalog1_Invoice.BOLETA.getCode())//
+                                .serieNumero("B001-1")
+                                .cliente(Cliente.builder()
+                                        .nombre("Carlos Feria")
+                                        .numeroDocumentoIdentidad("12345678")
+                                        .tipoDocumentoIdentidad(Catalog6.DNI.getCode())
+                                        .build()
+                                )
+                                .impuestos(ComprobanteImpuestos.builder()
+                                        .igv(new BigDecimal("0"))
+                                        .build()
+                                )
+                                .valorVenta(ComprobanteValorVenta.builder()
+                                        .importeTotal(new BigDecimal("100"))
+                                        .gravado(new BigDecimal("0"))
+                                        .exonerado(new BigDecimal("0"))
+                                        .build()
+                                )
+                                .build()
+                        )
+                        .build()
+                )
+                .build();
+
+        assertInput(input, "summaryDocuments_anularBoletaExonerada.xml");
+    }
 }

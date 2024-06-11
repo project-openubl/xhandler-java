@@ -119,7 +119,7 @@ public interface SummaryDocumentsMapper {
                                 .flatMap(taxScheme -> Optional.ofNullable(taxScheme.getId()))
                                 .flatMap(code -> Catalog.valueOfCode(Catalog5.class, code))
                                 .orElse(null),
-                        XMLSummaryDocumentsLine.TaxTotal::getTaxAmount
+                        taxTotal -> Optional.ofNullable(taxTotal.getTaxAmount()).orElse(BigDecimal.ZERO)
                 ));
 
         return ComprobanteImpuestos.builder()

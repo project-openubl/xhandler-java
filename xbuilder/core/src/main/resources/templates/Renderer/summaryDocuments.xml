@@ -72,7 +72,6 @@
             <cbc:Amount currencyID="{it.comprobante.moneda}">{it.comprobante.valorVenta.otrosCargos}</cbc:Amount>
         </cac:AllowanceCharge>
         {/if}
-        {#if it.comprobante.impuestos.igv}
         <cac:TaxTotal>
             <cbc:TaxAmount currencyID="{it.comprobante.moneda}">{it.comprobante.impuestos.igv}</cbc:TaxAmount>
             <cac:TaxSubtotal>
@@ -86,7 +85,6 @@
                 </cac:TaxCategory>
             </cac:TaxSubtotal>
         </cac:TaxTotal>
-        {/if}
         {#if it.comprobante.impuestos.icb}
         <cac:TaxTotal>
             <cbc:TaxAmount currencyID="{it.comprobante.moneda}">{it.comprobante.impuestos.icb}</cbc:TaxAmount>

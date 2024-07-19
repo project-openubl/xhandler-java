@@ -30,7 +30,7 @@
     <name>Spring Boot XSender - Integration Tests</name>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <surefire.plugin.version>3.1.2</surefire.plugin.version>
+        <surefire.plugin.version>3.3.1</surefire.plugin.version>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
 

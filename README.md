@@ -1,4 +1,4 @@
-[![License](https://img.shields.io/github/license/project-openubl/xsender?logo=apache)](https://www.apache.org/licenses/LICENSE-2.0)
+[![License](https://img.shields.io/github/license/project-openubl/xhandler?logo=apache)](https://www.apache.org/licenses/LICENSE-2.0)
 [![CI](https://github.com/project-openubl/xhandler/actions/workflows/ci.yml/badge.svg)](https://github.com/project-openubl/xhandler/actions/workflows/ci.yml)
 
 [![Project Chat](https://img.shields.io/badge/zulip-join_chat-brightgreen.svg?style=for-the-badge&logo=zulip)](https://projectopenubl.zulipchat.com/)

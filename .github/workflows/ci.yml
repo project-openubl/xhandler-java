@@ -31,7 +31,7 @@ jobs:
       - name: Maven tests
         run: mvn verify
       - name: Upload XBuilder e2e Yaml files
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: xbuilder-e2e-yaml
           path: xbuilder/quarkus-extension/integration-tests/src/test/resources/e2e/
@@ -53,7 +53,7 @@ jobs:
       - name: Maven tests
         run: mvn install -DskipTests
       - name: Download XBuilder e2e Yaml files
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: xbuilder-e2e-yaml
           path: xbuilder/quarkus-extension/integration-tests/src/test/resources/e2e/
@@ -79,7 +79,7 @@ jobs:
       - name: Maven tests
         run: mvn install -DskipTests
       - name: Download XBuilder e2e Yaml files
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: xbuilder-e2e-yaml
           path: xbuilder/quarkus-extension/integration-tests/src/test/resources/e2e/

@@ -46,7 +46,7 @@
 
         <lombok.version>1.18.30</lombok.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
-        <xmlunit.version>2.9.1</xmlunit.version>
+        <xmlunit.version>2.10.0</xmlunit.version>
 
         <quarkus.version>3.4.1</quarkus.version>
         <camel.version>4.0.0</camel.version>

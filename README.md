@@ -2,7 +2,7 @@
 [![CI](https://github.com/project-openubl/xhandler/actions/workflows/ci.yml/badge.svg)](https://github.com/project-openubl/xhandler/actions/workflows/ci.yml)
 
 [![Project Chat](https://img.shields.io/badge/zulip-join_chat-brightgreen.svg?style=for-the-badge&logo=zulip)](https://projectopenubl.zulipchat.com/)
-[![Supported JVM Versions](https://img.shields.io/badge/JVM-11--17-brightgreen.svg?style=for-the-badge&logo=Java)](https://github.com/project-openubl/xsender/actions/runs/472762588/)
+[![Supported JVM Versions](https://img.shields.io/badge/JVM--17-brightgreen.svg?style=for-the-badge&logo=Java)](https://github.com/project-openubl/xhandler/actions/)
 
 | Artifact                      | Version                                                                                                                                                                              |
 |-------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|

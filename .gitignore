@@ -53,3 +53,4 @@ target
 *dependency-reduced-pom.xml
 
 /lsp/
+bin/

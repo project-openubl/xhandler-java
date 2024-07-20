@@ -1,0 +1,28 @@
+{
+  "name": "Java 17",
+  "image": "mcr.microsoft.com/devcontainers/java:17-bullseye",
+  "features": {
+    "ghcr.io/devcontainers/features/java:1": {
+      "version": "17",
+      "installMaven": "true",
+      "installGradle": "false"
+    },
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+  },
+  "customizations": {
+    "vscode": {
+      "settings": {},
+      "extensions": [
+        "vscjava.vscode-java-pack",
+        "github.vscode-github-actions",
+        "github.vscode-pull-request-github"
+      ]
+    },
+    "codespaces": {
+      "openFiles": [
+        "README",
+        "src/index.js"
+      ]
+    }
+  }
+}

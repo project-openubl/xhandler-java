@@ -22,7 +22,7 @@ public enum Catalog53 implements Catalog {
     FACTOR_DE_APORTACION("54"),
     RETENCION_DE_RENTA_POR_ANTICIPOS("61"),
     RETENCION_DEL_IGV("62"),
-    RETENCION_DE_RENTA_DE_SEGUNDA_CATEGORIA("62");
+    RETENCION_DE_RENTA_DE_SEGUNDA_CATEGORIA("63");
 
     private final String code;
 

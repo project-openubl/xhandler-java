@@ -23,6 +23,7 @@ public class TasaIscRule extends AbstractBodyRule {
         );
     }
 
+    // TODO Respect user's tasaISC and not overwrite it?
     @Override
     public void modify(Object object) {
         Consumer<DocumentoVentaDetalle> consumer = detalle -> {

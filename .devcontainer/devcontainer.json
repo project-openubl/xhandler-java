@@ -1,5 +1,5 @@
 {
-  "name": "Java 17",
+  "name": "xhandler",
   "image": "mcr.microsoft.com/devcontainers/java:17-bullseye",
   "features": {
     "ghcr.io/devcontainers/features/java:1": {
@@ -9,9 +9,12 @@
     },
     "ghcr.io/devcontainers/features/docker-in-docker:2": {}
   },
+  "postCreateCommand": "echo \"source /usr/share/bash-completion/completions/git\" >> ~/.bashrc",
   "customizations": {
     "vscode": {
-      "settings": {},
+      "settings": {
+        "java.compile.nullAnalysis.mode": "automatic"
+      },
       "extensions": [
         "vscjava.vscode-java-pack",
         "github.vscode-github-actions",
@@ -20,8 +23,7 @@
     },
     "codespaces": {
       "openFiles": [
-        "README",
-        "src/index.js"
+        "README.md"
       ]
     }
   }

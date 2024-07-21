@@ -145,6 +145,8 @@
                         <email>projectopenubl+subscribe@googlegroups.com</email>
                     </properties>
                     <includes>**/*.java</includes>
+                    <includes>**/*.xml</includes>
+                    <includes>**/*.properties</includes>
                 </configuration>
 <!--                <executions>-->
 <!--                    <execution>-->
@@ -280,6 +282,13 @@
                     </plugin>
                 </plugins>
             </build>
+        </profile>
+
+        <profile>
+            <id>examples</id>            
+            <modules>
+                <module>examples</module>
+            </modules>
         </profile>
     </profiles>
 

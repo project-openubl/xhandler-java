@@ -29,7 +29,7 @@ jobs:
           java-version: ${{ matrix.java-version }}
           cache: maven
       - name: Maven tests
-        run: mvn verify
+        run: mvn verify -Pexamples
       - name: Upload XBuilder e2e Yaml files
         uses: actions/upload-artifact@v4
         with:

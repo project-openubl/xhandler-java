@@ -1,0 +1,75 @@
+<!--
+
+    Copyright 2019 Project OpenUBL, Inc. and/or its affiliates
+    and other contributors as indicated by the @author tags.
+
+    Licensed under the Eclipse Public License - v 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    https://www.eclipse.org/legal/epl-2.0/
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>HTML5 + REST Hello World</title>
+    <link rel="stylesheet" href="css/styles.css"/>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#createXML').click(function (event) {
+                event.preventDefault();
+
+                var result = $('#result'),
+                    cliente = $.trim($('#cliente').val());
+
+                result.removeClass('invalid');
+
+                if (!cliente || !cliente.length) {
+                    result.addClass('invalid').text('A client is required!');
+                    return;
+                }
+
+                //console.log("clicked: " + name);
+                $.ajax({
+                    url: 'api/create-xml/',
+                    dataType: 'text',
+                    type: 'POST',
+                    data: cliente,
+                    success: function (data) {
+                        // console.log("success: " + data.result);
+                        $('#result').text(data);
+                    },
+                    error: function (error) {
+                        console.log("error", error);
+                    }
+                });
+            });
+        }); // (document).ready
+    </script>
+</head>
+<body>
+XBuilder + REST create xml<br>
+
+<form name="theForm">
+    <fieldset>
+        <label for="cliente" id="cliente_label">Cliente</label>
+        <input name="cliente" id="cliente" type="text" required placeholder="Nombre del cliente"/>
+
+        <input type="submit" id="createXML" value="Crear XML"/>
+    </fieldset>
+
+    <fieldset>
+        <span id="result"></span>
+    </fieldset>
+</form>
+
+</body>
+</html>

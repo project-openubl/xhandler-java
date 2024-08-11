@@ -32,7 +32,7 @@
 
         <quarkus.version>3.4.1</quarkus.version>
         <camel.version>4.0.0</camel.version>
-        <springboot.version>3.0.6</springboot.version>
+        <springboot.version>3.1.4</springboot.version>
     </properties>
 
     <url>https://project-openubl.github.io/</url>

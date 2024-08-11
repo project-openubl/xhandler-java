@@ -30,7 +30,7 @@
         <mapstruct.version>1.5.5.Final</mapstruct.version>
         <xmlunit.version>2.10.0</xmlunit.version>
 
-        <quarkus.version>3.4.1</quarkus.version>
+        <quarkus.version>3.13.2</quarkus.version>
         <camel.version>4.0.0</camel.version>
         <springboot.version>3.0.6</springboot.version>
     </properties>

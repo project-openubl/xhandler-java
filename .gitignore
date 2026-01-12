@@ -55,3 +55,4 @@ target
 
 /lsp/
 bin/
+.vscode/*

@@ -19,4 +19,13 @@ public class ComprobanteImpuestos {
 
     @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED, description = "ICB del comprobante")
     private BigDecimal icb;
+
+    @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED, description = "ISC del comprobante")
+    private BigDecimal isc;
+
+    @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED, description = "IVAP del comprobante")
+    private BigDecimal ivap;
+
+    @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED, description = "Otros tributos del comprobante")
+    private BigDecimal otros;
 }

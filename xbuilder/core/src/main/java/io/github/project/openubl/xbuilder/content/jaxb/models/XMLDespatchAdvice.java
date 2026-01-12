@@ -23,6 +23,11 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public class XMLDespatchAdvice {
+    @XmlElement(name = "UBLVersionID", namespace = XMLConstants.CBC)
+    private String ublVersionId;
+
+    @XmlElement(name = "CustomizationID", namespace = XMLConstants.CBC)
+    private String customizationId;
 
     @XmlElement(name = "ID", namespace = XMLConstants.CBC)
     private String documentId;
@@ -45,7 +50,7 @@ public class XMLDespatchAdvice {
     private OrderReference orderReference;
 
     @XmlElement(name = "AdditionalDocumentReference", namespace = XMLConstants.CAC)
-    private AdditionalDocumentReference additionalDocumentReference;
+    private List<AdditionalDocumentReference> additionalDocumentReferences;
 
     @XmlElement(name = "Signature", namespace = XMLConstants.CAC)
     private XMLSignature signature;
@@ -58,6 +63,9 @@ public class XMLDespatchAdvice {
 
     @XmlElement(name = "SellerSupplierParty", namespace = XMLConstants.CAC)
     private SellerSupplierParty sellerSupplierParty;
+
+    @XmlElement(name = "BuyerCustomerParty", namespace = XMLConstants.CAC)
+    private BuyerCustomerParty buyerCustomerParty;
 
     @XmlElement(name = "Shipment", namespace = XMLConstants.CAC)
     private Shipment shipment;
@@ -87,6 +95,21 @@ public class XMLDespatchAdvice {
 
         @XmlElement(name = "DocumentTypeCode", namespace = XMLConstants.CBC)
         private String documentTypeCode;
+
+        @XmlElement(name = "DocumentType", namespace = XMLConstants.CBC)
+        private String documentType;
+
+        @XmlElement(name = "IssuerParty", namespace = XMLConstants.CAC)
+        private IssuerParty issuerParty;
+    }
+
+    @XmlAccessorType(XmlAccessType.NONE)
+    @XmlType(name = "DespatchAdvice.IssuerParty")
+    @Data
+    @NoArgsConstructor
+    public static class IssuerParty {
+        @XmlElement(name = "PartyIdentification", namespace = XMLConstants.CAC)
+        private PartyIdentification partyIdentification;
     }
 
     @XmlAccessorType(XmlAccessType.NONE)
@@ -138,8 +161,22 @@ public class XMLDespatchAdvice {
     public static class PartyLegalEntity {
         @XmlElement(name = "RegistrationName", namespace = XMLConstants.CBC)
         private String registrationName;
+
+        @XmlElement(name = "CompanyID", namespace = XMLConstants.CBC)
+        private String companyID;
     }
 
+    @XmlAccessorType(XmlAccessType.NONE)
+    @XmlType(name = "DespatchAdvice.BuyerCustomerParty")
+    @Data
+    @NoArgsConstructor
+    public static class BuyerCustomerParty {
+        @XmlElement(name = "CustomerAssignedAccountId", namespace = XMLConstants.CBC)
+        private String customerAssignedAccountId;
+
+        @XmlElement(name = "Party", namespace = XMLConstants.CAC)
+        private Party party;
+    }
 
     @XmlAccessorType(XmlAccessType.NONE)
     @XmlType(name = "DespatchAdvice.DeliveryCustomerParty")
@@ -179,8 +216,14 @@ public class XMLDespatchAdvice {
         @XmlElement(name = "TotalTransportHandlingUnitQuantity", namespace = XMLConstants.CBC)
         private Integer totalTransportHandlingUnitQuantity;
 
-        @XmlElement(name = "SplitConsignmentIndicator", namespace = XMLConstants.CBC)
-        private Boolean splitConsignmentIndicator;
+        @XmlElement(name = "HandlingInstructions", namespace = XMLConstants.CBC)
+        private String handlingInstructions;
+
+        @XmlElement(name = "SpecialInstructions", namespace = XMLConstants.CBC)
+        private List<String> specialInstructions;
+
+        @XmlElement(name = "NetWeightMeasure", namespace = XMLConstants.CBC)
+        private GrossWeightMeasure netWeightMeasure;
 
         @XmlElement(name = "ShipmentStage", namespace = XMLConstants.CAC)
         private ShipmentStage shipmentStage;
@@ -189,10 +232,7 @@ public class XMLDespatchAdvice {
         private Delivery delivery;
 
         @XmlElement(name = "TransportHandlingUnit", namespace = XMLConstants.CAC)
-        private TransportHandlingUnit transportHandlingUnit;
-
-        @XmlElement(name = "OriginAddress", namespace = XMLConstants.CAC)
-        private OriginAddress originAddress;
+        private List<TransportHandlingUnit> transportHandlingUnit;
 
         @XmlElement(name = "FirstArrivalPortLocation", namespace = XMLConstants.CAC)
         private FirstArrivalPortLocation firstArrivalPortLocation;
@@ -228,7 +268,7 @@ public class XMLDespatchAdvice {
         private TransportMeans transportMeans;
 
         @XmlElement(name = "DriverPerson", namespace = XMLConstants.CAC)
-        private DriverPerson driverPerson;
+        private List<DriverPerson> driverPersons;
     }
 
     @XmlAccessorType(XmlAccessType.NONE)
@@ -251,6 +291,9 @@ public class XMLDespatchAdvice {
 
         @XmlElement(name = "PartyName", namespace = XMLConstants.CAC)
         private PartyName partyName;
+
+        @XmlElement(name = "PartyLegalEntity", namespace = XMLConstants.CAC)
+        private PartyLegalEntity partyLegalEntity;
     }
 
     @XmlAccessorType(XmlAccessType.NONE)
@@ -287,6 +330,27 @@ public class XMLDespatchAdvice {
     public static class DriverPerson {
         @XmlElement(name = "ID", namespace = XMLConstants.CBC)
         private ID id;
+
+        @XmlElement(name = "FirstName", namespace = XMLConstants.CBC)
+        private String firstName;
+
+        @XmlElement(name = "FamilyName", namespace = XMLConstants.CBC)
+        private String familyName;
+
+        @XmlElement(name = "JobTitle", namespace = XMLConstants.CBC)
+        private String jobTitle;
+
+        @XmlElement(name = "IdentityDocumentReference", namespace = XMLConstants.CAC)
+        private IdentityDocumentReference identityDocumentReference;
+    }
+
+    @XmlAccessorType(XmlAccessType.NONE)
+    @XmlType(name = "DespatchAdvice.IdentityDocumentReference")
+    @Data
+    @NoArgsConstructor
+    public static class IdentityDocumentReference {
+        @XmlElement(name = "ID", namespace = XMLConstants.CBC)
+        private String id;
     }
 
     @XmlAccessorType(XmlAccessType.NONE)
@@ -296,6 +360,33 @@ public class XMLDespatchAdvice {
     public static class Delivery {
         @XmlElement(name = "DeliveryAddress", namespace = XMLConstants.CAC)
         private DeliveryAddress deliveryAddress;
+
+        @XmlElement(name = "Despatch", namespace = XMLConstants.CAC)
+        private Despatch despatch;
+    }
+
+    @XmlAccessorType(XmlAccessType.NONE)
+    @XmlType(name = "DespatchAdvice.Despatch")
+    @Data
+    @NoArgsConstructor
+    public static class Despatch {
+        @XmlElement(name = "DespatchAddress", namespace = XMLConstants.CAC)
+        private DespatchAddress despatchAddress;
+    }
+
+    @XmlAccessorType(XmlAccessType.NONE)
+    @XmlType(name = "DespatchAdvice.DespatchAddress")
+    @Data
+    @NoArgsConstructor
+    public static class DespatchAddress {
+        @XmlElement(name = "ID", namespace = XMLConstants.CBC)
+        private String id;
+
+        @XmlElement(name = "AddressTypeCode", namespace = XMLConstants.CBC)
+        private AddressTypeCode addressTypeCode;
+
+        @XmlElement(name = "AddressLine", namespace = XMLConstants.CAC)
+        private AddressLine addressLine;
     }
 
     @XmlAccessorType(XmlAccessType.NONE)
@@ -306,8 +397,23 @@ public class XMLDespatchAdvice {
         @XmlElement(name = "ID", namespace = XMLConstants.CBC)
         private String id;
 
+        @XmlElement(name = "AddressTypeCode", namespace = XMLConstants.CBC)
+        private AddressTypeCode addressTypeCode;
+
         @XmlElement(name = "AddressLine", namespace = XMLConstants.CAC)
         private AddressLine addressLine;
+    }
+
+    @XmlAccessorType(XmlAccessType.NONE)
+    @XmlType(name = "DespatchAdvice.AddressTypeCode")
+    @Data
+    @NoArgsConstructor
+    public static class AddressTypeCode {
+        @XmlValue
+        private String value;
+
+        @XmlAttribute(name = "listID")
+        private String listID;
     }
 
     @XmlAccessorType(XmlAccessType.NONE)
@@ -325,7 +431,22 @@ public class XMLDespatchAdvice {
     @NoArgsConstructor
     public static class TransportHandlingUnit {
         @XmlElement(name = "TransportEquipment", namespace = XMLConstants.CAC)
-        private TransportEquipment transportEquipment;
+        private List<TransportEquipment> transportEquipments;
+
+        @XmlElement(name = "Package", namespace = XMLConstants.CAC)
+        private List<Package> packages;
+    }
+
+    @XmlAccessorType(XmlAccessType.NONE)
+    @XmlType(name = "DespatchAdvice.Package")
+    @Data
+    @NoArgsConstructor
+    public static class Package {
+        @XmlElement(name = "ID", namespace = XMLConstants.CBC)
+        private String id;
+
+        @XmlElement(name = "TraceID", namespace = XMLConstants.CBC)
+        private String traceID;
     }
 
     @XmlAccessorType(XmlAccessType.NONE)
@@ -335,6 +456,33 @@ public class XMLDespatchAdvice {
     public static class TransportEquipment {
         @XmlElement(name = "ID", namespace = XMLConstants.CBC)
         private String id;
+
+        @XmlElement(name = "ApplicableTransportMeans", namespace = XMLConstants.CAC)
+        private ApplicableTransportMeans applicableTransportMeans;
+
+        @XmlElement(name = "AttachedTransportEquipment", namespace = XMLConstants.CAC)
+        private List<TransportEquipment> attachedTransportEquipments;
+
+        @XmlElement(name = "ShipmentDocumentReference", namespace = XMLConstants.CAC)
+        private List<ShipmentDocumentReference> shipmentDocumentReferences;
+    }
+
+    @XmlAccessorType(XmlAccessType.NONE)
+    @XmlType(name = "DespatchAdvice.ApplicableTransportMeans")
+    @Data
+    @NoArgsConstructor
+    public static class ApplicableTransportMeans {
+        @XmlElement(name = "RegistrationNationalityID", namespace = XMLConstants.CBC)
+        private String registrationNationalityID;
+    }
+
+    @XmlAccessorType(XmlAccessType.NONE)
+    @XmlType(name = "DespatchAdvice.ShipmentDocumentReference")
+    @Data
+    @NoArgsConstructor
+    public static class ShipmentDocumentReference {
+        @XmlElement(name = "ID", namespace = XMLConstants.CBC)
+        private ID id;
     }
 
     @XmlAccessorType(XmlAccessType.NONE)
@@ -356,5 +504,11 @@ public class XMLDespatchAdvice {
     public static class FirstArrivalPortLocation {
         @XmlElement(name = "ID", namespace = XMLConstants.CBC)
         private String id;
+
+        @XmlElement(name = "LocationTypeCode", namespace = XMLConstants.CBC)
+        private String locationTypeCode;
+
+        @XmlElement(name = "Name", namespace = XMLConstants.CBC)
+        private String name;
     }
 }

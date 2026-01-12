@@ -25,90 +25,95 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Mapper(uses = {
-        SerieNumeroMapper.class,
-        FirmanteMapper.class,
-        ProveedorMapper.class
+                SerieNumeroMapper.class,
+                FirmanteMapper.class,
+                ProveedorMapper.class
 })
 public interface SummaryDocumentsMapper {
 
-    @Mapping(target = "fechaEmision", source = "issueDate")
-    @Mapping(target = "firmante", source = "signature")
-    @Mapping(target = "proveedor", source = "accountingSupplierParty")
+        @Mapping(target = "fechaEmision", source = "issueDate")
+        @Mapping(target = "firmante", source = "signature")
+        @Mapping(target = "proveedor", source = "accountingSupplierParty")
 
-    @Mapping(target = "numero", source = "documentId", qualifiedBy = {SerieNumeroTranslator.class, Numero3Translator.class})
-    @Mapping(target = "fechaEmisionComprobantes", source = "referenceDate")
-    @Mapping(target = "comprobantes", source = "lines")
-    SummaryDocuments map(XMLSummaryDocuments xml);
+        @Mapping(target = "numero", source = "documentId", qualifiedBy = { SerieNumeroTranslator.class,
+                        Numero3Translator.class })
+        @Mapping(target = "fechaEmisionComprobantes", source = "referenceDate")
+        @Mapping(target = "comprobantes", source = "lines")
+        SummaryDocuments map(XMLSummaryDocuments xml);
 
-    @Mapping(target = "tipoOperacion", source = "status.conditionCode")
-    @Mapping(target = "comprobante", source = ".")
-    SummaryDocumentsItem mapLines(XMLSummaryDocumentsLine xml);
+        @Mapping(target = "tipoOperacion", source = "status.conditionCode")
+        @Mapping(target = "comprobante", source = ".")
+        SummaryDocumentsItem mapLines(XMLSummaryDocumentsLine xml);
 
-    @Mapping(target = "moneda", source = "totalAmount.currencyID")
-    @Mapping(target = "tipoComprobante", source = "documentTypeCode")
-    @Mapping(target = "serieNumero", source = "documentId")
-    @Mapping(target = "cliente", source = "accountingCustomerParty")
-    @Mapping(target = "comprobanteAfectado.serieNumero", source = "billingReference.invoiceDocumentReference.id")
-    @Mapping(target = "comprobanteAfectado.tipoComprobante", source = "billingReference.invoiceDocumentReference.documentTypeCode")
-    @Mapping(target = "valorVenta", source = ".")
-    @Mapping(target = "impuestos", source = ".")
-    Comprobante mapLineComprobante(XMLSummaryDocumentsLine xml);
+        @Mapping(target = "moneda", source = "totalAmount.currencyID")
+        @Mapping(target = "tipoComprobante", source = "documentTypeCode")
+        @Mapping(target = "serieNumero", source = "documentId")
+        @Mapping(target = "cliente", source = "accountingCustomerParty")
+        @Mapping(target = "comprobanteAfectado.serieNumero", source = "billingReference.invoiceDocumentReference.id")
+        @Mapping(target = "comprobanteAfectado.tipoComprobante", source = "billingReference.invoiceDocumentReference.documentTypeCode")
+        @Mapping(target = "valorVenta", source = ".")
+        @Mapping(target = "impuestos", source = ".")
+        Comprobante mapLineComprobante(XMLSummaryDocumentsLine xml);
 
-    @Mapping(target = "numeroDocumentoIdentidad", source = "customerAssignedAccountID")
-    @Mapping(target = "tipoDocumentoIdentidad", source = "additionalAccountID")
-    Cliente mapCliente(XMLSummaryDocumentsLine.AccountingCustomerParty xml);
+        @Mapping(target = "numeroDocumentoIdentidad", source = "customerAssignedAccountID")
+        @Mapping(target = "tipoDocumentoIdentidad", source = "additionalAccountID")
+        Cliente mapCliente(XMLSummaryDocumentsLine.AccountingCustomerParty xml);
 
-    default ComprobanteValorVenta mapLineComprobanteValorVenta(XMLSummaryDocumentsLine xml) {
-        if (xml == null) {
-            return null;
+        default ComprobanteValorVenta mapLineComprobanteValorVenta(XMLSummaryDocumentsLine xml) {
+                if (xml == null) {
+                        return null;
+                }
+
+                Map<String, BigDecimal> billingPayments = Optional.ofNullable(xml.getBillingPayments())
+                                .orElse(Collections.emptyList())
+                                .stream()
+                                .collect(Collectors.toMap(
+                                                XMLSummaryDocumentsLine.BillingPayment::getInstructionId,
+                                                XMLSummaryDocumentsLine.BillingPayment::getPaidAmount));
+
+                BigDecimal importeTotal = Optional.ofNullable(xml.getTotalAmount())
+                                .map(XMLSummaryDocumentsLine.TotalAmount::getValue)
+                                .orElse(null);
+                BigDecimal otrosCargos = Optional.ofNullable(xml.getAllowanceCharge())
+                                .map(XMLSummaryDocumentsLine.AllowanceCharge::getValue)
+                                .orElse(null);
+
+                return ComprobanteValorVenta.builder()
+                                .importeTotal(importeTotal)
+                                .gravado(billingPayments.get("01"))
+                                .exonerado(billingPayments.get("02"))
+                                .inafecto(billingPayments.get("03"))
+                                .gratuito(billingPayments.get("05"))
+                                .otrosCargos(otrosCargos)
+                                .build();
         }
 
-        Map<String, BigDecimal> billingPayments = Optional.ofNullable(xml.getBillingPayments())
-                .orElse(Collections.emptyList())
-                .stream()
-                .collect(Collectors.toMap(
-                        XMLSummaryDocumentsLine.BillingPayment::getInstructionId,
-                        XMLSummaryDocumentsLine.BillingPayment::getPaidAmount
-                ));
+        default ComprobanteImpuestos mapLineComprobanteImpuestos(XMLSummaryDocumentsLine xml) {
+                if (xml == null) {
+                        return null;
+                }
 
-        BigDecimal importeTotal = Optional.ofNullable(xml.getTotalAmount())
-                .map(XMLSummaryDocumentsLine.TotalAmount::getValue)
-                .orElse(null);
-        BigDecimal otrosCargos = Optional.ofNullable(xml.getAllowanceCharge())
-                .map(XMLSummaryDocumentsLine.AllowanceCharge::getValue)
-                .orElse(null);
+                Map<Catalog5, BigDecimal> taxTotals = Optional.ofNullable(xml.getTaxTotals())
+                                .orElse(Collections.emptyList())
+                                .stream()
+                                .collect(Collectors.toMap(
+                                                taxTotal -> Optional.ofNullable(taxTotal.getTaxSubtotals())
+                                                                .flatMap(f -> Optional.ofNullable(f.getTaxCategory()))
+                                                                .flatMap(f -> Optional.ofNullable(f.getTaxScheme()))
+                                                                .flatMap(taxScheme -> Optional
+                                                                                .ofNullable(taxScheme.getId()))
+                                                                .flatMap(code -> Catalog.valueOfCode(Catalog5.class,
+                                                                                code))
+                                                                .orElse(null),
+                                                taxTotal -> Optional.ofNullable(taxTotal.getTaxAmount())
+                                                                .orElse(BigDecimal.ZERO)));
 
-        return ComprobanteValorVenta.builder()
-                .importeTotal(importeTotal)
-                .gravado(billingPayments.get("01"))
-                .exonerado(billingPayments.get("02"))
-                .inafecto(billingPayments.get("03"))
-                .gratuito(billingPayments.get("05"))
-                .otrosCargos(otrosCargos)
-                .build();
-    }
-
-    default ComprobanteImpuestos mapLineComprobanteImpuestos(XMLSummaryDocumentsLine xml) {
-        if (xml == null) {
-            return null;
+                return ComprobanteImpuestos.builder()
+                                .igv(taxTotals.get(Catalog5.IGV))
+                                .icb(taxTotals.get(Catalog5.ICBPER))
+                                .isc(taxTotals.get(Catalog5.ISC))
+                                .ivap(taxTotals.get(Catalog5.IMPUESTO_ARROZ_PILADO))
+                                .otros(taxTotals.get(Catalog5.OTROS))
+                                .build();
         }
-
-        Map<Catalog5, BigDecimal> taxTotals = Optional.ofNullable(xml.getTaxTotals())
-                .orElse(Collections.emptyList())
-                .stream()
-                .collect(Collectors.toMap(
-                        taxTotal -> Optional.ofNullable(taxTotal.getTaxSubtotals())
-                                .flatMap(f -> Optional.ofNullable(f.getTaxCategory()))
-                                .flatMap(f -> Optional.ofNullable(f.getTaxScheme()))
-                                .flatMap(taxScheme -> Optional.ofNullable(taxScheme.getId()))
-                                .flatMap(code -> Catalog.valueOfCode(Catalog5.class, code))
-                                .orElse(null),
-                        taxTotal -> Optional.ofNullable(taxTotal.getTaxAmount()).orElse(BigDecimal.ZERO)
-                ));
-
-        return ComprobanteImpuestos.builder()
-                .igv(taxTotals.get(Catalog5.IGV))
-                .icb(taxTotals.get(Catalog5.ICBPER))
-                .build();
-    }
 }

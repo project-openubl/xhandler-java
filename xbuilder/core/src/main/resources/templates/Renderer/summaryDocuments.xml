@@ -38,6 +38,15 @@
             </cac:InvoiceDocumentReference>
         </cac:BillingReference>
         {/if}
+        {#if it.comprobante.percepcion}
+        <sac:SUNATPerceptionSummaryDocumentReference>
+            <sac:SUNATPerceptionSystemCode>{it.comprobante.percepcion.codReg}</sac:SUNATPerceptionSystemCode>
+            <sac:SUNATPerceptionPercent>{it.comprobante.percepcion.tasa.scale(2)}</sac:SUNATPerceptionPercent>
+            <cbc:TotalInvoiceAmount currencyID="PEN">{it.comprobante.percepcion.mto.scale(2)}</cbc:TotalInvoiceAmount>
+            <sac:SUNATTotalCashed currencyID="PEN">{it.comprobante.percepcion.mtoTotal.scale(2)}</sac:SUNATTotalCashed>
+            <cbc:TaxableAmount currencyID="PEN">{it.comprobante.percepcion.mtoBase.scale(2)}</cbc:TaxableAmount>
+        </sac:SUNATPerceptionSummaryDocumentReference>
+        {/if}
         <cac:Status>
             <cbc:ConditionCode>{it.tipoOperacion}</cbc:ConditionCode>
         </cac:Status>
@@ -94,6 +103,51 @@
                     <cac:TaxScheme>
                         <cbc:ID>7152</cbc:ID>
                         <cbc:Name>ICBPER</cbc:Name>
+                        <cbc:TaxTypeCode>OTH</cbc:TaxTypeCode>
+                    </cac:TaxScheme>
+                </cac:TaxCategory>
+            </cac:TaxSubtotal>
+        </cac:TaxTotal>
+        {/if}
+        {#if it.comprobante.impuestos.isc}
+        <cac:TaxTotal>
+            <cbc:TaxAmount currencyID="{it.comprobante.moneda}">{it.comprobante.impuestos.isc}</cbc:TaxAmount>
+            <cac:TaxSubtotal>
+                <cbc:TaxAmount currencyID="{it.comprobante.moneda}">{it.comprobante.impuestos.isc}</cbc:TaxAmount>
+                <cac:TaxCategory>
+                    <cac:TaxScheme>
+                        <cbc:ID>2000</cbc:ID>
+                        <cbc:Name>ISC</cbc:Name>
+                        <cbc:TaxTypeCode>EXC</cbc:TaxTypeCode>
+                    </cac:TaxScheme>
+                </cac:TaxCategory>
+            </cac:TaxSubtotal>
+        </cac:TaxTotal>
+        {/if}
+        {#if it.comprobante.impuestos.ivap}
+        <cac:TaxTotal>
+            <cbc:TaxAmount currencyID="{it.comprobante.moneda}">{it.comprobante.impuestos.ivap}</cbc:TaxAmount>
+            <cac:TaxSubtotal>
+                <cbc:TaxAmount currencyID="{it.comprobante.moneda}">{it.comprobante.impuestos.ivap}</cbc:TaxAmount>
+                <cac:TaxCategory>
+                    <cac:TaxScheme>
+                        <cbc:ID>1016</cbc:ID>
+                        <cbc:Name>IVAP</cbc:Name>
+                        <cbc:TaxTypeCode>VAT</cbc:TaxTypeCode>
+                    </cac:TaxScheme>
+                </cac:TaxCategory>
+            </cac:TaxSubtotal>
+        </cac:TaxTotal>
+        {/if}
+        {#if it.comprobante.impuestos.otros}
+        <cac:TaxTotal>
+            <cbc:TaxAmount currencyID="{it.comprobante.moneda}">{it.comprobante.impuestos.otros}</cbc:TaxAmount>
+            <cac:TaxSubtotal>
+                <cbc:TaxAmount currencyID="{it.comprobante.moneda}">{it.comprobante.impuestos.otros}</cbc:TaxAmount>
+                <cac:TaxCategory>
+                    <cac:TaxScheme>
+                        <cbc:ID>9999</cbc:ID>
+                        <cbc:Name>OTROS</cbc:Name>
                         <cbc:TaxTypeCode>OTH</cbc:TaxTypeCode>
                     </cac:TaxScheme>
                 </cac:TaxCategory>

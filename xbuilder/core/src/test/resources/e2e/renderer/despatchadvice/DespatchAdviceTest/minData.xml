@@ -14,7 +14,7 @@
     <cbc:CustomizationID>2.0</cbc:CustomizationID>
     <cbc:ID>T001-1</cbc:ID>
     <cbc:IssueDate>2019-12-24</cbc:IssueDate>
-    <cbc:DespatchAdviceTypeCode>09</cbc:DespatchAdviceTypeCode>
+    <cbc:DespatchAdviceTypeCode listAgencyName="PE:SUNAT" listName="Tipo de Documento" listURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo01">09</cbc:DespatchAdviceTypeCode>
     <cac:Signature>
         <cbc:ID>12345678912</cbc:ID>
         <cac:SignatoryParty>
@@ -53,10 +53,9 @@
         </cac:Party>
     </cac:DeliveryCustomerParty>
     <cac:Shipment>
-        <cbc:ID>1</cbc:ID>
+        <cbc:ID>SUNAT_Envio</cbc:ID>
         <cbc:HandlingCode listAgencyName="PE:SUNAT" listName="Motivo de traslado" listURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo20">18</cbc:HandlingCode>
         <cbc:GrossWeightMeasure unitCode="KG">1.000</cbc:GrossWeightMeasure>
-        <cbc:SplitConsignmentIndicator>false</cbc:SplitConsignmentIndicator>
         <cac:ShipmentStage>
             <cbc:TransportModeCode listName="Modalidad de traslado" listAgencyName="PE:SUNAT" listURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo18">02</cbc:TransportModeCode>
             <cac:TransitPeriod>
@@ -70,11 +69,15 @@
                     <cbc:Line>DireccionDestino</cbc:Line>
                 </cac:AddressLine>
             </cac:DeliveryAddress>
+            <cac:Despatch>
+                <cac:DespatchAddress>
+                    <cbc:ID schemeAgencyName="PE:INEI" schemeName="Ubigeos">010101</cbc:ID>
+                    <cac:AddressLine>
+                        <cbc:Line>DireccionOrigen</cbc:Line>
+                    </cac:AddressLine>
+                </cac:DespatchAddress>
+            </cac:Despatch>
         </cac:Delivery>
-        <cac:OriginAddress>
-            <cbc:ID>010101</cbc:ID>
-            <cbc:StreetName>DireccionOrigen</cbc:StreetName>
-        </cac:OriginAddress>
     </cac:Shipment>
     <cac:DespatchLine>
         <cbc:ID>1</cbc:ID>

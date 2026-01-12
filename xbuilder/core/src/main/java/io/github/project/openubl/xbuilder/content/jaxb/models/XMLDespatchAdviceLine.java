@@ -3,6 +3,8 @@ package io.github.project.openubl.xbuilder.content.jaxb.models;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlAttribute;
@@ -42,11 +44,32 @@ public class XMLDespatchAdviceLine {
         @XmlElement(name = "Name", namespace = XMLConstants.CBC)
         private String name;
 
+        @XmlElement(name = "Description", namespace = XMLConstants.CBC)
+        private String description;
+
         @XmlElement(name = "SellersItemIdentification", namespace = XMLConstants.CAC)
         private SellersItemIdentification sellersItemIdentification;
 
         @XmlElement(name = "CommodityClassification", namespace = XMLConstants.CAC)
         private CommodityClassification commodityClassification;
+
+        @XmlElement(name = "AdditionalItemProperty", namespace = XMLConstants.CAC)
+        private List<AdditionalItemProperty> additionalItemProperties;
+    }
+
+    @XmlAccessorType(XmlAccessType.NONE)
+    @XmlType(name = "DespatchAdviceLine.AdditionalItemProperty")
+    @Data
+    @NoArgsConstructor
+    public static class AdditionalItemProperty {
+        @XmlElement(name = "Name", namespace = XMLConstants.CBC)
+        private String name;
+
+        @XmlElement(name = "NameCode", namespace = XMLConstants.CBC)
+        private String nameCode;
+
+        @XmlElement(name = "Value", namespace = XMLConstants.CBC)
+        private String value;
     }
 
     @XmlAccessorType(XmlAccessType.NONE)

@@ -16,7 +16,8 @@ public interface XBuilder {
         SUMMARY_DOCUMENTS("summaryDocuments.xml"),
         PERCEPTION("perception.xml"),
         RETENTION("retention.xml"),
-        DESPATCH_ADVICE("despatchAdvice.xml");
+        DESPATCH_ADVICE("despatchAdvice.xml"),
+        REVERSION("reversion.xml");
 
         private final String templatePath;
 

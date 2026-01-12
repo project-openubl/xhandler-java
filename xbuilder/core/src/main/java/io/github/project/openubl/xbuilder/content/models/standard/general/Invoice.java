@@ -46,6 +46,11 @@ public class Invoice extends SalesDocument {
     private Percepcion percepcion;
 
     /**
+     * Guia de remision embebida (Factura Guia)
+     */
+    private EmbededDespatch guiaEmbebida;
+
+    /**
      * Anticipos asociados al comprobante
      */
     @Singular

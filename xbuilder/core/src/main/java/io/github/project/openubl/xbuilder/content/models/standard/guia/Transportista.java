@@ -21,13 +21,10 @@ public class Transportista {
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private String nombre;
 
-    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
-    private String placaDelVehiculo;
-
-    @Schema(description = "Catalogo 06", requiredMode = Schema.RequiredMode.REQUIRED)
-    private String choferTipoDocumentoIdentidad;
-
-    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
-    private String choferNumeroDocumentoIdentidad;
+    /**
+     * Número de registro del Ministerio de Transportes y Comunicaciones
+     */
+    @Schema(description = "Número de registro MTC")
+    private String numeroRegistroMTC;
 
 }

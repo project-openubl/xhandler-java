@@ -36,6 +36,10 @@ public class TemplateProducer {
         return EngineProducer.getInstance().getEngine().getTemplate("Renderer/despatchAdvice.xml");
     }
 
+    public Template getReversion() {
+        return EngineProducer.getInstance().getEngine().getTemplate("Renderer/reversion.xml");
+    }
+
     private static class TemplateProducerHolder {
 
         private static final TemplateProducer INSTANCE = new TemplateProducer();

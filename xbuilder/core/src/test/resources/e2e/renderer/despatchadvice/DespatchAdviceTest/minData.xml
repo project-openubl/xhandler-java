@@ -81,7 +81,7 @@
     </cac:Shipment>
     <cac:DespatchLine>
         <cbc:ID>1</cbc:ID>
-        <cbc:DeliveredQuantity unitCode="KG">0.5</cbc:DeliveredQuantity>
+        <cbc:DeliveredQuantity unitCode="KG">0.50</cbc:DeliveredQuantity>
         <cac:OrderLineReference>
             <cbc:LineID>1</cbc:LineID>
         </cac:OrderLineReference>

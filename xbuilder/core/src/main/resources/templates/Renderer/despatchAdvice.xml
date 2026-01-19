@@ -237,7 +237,7 @@
     {#each detalles.orEmpty}
     <cac:DespatchLine>
         <cbc:ID>{it_index.add(1)}</cbc:ID>
-        <cbc:DeliveredQuantity unitCode="{it.unidadMedida}">{it.cantidad}</cbc:DeliveredQuantity>
+        <cbc:DeliveredQuantity unitCode="{it.unidadMedida}">{it.cantidad.scale(2)}</cbc:DeliveredQuantity>
         <cac:OrderLineReference>
             <cbc:LineID>{it_index.add(1)}</cbc:LineID>
         </cac:OrderLineReference>

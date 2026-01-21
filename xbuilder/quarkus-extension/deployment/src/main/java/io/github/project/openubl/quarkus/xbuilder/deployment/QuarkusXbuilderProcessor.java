@@ -163,11 +163,21 @@ class QuarkusXbuilderProcessor {
                                 "io.github.project.openubl.xbuilder.content.jaxb.models.XMLDespatchAdvice$TransportEquipment",
                                 "io.github.project.openubl.xbuilder.content.jaxb.models.XMLDespatchAdvice$TransportHandlingUnit",
                                 "io.github.project.openubl.xbuilder.content.jaxb.models.XMLDespatchAdvice$TransportMeans",
+                                "io.github.project.openubl.xbuilder.content.jaxb.models.XMLDespatchAdvice$IdentityDocumentReference",
+                                "io.github.project.openubl.xbuilder.content.jaxb.models.XMLDespatchAdvice$AddressTypeCode",
+                                "io.github.project.openubl.xbuilder.content.jaxb.models.XMLDespatchAdvice$IssuerParty",
+                                "io.github.project.openubl.xbuilder.content.jaxb.models.XMLDespatchAdvice$BuyerCustomerParty",
+                                "io.github.project.openubl.xbuilder.content.jaxb.models.XMLDespatchAdvice$DespatchAddress",
+                                "io.github.project.openubl.xbuilder.content.jaxb.models.XMLDespatchAdvice$ShipmentDocumentReference",
+                                "io.github.project.openubl.xbuilder.content.jaxb.models.XMLDespatchAdvice$ApplicableTransportMeans",
+                                "io.github.project.openubl.xbuilder.content.jaxb.models.XMLDespatchAdvice$Package",
+                                "io.github.project.openubl.xbuilder.content.jaxb.models.XMLDespatchAdvice$Despatch",
 
                                 "io.github.project.openubl.xbuilder.content.jaxb.models.XMLDespatchAdviceLine$CommodityClassification",
                                 "io.github.project.openubl.xbuilder.content.jaxb.models.XMLDespatchAdviceLine$DeliveredQuantity",
                                 "io.github.project.openubl.xbuilder.content.jaxb.models.XMLDespatchAdviceLine$Item",
                                 "io.github.project.openubl.xbuilder.content.jaxb.models.XMLDespatchAdviceLine$SellersItemIdentification",
+                                "io.github.project.openubl.xbuilder.content.jaxb.models.XMLDespatchAdviceLine$AdditionalItemProperty",
 
                                 "io.github.project.openubl.xbuilder.content.jaxb.models.XMLInvoiceLine$Quantity",
 
@@ -407,7 +417,8 @@ class QuarkusXbuilderProcessor {
                                 io.github.project.openubl.xbuilder.content.models.sunat.percepcionretencion.ComprobanteAfectado.class,
                                 io.github.project.openubl.xbuilder.content.models.sunat.percepcionretencion.ComprobanteAfectado.ComprobanteAfectadoBuilder.class,
                                 io.github.project.openubl.xbuilder.content.models.sunat.percepcionretencion.PercepcionRetencionOperacion.class,
-                                io.github.project.openubl.xbuilder.content.models.sunat.percepcionretencion.PercepcionRetencionOperacion.PercepcionRetencionOperacionBuilder.class)
+                                io.github.project.openubl.xbuilder.content.models.sunat.percepcionretencion.PercepcionRetencionOperacion.PercepcionRetencionOperacionBuilder.class,
+                                io.github.project.openubl.xbuilder.content.models.sunat.resumen.SummaryPerception.class)
                                 .methods().build();
         }
 

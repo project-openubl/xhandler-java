@@ -50,7 +50,7 @@ public class DespatchAdviceTest extends AbstractTest {
                                                                 .build())
                                                 .build())
                                 .detalle(DespatchAdviceItem.builder()
-                                                .cantidad(new BigDecimal("0.5"))
+                                                .cantidad(new BigDecimal("0.50"))
                                                 .unidadMedida("KG")
                                                 .codigo("123456")
                                                 .build())

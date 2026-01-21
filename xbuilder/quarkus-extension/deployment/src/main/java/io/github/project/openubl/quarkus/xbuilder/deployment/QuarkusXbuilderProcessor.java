@@ -74,7 +74,8 @@ class QuarkusXbuilderProcessor {
     }
 
     @BuildStep
-    void registerServices(BuildProducer<ServiceProviderBuildItem> services) throws IOException {
+    void registerServices(BuildProducer<ServiceProviderBuildItem> services,
+            BuildProducer<ReflectiveClassBuildItem> reflectiveClass) throws IOException {
         String service = "META-INF/services/" + RuleFactory.class.getName();
 
         // find out all the implementation classes listed in the service files
@@ -86,6 +87,11 @@ class QuarkusXbuilderProcessor {
         // in native-image at run-time
         services.produce(
                 new ServiceProviderBuildItem(RuleFactory.class.getName(), implementations.toArray(new String[0])));
+
+        // register every listed implementation class for reflection so their
+        // annotations can be read
+        reflectiveClass.produce(
+                new ReflectiveClassBuildItem(true, false, implementations.toArray(new String[0])));
     }
 
     @BuildStep
@@ -97,6 +103,7 @@ class QuarkusXbuilderProcessor {
 
                 "io.github.project.openubl.xbuilder.content.models.sunat.baja.VoidedDocuments$VoidedDocumentsBuilderImpl",
                 "io.github.project.openubl.xbuilder.content.models.sunat.resumen.SummaryDocuments$SummaryDocumentsBuilderImpl",
+                "io.github.project.openubl.xbuilder.content.models.sunat.baja.Reversion$ReversionBuilderImpl",
 
                 "io.github.project.openubl.xbuilder.content.models.sunat.percepcionretencion.Perception$PerceptionBuilderImpl",
                 "io.github.project.openubl.xbuilder.content.models.sunat.percepcionretencion.Retention$RetentionBuilderImpl");
@@ -216,6 +223,8 @@ class QuarkusXbuilderProcessor {
     @BuildStep
     ReflectiveClassBuildItem reflectionModels() {
         return new ReflectiveClassBuildItem(true, false,
+                io.github.project.openubl.xbuilder.enricher.kie.RulePhase.class,
+                io.github.project.openubl.xbuilder.enricher.kie.RulePhase.PhaseType.class,
                 io.github.project.openubl.xbuilder.content.models.common.Cliente.class,
                 io.github.project.openubl.xbuilder.content.models.common.Cliente.ClienteBuilder.class,
                 io.github.project.openubl.xbuilder.content.models.common.Contacto.class,
@@ -346,6 +355,9 @@ class QuarkusXbuilderProcessor {
                 io.github.project.openubl.xbuilder.content.models.sunat.baja.VoidedDocuments.VoidedDocumentsBuilder.class,
                 io.github.project.openubl.xbuilder.content.models.sunat.baja.VoidedDocumentsItem.class,
                 io.github.project.openubl.xbuilder.content.models.sunat.baja.VoidedDocumentsItem.VoidedDocumentsItemBuilder.class,
+
+                io.github.project.openubl.xbuilder.content.models.sunat.baja.Reversion.class,
+                io.github.project.openubl.xbuilder.content.models.sunat.baja.Reversion.ReversionBuilder.class,
 
                 io.github.project.openubl.xbuilder.content.models.sunat.resumen.SummaryDocuments.class,
                 io.github.project.openubl.xbuilder.content.models.sunat.resumen.SummaryDocuments.SummaryDocumentsBuilder.class,

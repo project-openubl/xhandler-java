@@ -46,6 +46,7 @@ class QuarkusXbuilderProcessor {
                                                 "templates/Renderer/debitNote.xml",
                                                 "templates/Renderer/invoice.xml",
                                                 "templates/Renderer/voidedDocuments.xml",
+                                                "templates/Renderer/reversion.xml",
                                                 "templates/Renderer/summaryDocuments.xml",
                                                 "templates/Renderer/perception.xml",
                                                 "templates/Renderer/retention.xml",

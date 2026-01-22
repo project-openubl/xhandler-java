@@ -77,12 +77,10 @@ public class QuarkusXbuilderResourceTest {
                 .filter(p -> !p.toFile().isDirectory())
                 .forEach(p -> {
                     try {
-                        Map<String, Object> jsonObject = yamlMapper.readValue(p.toFile(),
-                                Map.class);
+                        Map<String, Object> jsonObject = yamlMapper.readValue(p.toFile(), Map.class);
                         String kind = (String) jsonObject.get("kind");
                         String snapshot = (String) jsonObject.get("snapshot");
-                        Map<String, Object> input = (Map<String, Object>) jsonObject
-                                .get("input");
+                        Map<String, Object> input = (Map<String, Object>) jsonObject.get("input");
 
                         given()
                                 .when()
@@ -115,17 +113,20 @@ public class QuarkusXbuilderResourceTest {
                 .proveedor(Proveedor.builder()
                         .ruc("12345678912")
                         .razonSocial("Softgreen S.A.C.")
-                        .build())
+                        .build()
+                )
                 .cliente(Cliente.builder()
                         .nombre("Carlos Feria")
                         .numeroDocumentoIdentidad("12121212121")
                         .tipoDocumentoIdentidad(Catalog6.RUC.toString())
-                        .build())
+                        .build()
+                )
                 .detalle(DocumentoVentaDetalle.builder()
                         .descripcion("Item1")
                         .cantidad(new BigDecimal("10"))
                         .precio(new BigDecimal("100"))
-                        .build())
+                        .build()
+                )
                 .build();
 
         given()
@@ -136,176 +137,132 @@ public class QuarkusXbuilderResourceTest {
                 .then()
                 .statusCode(200)
                 .body(is(
-                        "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n" +
-                                "<Invoice xmlns=\"urn:oasis:names:specification:ubl:schema:xsd:Invoice-2\"\n"
-                                +
-                                "         xmlns:cac=\"urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2\"\n"
-                                +
-                                "         xmlns:cbc=\"urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2\"\n"
-                                +
-                                "         xmlns:ccts=\"urn:un:unece:uncefact:documentation:2\"\n"
-                                +
-                                "         xmlns:cec=\"urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2\"\n"
-                                +
-                                "         xmlns:ds=\"http://www.w3.org/2000/09/xmldsig#\"\n"
-                                +
-                                "         xmlns:ext=\"urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2\"\n"
-                                +
-                                "         xmlns:qdt=\"urn:oasis:names:specification:ubl:schema:xsd:QualifiedDatatypes-2\"\n"
-                                +
-                                "         xmlns:sac=\"urn:sunat:names:specification:ubl:peru:schema:xsd:SunatAggregateComponents-1\"\n"
-                                +
-                                "         xmlns:udt=\"urn:un:unece:uncefact:data:specification:UnqualifiedDataTypesSchemaModule:2\"\n"
-                                +
-                                "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-                                +
-                                ">\n" +
-                                "    <ext:UBLExtensions>\n" +
-                                "        <ext:UBLExtension>\n" +
-                                "            <ext:ExtensionContent/>\n" +
-                                "        </ext:UBLExtension>\n" +
-                                "    </ext:UBLExtensions>\n" +
-                                "    <cbc:UBLVersionID>2.1</cbc:UBLVersionID>\n" +
-                                "    <cbc:CustomizationID>2.0</cbc:CustomizationID>\n" +
-                                "    <cbc:ID>F001-1</cbc:ID>\n" +
-                                "    <cbc:IssueDate>2022-01-25</cbc:IssueDate>\n" +
-                                "    <cbc:InvoiceTypeCode listID=\"0101\" listAgencyName=\"PE:SUNAT\" listName=\"Tipo de Documento\" listURI=\"urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo01\">01</cbc:InvoiceTypeCode>\n"
-                                +
-                                "    <cbc:DocumentCurrencyCode listID=\"ISO 4217 Alpha\" listAgencyName=\"United Nations Economic Commission for Europe\" listName=\"Currency\">PEN</cbc:DocumentCurrencyCode>\n"
-                                +
-                                "    <cac:Signature>\n" +
-                                "        <cbc:ID>12345678912</cbc:ID>\n" +
-                                "        <cac:SignatoryParty>\n" +
-                                "            <cac:PartyIdentification>\n" +
-                                "                <cbc:ID>12345678912</cbc:ID>\n" +
-                                "            </cac:PartyIdentification>\n" +
-                                "            <cac:PartyName>\n" +
-                                "                <cbc:Name><![CDATA[Softgreen S.A.C.]]></cbc:Name>\n"
-                                +
-                                "            </cac:PartyName>\n" +
-                                "        </cac:SignatoryParty>\n" +
-                                "        <cac:DigitalSignatureAttachment>\n" +
-                                "            <cac:ExternalReference>\n" +
-                                "                <cbc:URI>#PROJECT-OPENUBL-SIGN</cbc:URI>\n"
-                                +
-                                "            </cac:ExternalReference>\n" +
-                                "        </cac:DigitalSignatureAttachment>\n" +
-                                "    </cac:Signature>\n" +
-                                "    <cac:AccountingSupplierParty>\n" +
-                                "        <cac:Party>\n" +
-                                "            <cac:PartyIdentification>\n" +
-                                "                <cbc:ID schemeID=\"6\" schemeAgencyName=\"PE:SUNAT\" schemeName=\"Documento de Identidad\" schemeURI=\"urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06\">12345678912</cbc:ID>\n"
-                                +
-                                "            </cac:PartyIdentification>\n" +
-                                "            <cac:PartyLegalEntity>\n" +
-                                "                <cbc:RegistrationName><![CDATA[Softgreen S.A.C.]]></cbc:RegistrationName>\n"
-                                +
-                                "                <cac:RegistrationAddress>\n" +
-                                "                    <cbc:AddressTypeCode>0000</cbc:AddressTypeCode>\n"
-                                +
-                                "                </cac:RegistrationAddress>\n" +
-                                "            </cac:PartyLegalEntity>\n" +
-                                "        </cac:Party>\n" +
-                                "    </cac:AccountingSupplierParty>\n" +
-                                "    <cac:AccountingCustomerParty>\n" +
-                                "        <cac:Party>\n" +
-                                "            <cac:PartyIdentification>\n" +
-                                "                <cbc:ID schemeID=\"6\" schemeAgencyName=\"PE:SUNAT\" schemeName=\"Documento de Identidad\" schemeURI=\"urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06\">12121212121</cbc:ID>\n"
-                                +
-                                "            </cac:PartyIdentification>\n" +
-                                "            <cac:PartyLegalEntity>\n" +
-                                "                <cbc:RegistrationName><![CDATA[Carlos Feria]]></cbc:RegistrationName>\n"
-                                +
-                                "            </cac:PartyLegalEntity>\n" +
-                                "        </cac:Party>\n" +
-                                "    </cac:AccountingCustomerParty>\n" +
-                                "    <cac:PaymentTerms>\n" +
-                                "        <cbc:ID>FormaPago</cbc:ID>\n" +
-                                "        <cbc:PaymentMeansID>Contado</cbc:PaymentMeansID>\n"
-                                +
-                                "    </cac:PaymentTerms>\n" +
-                                "    <cac:TaxTotal>\n" +
-                                "        <cbc:TaxAmount currencyID=\"PEN\">200.00</cbc:TaxAmount>\n"
-                                +
-                                "        <cac:TaxSubtotal>\n" +
-                                "            <cbc:TaxableAmount currencyID=\"PEN\">1000.00</cbc:TaxableAmount>\n"
-                                +
-                                "            <cbc:TaxAmount currencyID=\"PEN\">200.00</cbc:TaxAmount>\n"
-                                +
-                                "            <cac:TaxCategory>\n" +
-                                "                <cbc:ID schemeAgencyName=\"United Nations Economic Commission for Europe\" schemeID=\"UN/ECE 5305\" schemeName=\"Tax Category Identifie\">S</cbc:ID>\n"
-                                +
-                                "                <cac:TaxScheme>\n" +
-                                "                    <cbc:ID schemeAgencyName=\"PE:SUNAT\" schemeID=\"UN/ECE 5153\" schemeName=\"Codigo de tributos\">1000</cbc:ID>\n"
-                                +
-                                "                    <cbc:Name>IGV</cbc:Name>\n" +
-                                "                    <cbc:TaxTypeCode>VAT</cbc:TaxTypeCode>\n"
-                                +
-                                "                </cac:TaxScheme>\n" +
-                                "            </cac:TaxCategory>\n" +
-                                "        </cac:TaxSubtotal>\n" +
-                                "    </cac:TaxTotal>\n" +
-                                "    <cac:LegalMonetaryTotal>\n" +
-                                "        <cbc:LineExtensionAmount currencyID=\"PEN\">1000.00</cbc:LineExtensionAmount>\n"
-                                +
-                                "        <cbc:TaxInclusiveAmount currencyID=\"PEN\">1200.00</cbc:TaxInclusiveAmount>\n"
-                                +
-                                "        <cbc:AllowanceTotalAmount currencyID=\"PEN\">0</cbc:AllowanceTotalAmount>\n"
-                                +
-                                "        <cbc:PrepaidAmount currencyID=\"PEN\">0</cbc:PrepaidAmount>\n"
-                                +
-                                "        <cbc:PayableAmount currencyID=\"PEN\">1200.00</cbc:PayableAmount>\n"
-                                +
-                                "    </cac:LegalMonetaryTotal>\n" +
-                                "    <cac:InvoiceLine>\n" +
-                                "        <cbc:ID>1</cbc:ID>\n" +
-                                "        <cbc:InvoicedQuantity unitCode=\"NIU\" unitCodeListAgencyName=\"United Nations Economic Commission for Europe\" unitCodeListID=\"UN/ECE rec 20\">10</cbc:InvoicedQuantity>\n"
-                                +
-                                "        <cbc:LineExtensionAmount currencyID=\"PEN\">1000.00</cbc:LineExtensionAmount>\n"
-                                +
-                                "        <cac:PricingReference>\n" +
-                                "            <cac:AlternativeConditionPrice>\n" +
-                                "                <cbc:PriceAmount currencyID=\"PEN\">120.00</cbc:PriceAmount>\n"
-                                +
-                                "                <cbc:PriceTypeCode listAgencyName=\"PE:SUNAT\" listName=\"Tipo de Precio\" listURI=\"urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo16\">01</cbc:PriceTypeCode>\n"
-                                +
-                                "            </cac:AlternativeConditionPrice>\n" +
-                                "        </cac:PricingReference>\n" +
-                                "        <cac:TaxTotal>\n" +
-                                "            <cbc:TaxAmount currencyID=\"PEN\">200.00</cbc:TaxAmount>\n"
-                                +
-                                "            <cac:TaxSubtotal>\n" +
-                                "                <cbc:TaxableAmount currencyID=\"PEN\">1000.00</cbc:TaxableAmount>\n"
-                                +
-                                "                <cbc:TaxAmount currencyID=\"PEN\">200.00</cbc:TaxAmount>\n"
-                                +
-                                "                <cac:TaxCategory>\n" +
-                                "                    <cbc:ID schemeAgencyName=\"United Nations Economic Commission for Europe\" schemeID=\"UN/ECE 5305\" schemeName=\"Tax Category Identifier\">S</cbc:ID>\n"
-                                +
-                                "                    <cbc:Percent>20.00</cbc:Percent>\n"
-                                +
-                                "                    <cbc:TaxExemptionReasonCode listAgencyName=\"PE:SUNAT\" listName=\"Afectacion del IGV\" listURI=\"urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo07\">10</cbc:TaxExemptionReasonCode>\n"
-                                +
-                                "                    <cac:TaxScheme>\n" +
-                                "                        <cbc:ID schemeAgencyName=\"PE:SUNAT\" schemeID=\"UN/ECE 5153\" schemeName=\"Codigo de tributos\">1000</cbc:ID>\n"
-                                +
-                                "                        <cbc:Name>IGV</cbc:Name>\n" +
-                                "                        <cbc:TaxTypeCode>VAT</cbc:TaxTypeCode>\n"
-                                +
-                                "                    </cac:TaxScheme>\n" +
-                                "                </cac:TaxCategory>\n" +
-                                "            </cac:TaxSubtotal>\n" +
-                                "        </cac:TaxTotal>\n" +
-                                "        <cac:Item>\n" +
-                                "            <cbc:Description><![CDATA[Item1]]></cbc:Description>\n"
-                                +
-                                "        </cac:Item>\n" +
-                                "        <cac:Price>\n" +
-                                "            <cbc:PriceAmount currencyID=\"PEN\">100.00</cbc:PriceAmount>\n"
-                                +
-                                "        </cac:Price>\n" +
-                                "    </cac:InvoiceLine>\n" +
-                                "</Invoice>\n"));
+                                "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n" +
+                                        "<Invoice xmlns=\"urn:oasis:names:specification:ubl:schema:xsd:Invoice-2\"\n" +
+                                        "         xmlns:cac=\"urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2\"\n" +
+                                        "         xmlns:cbc=\"urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2\"\n" +
+                                        "         xmlns:ccts=\"urn:un:unece:uncefact:documentation:2\"\n" +
+                                        "         xmlns:cec=\"urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2\"\n" +
+                                        "         xmlns:ds=\"http://www.w3.org/2000/09/xmldsig#\"\n" +
+                                        "         xmlns:ext=\"urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2\"\n" +
+                                        "         xmlns:qdt=\"urn:oasis:names:specification:ubl:schema:xsd:QualifiedDatatypes-2\"\n" +
+                                        "         xmlns:sac=\"urn:sunat:names:specification:ubl:peru:schema:xsd:SunatAggregateComponents-1\"\n" +
+                                        "         xmlns:udt=\"urn:un:unece:uncefact:data:specification:UnqualifiedDataTypesSchemaModule:2\"\n" +
+                                        "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
+                                        ">\n" +
+                                        "    <ext:UBLExtensions>\n" +
+                                        "        <ext:UBLExtension>\n" +
+                                        "            <ext:ExtensionContent/>\n" +
+                                        "        </ext:UBLExtension>\n" +
+                                        "    </ext:UBLExtensions>\n" +
+                                        "    <cbc:UBLVersionID>2.1</cbc:UBLVersionID>\n" +
+                                        "    <cbc:CustomizationID>2.0</cbc:CustomizationID>\n" +
+                                        "    <cbc:ID>F001-1</cbc:ID>\n" +
+                                        "    <cbc:IssueDate>2022-01-25</cbc:IssueDate>\n" +
+                                        "    <cbc:InvoiceTypeCode listID=\"0101\" listAgencyName=\"PE:SUNAT\" listName=\"Tipo de Documento\" listURI=\"urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo01\">01</cbc:InvoiceTypeCode>\n" +
+                                        "    <cbc:DocumentCurrencyCode listID=\"ISO 4217 Alpha\" listAgencyName=\"United Nations Economic Commission for Europe\" listName=\"Currency\">PEN</cbc:DocumentCurrencyCode>\n" +
+                                        "    <cac:Signature>\n" +
+                                        "        <cbc:ID>12345678912</cbc:ID>\n" +
+                                        "        <cac:SignatoryParty>\n" +
+                                        "            <cac:PartyIdentification>\n" +
+                                        "                <cbc:ID>12345678912</cbc:ID>\n" +
+                                        "            </cac:PartyIdentification>\n" +
+                                        "            <cac:PartyName>\n" +
+                                        "                <cbc:Name><![CDATA[Softgreen S.A.C.]]></cbc:Name>\n" +
+                                        "            </cac:PartyName>\n" +
+                                        "        </cac:SignatoryParty>\n" +
+                                        "        <cac:DigitalSignatureAttachment>\n" +
+                                        "            <cac:ExternalReference>\n" +
+                                        "                <cbc:URI>#PROJECT-OPENUBL-SIGN</cbc:URI>\n" +
+                                        "            </cac:ExternalReference>\n" +
+                                        "        </cac:DigitalSignatureAttachment>\n" +
+                                        "    </cac:Signature>\n" +
+                                        "    <cac:AccountingSupplierParty>\n" +
+                                        "        <cac:Party>\n" +
+                                        "            <cac:PartyIdentification>\n" +
+                                        "                <cbc:ID schemeID=\"6\" schemeAgencyName=\"PE:SUNAT\" schemeName=\"Documento de Identidad\" schemeURI=\"urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06\">12345678912</cbc:ID>\n" +
+                                        "            </cac:PartyIdentification>\n" +
+                                        "            <cac:PartyLegalEntity>\n" +
+                                        "                <cbc:RegistrationName><![CDATA[Softgreen S.A.C.]]></cbc:RegistrationName>\n" +
+                                        "                <cac:RegistrationAddress>\n" +
+                                        "                    <cbc:AddressTypeCode>0000</cbc:AddressTypeCode>\n" +
+                                        "                </cac:RegistrationAddress>\n" +
+                                        "            </cac:PartyLegalEntity>\n" +
+                                        "        </cac:Party>\n" +
+                                        "    </cac:AccountingSupplierParty>\n" +
+                                        "    <cac:AccountingCustomerParty>\n" +
+                                        "        <cac:Party>\n" +
+                                        "            <cac:PartyIdentification>\n" +
+                                        "                <cbc:ID schemeID=\"6\" schemeAgencyName=\"PE:SUNAT\" schemeName=\"Documento de Identidad\" schemeURI=\"urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06\">12121212121</cbc:ID>\n" +
+                                        "            </cac:PartyIdentification>\n" +
+                                        "            <cac:PartyLegalEntity>\n" +
+                                        "                <cbc:RegistrationName><![CDATA[Carlos Feria]]></cbc:RegistrationName>\n" +
+                                        "            </cac:PartyLegalEntity>\n" +
+                                        "        </cac:Party>\n" +
+                                        "    </cac:AccountingCustomerParty>\n" +
+                                        "    <cac:PaymentTerms>\n" +
+                                        "        <cbc:ID>FormaPago</cbc:ID>\n" +
+                                        "        <cbc:PaymentMeansID>Contado</cbc:PaymentMeansID>\n" +
+                                        "    </cac:PaymentTerms>\n" +
+                                        "    <cac:TaxTotal>\n" +
+                                        "        <cbc:TaxAmount currencyID=\"PEN\">200.00</cbc:TaxAmount>\n" +
+                                        "        <cac:TaxSubtotal>\n" +
+                                        "            <cbc:TaxableAmount currencyID=\"PEN\">1000.00</cbc:TaxableAmount>\n" +
+                                        "            <cbc:TaxAmount currencyID=\"PEN\">200.00</cbc:TaxAmount>\n" +
+                                        "            <cac:TaxCategory>\n" +
+                                        "                <cbc:ID schemeAgencyName=\"United Nations Economic Commission for Europe\" schemeID=\"UN/ECE 5305\" schemeName=\"Tax Category Identifie\">S</cbc:ID>\n" +
+                                        "                <cac:TaxScheme>\n" +
+                                        "                    <cbc:ID schemeAgencyName=\"PE:SUNAT\" schemeID=\"UN/ECE 5153\" schemeName=\"Codigo de tributos\">1000</cbc:ID>\n" +
+                                        "                    <cbc:Name>IGV</cbc:Name>\n" +
+                                        "                    <cbc:TaxTypeCode>VAT</cbc:TaxTypeCode>\n" +
+                                        "                </cac:TaxScheme>\n" +
+                                        "            </cac:TaxCategory>\n" +
+                                        "        </cac:TaxSubtotal>\n" +
+                                        "    </cac:TaxTotal>\n" +
+                                        "    <cac:LegalMonetaryTotal>\n" +
+                                        "        <cbc:LineExtensionAmount currencyID=\"PEN\">1000.00</cbc:LineExtensionAmount>\n" +
+                                        "        <cbc:TaxInclusiveAmount currencyID=\"PEN\">1200.00</cbc:TaxInclusiveAmount>\n" +
+                                        "        <cbc:AllowanceTotalAmount currencyID=\"PEN\">0</cbc:AllowanceTotalAmount>\n" +
+                                        "        <cbc:PrepaidAmount currencyID=\"PEN\">0</cbc:PrepaidAmount>\n" +
+                                        "        <cbc:PayableAmount currencyID=\"PEN\">1200.00</cbc:PayableAmount>\n" +
+                                        "    </cac:LegalMonetaryTotal>\n" +
+                                        "    <cac:InvoiceLine>\n" +
+                                        "        <cbc:ID>1</cbc:ID>\n" +
+                                        "        <cbc:InvoicedQuantity unitCode=\"NIU\" unitCodeListAgencyName=\"United Nations Economic Commission for Europe\" unitCodeListID=\"UN/ECE rec 20\">10</cbc:InvoicedQuantity>\n" +
+                                        "        <cbc:LineExtensionAmount currencyID=\"PEN\">1000.00</cbc:LineExtensionAmount>\n" +
+                                        "        <cac:PricingReference>\n" +
+                                        "            <cac:AlternativeConditionPrice>\n" +
+                                        "                <cbc:PriceAmount currencyID=\"PEN\">120.00</cbc:PriceAmount>\n" +
+                                        "                <cbc:PriceTypeCode listAgencyName=\"PE:SUNAT\" listName=\"Tipo de Precio\" listURI=\"urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo16\">01</cbc:PriceTypeCode>\n" +
+                                        "            </cac:AlternativeConditionPrice>\n" +
+                                        "        </cac:PricingReference>\n" +
+                                        "        <cac:TaxTotal>\n" +
+                                        "            <cbc:TaxAmount currencyID=\"PEN\">200.00</cbc:TaxAmount>\n" +
+                                        "            <cac:TaxSubtotal>\n" +
+                                        "                <cbc:TaxableAmount currencyID=\"PEN\">1000.00</cbc:TaxableAmount>\n" +
+                                        "                <cbc:TaxAmount currencyID=\"PEN\">200.00</cbc:TaxAmount>\n" +
+                                        "                <cac:TaxCategory>\n" +
+                                        "                    <cbc:ID schemeAgencyName=\"United Nations Economic Commission for Europe\" schemeID=\"UN/ECE 5305\" schemeName=\"Tax Category Identifier\">S</cbc:ID>\n" +
+                                        "                    <cbc:Percent>20.00</cbc:Percent>\n" +
+                                        "                    <cbc:TaxExemptionReasonCode listAgencyName=\"PE:SUNAT\" listName=\"Afectacion del IGV\" listURI=\"urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo07\">10</cbc:TaxExemptionReasonCode>\n" +
+                                        "                    <cac:TaxScheme>\n" +
+                                        "                        <cbc:ID schemeAgencyName=\"PE:SUNAT\" schemeID=\"UN/ECE 5153\" schemeName=\"Codigo de tributos\">1000</cbc:ID>\n" +
+                                        "                        <cbc:Name>IGV</cbc:Name>\n" +
+                                        "                        <cbc:TaxTypeCode>VAT</cbc:TaxTypeCode>\n" +
+                                        "                    </cac:TaxScheme>\n" +
+                                        "                </cac:TaxCategory>\n" +
+                                        "            </cac:TaxSubtotal>\n" +
+                                        "        </cac:TaxTotal>\n" +
+                                        "        <cac:Item>\n" +
+                                        "            <cbc:Description><![CDATA[Item1]]></cbc:Description>\n" +
+                                        "        </cac:Item>\n" +
+                                        "        <cac:Price>\n" +
+                                        "            <cbc:PriceAmount currencyID=\"PEN\">100.00</cbc:PriceAmount>\n" +
+                                        "        </cac:Price>\n" +
+                                        "    </cac:InvoiceLine>\n" +
+                                        "</Invoice>\n"
+                        )
+                );
     }
 
     @Test
@@ -318,17 +275,20 @@ public class QuarkusXbuilderResourceTest {
                 .proveedor(Proveedor.builder()
                         .ruc("12345678912")
                         .razonSocial("Softgreen S.A.C.")
-                        .build())
+                        .build()
+                )
                 .cliente(Cliente.builder()
                         .nombre("Carlos Feria")
                         .numeroDocumentoIdentidad("12121212121")
                         .tipoDocumentoIdentidad(Catalog6.RUC.toString())
-                        .build())
+                        .build()
+                )
                 .detalle(DocumentoVentaDetalle.builder()
                         .descripcion("Item1")
                         .cantidad(new BigDecimal("10"))
                         .precio(new BigDecimal("100"))
-                        .build())
+                        .build()
+                )
                 .build();
 
         given()
@@ -339,178 +299,136 @@ public class QuarkusXbuilderResourceTest {
                 .then()
                 .statusCode(200)
                 .body(is(
-                        "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n" +
-                                "<CreditNote xmlns=\"urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2\"\n"
-                                +
-                                "         xmlns:cac=\"urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2\"\n"
-                                +
-                                "         xmlns:cbc=\"urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2\"\n"
-                                +
-                                "         xmlns:ccts=\"urn:un:unece:uncefact:documentation:2\"\n"
-                                +
-                                "         xmlns:cec=\"urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2\"\n"
-                                +
-                                "         xmlns:ds=\"http://www.w3.org/2000/09/xmldsig#\"\n"
-                                +
-                                "         xmlns:ext=\"urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2\"\n"
-                                +
-                                "         xmlns:qdt=\"urn:oasis:names:specification:ubl:schema:xsd:QualifiedDatatypes-2\"\n"
-                                +
-                                "         xmlns:sac=\"urn:sunat:names:specification:ubl:peru:schema:xsd:SunatAggregateComponents-1\"\n"
-                                +
-                                "         xmlns:udt=\"urn:un:unece:uncefact:data:specification:UnqualifiedDataTypesSchemaModule:2\"\n"
-                                +
-                                "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-                                +
-                                ">\n" +
-                                "    <ext:UBLExtensions>\n" +
-                                "        <ext:UBLExtension>\n" +
-                                "            <ext:ExtensionContent/>\n" +
-                                "        </ext:UBLExtension>\n" +
-                                "    </ext:UBLExtensions>\n" +
-                                "    <cbc:UBLVersionID>2.1</cbc:UBLVersionID>\n" +
-                                "    <cbc:CustomizationID>2.0</cbc:CustomizationID>\n" +
-                                "    <cbc:ID>FC01-1</cbc:ID>\n" +
-                                "    <cbc:IssueDate>2022-01-25</cbc:IssueDate>\n" +
-                                "    <cbc:DocumentCurrencyCode listID=\"ISO 4217 Alpha\" listAgencyName=\"United Nations Economic Commission for Europe\" listName=\"Currency\">PEN</cbc:DocumentCurrencyCode>\n"
-                                +
-                                "    <cac:DiscrepancyResponse>\n" +
-                                "        <cbc:ReferenceID>F001-1</cbc:ReferenceID>\n" +
-                                "        <cbc:ResponseCode>01</cbc:ResponseCode>\n" +
-                                "        <cbc:Description><![CDATA[mi sustento]]></cbc:Description>\n"
-                                +
-                                "    </cac:DiscrepancyResponse>\n" +
-                                "    <cac:BillingReference>\n" +
-                                "        <cac:InvoiceDocumentReference>\n" +
-                                "            <cbc:ID>F001-1</cbc:ID>\n" +
-                                "            <cbc:DocumentTypeCode listAgencyName=\"PE:SUNAT\" listName=\"Tipo de Documento\" listURI=\"urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo01\">01</cbc:DocumentTypeCode>\n"
-                                +
-                                "        </cac:InvoiceDocumentReference>\n" +
-                                "    </cac:BillingReference>\n" +
-                                "    <cac:Signature>\n" +
-                                "        <cbc:ID>12345678912</cbc:ID>\n" +
-                                "        <cac:SignatoryParty>\n" +
-                                "            <cac:PartyIdentification>\n" +
-                                "                <cbc:ID>12345678912</cbc:ID>\n" +
-                                "            </cac:PartyIdentification>\n" +
-                                "            <cac:PartyName>\n" +
-                                "                <cbc:Name><![CDATA[Softgreen S.A.C.]]></cbc:Name>\n"
-                                +
-                                "            </cac:PartyName>\n" +
-                                "        </cac:SignatoryParty>\n" +
-                                "        <cac:DigitalSignatureAttachment>\n" +
-                                "            <cac:ExternalReference>\n" +
-                                "                <cbc:URI>#PROJECT-OPENUBL-SIGN</cbc:URI>\n"
-                                +
-                                "            </cac:ExternalReference>\n" +
-                                "        </cac:DigitalSignatureAttachment>\n" +
-                                "    </cac:Signature>\n" +
-                                "    <cac:AccountingSupplierParty>\n" +
-                                "        <cac:Party>\n" +
-                                "            <cac:PartyIdentification>\n" +
-                                "                <cbc:ID schemeID=\"6\" schemeAgencyName=\"PE:SUNAT\" schemeName=\"Documento de Identidad\" schemeURI=\"urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06\">12345678912</cbc:ID>\n"
-                                +
-                                "            </cac:PartyIdentification>\n" +
-                                "            <cac:PartyLegalEntity>\n" +
-                                "                <cbc:RegistrationName><![CDATA[Softgreen S.A.C.]]></cbc:RegistrationName>\n"
-                                +
-                                "                <cac:RegistrationAddress>\n" +
-                                "                    <cbc:AddressTypeCode>0000</cbc:AddressTypeCode>\n"
-                                +
-                                "                </cac:RegistrationAddress>\n" +
-                                "            </cac:PartyLegalEntity>\n" +
-                                "        </cac:Party>\n" +
-                                "    </cac:AccountingSupplierParty>\n" +
-                                "    <cac:AccountingCustomerParty>\n" +
-                                "        <cac:Party>\n" +
-                                "            <cac:PartyIdentification>\n" +
-                                "                <cbc:ID schemeID=\"6\" schemeAgencyName=\"PE:SUNAT\" schemeName=\"Documento de Identidad\" schemeURI=\"urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06\">12121212121</cbc:ID>\n"
-                                +
-                                "            </cac:PartyIdentification>\n" +
-                                "            <cac:PartyLegalEntity>\n" +
-                                "                <cbc:RegistrationName><![CDATA[Carlos Feria]]></cbc:RegistrationName>\n"
-                                +
-                                "            </cac:PartyLegalEntity>\n" +
-                                "        </cac:Party>\n" +
-                                "    </cac:AccountingCustomerParty>\n" +
-                                "    <cac:TaxTotal>\n" +
-                                "        <cbc:TaxAmount currencyID=\"PEN\">200.00</cbc:TaxAmount>\n"
-                                +
-                                "        <cac:TaxSubtotal>\n" +
-                                "            <cbc:TaxableAmount currencyID=\"PEN\">1000.00</cbc:TaxableAmount>\n"
-                                +
-                                "            <cbc:TaxAmount currencyID=\"PEN\">200.00</cbc:TaxAmount>\n"
-                                +
-                                "            <cac:TaxCategory>\n" +
-                                "                <cbc:ID schemeAgencyName=\"United Nations Economic Commission for Europe\" schemeID=\"UN/ECE 5305\" schemeName=\"Tax Category Identifie\">S</cbc:ID>\n"
-                                +
-                                "                <cac:TaxScheme>\n" +
-                                "                    <cbc:ID schemeAgencyName=\"PE:SUNAT\" schemeID=\"UN/ECE 5153\" schemeName=\"Codigo de tributos\">1000</cbc:ID>\n"
-                                +
-                                "                    <cbc:Name>IGV</cbc:Name>\n" +
-                                "                    <cbc:TaxTypeCode>VAT</cbc:TaxTypeCode>\n"
-                                +
-                                "                </cac:TaxScheme>\n" +
-                                "            </cac:TaxCategory>\n" +
-                                "        </cac:TaxSubtotal>\n" +
-                                "    </cac:TaxTotal>\n" +
-                                "    <cac:LegalMonetaryTotal>\n" +
-                                "        <cbc:LineExtensionAmount currencyID=\"PEN\">1000.00</cbc:LineExtensionAmount>\n"
-                                +
-                                "        <cbc:TaxInclusiveAmount currencyID=\"PEN\">1200.00</cbc:TaxInclusiveAmount>\n"
-                                +
-                                "        <cbc:PayableAmount currencyID=\"PEN\">1200.00</cbc:PayableAmount>\n"
-                                +
-                                "    </cac:LegalMonetaryTotal>\n" +
-                                "    <cac:CreditNoteLine>\n" +
-                                "        <cbc:ID>1</cbc:ID>\n" +
-                                "        <cbc:CreditedQuantity unitCode=\"NIU\" unitCodeListAgencyName=\"United Nations Economic Commission for Europe\" unitCodeListID=\"UN/ECE rec 20\">10</cbc:CreditedQuantity>\n"
-                                +
-                                "        <cbc:LineExtensionAmount currencyID=\"PEN\">1000.00</cbc:LineExtensionAmount>\n"
-                                +
-                                "        <cac:PricingReference>\n" +
-                                "            <cac:AlternativeConditionPrice>\n" +
-                                "                <cbc:PriceAmount currencyID=\"PEN\">120.00</cbc:PriceAmount>\n"
-                                +
-                                "                <cbc:PriceTypeCode listAgencyName=\"PE:SUNAT\" listName=\"Tipo de Precio\" listURI=\"urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo16\">01</cbc:PriceTypeCode>\n"
-                                +
-                                "            </cac:AlternativeConditionPrice>\n" +
-                                "        </cac:PricingReference>\n" +
-                                "        <cac:TaxTotal>\n" +
-                                "            <cbc:TaxAmount currencyID=\"PEN\">200.00</cbc:TaxAmount>\n"
-                                +
-                                "            <cac:TaxSubtotal>\n" +
-                                "                <cbc:TaxableAmount currencyID=\"PEN\">1000.00</cbc:TaxableAmount>\n"
-                                +
-                                "                <cbc:TaxAmount currencyID=\"PEN\">200.00</cbc:TaxAmount>\n"
-                                +
-                                "                <cac:TaxCategory>\n" +
-                                "                    <cbc:ID schemeAgencyName=\"United Nations Economic Commission for Europe\" schemeID=\"UN/ECE 5305\" schemeName=\"Tax Category Identifier\">S</cbc:ID>\n"
-                                +
-                                "                    <cbc:Percent>20.00</cbc:Percent>\n"
-                                +
-                                "                    <cbc:TaxExemptionReasonCode listAgencyName=\"PE:SUNAT\" listName=\"Afectacion del IGV\" listURI=\"urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo07\">10</cbc:TaxExemptionReasonCode>\n"
-                                +
-                                "                    <cac:TaxScheme>\n" +
-                                "                        <cbc:ID schemeAgencyName=\"PE:SUNAT\" schemeID=\"UN/ECE 5153\" schemeName=\"Codigo de tributos\">1000</cbc:ID>\n"
-                                +
-                                "                        <cbc:Name>IGV</cbc:Name>\n" +
-                                "                        <cbc:TaxTypeCode>VAT</cbc:TaxTypeCode>\n"
-                                +
-                                "                    </cac:TaxScheme>\n" +
-                                "                </cac:TaxCategory>\n" +
-                                "            </cac:TaxSubtotal>\n" +
-                                "        </cac:TaxTotal>\n" +
-                                "        <cac:Item>\n" +
-                                "            <cbc:Description><![CDATA[Item1]]></cbc:Description>\n"
-                                +
-                                "        </cac:Item>\n" +
-                                "        <cac:Price>\n" +
-                                "            <cbc:PriceAmount currencyID=\"PEN\">100.00</cbc:PriceAmount>\n"
-                                +
-                                "        </cac:Price>\n" +
-                                "    </cac:CreditNoteLine>\n" +
-                                "</CreditNote>\n"));
+                                "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n" +
+                                        "<CreditNote xmlns=\"urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2\"\n" +
+                                        "         xmlns:cac=\"urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2\"\n" +
+                                        "         xmlns:cbc=\"urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2\"\n" +
+                                        "         xmlns:ccts=\"urn:un:unece:uncefact:documentation:2\"\n" +
+                                        "         xmlns:cec=\"urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2\"\n" +
+                                        "         xmlns:ds=\"http://www.w3.org/2000/09/xmldsig#\"\n" +
+                                        "         xmlns:ext=\"urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2\"\n" +
+                                        "         xmlns:qdt=\"urn:oasis:names:specification:ubl:schema:xsd:QualifiedDatatypes-2\"\n" +
+                                        "         xmlns:sac=\"urn:sunat:names:specification:ubl:peru:schema:xsd:SunatAggregateComponents-1\"\n" +
+                                        "         xmlns:udt=\"urn:un:unece:uncefact:data:specification:UnqualifiedDataTypesSchemaModule:2\"\n" +
+                                        "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
+                                        ">\n" +
+                                        "    <ext:UBLExtensions>\n" +
+                                        "        <ext:UBLExtension>\n" +
+                                        "            <ext:ExtensionContent/>\n" +
+                                        "        </ext:UBLExtension>\n" +
+                                        "    </ext:UBLExtensions>\n" +
+                                        "    <cbc:UBLVersionID>2.1</cbc:UBLVersionID>\n" +
+                                        "    <cbc:CustomizationID>2.0</cbc:CustomizationID>\n" +
+                                        "    <cbc:ID>FC01-1</cbc:ID>\n" +
+                                        "    <cbc:IssueDate>2022-01-25</cbc:IssueDate>\n" +
+                                        "    <cbc:DocumentCurrencyCode listID=\"ISO 4217 Alpha\" listAgencyName=\"United Nations Economic Commission for Europe\" listName=\"Currency\">PEN</cbc:DocumentCurrencyCode>\n" +
+                                        "    <cac:DiscrepancyResponse>\n" +
+                                        "        <cbc:ReferenceID>F001-1</cbc:ReferenceID>\n" +
+                                        "        <cbc:ResponseCode>01</cbc:ResponseCode>\n" +
+                                        "        <cbc:Description><![CDATA[mi sustento]]></cbc:Description>\n" +
+                                        "    </cac:DiscrepancyResponse>\n" +
+                                        "    <cac:BillingReference>\n" +
+                                        "        <cac:InvoiceDocumentReference>\n" +
+                                        "            <cbc:ID>F001-1</cbc:ID>\n" +
+                                        "            <cbc:DocumentTypeCode listAgencyName=\"PE:SUNAT\" listName=\"Tipo de Documento\" listURI=\"urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo01\">01</cbc:DocumentTypeCode>\n" +
+                                        "        </cac:InvoiceDocumentReference>\n" +
+                                        "    </cac:BillingReference>\n" +
+                                        "    <cac:Signature>\n" +
+                                        "        <cbc:ID>12345678912</cbc:ID>\n" +
+                                        "        <cac:SignatoryParty>\n" +
+                                        "            <cac:PartyIdentification>\n" +
+                                        "                <cbc:ID>12345678912</cbc:ID>\n" +
+                                        "            </cac:PartyIdentification>\n" +
+                                        "            <cac:PartyName>\n" +
+                                        "                <cbc:Name><![CDATA[Softgreen S.A.C.]]></cbc:Name>\n" +
+                                        "            </cac:PartyName>\n" +
+                                        "        </cac:SignatoryParty>\n" +
+                                        "        <cac:DigitalSignatureAttachment>\n" +
+                                        "            <cac:ExternalReference>\n" +
+                                        "                <cbc:URI>#PROJECT-OPENUBL-SIGN</cbc:URI>\n" +
+                                        "            </cac:ExternalReference>\n" +
+                                        "        </cac:DigitalSignatureAttachment>\n" +
+                                        "    </cac:Signature>\n" +
+                                        "    <cac:AccountingSupplierParty>\n" +
+                                        "        <cac:Party>\n" +
+                                        "            <cac:PartyIdentification>\n" +
+                                        "                <cbc:ID schemeID=\"6\" schemeAgencyName=\"PE:SUNAT\" schemeName=\"Documento de Identidad\" schemeURI=\"urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06\">12345678912</cbc:ID>\n" +
+                                        "            </cac:PartyIdentification>\n" +
+                                        "            <cac:PartyLegalEntity>\n" +
+                                        "                <cbc:RegistrationName><![CDATA[Softgreen S.A.C.]]></cbc:RegistrationName>\n" +
+                                        "                <cac:RegistrationAddress>\n" +
+                                        "                    <cbc:AddressTypeCode>0000</cbc:AddressTypeCode>\n" +
+                                        "                </cac:RegistrationAddress>\n" +
+                                        "            </cac:PartyLegalEntity>\n" +
+                                        "        </cac:Party>\n" +
+                                        "    </cac:AccountingSupplierParty>\n" +
+                                        "    <cac:AccountingCustomerParty>\n" +
+                                        "        <cac:Party>\n" +
+                                        "            <cac:PartyIdentification>\n" +
+                                        "                <cbc:ID schemeID=\"6\" schemeAgencyName=\"PE:SUNAT\" schemeName=\"Documento de Identidad\" schemeURI=\"urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06\">12121212121</cbc:ID>\n" +
+                                        "            </cac:PartyIdentification>\n" +
+                                        "            <cac:PartyLegalEntity>\n" +
+                                        "                <cbc:RegistrationName><![CDATA[Carlos Feria]]></cbc:RegistrationName>\n" +
+                                        "            </cac:PartyLegalEntity>\n" +
+                                        "        </cac:Party>\n" +
+                                        "    </cac:AccountingCustomerParty>\n" +
+                                        "    <cac:TaxTotal>\n" +
+                                        "        <cbc:TaxAmount currencyID=\"PEN\">200.00</cbc:TaxAmount>\n" +
+                                        "        <cac:TaxSubtotal>\n" +
+                                        "            <cbc:TaxableAmount currencyID=\"PEN\">1000.00</cbc:TaxableAmount>\n" +
+                                        "            <cbc:TaxAmount currencyID=\"PEN\">200.00</cbc:TaxAmount>\n" +
+                                        "            <cac:TaxCategory>\n" +
+                                        "                <cbc:ID schemeAgencyName=\"United Nations Economic Commission for Europe\" schemeID=\"UN/ECE 5305\" schemeName=\"Tax Category Identifie\">S</cbc:ID>\n" +
+                                        "                <cac:TaxScheme>\n" +
+                                        "                    <cbc:ID schemeAgencyName=\"PE:SUNAT\" schemeID=\"UN/ECE 5153\" schemeName=\"Codigo de tributos\">1000</cbc:ID>\n" +
+                                        "                    <cbc:Name>IGV</cbc:Name>\n" +
+                                        "                    <cbc:TaxTypeCode>VAT</cbc:TaxTypeCode>\n" +
+                                        "                </cac:TaxScheme>\n" +
+                                        "            </cac:TaxCategory>\n" +
+                                        "        </cac:TaxSubtotal>\n" +
+                                        "    </cac:TaxTotal>\n" +
+                                        "    <cac:LegalMonetaryTotal>\n" +
+                                        "        <cbc:LineExtensionAmount currencyID=\"PEN\">1000.00</cbc:LineExtensionAmount>\n" +
+                                        "        <cbc:TaxInclusiveAmount currencyID=\"PEN\">1200.00</cbc:TaxInclusiveAmount>\n" +
+                                        "        <cbc:PayableAmount currencyID=\"PEN\">1200.00</cbc:PayableAmount>\n" +
+                                        "    </cac:LegalMonetaryTotal>\n" +
+                                        "    <cac:CreditNoteLine>\n" +
+                                        "        <cbc:ID>1</cbc:ID>\n" +
+                                        "        <cbc:CreditedQuantity unitCode=\"NIU\" unitCodeListAgencyName=\"United Nations Economic Commission for Europe\" unitCodeListID=\"UN/ECE rec 20\">10</cbc:CreditedQuantity>\n" +
+                                        "        <cbc:LineExtensionAmount currencyID=\"PEN\">1000.00</cbc:LineExtensionAmount>\n" +
+                                        "        <cac:PricingReference>\n" +
+                                        "            <cac:AlternativeConditionPrice>\n" +
+                                        "                <cbc:PriceAmount currencyID=\"PEN\">120.00</cbc:PriceAmount>\n" +
+                                        "                <cbc:PriceTypeCode listAgencyName=\"PE:SUNAT\" listName=\"Tipo de Precio\" listURI=\"urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo16\">01</cbc:PriceTypeCode>\n" +
+                                        "            </cac:AlternativeConditionPrice>\n" +
+                                        "        </cac:PricingReference>\n" +
+                                        "        <cac:TaxTotal>\n" +
+                                        "            <cbc:TaxAmount currencyID=\"PEN\">200.00</cbc:TaxAmount>\n" +
+                                        "            <cac:TaxSubtotal>\n" +
+                                        "                <cbc:TaxableAmount currencyID=\"PEN\">1000.00</cbc:TaxableAmount>\n" +
+                                        "                <cbc:TaxAmount currencyID=\"PEN\">200.00</cbc:TaxAmount>\n" +
+                                        "                <cac:TaxCategory>\n" +
+                                        "                    <cbc:ID schemeAgencyName=\"United Nations Economic Commission for Europe\" schemeID=\"UN/ECE 5305\" schemeName=\"Tax Category Identifier\">S</cbc:ID>\n" +
+                                        "                    <cbc:Percent>20.00</cbc:Percent>\n" +
+                                        "                    <cbc:TaxExemptionReasonCode listAgencyName=\"PE:SUNAT\" listName=\"Afectacion del IGV\" listURI=\"urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo07\">10</cbc:TaxExemptionReasonCode>\n" +
+                                        "                    <cac:TaxScheme>\n" +
+                                        "                        <cbc:ID schemeAgencyName=\"PE:SUNAT\" schemeID=\"UN/ECE 5153\" schemeName=\"Codigo de tributos\">1000</cbc:ID>\n" +
+                                        "                        <cbc:Name>IGV</cbc:Name>\n" +
+                                        "                        <cbc:TaxTypeCode>VAT</cbc:TaxTypeCode>\n" +
+                                        "                    </cac:TaxScheme>\n" +
+                                        "                </cac:TaxCategory>\n" +
+                                        "            </cac:TaxSubtotal>\n" +
+                                        "        </cac:TaxTotal>\n" +
+                                        "        <cac:Item>\n" +
+                                        "            <cbc:Description><![CDATA[Item1]]></cbc:Description>\n" +
+                                        "        </cac:Item>\n" +
+                                        "        <cac:Price>\n" +
+                                        "            <cbc:PriceAmount currencyID=\"PEN\">100.00</cbc:PriceAmount>\n" +
+                                        "        </cac:Price>\n" +
+                                        "    </cac:CreditNoteLine>\n" +
+                                        "</CreditNote>\n"
+                        )
+                );
     }
 
     @Test
@@ -523,17 +441,20 @@ public class QuarkusXbuilderResourceTest {
                 .proveedor(Proveedor.builder()
                         .ruc("12345678912")
                         .razonSocial("Softgreen S.A.C.")
-                        .build())
+                        .build()
+                )
                 .cliente(Cliente.builder()
                         .nombre("Carlos Feria")
                         .numeroDocumentoIdentidad("12121212121")
                         .tipoDocumentoIdentidad(Catalog6.RUC.toString())
-                        .build())
+                        .build()
+                )
                 .detalle(DocumentoVentaDetalle.builder()
                         .descripcion("Item1")
                         .cantidad(new BigDecimal("10"))
                         .precio(new BigDecimal("100"))
-                        .build())
+                        .build()
+                )
                 .build();
 
         given()
@@ -544,178 +465,136 @@ public class QuarkusXbuilderResourceTest {
                 .then()
                 .statusCode(200)
                 .body(is(
-                        "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n" +
-                                "<DebitNote xmlns=\"urn:oasis:names:specification:ubl:schema:xsd:DebitNote-2\"\n"
-                                +
-                                "         xmlns:cac=\"urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2\"\n"
-                                +
-                                "         xmlns:cbc=\"urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2\"\n"
-                                +
-                                "         xmlns:ccts=\"urn:un:unece:uncefact:documentation:2\"\n"
-                                +
-                                "         xmlns:cec=\"urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2\"\n"
-                                +
-                                "         xmlns:ds=\"http://www.w3.org/2000/09/xmldsig#\"\n"
-                                +
-                                "         xmlns:ext=\"urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2\"\n"
-                                +
-                                "         xmlns:qdt=\"urn:oasis:names:specification:ubl:schema:xsd:QualifiedDatatypes-2\"\n"
-                                +
-                                "         xmlns:sac=\"urn:sunat:names:specification:ubl:peru:schema:xsd:SunatAggregateComponents-1\"\n"
-                                +
-                                "         xmlns:udt=\"urn:un:unece:uncefact:data:specification:UnqualifiedDataTypesSchemaModule:2\"\n"
-                                +
-                                "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-                                +
-                                ">\n" +
-                                "    <ext:UBLExtensions>\n" +
-                                "        <ext:UBLExtension>\n" +
-                                "            <ext:ExtensionContent/>\n" +
-                                "        </ext:UBLExtension>\n" +
-                                "    </ext:UBLExtensions>\n" +
-                                "    <cbc:UBLVersionID>2.1</cbc:UBLVersionID>\n" +
-                                "    <cbc:CustomizationID>2.0</cbc:CustomizationID>\n" +
-                                "    <cbc:ID>FD01-1</cbc:ID>\n" +
-                                "    <cbc:IssueDate>2022-01-25</cbc:IssueDate>\n" +
-                                "    <cbc:DocumentCurrencyCode listID=\"ISO 4217 Alpha\" listAgencyName=\"United Nations Economic Commission for Europe\" listName=\"Currency\">PEN</cbc:DocumentCurrencyCode>\n"
-                                +
-                                "    <cac:DiscrepancyResponse>\n" +
-                                "        <cbc:ReferenceID>F001-1</cbc:ReferenceID>\n" +
-                                "        <cbc:ResponseCode>01</cbc:ResponseCode>\n" +
-                                "        <cbc:Description><![CDATA[mi sustento]]></cbc:Description>\n"
-                                +
-                                "    </cac:DiscrepancyResponse>\n" +
-                                "    <cac:BillingReference>\n" +
-                                "        <cac:InvoiceDocumentReference>\n" +
-                                "            <cbc:ID>F001-1</cbc:ID>\n" +
-                                "            <cbc:DocumentTypeCode listAgencyName=\"PE:SUNAT\" listName=\"Tipo de Documento\" listURI=\"urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo01\">01</cbc:DocumentTypeCode>\n"
-                                +
-                                "        </cac:InvoiceDocumentReference>\n" +
-                                "    </cac:BillingReference>\n" +
-                                "    <cac:Signature>\n" +
-                                "        <cbc:ID>12345678912</cbc:ID>\n" +
-                                "        <cac:SignatoryParty>\n" +
-                                "            <cac:PartyIdentification>\n" +
-                                "                <cbc:ID>12345678912</cbc:ID>\n" +
-                                "            </cac:PartyIdentification>\n" +
-                                "            <cac:PartyName>\n" +
-                                "                <cbc:Name><![CDATA[Softgreen S.A.C.]]></cbc:Name>\n"
-                                +
-                                "            </cac:PartyName>\n" +
-                                "        </cac:SignatoryParty>\n" +
-                                "        <cac:DigitalSignatureAttachment>\n" +
-                                "            <cac:ExternalReference>\n" +
-                                "                <cbc:URI>#PROJECT-OPENUBL-SIGN</cbc:URI>\n"
-                                +
-                                "            </cac:ExternalReference>\n" +
-                                "        </cac:DigitalSignatureAttachment>\n" +
-                                "    </cac:Signature>\n" +
-                                "    <cac:AccountingSupplierParty>\n" +
-                                "        <cac:Party>\n" +
-                                "            <cac:PartyIdentification>\n" +
-                                "                <cbc:ID schemeID=\"6\" schemeAgencyName=\"PE:SUNAT\" schemeName=\"Documento de Identidad\" schemeURI=\"urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06\">12345678912</cbc:ID>\n"
-                                +
-                                "            </cac:PartyIdentification>\n" +
-                                "            <cac:PartyLegalEntity>\n" +
-                                "                <cbc:RegistrationName><![CDATA[Softgreen S.A.C.]]></cbc:RegistrationName>\n"
-                                +
-                                "                <cac:RegistrationAddress>\n" +
-                                "                    <cbc:AddressTypeCode>0000</cbc:AddressTypeCode>\n"
-                                +
-                                "                </cac:RegistrationAddress>\n" +
-                                "            </cac:PartyLegalEntity>\n" +
-                                "        </cac:Party>\n" +
-                                "    </cac:AccountingSupplierParty>\n" +
-                                "    <cac:AccountingCustomerParty>\n" +
-                                "        <cac:Party>\n" +
-                                "            <cac:PartyIdentification>\n" +
-                                "                <cbc:ID schemeID=\"6\" schemeAgencyName=\"PE:SUNAT\" schemeName=\"Documento de Identidad\" schemeURI=\"urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06\">12121212121</cbc:ID>\n"
-                                +
-                                "            </cac:PartyIdentification>\n" +
-                                "            <cac:PartyLegalEntity>\n" +
-                                "                <cbc:RegistrationName><![CDATA[Carlos Feria]]></cbc:RegistrationName>\n"
-                                +
-                                "            </cac:PartyLegalEntity>\n" +
-                                "        </cac:Party>\n" +
-                                "    </cac:AccountingCustomerParty>\n" +
-                                "    <cac:TaxTotal>\n" +
-                                "        <cbc:TaxAmount currencyID=\"PEN\">200.00</cbc:TaxAmount>\n"
-                                +
-                                "        <cac:TaxSubtotal>\n" +
-                                "            <cbc:TaxableAmount currencyID=\"PEN\">1000.00</cbc:TaxableAmount>\n"
-                                +
-                                "            <cbc:TaxAmount currencyID=\"PEN\">200.00</cbc:TaxAmount>\n"
-                                +
-                                "            <cac:TaxCategory>\n" +
-                                "                <cbc:ID schemeAgencyName=\"United Nations Economic Commission for Europe\" schemeID=\"UN/ECE 5305\" schemeName=\"Tax Category Identifie\">S</cbc:ID>\n"
-                                +
-                                "                <cac:TaxScheme>\n" +
-                                "                    <cbc:ID schemeAgencyName=\"PE:SUNAT\" schemeID=\"UN/ECE 5153\" schemeName=\"Codigo de tributos\">1000</cbc:ID>\n"
-                                +
-                                "                    <cbc:Name>IGV</cbc:Name>\n" +
-                                "                    <cbc:TaxTypeCode>VAT</cbc:TaxTypeCode>\n"
-                                +
-                                "                </cac:TaxScheme>\n" +
-                                "            </cac:TaxCategory>\n" +
-                                "        </cac:TaxSubtotal>\n" +
-                                "    </cac:TaxTotal>\n" +
-                                "    <cac:RequestedMonetaryTotal>\n" +
-                                "        <cbc:LineExtensionAmount currencyID=\"PEN\">1000.00</cbc:LineExtensionAmount>\n"
-                                +
-                                "        <cbc:TaxInclusiveAmount currencyID=\"PEN\">1200.00</cbc:TaxInclusiveAmount>\n"
-                                +
-                                "        <cbc:PayableAmount currencyID=\"PEN\">1200.00</cbc:PayableAmount>\n"
-                                +
-                                "    </cac:RequestedMonetaryTotal>\n" +
-                                "    <cac:DebitNoteLine>\n" +
-                                "        <cbc:ID>1</cbc:ID>\n" +
-                                "        <cbc:DebitedQuantity unitCode=\"NIU\" unitCodeListAgencyName=\"United Nations Economic Commission for Europe\" unitCodeListID=\"UN/ECE rec 20\">10</cbc:DebitedQuantity>\n"
-                                +
-                                "        <cbc:LineExtensionAmount currencyID=\"PEN\">1000.00</cbc:LineExtensionAmount>\n"
-                                +
-                                "        <cac:PricingReference>\n" +
-                                "            <cac:AlternativeConditionPrice>\n" +
-                                "                <cbc:PriceAmount currencyID=\"PEN\">120.00</cbc:PriceAmount>\n"
-                                +
-                                "                <cbc:PriceTypeCode listAgencyName=\"PE:SUNAT\" listName=\"Tipo de Precio\" listURI=\"urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo16\">01</cbc:PriceTypeCode>\n"
-                                +
-                                "            </cac:AlternativeConditionPrice>\n" +
-                                "        </cac:PricingReference>\n" +
-                                "        <cac:TaxTotal>\n" +
-                                "            <cbc:TaxAmount currencyID=\"PEN\">200.00</cbc:TaxAmount>\n"
-                                +
-                                "            <cac:TaxSubtotal>\n" +
-                                "                <cbc:TaxableAmount currencyID=\"PEN\">1000.00</cbc:TaxableAmount>\n"
-                                +
-                                "                <cbc:TaxAmount currencyID=\"PEN\">200.00</cbc:TaxAmount>\n"
-                                +
-                                "                <cac:TaxCategory>\n" +
-                                "                    <cbc:ID schemeAgencyName=\"United Nations Economic Commission for Europe\" schemeID=\"UN/ECE 5305\" schemeName=\"Tax Category Identifier\">S</cbc:ID>\n"
-                                +
-                                "                    <cbc:Percent>20.00</cbc:Percent>\n"
-                                +
-                                "                    <cbc:TaxExemptionReasonCode listAgencyName=\"PE:SUNAT\" listName=\"Afectacion del IGV\" listURI=\"urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo07\">10</cbc:TaxExemptionReasonCode>\n"
-                                +
-                                "                    <cac:TaxScheme>\n" +
-                                "                        <cbc:ID schemeAgencyName=\"PE:SUNAT\" schemeID=\"UN/ECE 5153\" schemeName=\"Codigo de tributos\">1000</cbc:ID>\n"
-                                +
-                                "                        <cbc:Name>IGV</cbc:Name>\n" +
-                                "                        <cbc:TaxTypeCode>VAT</cbc:TaxTypeCode>\n"
-                                +
-                                "                    </cac:TaxScheme>\n" +
-                                "                </cac:TaxCategory>\n" +
-                                "            </cac:TaxSubtotal>\n" +
-                                "        </cac:TaxTotal>\n" +
-                                "        <cac:Item>\n" +
-                                "            <cbc:Description><![CDATA[Item1]]></cbc:Description>\n"
-                                +
-                                "        </cac:Item>\n" +
-                                "        <cac:Price>\n" +
-                                "            <cbc:PriceAmount currencyID=\"PEN\">100.00</cbc:PriceAmount>\n"
-                                +
-                                "        </cac:Price>\n" +
-                                "    </cac:DebitNoteLine>\n" +
-                                "</DebitNote>\n"));
+                                "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n" +
+                                        "<DebitNote xmlns=\"urn:oasis:names:specification:ubl:schema:xsd:DebitNote-2\"\n" +
+                                        "         xmlns:cac=\"urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2\"\n" +
+                                        "         xmlns:cbc=\"urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2\"\n" +
+                                        "         xmlns:ccts=\"urn:un:unece:uncefact:documentation:2\"\n" +
+                                        "         xmlns:cec=\"urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2\"\n" +
+                                        "         xmlns:ds=\"http://www.w3.org/2000/09/xmldsig#\"\n" +
+                                        "         xmlns:ext=\"urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2\"\n" +
+                                        "         xmlns:qdt=\"urn:oasis:names:specification:ubl:schema:xsd:QualifiedDatatypes-2\"\n" +
+                                        "         xmlns:sac=\"urn:sunat:names:specification:ubl:peru:schema:xsd:SunatAggregateComponents-1\"\n" +
+                                        "         xmlns:udt=\"urn:un:unece:uncefact:data:specification:UnqualifiedDataTypesSchemaModule:2\"\n" +
+                                        "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
+                                        ">\n" +
+                                        "    <ext:UBLExtensions>\n" +
+                                        "        <ext:UBLExtension>\n" +
+                                        "            <ext:ExtensionContent/>\n" +
+                                        "        </ext:UBLExtension>\n" +
+                                        "    </ext:UBLExtensions>\n" +
+                                        "    <cbc:UBLVersionID>2.1</cbc:UBLVersionID>\n" +
+                                        "    <cbc:CustomizationID>2.0</cbc:CustomizationID>\n" +
+                                        "    <cbc:ID>FD01-1</cbc:ID>\n" +
+                                        "    <cbc:IssueDate>2022-01-25</cbc:IssueDate>\n" +
+                                        "    <cbc:DocumentCurrencyCode listID=\"ISO 4217 Alpha\" listAgencyName=\"United Nations Economic Commission for Europe\" listName=\"Currency\">PEN</cbc:DocumentCurrencyCode>\n" +
+                                        "    <cac:DiscrepancyResponse>\n" +
+                                        "        <cbc:ReferenceID>F001-1</cbc:ReferenceID>\n" +
+                                        "        <cbc:ResponseCode>01</cbc:ResponseCode>\n" +
+                                        "        <cbc:Description><![CDATA[mi sustento]]></cbc:Description>\n" +
+                                        "    </cac:DiscrepancyResponse>\n" +
+                                        "    <cac:BillingReference>\n" +
+                                        "        <cac:InvoiceDocumentReference>\n" +
+                                        "            <cbc:ID>F001-1</cbc:ID>\n" +
+                                        "            <cbc:DocumentTypeCode listAgencyName=\"PE:SUNAT\" listName=\"Tipo de Documento\" listURI=\"urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo01\">01</cbc:DocumentTypeCode>\n" +
+                                        "        </cac:InvoiceDocumentReference>\n" +
+                                        "    </cac:BillingReference>\n" +
+                                        "    <cac:Signature>\n" +
+                                        "        <cbc:ID>12345678912</cbc:ID>\n" +
+                                        "        <cac:SignatoryParty>\n" +
+                                        "            <cac:PartyIdentification>\n" +
+                                        "                <cbc:ID>12345678912</cbc:ID>\n" +
+                                        "            </cac:PartyIdentification>\n" +
+                                        "            <cac:PartyName>\n" +
+                                        "                <cbc:Name><![CDATA[Softgreen S.A.C.]]></cbc:Name>\n" +
+                                        "            </cac:PartyName>\n" +
+                                        "        </cac:SignatoryParty>\n" +
+                                        "        <cac:DigitalSignatureAttachment>\n" +
+                                        "            <cac:ExternalReference>\n" +
+                                        "                <cbc:URI>#PROJECT-OPENUBL-SIGN</cbc:URI>\n" +
+                                        "            </cac:ExternalReference>\n" +
+                                        "        </cac:DigitalSignatureAttachment>\n" +
+                                        "    </cac:Signature>\n" +
+                                        "    <cac:AccountingSupplierParty>\n" +
+                                        "        <cac:Party>\n" +
+                                        "            <cac:PartyIdentification>\n" +
+                                        "                <cbc:ID schemeID=\"6\" schemeAgencyName=\"PE:SUNAT\" schemeName=\"Documento de Identidad\" schemeURI=\"urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06\">12345678912</cbc:ID>\n" +
+                                        "            </cac:PartyIdentification>\n" +
+                                        "            <cac:PartyLegalEntity>\n" +
+                                        "                <cbc:RegistrationName><![CDATA[Softgreen S.A.C.]]></cbc:RegistrationName>\n" +
+                                        "                <cac:RegistrationAddress>\n" +
+                                        "                    <cbc:AddressTypeCode>0000</cbc:AddressTypeCode>\n" +
+                                        "                </cac:RegistrationAddress>\n" +
+                                        "            </cac:PartyLegalEntity>\n" +
+                                        "        </cac:Party>\n" +
+                                        "    </cac:AccountingSupplierParty>\n" +
+                                        "    <cac:AccountingCustomerParty>\n" +
+                                        "        <cac:Party>\n" +
+                                        "            <cac:PartyIdentification>\n" +
+                                        "                <cbc:ID schemeID=\"6\" schemeAgencyName=\"PE:SUNAT\" schemeName=\"Documento de Identidad\" schemeURI=\"urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06\">12121212121</cbc:ID>\n" +
+                                        "            </cac:PartyIdentification>\n" +
+                                        "            <cac:PartyLegalEntity>\n" +
+                                        "                <cbc:RegistrationName><![CDATA[Carlos Feria]]></cbc:RegistrationName>\n" +
+                                        "            </cac:PartyLegalEntity>\n" +
+                                        "        </cac:Party>\n" +
+                                        "    </cac:AccountingCustomerParty>\n" +
+                                        "    <cac:TaxTotal>\n" +
+                                        "        <cbc:TaxAmount currencyID=\"PEN\">200.00</cbc:TaxAmount>\n" +
+                                        "        <cac:TaxSubtotal>\n" +
+                                        "            <cbc:TaxableAmount currencyID=\"PEN\">1000.00</cbc:TaxableAmount>\n" +
+                                        "            <cbc:TaxAmount currencyID=\"PEN\">200.00</cbc:TaxAmount>\n" +
+                                        "            <cac:TaxCategory>\n" +
+                                        "                <cbc:ID schemeAgencyName=\"United Nations Economic Commission for Europe\" schemeID=\"UN/ECE 5305\" schemeName=\"Tax Category Identifie\">S</cbc:ID>\n" +
+                                        "                <cac:TaxScheme>\n" +
+                                        "                    <cbc:ID schemeAgencyName=\"PE:SUNAT\" schemeID=\"UN/ECE 5153\" schemeName=\"Codigo de tributos\">1000</cbc:ID>\n" +
+                                        "                    <cbc:Name>IGV</cbc:Name>\n" +
+                                        "                    <cbc:TaxTypeCode>VAT</cbc:TaxTypeCode>\n" +
+                                        "                </cac:TaxScheme>\n" +
+                                        "            </cac:TaxCategory>\n" +
+                                        "        </cac:TaxSubtotal>\n" +
+                                        "    </cac:TaxTotal>\n" +
+                                        "    <cac:RequestedMonetaryTotal>\n" +
+                                        "        <cbc:LineExtensionAmount currencyID=\"PEN\">1000.00</cbc:LineExtensionAmount>\n" +
+                                        "        <cbc:TaxInclusiveAmount currencyID=\"PEN\">1200.00</cbc:TaxInclusiveAmount>\n" +
+                                        "        <cbc:PayableAmount currencyID=\"PEN\">1200.00</cbc:PayableAmount>\n" +
+                                        "    </cac:RequestedMonetaryTotal>\n" +
+                                        "    <cac:DebitNoteLine>\n" +
+                                        "        <cbc:ID>1</cbc:ID>\n" +
+                                        "        <cbc:DebitedQuantity unitCode=\"NIU\" unitCodeListAgencyName=\"United Nations Economic Commission for Europe\" unitCodeListID=\"UN/ECE rec 20\">10</cbc:DebitedQuantity>\n" +
+                                        "        <cbc:LineExtensionAmount currencyID=\"PEN\">1000.00</cbc:LineExtensionAmount>\n" +
+                                        "        <cac:PricingReference>\n" +
+                                        "            <cac:AlternativeConditionPrice>\n" +
+                                        "                <cbc:PriceAmount currencyID=\"PEN\">120.00</cbc:PriceAmount>\n" +
+                                        "                <cbc:PriceTypeCode listAgencyName=\"PE:SUNAT\" listName=\"Tipo de Precio\" listURI=\"urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo16\">01</cbc:PriceTypeCode>\n" +
+                                        "            </cac:AlternativeConditionPrice>\n" +
+                                        "        </cac:PricingReference>\n" +
+                                        "        <cac:TaxTotal>\n" +
+                                        "            <cbc:TaxAmount currencyID=\"PEN\">200.00</cbc:TaxAmount>\n" +
+                                        "            <cac:TaxSubtotal>\n" +
+                                        "                <cbc:TaxableAmount currencyID=\"PEN\">1000.00</cbc:TaxableAmount>\n" +
+                                        "                <cbc:TaxAmount currencyID=\"PEN\">200.00</cbc:TaxAmount>\n" +
+                                        "                <cac:TaxCategory>\n" +
+                                        "                    <cbc:ID schemeAgencyName=\"United Nations Economic Commission for Europe\" schemeID=\"UN/ECE 5305\" schemeName=\"Tax Category Identifier\">S</cbc:ID>\n" +
+                                        "                    <cbc:Percent>20.00</cbc:Percent>\n" +
+                                        "                    <cbc:TaxExemptionReasonCode listAgencyName=\"PE:SUNAT\" listName=\"Afectacion del IGV\" listURI=\"urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo07\">10</cbc:TaxExemptionReasonCode>\n" +
+                                        "                    <cac:TaxScheme>\n" +
+                                        "                        <cbc:ID schemeAgencyName=\"PE:SUNAT\" schemeID=\"UN/ECE 5153\" schemeName=\"Codigo de tributos\">1000</cbc:ID>\n" +
+                                        "                        <cbc:Name>IGV</cbc:Name>\n" +
+                                        "                        <cbc:TaxTypeCode>VAT</cbc:TaxTypeCode>\n" +
+                                        "                    </cac:TaxScheme>\n" +
+                                        "                </cac:TaxCategory>\n" +
+                                        "            </cac:TaxSubtotal>\n" +
+                                        "        </cac:TaxTotal>\n" +
+                                        "        <cac:Item>\n" +
+                                        "            <cbc:Description><![CDATA[Item1]]></cbc:Description>\n" +
+                                        "        </cac:Item>\n" +
+                                        "        <cac:Price>\n" +
+                                        "            <cbc:PriceAmount currencyID=\"PEN\">100.00</cbc:PriceAmount>\n" +
+                                        "        </cac:Price>\n" +
+                                        "    </cac:DebitNoteLine>\n" +
+                                        "</DebitNote>\n"
+                        )
+                );
     }
 
     @Test
@@ -727,19 +606,22 @@ public class QuarkusXbuilderResourceTest {
                 .proveedor(Proveedor.builder()
                         .ruc("12345678912")
                         .razonSocial("Softgreen S.A.C.")
-                        .build())
+                        .build()
+                )
                 .comprobante(VoidedDocumentsItem.builder()
                         .serie("F001")
                         .numero(1)
                         .tipoComprobante(Catalog1_Invoice.FACTURA.getCode())
                         .descripcionSustento("Mi sustento1")
-                        .build())
+                        .build()
+                )
                 .comprobante(VoidedDocumentsItem.builder()
                         .serie("F001")
                         .numero(2)
                         .tipoComprobante(Catalog1_Invoice.FACTURA.getCode())
                         .descripcionSustento("Mi sustento2")
-                        .build())
+                        .build()
+                )
                 .build();
 
         given()
@@ -750,19 +632,13 @@ public class QuarkusXbuilderResourceTest {
                 .then()
                 .statusCode(200)
                 .body(is("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n" +
-                        "<VoidedDocuments xmlns=\"urn:sunat:names:specification:ubl:peru:schema:xsd:VoidedDocuments-1\"\n"
-                        +
-                        "                 xmlns:cac=\"urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2\"\n"
-                        +
-                        "                 xmlns:cbc=\"urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2\"\n"
-                        +
+                        "<VoidedDocuments xmlns=\"urn:sunat:names:specification:ubl:peru:schema:xsd:VoidedDocuments-1\"\n" +
+                        "                 xmlns:cac=\"urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2\"\n" +
+                        "                 xmlns:cbc=\"urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2\"\n" +
                         "                 xmlns:ds=\"http://www.w3.org/2000/09/xmldsig#\"\n" +
-                        "                 xmlns:ext=\"urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2\"\n"
-                        +
-                        "                 xmlns:sac=\"urn:sunat:names:specification:ubl:peru:schema:xsd:SunatAggregateComponents-1\"\n"
-                        +
-                        "                 xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n"
-                        +
+                        "                 xmlns:ext=\"urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2\"\n" +
+                        "                 xmlns:sac=\"urn:sunat:names:specification:ubl:peru:schema:xsd:SunatAggregateComponents-1\"\n" +
+                        "                 xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n" +
                         "    <ext:UBLExtensions>\n" +
                         "        <ext:UBLExtension>\n" +
                         "            <ext:ExtensionContent/>\n" +
@@ -790,13 +666,11 @@ public class QuarkusXbuilderResourceTest {
                         "        </cac:DigitalSignatureAttachment>\n" +
                         "    </cac:Signature>\n" +
                         "    <cac:AccountingSupplierParty>\n" +
-                        "        <cbc:CustomerAssignedAccountID>12345678912</cbc:CustomerAssignedAccountID>\n"
-                        +
+                        "        <cbc:CustomerAssignedAccountID>12345678912</cbc:CustomerAssignedAccountID>\n" +
                         "        <cbc:AdditionalAccountID>6</cbc:AdditionalAccountID>\n" +
                         "        <cac:Party>\n" +
                         "            <cac:PartyLegalEntity>\n" +
-                        "                <cbc:RegistrationName><![CDATA[Softgreen S.A.C.]]></cbc:RegistrationName>\n"
-                        +
+                        "                <cbc:RegistrationName><![CDATA[Softgreen S.A.C.]]></cbc:RegistrationName>\n" +
                         "            </cac:PartyLegalEntity>\n" +
                         "        </cac:Party>\n" +
                         "    </cac:AccountingSupplierParty>\n" +
@@ -805,16 +679,14 @@ public class QuarkusXbuilderResourceTest {
                         "        <cbc:DocumentTypeCode>01</cbc:DocumentTypeCode>\n" +
                         "        <sac:DocumentSerialID>F001</sac:DocumentSerialID>\n" +
                         "        <sac:DocumentNumberID>1</sac:DocumentNumberID>\n" +
-                        "        <sac:VoidReasonDescription>Mi sustento1</sac:VoidReasonDescription>\n"
-                        +
+                        "        <sac:VoidReasonDescription>Mi sustento1</sac:VoidReasonDescription>\n" +
                         "    </sac:VoidedDocumentsLine>\n" +
                         "    <sac:VoidedDocumentsLine>\n" +
                         "        <cbc:LineID>2</cbc:LineID>\n" +
                         "        <cbc:DocumentTypeCode>01</cbc:DocumentTypeCode>\n" +
                         "        <sac:DocumentSerialID>F001</sac:DocumentSerialID>\n" +
                         "        <sac:DocumentNumberID>2</sac:DocumentNumberID>\n" +
-                        "        <sac:VoidReasonDescription>Mi sustento2</sac:VoidReasonDescription>\n"
-                        +
+                        "        <sac:VoidReasonDescription>Mi sustento2</sac:VoidReasonDescription>\n" +
                         "    </sac:VoidedDocumentsLine>\n" +
                         "</VoidedDocuments>\n"));
     }
@@ -828,7 +700,8 @@ public class QuarkusXbuilderResourceTest {
                 .proveedor(Proveedor.builder()
                         .ruc("12345678912")
                         .razonSocial("Softgreen S.A.C.")
-                        .build())
+                        .build()
+                )
                 .comprobante(SummaryDocumentsItem.builder()
                         .tipoOperacion(Catalog19.ADICIONAR.toString())
                         .comprobante(Comprobante.builder()
@@ -837,19 +710,23 @@ public class QuarkusXbuilderResourceTest {
                                 .cliente(Cliente.builder()
                                         .nombre("Carlos Feria")
                                         .numeroDocumentoIdentidad("12345678")
-                                        .tipoDocumentoIdentidad(
-                                                Catalog6.DNI.getCode())
-                                        .build())
+                                        .tipoDocumentoIdentidad(Catalog6.DNI.getCode())
+                                        .build()
+                                )
                                 .impuestos(ComprobanteImpuestos.builder()
                                         .igv(new BigDecimal("18"))
                                         .icb(new BigDecimal(2))
-                                        .build())
+                                        .build()
+                                )
                                 .valorVenta(ComprobanteValorVenta.builder()
                                         .importeTotal(new BigDecimal("120"))
                                         .gravado(new BigDecimal("120"))
-                                        .build())
-                                .build())
-                        .build())
+                                        .build()
+                                )
+                                .build()
+                        )
+                        .build()
+                )
                 .comprobante(SummaryDocumentsItem.builder()
                         .tipoOperacion(Catalog19.ADICIONAR.toString())
                         .comprobante(Comprobante.builder()
@@ -857,24 +734,28 @@ public class QuarkusXbuilderResourceTest {
                                 .serieNumero("BC02-2")
                                 .comprobanteAfectado(ComprobanteAfectado.builder()
                                         .serieNumero("B002-2")
-                                        .tipoComprobante(Catalog1.BOLETA
-                                                .getCode()) //
-                                        .build())
+                                        .tipoComprobante(Catalog1.BOLETA.getCode()) //
+                                        .build()
+                                )
                                 .cliente(Cliente.builder()
                                         .nombre("Carlos Feria")
                                         .numeroDocumentoIdentidad("12345678")
-                                        .tipoDocumentoIdentidad(
-                                                Catalog6.DNI.getCode())//
-                                        .build())
+                                        .tipoDocumentoIdentidad(Catalog6.DNI.getCode())//
+                                        .build()
+                                )
                                 .impuestos(ComprobanteImpuestos.builder()
                                         .igv(new BigDecimal("18"))
-                                        .build())
+                                        .build()
+                                )
                                 .valorVenta(ComprobanteValorVenta.builder()
                                         .importeTotal(new BigDecimal("118"))
                                         .gravado(new BigDecimal("118"))
-                                        .build())
-                                .build())
-                        .build())
+                                        .build()
+                                )
+                                .build()
+                        )
+                        .build()
+                )
                 .build();
 
         given()
@@ -885,26 +766,16 @@ public class QuarkusXbuilderResourceTest {
                 .then()
                 .statusCode(200)
                 .body(is("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n" +
-                        "<SummaryDocuments xmlns=\"urn:sunat:names:specification:ubl:peru:schema:xsd:SummaryDocuments-1\"\n"
-                        +
-                        "                  xmlns:cac=\"urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2\"\n"
-                        +
-                        "                  xmlns:cbc=\"urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2\"\n"
-                        +
-                        "                  xmlns:ccts=\"urn:un:unece:uncefact:documentation:2\" xmlns:ds=\"http://www.w3.org/2000/09/xmldsig#\"\n"
-                        +
-                        "                  xmlns:ext=\"urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2\"\n"
-                        +
-                        "                  xmlns:ns11=\"urn:sunat:names:specification:ubl:peru:schema:xsd:Perception-1\"\n"
-                        +
-                        "                  xmlns:qdt=\"urn:oasis:names:specification:ubl:schema:xsd:QualifiedDatatypes-2\"\n"
-                        +
-                        "                  xmlns:sac=\"urn:sunat:names:specification:ubl:peru:schema:xsd:SunatAggregateComponents-1\"\n"
-                        +
-                        "                  xmlns:udt=\"urn:un:unece:uncefact:data:specification:UnqualifiedDataTypesSchemaModule:2\"\n"
-                        +
-                        "                  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n"
-                        +
+                        "<SummaryDocuments xmlns=\"urn:sunat:names:specification:ubl:peru:schema:xsd:SummaryDocuments-1\"\n" +
+                        "                  xmlns:cac=\"urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2\"\n" +
+                        "                  xmlns:cbc=\"urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2\"\n" +
+                        "                  xmlns:ccts=\"urn:un:unece:uncefact:documentation:2\" xmlns:ds=\"http://www.w3.org/2000/09/xmldsig#\"\n" +
+                        "                  xmlns:ext=\"urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2\"\n" +
+                        "                  xmlns:ns11=\"urn:sunat:names:specification:ubl:peru:schema:xsd:Perception-1\"\n" +
+                        "                  xmlns:qdt=\"urn:oasis:names:specification:ubl:schema:xsd:QualifiedDatatypes-2\"\n" +
+                        "                  xmlns:sac=\"urn:sunat:names:specification:ubl:peru:schema:xsd:SunatAggregateComponents-1\"\n" +
+                        "                  xmlns:udt=\"urn:un:unece:uncefact:data:specification:UnqualifiedDataTypesSchemaModule:2\"\n" +
+                        "                  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n" +
                         "    <ext:UBLExtensions>\n" +
                         "        <ext:UBLExtension>\n" +
                         "            <ext:ExtensionContent />\n" +
@@ -932,13 +803,11 @@ public class QuarkusXbuilderResourceTest {
                         "        </cac:DigitalSignatureAttachment>\n" +
                         "    </cac:Signature>\n" +
                         "    <cac:AccountingSupplierParty>\n" +
-                        "        <cbc:CustomerAssignedAccountID>12345678912</cbc:CustomerAssignedAccountID>\n"
-                        +
+                        "        <cbc:CustomerAssignedAccountID>12345678912</cbc:CustomerAssignedAccountID>\n" +
                         "        <cbc:AdditionalAccountID>6</cbc:AdditionalAccountID>\n" +
                         "        <cac:Party>\n" +
                         "            <cac:PartyLegalEntity>\n" +
-                        "                <cbc:RegistrationName><![CDATA[Softgreen S.A.C.]]></cbc:RegistrationName>\n"
-                        +
+                        "                <cbc:RegistrationName><![CDATA[Softgreen S.A.C.]]></cbc:RegistrationName>\n" +
                         "            </cac:PartyLegalEntity>\n" +
                         "        </cac:Party>\n" +
                         "    </cac:AccountingSupplierParty>\n" +
@@ -947,8 +816,7 @@ public class QuarkusXbuilderResourceTest {
                         "        <cbc:DocumentTypeCode>03</cbc:DocumentTypeCode>\n" +
                         "        <cbc:ID>B001-1</cbc:ID>\n" +
                         "        <cac:AccountingCustomerParty>\n" +
-                        "            <cbc:CustomerAssignedAccountID>12345678</cbc:CustomerAssignedAccountID>\n"
-                        +
+                        "            <cbc:CustomerAssignedAccountID>12345678</cbc:CustomerAssignedAccountID>\n" +
                         "            <cbc:AdditionalAccountID>1</cbc:AdditionalAccountID>\n" +
                         "        </cac:AccountingCustomerParty>\n" +
                         "        <cac:Status>\n" +
@@ -956,15 +824,13 @@ public class QuarkusXbuilderResourceTest {
                         "        </cac:Status>\n" +
                         "        <sac:TotalAmount currencyID=\"PEN\">120</sac:TotalAmount>\n" +
                         "        <sac:BillingPayment>\n" +
-                        "            <cbc:PaidAmount currencyID=\"PEN\">120</cbc:PaidAmount>\n"
-                        +
+                        "            <cbc:PaidAmount currencyID=\"PEN\">120</cbc:PaidAmount>\n" +
                         "            <cbc:InstructionID>01</cbc:InstructionID>\n" +
                         "        </sac:BillingPayment>\n" +
                         "        <cac:TaxTotal>\n" +
                         "            <cbc:TaxAmount currencyID=\"PEN\">18</cbc:TaxAmount>\n" +
                         "            <cac:TaxSubtotal>\n" +
-                        "                <cbc:TaxAmount currencyID=\"PEN\">18</cbc:TaxAmount>\n"
-                        +
+                        "                <cbc:TaxAmount currencyID=\"PEN\">18</cbc:TaxAmount>\n" +
                         "                <cac:TaxCategory>\n" +
                         "                    <cac:TaxScheme>\n" +
                         "                        <cbc:ID>1000</cbc:ID>\n" +
@@ -977,8 +843,7 @@ public class QuarkusXbuilderResourceTest {
                         "        <cac:TaxTotal>\n" +
                         "            <cbc:TaxAmount currencyID=\"PEN\">2</cbc:TaxAmount>\n" +
                         "            <cac:TaxSubtotal>\n" +
-                        "                <cbc:TaxAmount currencyID=\"PEN\">2</cbc:TaxAmount>\n"
-                        +
+                        "                <cbc:TaxAmount currencyID=\"PEN\">2</cbc:TaxAmount>\n" +
                         "                <cac:TaxCategory>\n" +
                         "                    <cac:TaxScheme>\n" +
                         "                        <cbc:ID>7152</cbc:ID>\n" +
@@ -994,8 +859,7 @@ public class QuarkusXbuilderResourceTest {
                         "        <cbc:DocumentTypeCode>07</cbc:DocumentTypeCode>\n" +
                         "        <cbc:ID>BC02-2</cbc:ID>\n" +
                         "        <cac:AccountingCustomerParty>\n" +
-                        "            <cbc:CustomerAssignedAccountID>12345678</cbc:CustomerAssignedAccountID>\n"
-                        +
+                        "            <cbc:CustomerAssignedAccountID>12345678</cbc:CustomerAssignedAccountID>\n" +
                         "            <cbc:AdditionalAccountID>1</cbc:AdditionalAccountID>\n" +
                         "        </cac:AccountingCustomerParty>\n" +
                         "        <cac:BillingReference>\n" +
@@ -1009,15 +873,13 @@ public class QuarkusXbuilderResourceTest {
                         "        </cac:Status>\n" +
                         "        <sac:TotalAmount currencyID=\"PEN\">118</sac:TotalAmount>\n" +
                         "        <sac:BillingPayment>\n" +
-                        "            <cbc:PaidAmount currencyID=\"PEN\">118</cbc:PaidAmount>\n"
-                        +
+                        "            <cbc:PaidAmount currencyID=\"PEN\">118</cbc:PaidAmount>\n" +
                         "            <cbc:InstructionID>01</cbc:InstructionID>\n" +
                         "        </sac:BillingPayment>\n" +
                         "        <cac:TaxTotal>\n" +
                         "            <cbc:TaxAmount currencyID=\"PEN\">18</cbc:TaxAmount>\n" +
                         "            <cac:TaxSubtotal>\n" +
-                        "                <cbc:TaxAmount currencyID=\"PEN\">18</cbc:TaxAmount>\n"
-                        +
+                        "                <cbc:TaxAmount currencyID=\"PEN\">18</cbc:TaxAmount>\n" +
                         "                <cac:TaxCategory>\n" +
                         "                    <cac:TaxScheme>\n" +
                         "                        <cbc:ID>1000</cbc:ID>\n" +
@@ -1040,12 +902,14 @@ public class QuarkusXbuilderResourceTest {
                 .proveedor(Proveedor.builder()
                         .ruc("12345678912")
                         .razonSocial("Softgreen S.A.C.")
-                        .build())
+                        .build()
+                )
                 .cliente(Cliente.builder()
                         .nombre("Carlos Feria")
                         .numeroDocumentoIdentidad("12121212121")
                         .tipoDocumentoIdentidad(Catalog6.RUC.getCode())
-                        .build())
+                        .build()
+                )
                 .importeTotalPercibido(new BigDecimal("10"))
                 .importeTotalCobrado(new BigDecimal("210"))
                 .tipoRegimen(Catalog22.VENTA_INTERNA.getCode())
@@ -1054,18 +918,16 @@ public class QuarkusXbuilderResourceTest {
                         .numeroOperacion(1)
                         .fechaOperacion(LocalDate.of(2022, 01, 31))
                         .importeOperacion(new BigDecimal("100"))
-                        .comprobante(
-                                io.github.project.openubl.xbuilder.content.models.sunat.percepcionretencion.ComprobanteAfectado
-                                        .builder()
-                                        .tipoComprobante(Catalog1.FACTURA
-                                                .getCode())
-                                        .serieNumero("F001-1")
-                                        .fechaEmision(LocalDate.of(2022, 01,
-                                                31))
-                                        .importeTotal(new BigDecimal("200"))
-                                        .moneda("PEN")
-                                        .build())
-                        .build())
+                        .comprobante(io.github.project.openubl.xbuilder.content.models.sunat.percepcionretencion.ComprobanteAfectado.builder()
+                                .tipoComprobante(Catalog1.FACTURA.getCode())
+                                .serieNumero("F001-1")
+                                .fechaEmision(LocalDate.of(2022, 01, 31))
+                                .importeTotal(new BigDecimal("200"))
+                                .moneda("PEN")
+                                .build()
+                        )
+                        .build()
+                )
                 .build();
 
         given()
@@ -1076,24 +938,16 @@ public class QuarkusXbuilderResourceTest {
                 .then()
                 .statusCode(200)
                 .body(is("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n" +
-                        "<Perception xmlns=\"urn:sunat:names:specification:ubl:peru:schema:xsd:Perception-1\"\n"
-                        +
-                        "            xmlns:cac=\"urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2\"\n"
-                        +
-                        "            xmlns:cbc=\"urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2\"\n"
-                        +
+                        "<Perception xmlns=\"urn:sunat:names:specification:ubl:peru:schema:xsd:Perception-1\"\n" +
+                        "            xmlns:cac=\"urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2\"\n" +
+                        "            xmlns:cbc=\"urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2\"\n" +
                         "            xmlns:ccts=\"urn:un:unece:uncefact:documentation:2\"\n" +
                         "            xmlns:ds=\"http://www.w3.org/2000/09/xmldsig#\"\n" +
-                        "            xmlns:ext=\"urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2\"\n"
-                        +
-                        "            xmlns:qdt=\"urn:oasis:names:specification:ubl:schema:xsd:QualifiedDatatypes-2\"\n"
-                        +
-                        "            xmlns:sac=\"urn:sunat:names:specification:ubl:peru:schema:xsd:SunatAggregateComponents-1\"\n"
-                        +
-                        "            xmlns:udt=\"urn:un:unece:uncefact:data:specification:UnqualifiedDataTypesSchemaModule:2\"\n"
-                        +
-                        "            xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n"
-                        +
+                        "            xmlns:ext=\"urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2\"\n" +
+                        "            xmlns:qdt=\"urn:oasis:names:specification:ubl:schema:xsd:QualifiedDatatypes-2\"\n" +
+                        "            xmlns:sac=\"urn:sunat:names:specification:ubl:peru:schema:xsd:SunatAggregateComponents-1\"\n" +
+                        "            xmlns:udt=\"urn:un:unece:uncefact:data:specification:UnqualifiedDataTypesSchemaModule:2\"\n" +
+                        "            xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n" +
                         "    <ext:UBLExtensions>\n" +
                         "        <ext:UBLExtension>\n" +
                         "            <ext:ExtensionContent />\n" +
@@ -1124,8 +978,7 @@ public class QuarkusXbuilderResourceTest {
                         "            <cbc:ID schemeID=\"6\">12345678912</cbc:ID>\n" +
                         "        </cac:PartyIdentification>\n" +
                         "        <cac:PartyLegalEntity>\n" +
-                        "            <cbc:RegistrationName><![CDATA[Softgreen S.A.C.]]></cbc:RegistrationName>\n"
-                        +
+                        "            <cbc:RegistrationName><![CDATA[Softgreen S.A.C.]]></cbc:RegistrationName>\n" +
                         "        </cac:PartyLegalEntity>\n" +
                         "    </cac:AgentParty>\n" +
                         "    <cac:ReceiverParty>\n" +
@@ -1133,35 +986,26 @@ public class QuarkusXbuilderResourceTest {
                         "            <cbc:ID schemeID=\"6\">12121212121</cbc:ID>\n" +
                         "        </cac:PartyIdentification>\n" +
                         "        <cac:PartyLegalEntity>\n" +
-                        "            <cbc:RegistrationName><![CDATA[Carlos Feria]]></cbc:RegistrationName>\n"
-                        +
+                        "            <cbc:RegistrationName><![CDATA[Carlos Feria]]></cbc:RegistrationName>\n" +
                         "        </cac:PartyLegalEntity>\n" +
                         "    </cac:ReceiverParty>\n" +
-                        "    <sac:SUNATPerceptionSystemCode>01</sac:SUNATPerceptionSystemCode>\n"
-                        +
+                        "    <sac:SUNATPerceptionSystemCode>01</sac:SUNATPerceptionSystemCode>\n" +
                         "    <sac:SUNATPerceptionPercent>2</sac:SUNATPerceptionPercent>\n" +
-                        "    <cbc:TotalInvoiceAmount currencyID=\"PEN\">10</cbc:TotalInvoiceAmount>\n"
-                        +
-                        "    <sac:SUNATTotalCashed currencyID=\"PEN\">210</sac:SUNATTotalCashed>\n"
-                        +
+                        "    <cbc:TotalInvoiceAmount currencyID=\"PEN\">10</cbc:TotalInvoiceAmount>\n" +
+                        "    <sac:SUNATTotalCashed currencyID=\"PEN\">210</sac:SUNATTotalCashed>\n" +
                         "    <sac:SUNATPerceptionDocumentReference>\n" +
                         "        <cbc:ID schemeID=\"01\">F001-1</cbc:ID>\n" +
                         "        <cbc:IssueDate>2022-01-31</cbc:IssueDate>\n" +
-                        "        <cbc:TotalInvoiceAmount currencyID=\"PEN\">200</cbc:TotalInvoiceAmount>\n"
-                        +
+                        "        <cbc:TotalInvoiceAmount currencyID=\"PEN\">200</cbc:TotalInvoiceAmount>\n" +
                         "        <cac:Payment>\n" +
                         "            <cbc:ID>1</cbc:ID>\n" +
-                        "            <cbc:PaidAmount currencyID=\"PEN\">100</cbc:PaidAmount>\n"
-                        +
+                        "            <cbc:PaidAmount currencyID=\"PEN\">100</cbc:PaidAmount>\n" +
                         "            <cbc:PaidDate>2022-01-31</cbc:PaidDate>\n" +
                         "        </cac:Payment>\n" +
                         "        <sac:SUNATPerceptionInformation>\n" +
-                        "            <sac:SUNATPerceptionAmount currencyID=\"PEN\">10</sac:SUNATPerceptionAmount>\n"
-                        +
-                        "            <sac:SUNATPerceptionDate>2022-01-31</sac:SUNATPerceptionDate>\n"
-                        +
-                        "            <sac:SUNATNetTotalCashed currencyID=\"PEN\">210</sac:SUNATNetTotalCashed>\n"
-                        +
+                        "            <sac:SUNATPerceptionAmount currencyID=\"PEN\">10</sac:SUNATPerceptionAmount>\n" +
+                        "            <sac:SUNATPerceptionDate>2022-01-31</sac:SUNATPerceptionDate>\n" +
+                        "            <sac:SUNATNetTotalCashed currencyID=\"PEN\">210</sac:SUNATNetTotalCashed>\n" +
                         "        </sac:SUNATPerceptionInformation>\n" +
                         "    </sac:SUNATPerceptionDocumentReference>\n" +
                         "</Perception>\n"));
@@ -1176,12 +1020,14 @@ public class QuarkusXbuilderResourceTest {
                 .proveedor(Proveedor.builder()
                         .ruc("12345678912")
                         .razonSocial("Softgreen S.A.C.")
-                        .build())
+                        .build()
+                )
                 .cliente(Cliente.builder()
                         .nombre("Carlos Feria")
                         .numeroDocumentoIdentidad("12121212121")
                         .tipoDocumentoIdentidad(Catalog6.RUC.getCode())
-                        .build())
+                        .build()
+                )
                 .importeTotalRetenido(new BigDecimal("10"))
                 .importeTotalPagado(new BigDecimal("200"))
                 .tipoRegimen(Catalog23.TASA_TRES.getCode())
@@ -1190,18 +1036,16 @@ public class QuarkusXbuilderResourceTest {
                         .numeroOperacion(1)
                         .fechaOperacion(LocalDate.of(2022, 01, 31))
                         .importeOperacion(new BigDecimal("100"))
-                        .comprobante(
-                                io.github.project.openubl.xbuilder.content.models.sunat.percepcionretencion.ComprobanteAfectado
-                                        .builder()
-                                        .tipoComprobante(Catalog1.FACTURA
-                                                .getCode())
-                                        .serieNumero("F001-1")
-                                        .fechaEmision(LocalDate.of(2022, 01,
-                                                31))
-                                        .importeTotal(new BigDecimal("210"))
-                                        .moneda("PEN")
-                                        .build())
-                        .build())
+                        .comprobante(io.github.project.openubl.xbuilder.content.models.sunat.percepcionretencion.ComprobanteAfectado.builder()
+                                .tipoComprobante(Catalog1.FACTURA.getCode())
+                                .serieNumero("F001-1")
+                                .fechaEmision(LocalDate.of(2022, 01, 31))
+                                .importeTotal(new BigDecimal("210"))
+                                .moneda("PEN")
+                                .build()
+                        )
+                        .build()
+                )
                 .build();
 
         given()
@@ -1212,24 +1056,16 @@ public class QuarkusXbuilderResourceTest {
                 .then()
                 .statusCode(200)
                 .body(is("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n" +
-                        "<Retention xmlns=\"urn:sunat:names:specification:ubl:peru:schema:xsd:Retention-1\"\n"
-                        +
-                        "           xmlns:cac=\"urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2\"\n"
-                        +
-                        "           xmlns:cbc=\"urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2\"\n"
-                        +
+                        "<Retention xmlns=\"urn:sunat:names:specification:ubl:peru:schema:xsd:Retention-1\"\n" +
+                        "           xmlns:cac=\"urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2\"\n" +
+                        "           xmlns:cbc=\"urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2\"\n" +
                         "           xmlns:ccts=\"urn:un:unece:uncefact:documentation:2\"\n" +
                         "           xmlns:ds=\"http://www.w3.org/2000/09/xmldsig#\"\n" +
-                        "           xmlns:ext=\"urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2\"\n"
-                        +
-                        "           xmlns:qdt=\"urn:oasis:names:specification:ubl:schema:xsd:QualifiedDatatypes-2\"\n"
-                        +
-                        "           xmlns:sac=\"urn:sunat:names:specification:ubl:peru:schema:xsd:SunatAggregateComponents-1\"\n"
-                        +
-                        "           xmlns:udt=\"urn:un:unece:uncefact:data:specification:UnqualifiedDataTypesSchemaModule:2\"\n"
-                        +
-                        "           xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n"
-                        +
+                        "           xmlns:ext=\"urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2\"\n" +
+                        "           xmlns:qdt=\"urn:oasis:names:specification:ubl:schema:xsd:QualifiedDatatypes-2\"\n" +
+                        "           xmlns:sac=\"urn:sunat:names:specification:ubl:peru:schema:xsd:SunatAggregateComponents-1\"\n" +
+                        "           xmlns:udt=\"urn:un:unece:uncefact:data:specification:UnqualifiedDataTypesSchemaModule:2\"\n" +
+                        "           xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n" +
                         "    <ext:UBLExtensions>\n" +
                         "        <ext:UBLExtension>\n" +
                         "            <ext:ExtensionContent />\n" +
@@ -1260,8 +1096,7 @@ public class QuarkusXbuilderResourceTest {
                         "            <cbc:ID schemeID=\"6\">12345678912</cbc:ID>\n" +
                         "        </cac:PartyIdentification>\n" +
                         "        <cac:PartyLegalEntity>\n" +
-                        "            <cbc:RegistrationName><![CDATA[Softgreen S.A.C.]]></cbc:RegistrationName>\n"
-                        +
+                        "            <cbc:RegistrationName><![CDATA[Softgreen S.A.C.]]></cbc:RegistrationName>\n" +
                         "        </cac:PartyLegalEntity>\n" +
                         "    </cac:AgentParty>\n" +
                         "    <cac:ReceiverParty>\n" +
@@ -1269,35 +1104,26 @@ public class QuarkusXbuilderResourceTest {
                         "            <cbc:ID schemeID=\"6\">12121212121</cbc:ID>\n" +
                         "        </cac:PartyIdentification>\n" +
                         "        <cac:PartyLegalEntity>\n" +
-                        "            <cbc:RegistrationName><![CDATA[Carlos Feria]]></cbc:RegistrationName>\n"
-                        +
+                        "            <cbc:RegistrationName><![CDATA[Carlos Feria]]></cbc:RegistrationName>\n" +
                         "        </cac:PartyLegalEntity>\n" +
                         "    </cac:ReceiverParty>\n" +
-                        "    <sac:SUNATRetentionSystemCode>01</sac:SUNATRetentionSystemCode>\n"
-                        +
+                        "    <sac:SUNATRetentionSystemCode>01</sac:SUNATRetentionSystemCode>\n" +
                         "    <sac:SUNATRetentionPercent>3</sac:SUNATRetentionPercent>\n" +
-                        "    <cbc:TotalInvoiceAmount currencyID=\"PEN\">10</cbc:TotalInvoiceAmount>\n"
-                        +
-                        "    <sac:SUNATTotalPaid currencyID=\"PEN\">200</sac:SUNATTotalPaid>\n"
-                        +
+                        "    <cbc:TotalInvoiceAmount currencyID=\"PEN\">10</cbc:TotalInvoiceAmount>\n" +
+                        "    <sac:SUNATTotalPaid currencyID=\"PEN\">200</sac:SUNATTotalPaid>\n" +
                         "    <sac:SUNATRetentionDocumentReference>\n" +
                         "        <cbc:ID schemeID=\"01\">F001-1</cbc:ID>\n" +
                         "        <cbc:IssueDate>2022-01-31</cbc:IssueDate>\n" +
-                        "        <cbc:TotalInvoiceAmount currencyID=\"PEN\">210</cbc:TotalInvoiceAmount>\n"
-                        +
+                        "        <cbc:TotalInvoiceAmount currencyID=\"PEN\">210</cbc:TotalInvoiceAmount>\n" +
                         "        <cac:Payment>\n" +
                         "            <cbc:ID>1</cbc:ID>\n" +
-                        "            <cbc:PaidAmount currencyID=\"PEN\">100</cbc:PaidAmount>\n"
-                        +
+                        "            <cbc:PaidAmount currencyID=\"PEN\">100</cbc:PaidAmount>\n" +
                         "            <cbc:PaidDate>2022-01-31</cbc:PaidDate>\n" +
                         "        </cac:Payment>\n" +
                         "        <sac:SUNATRetentionInformation>\n" +
-                        "            <sac:SUNATRetentionAmount currencyID=\"PEN\">10</sac:SUNATRetentionAmount>\n"
-                        +
-                        "            <sac:SUNATRetentionDate>2022-01-31</sac:SUNATRetentionDate>\n"
-                        +
-                        "            <sac:SUNATNetTotalPaid currencyID=\"PEN\">200</sac:SUNATNetTotalPaid>\n"
-                        +
+                        "            <sac:SUNATRetentionAmount currencyID=\"PEN\">10</sac:SUNATRetentionAmount>\n" +
+                        "            <sac:SUNATRetentionDate>2022-01-31</sac:SUNATRetentionDate>\n" +
+                        "            <sac:SUNATNetTotalPaid currencyID=\"PEN\">200</sac:SUNATNetTotalPaid>\n" +
                         "        </sac:SUNATRetentionInformation>\n" +
                         "    </sac:SUNATRetentionDocumentReference>\n" +
                         "</Retention>\n"));
@@ -1312,12 +1138,14 @@ public class QuarkusXbuilderResourceTest {
                 .remitente(Remitente.builder()
                         .ruc("12345678912")
                         .razonSocial("Softgreen S.A.C.")
-                        .build())
+                        .build()
+                )
                 .destinatario(Destinatario.builder()
                         .tipoDocumentoIdentidad(Catalog6.DNI.getCode())
                         .numeroDocumentoIdentidad("12345678")
                         .nombre("mi cliente")
-                        .build())
+                        .build()
+                )
                 .envio(Envio.builder()
                         .tipoTraslado(Catalog20.TRASLADO_EMISOR_ITINERANTE_CP.getCode())
                         .pesoTotal(BigDecimal.ONE)
@@ -1327,17 +1155,21 @@ public class QuarkusXbuilderResourceTest {
                         .partida(Partida.builder()
                                 .direccion("DireccionOrigen")
                                 .ubigeo("010101")
-                                .build())
+                                .build()
+                        )
                         .destino(Destino.builder()
                                 .direccion("DireccionDestino")
                                 .ubigeo("020202")
-                                .build())
-                        .build())
+                                .build()
+                        )
+                        .build()
+                )
                 .detalle(DespatchAdviceItem.builder()
                         .cantidad(new BigDecimal("0.5"))
                         .unidadMedida("KG")
                         .codigo("123456")
-                        .build())
+                        .build()
+                )
                 .build();
 
         given()
@@ -1348,15 +1180,11 @@ public class QuarkusXbuilderResourceTest {
                 .then()
                 .statusCode(200)
                 .body(is("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                        "<DespatchAdvice xmlns=\"urn:oasis:names:specification:ubl:schema:xsd:DespatchAdvice-2\"\n"
-                        +
+                        "<DespatchAdvice xmlns=\"urn:oasis:names:specification:ubl:schema:xsd:DespatchAdvice-2\"\n" +
                         "                xmlns:ds=\"http://www.w3.org/2000/09/xmldsig#\"\n" +
-                        "                xmlns:cac=\"urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2\"\n"
-                        +
-                        "                xmlns:cbc=\"urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2\"\n"
-                        +
-                        "                xmlns:ext=\"urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2\"\n"
-                        +
+                        "                xmlns:cac=\"urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2\"\n" +
+                        "                xmlns:cbc=\"urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2\"\n" +
+                        "                xmlns:ext=\"urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2\"\n" +
                         ">\n" +
                         "    <ext:UBLExtensions>\n" +
                         "        <ext:UBLExtension>\n" +
@@ -1367,8 +1195,7 @@ public class QuarkusXbuilderResourceTest {
                         "    <cbc:CustomizationID>2.0</cbc:CustomizationID>\n" +
                         "    <cbc:ID>T001-1</cbc:ID>\n" +
                         "    <cbc:IssueDate>2022-01-25</cbc:IssueDate>\n" +
-                        "    <cbc:DespatchAdviceTypeCode listAgencyName=\"PE:SUNAT\" listName=\"Tipo de Documento\" listURI=\"urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo01\">09</cbc:DespatchAdviceTypeCode>\n"
-                        +
+                        "    <cbc:DespatchAdviceTypeCode listAgencyName=\"PE:SUNAT\" listName=\"Tipo de Documento\" listURI=\"urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo01\">09</cbc:DespatchAdviceTypeCode>\n" +
                         "    <cac:Signature>\n" +
                         "        <cbc:ID>12345678912</cbc:ID>\n" +
                         "        <cac:SignatoryParty>\n" +
@@ -1386,56 +1213,46 @@ public class QuarkusXbuilderResourceTest {
                         "        </cac:DigitalSignatureAttachment>\n" +
                         "    </cac:Signature>\n" +
                         "    <cac:DespatchSupplierParty>\n" +
-                        "        <cbc:CustomerAssignedAccountID schemeID=\"6\">12345678912</cbc:CustomerAssignedAccountID>\n"
-                        +
+                        "        <cbc:CustomerAssignedAccountID schemeID=\"6\">12345678912</cbc:CustomerAssignedAccountID>\n" +
                         "        <cac:Party>\n" +
                         "            <cac:PartyIdentification>\n" +
-                        "                <cbc:ID schemeID=\"6\" schemeName=\"Documento de Identidad\" schemeAgencyName=\"PE:SUNAT\" schemeURI=\"urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06\">12345678912</cbc:ID>\n"
-                        +
+                        "                <cbc:ID schemeID=\"6\" schemeName=\"Documento de Identidad\" schemeAgencyName=\"PE:SUNAT\" schemeURI=\"urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06\">12345678912</cbc:ID>\n" +
                         "            </cac:PartyIdentification>\n" +
                         "            <cac:PartyLegalEntity>\n" +
-                        "                <cbc:RegistrationName><![CDATA[Softgreen S.A.C.]]></cbc:RegistrationName>\n"
-                        +
+                        "                <cbc:RegistrationName><![CDATA[Softgreen S.A.C.]]></cbc:RegistrationName>\n" +
                         "            </cac:PartyLegalEntity>\n" +
                         "        </cac:Party>\n" +
                         "    </cac:DespatchSupplierParty>\n" +
                         "    <cac:DeliveryCustomerParty>\n" +
                         "        <cac:Party>\n" +
                         "            <cac:PartyIdentification>\n" +
-                        "                <cbc:ID schemeID=\"1\" schemeName=\"Documento de Identidad\" schemeAgencyName=\"PE:SUNAT\" schemeURI=\"urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06\">12345678</cbc:ID>\n"
-                        +
+                        "                <cbc:ID schemeID=\"1\" schemeName=\"Documento de Identidad\" schemeAgencyName=\"PE:SUNAT\" schemeURI=\"urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06\">12345678</cbc:ID>\n" +
                         "            </cac:PartyIdentification>\n" +
                         "            <cac:PartyLegalEntity>\n" +
-                        "                <cbc:RegistrationName><![CDATA[mi cliente]]></cbc:RegistrationName>\n"
-                        +
+                        "                <cbc:RegistrationName><![CDATA[mi cliente]]></cbc:RegistrationName>\n" +
                         "            </cac:PartyLegalEntity>\n" +
                         "        </cac:Party>\n" +
                         "    </cac:DeliveryCustomerParty>\n" +
                         "    <cac:Shipment>\n" +
                         "        <cbc:ID>SUNAT_Envio</cbc:ID>\n" +
-                        "        <cbc:HandlingCode listAgencyName=\"PE:SUNAT\" listName=\"Motivo de traslado\" listURI=\"urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo20\">18</cbc:HandlingCode>\n"
-                        +
-                        "        <cbc:GrossWeightMeasure unitCode=\"KG\">1.000</cbc:GrossWeightMeasure>\n"
-                        +
+                        "        <cbc:HandlingCode listAgencyName=\"PE:SUNAT\" listName=\"Motivo de traslado\" listURI=\"urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo20\">18</cbc:HandlingCode>\n" +
+                        "        <cbc:GrossWeightMeasure unitCode=\"KG\">1.000</cbc:GrossWeightMeasure>\n" +
                         "        <cac:ShipmentStage>\n" +
-                        "            <cbc:TransportModeCode listName=\"Modalidad de traslado\" listAgencyName=\"PE:SUNAT\" listURI=\"urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo18\">02</cbc:TransportModeCode>\n"
-                        +
+                        "            <cbc:TransportModeCode listName=\"Modalidad de traslado\" listAgencyName=\"PE:SUNAT\" listURI=\"urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo18\">02</cbc:TransportModeCode>\n" +
                         "            <cac:TransitPeriod>\n" +
                         "                <cbc:StartDate>2022-01-25</cbc:StartDate>\n" +
                         "            </cac:TransitPeriod>\n" +
                         "        </cac:ShipmentStage>\n" +
                         "        <cac:Delivery>\n" +
                         "            <cac:DeliveryAddress>\n" +
-                        "                <cbc:ID schemeAgencyName=\"PE:INEI\" schemeName=\"Ubigeos\">020202</cbc:ID>\n"
-                        +
+                        "                <cbc:ID schemeAgencyName=\"PE:INEI\" schemeName=\"Ubigeos\">020202</cbc:ID>\n" +
                         "                <cac:AddressLine>\n" +
                         "                    <cbc:Line>DireccionDestino</cbc:Line>\n" +
                         "                </cac:AddressLine>\n" +
                         "            </cac:DeliveryAddress>\n" +
                         "            <cac:Despatch>\n" +
                         "                <cac:DespatchAddress>\n" +
-                        "                    <cbc:ID schemeAgencyName=\"PE:INEI\" schemeName=\"Ubigeos\">010101</cbc:ID>\n"
-                        +
+                        "                    <cbc:ID schemeAgencyName=\"PE:INEI\" schemeName=\"Ubigeos\">010101</cbc:ID>\n" +
                         "                    <cac:AddressLine>\n" +
                         "                        <cbc:Line>DireccionOrigen</cbc:Line>\n" +
                         "                    </cac:AddressLine>\n" +
@@ -1445,8 +1262,7 @@ public class QuarkusXbuilderResourceTest {
                         "    </cac:Shipment>\n" +
                         "    <cac:DespatchLine>\n" +
                         "        <cbc:ID>1</cbc:ID>\n" +
-                        "        <cbc:DeliveredQuantity unitCode=\"KG\">0.50</cbc:DeliveredQuantity>\n"
-                        +
+                        "        <cbc:DeliveredQuantity unitCode=\"KG\">0.50</cbc:DeliveredQuantity>\n" +
                         "        <cac:OrderLineReference>\n" +
                         "            <cbc:LineID>1</cbc:LineID>\n" +
                         "        </cac:OrderLineReference>\n" +
@@ -1468,12 +1284,14 @@ public class QuarkusXbuilderResourceTest {
                 .remitente(Remitente.builder()
                         .ruc("12345678912")
                         .razonSocial("Softgreen S.A.C.")
-                        .build())
+                        .build()
+                )
                 .destinatario(Destinatario.builder()
                         .tipoDocumentoIdentidad(Catalog6.DNI.getCode())
                         .numeroDocumentoIdentidad("12345678")
                         .nombre("mi cliente")
-                        .build())
+                        .build()
+                )
                 .envio(Envio.builder()
                         .tipoTraslado(Catalog20.TRASLADO_EMISOR_ITINERANTE_CP.getCode())
                         .pesoTotal(BigDecimal.ONE)
@@ -1483,17 +1301,21 @@ public class QuarkusXbuilderResourceTest {
                         .partida(Partida.builder()
                                 .direccion("DireccionOrigen")
                                 .ubigeo("010101")
-                                .build())
+                                .build()
+                        )
                         .destino(Destino.builder()
                                 .direccion("DireccionDestino")
                                 .ubigeo("020202")
-                                .build())
-                        .build())
+                                .build()
+                        )
+                        .build()
+                )
                 .detalle(DespatchAdviceItem.builder()
                         .cantidad(new BigDecimal("0.5"))
                         .unidadMedida("KG")
                         .codigo("123456")
-                        .build())
+                        .build()
+                )
                 .build();
 
         given()

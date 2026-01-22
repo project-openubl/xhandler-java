@@ -41,6 +41,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
+
 import java.io.IOException;
 import java.io.StringReader;
 import java.time.LocalDate;
@@ -71,8 +72,7 @@ public class QuarkusXbuilderResource {
     private static final CreditNoteMapper creditNoteMapper = Mappers.getMapper(CreditNoteMapper.class);
     private static final DebitNoteMapper debitNoteMapper = Mappers.getMapper(DebitNoteMapper.class);
     private static final VoidedDocumentsMapper voidedDocumentsMapper = Mappers.getMapper(VoidedDocumentsMapper.class);
-    private static final SummaryDocumentsMapper summaryDocumentsMapper = Mappers
-            .getMapper(SummaryDocumentsMapper.class);
+    private static final SummaryDocumentsMapper summaryDocumentsMapper = Mappers.getMapper(SummaryDocumentsMapper.class);
     private static final PerceptionMapper perceptionMapper = Mappers.getMapper(PerceptionMapper.class);
     private static final RetentionMapper retentionMapper = Mappers.getMapper(RetentionMapper.class);
     private static final DespatchAdviceMapper despatchAdviceMapper = Mappers.getMapper(DespatchAdviceMapper.class);

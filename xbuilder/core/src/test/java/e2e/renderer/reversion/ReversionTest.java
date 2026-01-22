@@ -25,19 +25,22 @@ public class ReversionTest extends AbstractTest {
                 .proveedor(Proveedor.builder()
                         .ruc("12345678912")
                         .razonSocial("Softgreen S.A.C.")
-                        .build())
+                        .build()
+                )
                 .comprobante(VoidedDocumentsItem.builder()
                         .serie("P001")
                         .numero(1)
                         .tipoComprobante(Catalog1.PERCEPCION.getCode())
                         .descripcionSustento("Anulacion de percepcion por error en emision")
-                        .build())
+                        .build()
+                )
                 .comprobante(VoidedDocumentsItem.builder()
                         .serie("P001")
                         .numero(2)
                         .tipoComprobante(Catalog1.PERCEPCION.getCode())
                         .descripcionSustento("Anulacion de percepcion por duplicado")
-                        .build())
+                        .build()
+                )
                 .build();
 
         assertInputReversion(input, "reversion.xml");
@@ -53,13 +56,15 @@ public class ReversionTest extends AbstractTest {
                 .proveedor(Proveedor.builder()
                         .ruc("12345678912")
                         .razonSocial("Softgreen S.A.C.")
-                        .build())
+                        .build()
+                )
                 .comprobante(VoidedDocumentsItem.builder()
                         .serie("R001")
                         .numero(1)
                         .tipoComprobante(Catalog1.RETENCION.getCode())
                         .descripcionSustento("Anulacion de retencion por error en calculo")
-                        .build())
+                        .build()
+                )
                 .build();
 
         assertInputReversion(input, "reversion_retention.xml");

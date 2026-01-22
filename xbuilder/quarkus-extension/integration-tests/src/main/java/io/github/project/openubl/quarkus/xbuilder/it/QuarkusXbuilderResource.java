@@ -22,6 +22,7 @@ import io.github.project.openubl.xbuilder.content.models.standard.general.DebitN
 import io.github.project.openubl.xbuilder.content.models.standard.general.Invoice;
 import io.github.project.openubl.xbuilder.content.models.standard.guia.DespatchAdvice;
 import io.github.project.openubl.xbuilder.content.models.sunat.baja.VoidedDocuments;
+import io.github.project.openubl.xbuilder.content.models.sunat.baja.Reversion;
 import io.github.project.openubl.xbuilder.content.models.sunat.percepcionretencion.Perception;
 import io.github.project.openubl.xbuilder.content.models.sunat.percepcionretencion.Retention;
 import io.github.project.openubl.xbuilder.content.models.sunat.resumen.SummaryDocuments;
@@ -40,10 +41,9 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
+
 import java.io.IOException;
 import java.io.StringReader;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.time.LocalDate;
 
 import static io.github.project.openubl.quarkus.xbuilder.XBuilder.Type.CREDIT_NOTE;
@@ -54,6 +54,7 @@ import static io.github.project.openubl.quarkus.xbuilder.XBuilder.Type.PERCEPTIO
 import static io.github.project.openubl.quarkus.xbuilder.XBuilder.Type.RETENTION;
 import static io.github.project.openubl.quarkus.xbuilder.XBuilder.Type.SUMMARY_DOCUMENTS;
 import static io.github.project.openubl.quarkus.xbuilder.XBuilder.Type.VOIDED_DOCUMENTS;
+import static io.github.project.openubl.quarkus.xbuilder.XBuilder.Type.REVERSION;
 
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.TEXT_PLAIN)
@@ -286,6 +287,33 @@ public class QuarkusXbuilderResource {
         try (StringReader reader = new StringReader(xml)) {
             XMLDespatchAdvice xmlPojo = (XMLDespatchAdvice) unmarshaller.unmarshal(new InputSource(reader));
             DespatchAdvice inputFromXml = despatchAdviceMapper.map(xmlPojo);
+            return template.data(inputFromXml).render();
+        } catch (JAXBException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @POST
+    @Path("Reversion/from-json")
+    public String createReversion(JsonObject json) {
+        Reversion reversion = json.mapTo(Reversion.class);
+
+        ContentEnricher enricher = new ContentEnricher(xBuilder.getDefaults(), () -> LocalDate.of(2022, 1, 25));
+        enricher.enrich(reversion);
+
+        Template template = xBuilder.getTemplate(REVERSION);
+        return template.data(reversion).render();
+    }
+
+    @POST
+    @Consumes(MediaType.TEXT_PLAIN)
+    @Path("Reversion/from-xml")
+    public String createReversionXml(String xml) {
+        Template template = xBuilder.getTemplate(REVERSION);
+
+        try (StringReader reader = new StringReader(xml)) {
+            XMLVoidedDocuments xmlPojo = (XMLVoidedDocuments) unmarshaller.unmarshal(new InputSource(reader));
+            VoidedDocuments inputFromXml = voidedDocumentsMapper.map(xmlPojo);
             return template.data(inputFromXml).render();
         } catch (JAXBException e) {
             throw new RuntimeException(e);

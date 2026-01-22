@@ -99,4 +99,10 @@ public abstract class SalesDocument extends Document {
     @Singular
     @ArraySchema
     private List<DocumentoRelacionado> documentosRelacionados;
+
+    /**
+     * Cargos globales del documento
+     */
+    @Singular
+    private List<CargoDescuento> cargos;
 }

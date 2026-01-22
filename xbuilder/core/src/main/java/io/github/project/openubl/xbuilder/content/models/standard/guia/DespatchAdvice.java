@@ -22,6 +22,11 @@ import java.util.List;
 @AllArgsConstructor
 public class DespatchAdvice {
     /**
+     * Versión del formato de la guía de remisión (ejemplo: 2.0)
+     */
+    private String version;
+
+    /**
      * Serie del comprobante
      */
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, minLength = 4, pattern = "^[T|t|V|v].*$")
@@ -56,6 +61,13 @@ public class DespatchAdvice {
     @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private DocumentoRelacionado documentoRelacionado;
 
+    /**
+     * Documentos adicionales relacionados al transporte (Catálogo 61)
+     */
+    @Singular("documentoAdicional")
+    @Schema(description = "Documentos adicionales relacionados al transporte")
+    private List<DocumentoAdicional> documentosAdicionales;
+
     @Schema(description = "Persona que firma electrónicamente el comprobante. Si NULL los datos del proveedor son usados.")
     private Firmante firmante;
 
@@ -67,6 +79,18 @@ public class DespatchAdvice {
 
     @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private Proveedor proveedor;
+
+    /**
+     * Datos del tercero (vendedor de los bienes cuando aplica)
+     */
+    @Schema(description = "Tercero/Vendedor de los bienes")
+    private Tercero tercero;
+
+    /**
+     * Datos del comprador (adquiriente de los bienes)
+     */
+    @Schema(description = "Comprador/Adquiriente de los bienes")
+    private Comprador comprador;
 
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private Envio envio;

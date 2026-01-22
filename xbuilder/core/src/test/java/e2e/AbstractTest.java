@@ -28,6 +28,7 @@ import io.github.project.openubl.xbuilder.content.models.standard.general.DebitN
 import io.github.project.openubl.xbuilder.content.models.standard.general.Invoice;
 import io.github.project.openubl.xbuilder.content.models.standard.guia.DespatchAdvice;
 import io.github.project.openubl.xbuilder.content.models.sunat.baja.VoidedDocuments;
+import io.github.project.openubl.xbuilder.content.models.sunat.baja.Reversion;
 import io.github.project.openubl.xbuilder.content.models.sunat.percepcionretencion.Perception;
 import io.github.project.openubl.xbuilder.content.models.sunat.percepcionretencion.Retention;
 import io.github.project.openubl.xbuilder.content.models.sunat.resumen.SummaryDocuments;
@@ -284,5 +285,29 @@ public class AbstractTest {
         XMLAssertUtils.assertSendSunat(xml, XMLAssertUtils.DESPATCH_ADVICE_XSD);
 
         writeYaml("DespatchAdvice", input, snapshotFilename);
+    }
+
+    protected void assertInputReversion(Reversion input, String snapshotFilename) throws Exception {
+        ContentEnricher enricher = new ContentEnricher(defaults, dateProvider);
+        enricher.enrich(input);
+
+        // When
+        Template template = TemplateProducer.getInstance().getReversion();
+        String xml = template.data(input).render();
+
+        String reconstructedXml;
+        try (StringReader reader = new StringReader(xml);) {
+            XMLVoidedDocuments xmlPojo = (XMLVoidedDocuments) JAXBContext.newInstance(XMLVoidedDocuments.class)
+                    .createUnmarshaller()
+                    .unmarshal(new InputSource(reader));
+            VoidedDocuments inputFromXml = voidedDocumentsMapper.map(xmlPojo);
+            reconstructedXml = TemplateProducer.getInstance().getReversion().data(inputFromXml).render();
+        }
+
+        // Then
+        XMLAssertUtils.assertSnapshot(xml, reconstructedXml, getClass(), snapshotFilename);
+        XMLAssertUtils.assertSendSunat(xml, XMLAssertUtils.VOIDED_DOCUMENTS_XSD);
+
+        writeYaml("Reversion", input, snapshotFilename);
     }
 }

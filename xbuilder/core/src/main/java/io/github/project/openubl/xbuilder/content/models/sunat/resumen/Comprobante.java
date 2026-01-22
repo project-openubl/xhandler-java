@@ -15,7 +15,7 @@ public class Comprobante {
 
     @Schema(requiredMode = Schema.RequiredMode.AUTO, description = "Moneda del comprobante declarado")
     private String moneda;
-    
+
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "Catalogo 01")
     private String tipoComprobante;
 
@@ -30,6 +30,8 @@ public class Comprobante {
 
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private ComprobanteImpuestos impuestos;
+
+    private SummaryPerception percepcion;
 
     private ComprobanteAfectado comprobanteAfectado;
 }

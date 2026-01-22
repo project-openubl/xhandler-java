@@ -33,6 +33,7 @@ class QuarkusXbuilderProcessor {
     AdditionalBeanBuildItem additionalBeans() {
         return AdditionalBeanBuildItem.builder()
                 .setUnremovable()
+                .setDefaultScope(io.quarkus.arc.processor.BuiltinScope.SINGLETON.getName())
                 .addBeanClasses(XBuilder.class, DefaultXBuilder.class, CustomTemplateLocator.class)
                 .build();
     }
@@ -45,6 +46,7 @@ class QuarkusXbuilderProcessor {
                         "templates/Renderer/debitNote.xml",
                         "templates/Renderer/invoice.xml",
                         "templates/Renderer/voidedDocuments.xml",
+                        "templates/Renderer/reversion.xml",
                         "templates/Renderer/summaryDocuments.xml",
                         "templates/Renderer/perception.xml",
                         "templates/Renderer/retention.xml",
@@ -76,7 +78,7 @@ class QuarkusXbuilderProcessor {
     }
 
     @BuildStep
-    void registerServices(BuildProducer<ServiceProviderBuildItem> services) throws IOException {
+    void registerServices(BuildProducer<ServiceProviderBuildItem> services, BuildProducer<ReflectiveClassBuildItem> reflectiveClass) throws IOException {
         String service = "META-INF/services/" + RuleFactory.class.getName();
 
         // find out all the implementation classes listed in the service files
@@ -90,6 +92,11 @@ class QuarkusXbuilderProcessor {
         services.produce(
                 new ServiceProviderBuildItem(RuleFactory.class.getName(), implementations.toArray(new String[0]))
         );
+
+        // register every listed implementation class for reflection so their annotations can be read
+        reflectiveClass.produce(
+                new ReflectiveClassBuildItem(true, false, implementations.toArray(new String[0]))
+        );
     }
 
     @BuildStep
@@ -101,9 +108,21 @@ class QuarkusXbuilderProcessor {
 
                 "io.github.project.openubl.xbuilder.content.models.sunat.baja.VoidedDocuments$VoidedDocumentsBuilderImpl",
                 "io.github.project.openubl.xbuilder.content.models.sunat.resumen.SummaryDocuments$SummaryDocumentsBuilderImpl",
+                "io.github.project.openubl.xbuilder.content.models.sunat.baja.Reversion$ReversionBuilderImpl",
 
+                "io.github.project.openubl.xbuilder.content.models.common.Document$DocumentBuilderImpl",
+                "io.github.project.openubl.xbuilder.content.models.standard.general.SalesDocument$SalesDocumentBuilderImpl",
+                "io.github.project.openubl.xbuilder.content.models.sunat.SunatDocument$SunatDocumentBuilderImpl",
+                "io.github.project.openubl.xbuilder.content.models.standard.general.Note$NoteBuilderImpl",
                 "io.github.project.openubl.xbuilder.content.models.sunat.percepcionretencion.Perception$PerceptionBuilderImpl",
-                "io.github.project.openubl.xbuilder.content.models.sunat.percepcionretencion.Retention$RetentionBuilderImpl"
+                "io.github.project.openubl.xbuilder.content.models.sunat.percepcionretencion.Retention$RetentionBuilderImpl",
+                "io.github.project.openubl.xbuilder.content.models.sunat.percepcionretencion.BasePercepcionRetencion$BasePercepcionRetencionBuilderImpl",
+                "io.github.project.openubl.xbuilder.content.models.standard.general.FormaDePago$FormaDePagoBuilderImpl",
+                "io.github.project.openubl.xbuilder.content.models.standard.general.TotalImporte$TotalImporteBuilderImpl",
+
+                "io.github.project.openubl.xbuilder.enricher.config.Defaults$DefaultsBuilder",
+                "io.github.project.openubl.xbuilder.enricher.kie.ruleunits.BodyRuleContext$BodyRuleContextBuilder",
+                "io.github.project.openubl.xbuilder.enricher.kie.ruleunits.HeaderRuleContext$HeaderRuleContextBuilder"
         );
     }
 
@@ -146,11 +165,21 @@ class QuarkusXbuilderProcessor {
                 "io.github.project.openubl.xbuilder.content.jaxb.models.XMLDespatchAdvice$TransportEquipment",
                 "io.github.project.openubl.xbuilder.content.jaxb.models.XMLDespatchAdvice$TransportHandlingUnit",
                 "io.github.project.openubl.xbuilder.content.jaxb.models.XMLDespatchAdvice$TransportMeans",
+                "io.github.project.openubl.xbuilder.content.jaxb.models.XMLDespatchAdvice$IdentityDocumentReference",
+                "io.github.project.openubl.xbuilder.content.jaxb.models.XMLDespatchAdvice$AddressTypeCode",
+                "io.github.project.openubl.xbuilder.content.jaxb.models.XMLDespatchAdvice$IssuerParty",
+                "io.github.project.openubl.xbuilder.content.jaxb.models.XMLDespatchAdvice$BuyerCustomerParty",
+                "io.github.project.openubl.xbuilder.content.jaxb.models.XMLDespatchAdvice$DespatchAddress",
+                "io.github.project.openubl.xbuilder.content.jaxb.models.XMLDespatchAdvice$ShipmentDocumentReference",
+                "io.github.project.openubl.xbuilder.content.jaxb.models.XMLDespatchAdvice$ApplicableTransportMeans",
+                "io.github.project.openubl.xbuilder.content.jaxb.models.XMLDespatchAdvice$Package",
+                "io.github.project.openubl.xbuilder.content.jaxb.models.XMLDespatchAdvice$Despatch",
 
                 "io.github.project.openubl.xbuilder.content.jaxb.models.XMLDespatchAdviceLine$CommodityClassification",
                 "io.github.project.openubl.xbuilder.content.jaxb.models.XMLDespatchAdviceLine$DeliveredQuantity",
                 "io.github.project.openubl.xbuilder.content.jaxb.models.XMLDespatchAdviceLine$Item",
                 "io.github.project.openubl.xbuilder.content.jaxb.models.XMLDespatchAdviceLine$SellersItemIdentification",
+                "io.github.project.openubl.xbuilder.content.jaxb.models.XMLDespatchAdviceLine$AdditionalItemProperty",
 
                 "io.github.project.openubl.xbuilder.content.jaxb.models.XMLInvoiceLine$Quantity",
 
@@ -222,6 +251,18 @@ class QuarkusXbuilderProcessor {
     @BuildStep
     ReflectiveClassBuildItem reflectionModels() {
         return new ReflectiveClassBuildItem(true, false,
+                io.github.project.openubl.quarkus.xbuilder.runtime.DefaultXBuilder.class,
+                io.github.project.openubl.quarkus.xbuilder.runtime.CustomTemplateLocator.class,
+                io.github.project.openubl.quarkus.xbuilder.runtime.XBuilderConfig.class,
+                io.github.project.openubl.xbuilder.enricher.config.Defaults.class,
+                io.github.project.openubl.xbuilder.enricher.kie.ruleunits.BodyRuleContext.class,
+                io.github.project.openubl.xbuilder.enricher.kie.ruleunits.HeaderRuleContext.class,
+                io.github.project.openubl.xbuilder.content.models.standard.guia.GuiaItemAttribute.class,
+                io.github.project.openubl.xbuilder.content.models.standard.guia.GuiaItemAttribute.GuiaItemAttributeBuilder.class,
+                io.github.project.openubl.xbuilder.content.models.standard.general.EmbededDespatch.class,
+                io.github.project.openubl.xbuilder.content.models.standard.general.EmbededDespatch.EmbededDespatchBuilder.class,
+                io.github.project.openubl.xbuilder.enricher.kie.RulePhase.class,
+                io.github.project.openubl.xbuilder.enricher.kie.RulePhase.PhaseType.class,
                 io.github.project.openubl.xbuilder.content.models.common.Cliente.class,
                 io.github.project.openubl.xbuilder.content.models.common.Cliente.ClienteBuilder.class,
                 io.github.project.openubl.xbuilder.content.models.common.Contacto.class,
@@ -300,6 +341,18 @@ class QuarkusXbuilderProcessor {
                 io.github.project.openubl.xbuilder.content.models.standard.guia.Remitente.RemitenteBuilder.class,
                 io.github.project.openubl.xbuilder.content.models.standard.guia.Transportista.class,
                 io.github.project.openubl.xbuilder.content.models.standard.guia.Transportista.TransportistaBuilder.class,
+                io.github.project.openubl.xbuilder.content.models.standard.guia.Driver.class,
+                io.github.project.openubl.xbuilder.content.models.standard.guia.Driver.DriverBuilder.class,
+                io.github.project.openubl.xbuilder.content.models.standard.guia.Vehicle.class,
+                io.github.project.openubl.xbuilder.content.models.standard.guia.Vehicle.VehicleBuilder.class,
+                io.github.project.openubl.xbuilder.content.models.standard.guia.Puerto.class,
+                io.github.project.openubl.xbuilder.content.models.standard.guia.Puerto.PuertoBuilder.class,
+                io.github.project.openubl.xbuilder.content.models.standard.guia.DocumentoAdicional.class,
+                io.github.project.openubl.xbuilder.content.models.standard.guia.DocumentoAdicional.DocumentoAdicionalBuilder.class,
+                io.github.project.openubl.xbuilder.content.models.standard.guia.Tercero.class,
+                io.github.project.openubl.xbuilder.content.models.standard.guia.Tercero.TerceroBuilder.class,
+                io.github.project.openubl.xbuilder.content.models.standard.guia.Comprador.class,
+                io.github.project.openubl.xbuilder.content.models.standard.guia.Comprador.CompradorBuilder.class,
 
                 io.github.project.openubl.xbuilder.content.catalogs.Catalog.class,
                 io.github.project.openubl.xbuilder.content.catalogs.CatalogContadoCredito.class,
@@ -341,6 +394,9 @@ class QuarkusXbuilderProcessor {
                 io.github.project.openubl.xbuilder.content.models.sunat.baja.VoidedDocumentsItem.class,
                 io.github.project.openubl.xbuilder.content.models.sunat.baja.VoidedDocumentsItem.VoidedDocumentsItemBuilder.class,
 
+                io.github.project.openubl.xbuilder.content.models.sunat.baja.Reversion.class,
+                io.github.project.openubl.xbuilder.content.models.sunat.baja.Reversion.ReversionBuilder.class,
+
                 io.github.project.openubl.xbuilder.content.models.sunat.resumen.SummaryDocuments.class,
                 io.github.project.openubl.xbuilder.content.models.sunat.resumen.SummaryDocuments.SummaryDocumentsBuilder.class,
                 io.github.project.openubl.xbuilder.content.models.sunat.resumen.SummaryDocumentsItem.class,
@@ -363,7 +419,8 @@ class QuarkusXbuilderProcessor {
                 io.github.project.openubl.xbuilder.content.models.sunat.percepcionretencion.ComprobanteAfectado.class,
                 io.github.project.openubl.xbuilder.content.models.sunat.percepcionretencion.ComprobanteAfectado.ComprobanteAfectadoBuilder.class,
                 io.github.project.openubl.xbuilder.content.models.sunat.percepcionretencion.PercepcionRetencionOperacion.class,
-                io.github.project.openubl.xbuilder.content.models.sunat.percepcionretencion.PercepcionRetencionOperacion.PercepcionRetencionOperacionBuilder.class
+                io.github.project.openubl.xbuilder.content.models.sunat.percepcionretencion.PercepcionRetencionOperacion.PercepcionRetencionOperacionBuilder.class,
+                io.github.project.openubl.xbuilder.content.models.sunat.resumen.SummaryPerception.class
         );
     }
 

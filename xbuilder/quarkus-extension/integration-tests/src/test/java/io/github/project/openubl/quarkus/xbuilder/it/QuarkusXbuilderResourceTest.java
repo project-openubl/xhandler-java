@@ -77,10 +77,10 @@ public class QuarkusXbuilderResourceTest {
                 .filter(p -> !p.toFile().isDirectory())
                 .forEach(p -> {
                     try {
-                        Map jsonObject = yamlMapper.readValue(p.toFile(), Map.class);
+                        Map<String, Object> jsonObject = yamlMapper.readValue(p.toFile(), Map.class);
                         String kind = (String) jsonObject.get("kind");
                         String snapshot = (String) jsonObject.get("snapshot");
-                        Map input = (Map) jsonObject.get("input");
+                        Map<String, Object> input = (Map<String, Object>) jsonObject.get("input");
 
                         given()
                                 .when()
@@ -1150,7 +1150,6 @@ public class QuarkusXbuilderResourceTest {
                         .tipoTraslado(Catalog20.TRASLADO_EMISOR_ITINERANTE_CP.getCode())
                         .pesoTotal(BigDecimal.ONE)
                         .pesoTotalUnidadMedida("KG")
-                        .transbordoProgramado(false)
                         .tipoModalidadTraslado(Catalog18.TRANSPORTE_PRIVADO.getCode())
                         .fechaTraslado(LocalDate.of(2022, 1, 25))
                         .partida(Partida.builder()
@@ -1196,7 +1195,7 @@ public class QuarkusXbuilderResourceTest {
                         "    <cbc:CustomizationID>2.0</cbc:CustomizationID>\n" +
                         "    <cbc:ID>T001-1</cbc:ID>\n" +
                         "    <cbc:IssueDate>2022-01-25</cbc:IssueDate>\n" +
-                        "    <cbc:DespatchAdviceTypeCode>09</cbc:DespatchAdviceTypeCode>\n" +
+                        "    <cbc:DespatchAdviceTypeCode listAgencyName=\"PE:SUNAT\" listName=\"Tipo de Documento\" listURI=\"urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo01\">09</cbc:DespatchAdviceTypeCode>\n" +
                         "    <cac:Signature>\n" +
                         "        <cbc:ID>12345678912</cbc:ID>\n" +
                         "        <cac:SignatoryParty>\n" +
@@ -1235,10 +1234,9 @@ public class QuarkusXbuilderResourceTest {
                         "        </cac:Party>\n" +
                         "    </cac:DeliveryCustomerParty>\n" +
                         "    <cac:Shipment>\n" +
-                        "        <cbc:ID>1</cbc:ID>\n" +
+                        "        <cbc:ID>SUNAT_Envio</cbc:ID>\n" +
                         "        <cbc:HandlingCode listAgencyName=\"PE:SUNAT\" listName=\"Motivo de traslado\" listURI=\"urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo20\">18</cbc:HandlingCode>\n" +
                         "        <cbc:GrossWeightMeasure unitCode=\"KG\">1.000</cbc:GrossWeightMeasure>\n" +
-                        "        <cbc:SplitConsignmentIndicator>false</cbc:SplitConsignmentIndicator>\n" +
                         "        <cac:ShipmentStage>\n" +
                         "            <cbc:TransportModeCode listName=\"Modalidad de traslado\" listAgencyName=\"PE:SUNAT\" listURI=\"urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo18\">02</cbc:TransportModeCode>\n" +
                         "            <cac:TransitPeriod>\n" +
@@ -1252,15 +1250,19 @@ public class QuarkusXbuilderResourceTest {
                         "                    <cbc:Line>DireccionDestino</cbc:Line>\n" +
                         "                </cac:AddressLine>\n" +
                         "            </cac:DeliveryAddress>\n" +
+                        "            <cac:Despatch>\n" +
+                        "                <cac:DespatchAddress>\n" +
+                        "                    <cbc:ID schemeAgencyName=\"PE:INEI\" schemeName=\"Ubigeos\">010101</cbc:ID>\n" +
+                        "                    <cac:AddressLine>\n" +
+                        "                        <cbc:Line>DireccionOrigen</cbc:Line>\n" +
+                        "                    </cac:AddressLine>\n" +
+                        "                </cac:DespatchAddress>\n" +
+                        "            </cac:Despatch>\n" +
                         "        </cac:Delivery>\n" +
-                        "        <cac:OriginAddress>\n" +
-                        "            <cbc:ID>010101</cbc:ID>\n" +
-                        "            <cbc:StreetName>DireccionOrigen</cbc:StreetName>\n" +
-                        "        </cac:OriginAddress>\n" +
                         "    </cac:Shipment>\n" +
                         "    <cac:DespatchLine>\n" +
                         "        <cbc:ID>1</cbc:ID>\n" +
-                        "        <cbc:DeliveredQuantity unitCode=\"KG\">0.5</cbc:DeliveredQuantity>\n" +
+                        "        <cbc:DeliveredQuantity unitCode=\"KG\">0.50</cbc:DeliveredQuantity>\n" +
                         "        <cac:OrderLineReference>\n" +
                         "            <cbc:LineID>1</cbc:LineID>\n" +
                         "        </cac:OrderLineReference>\n" +
@@ -1271,5 +1273,154 @@ public class QuarkusXbuilderResourceTest {
                         "        </cac:Item>\n" +
                         "    </cac:DespatchLine>\n" +
                         "</DespatchAdvice>\n"));
+    }
+
+    @Test
+    public void testDespatchAdvice2() {
+        DespatchAdvice despatchAdvice = DespatchAdvice.builder()
+                .serie("T001")
+                .numero(1)
+                .tipoComprobante(Catalog1.GUIA_REMISION_REMITENTE.getCode())
+                .remitente(Remitente.builder()
+                        .ruc("12345678912")
+                        .razonSocial("Softgreen S.A.C.")
+                        .build()
+                )
+                .destinatario(Destinatario.builder()
+                        .tipoDocumentoIdentidad(Catalog6.DNI.getCode())
+                        .numeroDocumentoIdentidad("12345678")
+                        .nombre("mi cliente")
+                        .build()
+                )
+                .envio(Envio.builder()
+                        .tipoTraslado(Catalog20.TRASLADO_EMISOR_ITINERANTE_CP.getCode())
+                        .pesoTotal(BigDecimal.ONE)
+                        .pesoTotalUnidadMedida("KG")
+                        .tipoModalidadTraslado(Catalog18.TRANSPORTE_PRIVADO.getCode())
+                        .fechaTraslado(LocalDate.of(2022, 1, 25))
+                        .partida(Partida.builder()
+                                .direccion("DireccionOrigen")
+                                .ubigeo("010101")
+                                .build()
+                        )
+                        .destino(Destino.builder()
+                                .direccion("DireccionDestino")
+                                .ubigeo("020202")
+                                .build()
+                        )
+                        .build()
+                )
+                .detalle(DespatchAdviceItem.builder()
+                        .cantidad(new BigDecimal("0.5"))
+                        .unidadMedida("KG")
+                        .codigo("123456")
+                        .build()
+                )
+                .build();
+
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .body(despatchAdvice)
+                .post("/quarkus-xbuilder/DespatchAdvice/from-json")
+                .then()
+                .statusCode(200)
+                .body(is(
+                        """
+                                <?xml version="1.0" encoding="UTF-8"?>
+                                <DespatchAdvice xmlns="urn:oasis:names:specification:ubl:schema:xsd:DespatchAdvice-2"
+                                                xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
+                                                xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"
+                                                xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2"
+                                                xmlns:ext="urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2"
+                                >
+                                    <ext:UBLExtensions>
+                                        <ext:UBLExtension>
+                                            <ext:ExtensionContent/>
+                                        </ext:UBLExtension>
+                                    </ext:UBLExtensions>
+                                    <cbc:UBLVersionID>2.1</cbc:UBLVersionID>
+                                    <cbc:CustomizationID>2.0</cbc:CustomizationID>
+                                    <cbc:ID>T001-1</cbc:ID>
+                                    <cbc:IssueDate>2022-01-25</cbc:IssueDate>
+                                    <cbc:DespatchAdviceTypeCode listAgencyName="PE:SUNAT" listName="Tipo de Documento" listURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo01">09</cbc:DespatchAdviceTypeCode>
+                                    <cac:Signature>
+                                        <cbc:ID>12345678912</cbc:ID>
+                                        <cac:SignatoryParty>
+                                            <cac:PartyIdentification>
+                                                <cbc:ID>12345678912</cbc:ID>
+                                            </cac:PartyIdentification>
+                                            <cac:PartyName>
+                                                <cbc:Name><![CDATA[Softgreen S.A.C.]]></cbc:Name>
+                                            </cac:PartyName>
+                                        </cac:SignatoryParty>
+                                        <cac:DigitalSignatureAttachment>
+                                            <cac:ExternalReference>
+                                                <cbc:URI>#PROJECT-OPENUBL-SIGN</cbc:URI>
+                                            </cac:ExternalReference>
+                                        </cac:DigitalSignatureAttachment>
+                                    </cac:Signature>
+                                    <cac:DespatchSupplierParty>
+                                        <cbc:CustomerAssignedAccountID schemeID="6">12345678912</cbc:CustomerAssignedAccountID>
+                                        <cac:Party>
+                                            <cac:PartyIdentification>
+                                                <cbc:ID schemeID="6" schemeName="Documento de Identidad" schemeAgencyName="PE:SUNAT" schemeURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06">12345678912</cbc:ID>
+                                            </cac:PartyIdentification>
+                                            <cac:PartyLegalEntity>
+                                                <cbc:RegistrationName><![CDATA[Softgreen S.A.C.]]></cbc:RegistrationName>
+                                            </cac:PartyLegalEntity>
+                                        </cac:Party>
+                                    </cac:DespatchSupplierParty>
+                                    <cac:DeliveryCustomerParty>
+                                        <cac:Party>
+                                            <cac:PartyIdentification>
+                                                <cbc:ID schemeID="1" schemeName="Documento de Identidad" schemeAgencyName="PE:SUNAT" schemeURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06">12345678</cbc:ID>
+                                            </cac:PartyIdentification>
+                                            <cac:PartyLegalEntity>
+                                                <cbc:RegistrationName><![CDATA[mi cliente]]></cbc:RegistrationName>
+                                            </cac:PartyLegalEntity>
+                                        </cac:Party>
+                                    </cac:DeliveryCustomerParty>
+                                    <cac:Shipment>
+                                        <cbc:ID>SUNAT_Envio</cbc:ID>
+                                        <cbc:HandlingCode listAgencyName="PE:SUNAT" listName="Motivo de traslado" listURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo20">18</cbc:HandlingCode>
+                                        <cbc:GrossWeightMeasure unitCode="KG">1.000</cbc:GrossWeightMeasure>
+                                        <cac:ShipmentStage>
+                                            <cbc:TransportModeCode listName="Modalidad de traslado" listAgencyName="PE:SUNAT" listURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo18">02</cbc:TransportModeCode>
+                                            <cac:TransitPeriod>
+                                                <cbc:StartDate>2022-01-25</cbc:StartDate>
+                                            </cac:TransitPeriod>
+                                        </cac:ShipmentStage>
+                                        <cac:Delivery>
+                                            <cac:DeliveryAddress>
+                                                <cbc:ID schemeAgencyName="PE:INEI" schemeName="Ubigeos">020202</cbc:ID>
+                                                <cac:AddressLine>
+                                                    <cbc:Line>DireccionDestino</cbc:Line>
+                                                </cac:AddressLine>
+                                            </cac:DeliveryAddress>
+                                            <cac:Despatch>
+                                                <cac:DespatchAddress>
+                                                    <cbc:ID schemeAgencyName="PE:INEI" schemeName="Ubigeos">010101</cbc:ID>
+                                                    <cac:AddressLine>
+                                                        <cbc:Line>DireccionOrigen</cbc:Line>
+                                                    </cac:AddressLine>
+                                                </cac:DespatchAddress>
+                                            </cac:Despatch>
+                                        </cac:Delivery>
+                                    </cac:Shipment>
+                                    <cac:DespatchLine>
+                                        <cbc:ID>1</cbc:ID>
+                                        <cbc:DeliveredQuantity unitCode="KG">0.50</cbc:DeliveredQuantity>
+                                        <cac:OrderLineReference>
+                                            <cbc:LineID>1</cbc:LineID>
+                                        </cac:OrderLineReference>
+                                        <cac:Item>
+                                            <cac:SellersItemIdentification>
+                                                <cbc:ID>123456</cbc:ID>
+                                            </cac:SellersItemIdentification>
+                                        </cac:Item>
+                                    </cac:DespatchLine>
+                                </DespatchAdvice>
+                                """));
     }
 }

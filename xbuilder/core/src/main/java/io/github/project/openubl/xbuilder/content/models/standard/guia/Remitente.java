@@ -17,4 +17,7 @@ public class Remitente {
 
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private String razonSocial;
+
+    @Schema(description = "Número de registro del Ministerio de Transportes y Comunicaciones")
+    private String numeroRegistroMTC;
 }

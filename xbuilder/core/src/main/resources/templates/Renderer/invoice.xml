@@ -48,6 +48,74 @@
         </cac:DeliveryLocation>
     </cac:Delivery>
     {/if}
+    {#if guiaEmbebida}
+    <cac:Delivery>
+        <cac:DeliveryLocation>
+            <cac:Address>
+                <cbc:ID>{guiaEmbebida.llegada.ubigueo}</cbc:ID>
+                <cbc:StreetName>{guiaEmbebida.llegada.direccion}</cbc:StreetName>
+                {#if guiaEmbebida.llegada.urbanizacion}
+                <cbc:CitySubdivisionName>{guiaEmbebida.llegada.urbanizacion}</cbc:CitySubdivisionName>
+                {/if}
+                <cbc:CityName>{guiaEmbebida.llegada.provincia}</cbc:CityName>
+                <cbc:CountrySubentity>{guiaEmbebida.llegada.departamento}</cbc:CountrySubentity>
+                <cbc:District>{guiaEmbebida.llegada.distrito}</cbc:District>
+                <cac:Country>
+                    <cbc:IdentificationCode>{guiaEmbebida.llegada.codigoPais}</cbc:IdentificationCode>
+                </cac:Country>
+            </cac:Address>
+        </cac:DeliveryLocation>
+        <cac:Despatch>
+            <cac:DespatchAddress>
+                <cbc:ID>{guiaEmbebida.partida.ubigueo}</cbc:ID>
+                <cbc:StreetName>{guiaEmbebida.partida.direccion}</cbc:StreetName>
+                {#if guiaEmbebida.partida.urbanizacion}
+                <cbc:CitySubdivisionName>{guiaEmbebida.partida.urbanizacion}</cbc:CitySubdivisionName>
+                {/if}
+                <cbc:CityName>{guiaEmbebida.partida.provincia}</cbc:CityName>
+                <cbc:CountrySubentity>{guiaEmbebida.partida.departamento}</cbc:CountrySubentity>
+                <cbc:District>{guiaEmbebida.partida.distrito}</cbc:District>
+                <cac:Country>
+                    <cbc:IdentificationCode>{guiaEmbebida.partida.codigoPais}</cbc:IdentificationCode>
+                </cac:Country>
+            </cac:DespatchAddress>
+        </cac:Despatch>
+        <cac:Shipment>
+            <cbc:GrossWeightMeasure unitCode="{guiaEmbebida.undPesoBruto}">{guiaEmbebida.pesoBruto}</cbc:GrossWeightMeasure>
+            <cac:ShipmentStage>
+                <cbc:TransportModeCode>{guiaEmbebida.modTraslado}</cbc:TransportModeCode>
+                <cac:TransitPeriod>
+                    <cbc:StartDate>{fechaEmision}</cbc:StartDate>
+                </cac:TransitPeriod>
+                <cac:CarrierParty>
+                    <cac:PartyIdentification>
+                        <cbc:ID schemeID="{guiaEmbebida.transportista.tipoDocumentoIdentidad}">{guiaEmbebida.transportista.numeroDocumentoIdentidad}</cbc:ID>
+                    </cac:PartyIdentification>
+                    <cac:PartyName>
+                        <cbc:Name><![CDATA[{guiaEmbebida.transportista.nombre}]]></cbc:Name>
+                    </cac:PartyName>
+                </cac:CarrierParty>
+                <cac:DriverPerson>
+                    <cbc:ID schemeID="1">{guiaEmbebida.nroLicencia}</cbc:ID>
+                </cac:DriverPerson>
+            </cac:ShipmentStage>
+            <cac:Delivery>
+                <cac:DeliveryAddress>
+                    <cbc:ID>{guiaEmbebida.llegada.ubigueo}</cbc:ID>
+                    <cbc:StreetName>{guiaEmbebida.llegada.direccion}</cbc:StreetName>
+                    <cac:Country>
+                        <cbc:IdentificationCode>{guiaEmbebida.llegada.codigoPais}</cbc:IdentificationCode>
+                    </cac:Country>
+                </cac:DeliveryAddress>
+            </cac:Delivery>
+            <cac:TransportHandlingUnit>
+                <cac:TransportEquipment>
+                    <cbc:ID>{guiaEmbebida.transpPlaca}</cbc:ID>
+                </cac:TransportEquipment>
+            </cac:TransportHandlingUnit>
+        </cac:Shipment>
+    </cac:Delivery>
+    {/if}
     {#if detraccion}
     <cac:PaymentMeans>
         <cbc:ID>Detraccion</cbc:ID>
@@ -83,6 +151,15 @@
         <cbc:MultiplierFactorNumeric>1</cbc:MultiplierFactorNumeric>
         <cbc:Amount currencyID="{moneda}">{it.monto}</cbc:Amount>
         <cbc:BaseAmount currencyID="{moneda}">{it.monto}</cbc:BaseAmount>
+    </cac:AllowanceCharge>
+    {/each}
+    {#each cargos.orEmpty}
+    <cac:AllowanceCharge>
+        <cbc:ChargeIndicator>true</cbc:ChargeIndicator>
+        <cbc:AllowanceChargeReasonCode>{it.tipo}</cbc:AllowanceChargeReasonCode>
+        <cbc:MultiplierFactorNumeric>{it.porcentaje.scale(2)}</cbc:MultiplierFactorNumeric>
+        <cbc:Amount currencyID="{moneda}">{it.monto.scale(2)}</cbc:Amount>
+        <cbc:BaseAmount currencyID="{moneda}">{it.monto.scale(2)}</cbc:BaseAmount>
     </cac:AllowanceCharge>
     {/each}
     {#each descuentos.orEmpty}

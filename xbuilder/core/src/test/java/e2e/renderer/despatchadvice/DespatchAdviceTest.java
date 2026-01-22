@@ -40,7 +40,6 @@ public class DespatchAdviceTest extends AbstractTest {
                         .tipoTraslado(Catalog20.TRASLADO_EMISOR_ITINERANTE_CP.getCode())
                         .pesoTotal(BigDecimal.ONE)
                         .pesoTotalUnidadMedida("KG")
-                        .transbordoProgramado(false)
                         .tipoModalidadTraslado(Catalog18.TRANSPORTE_PRIVADO.getCode())
                         .fechaTraslado(dateProvider.now())
                         .partida(Partida.builder()

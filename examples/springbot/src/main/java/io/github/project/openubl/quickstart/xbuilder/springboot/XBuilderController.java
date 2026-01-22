@@ -32,366 +32,403 @@ import java.time.LocalDate;
 @RestController
 public class XBuilderController {
 
-        Defaults defaults = Defaults.builder()
-                        .icbTasa(new BigDecimal("0.2"))
-                        .igvTasa(new BigDecimal("0.18"))
-                        .build();
+    Defaults defaults = Defaults.builder()
+            .icbTasa(new BigDecimal("0.2"))
+            .igvTasa(new BigDecimal("0.18"))
+            .build();
 
-        DateProvider dateProvider = LocalDate::now;
+    DateProvider dateProvider = LocalDate::now;
 
-        @RequestMapping(method = RequestMethod.POST, value = "/api/create-xml/invoice", produces = "text/plain")
-        public String createInvoiceXML(@RequestBody String clientName) throws Exception {
-                Invoice input = createInvoice(clientName);
-                ContentEnricher enricher = new ContentEnricher(defaults, dateProvider);
-                enricher.enrich(input);
-                String xml = TemplateProducer.getInstance().getInvoice().data(input).render();
-                return signAndRender(xml);
-        }
+    @RequestMapping(
+            method = RequestMethod.POST,
+            value = "/api/create-xml/invoice", produces = "text/plain"
+    )
+    public String createInvoiceXML(@RequestBody String clientName) throws Exception {
+        Invoice invoice = createInvoice(clientName);
 
-        @RequestMapping(method = RequestMethod.POST, value = "/api/create-xml/credit-note", produces = "text/plain")
-        public String createCreditNoteXML(@RequestBody String clientName) throws Exception {
-                CreditNote input = createCreditNote(clientName);
-                ContentEnricher enricher = new ContentEnricher(defaults, dateProvider);
-                enricher.enrich(input);
-                String xml = TemplateProducer.getInstance().getCreditNote().data(input).render();
-                return signAndRender(xml);
-        }
+        ContentEnricher enricher = new ContentEnricher(defaults, dateProvider);
+        enricher.enrich(invoice);
+        String xml = TemplateProducer.getInstance().getInvoice().data(invoice).render();
+        return signAndRender(xml);
+    }
 
-        @RequestMapping(method = RequestMethod.POST, value = "/api/create-xml/debit-note", produces = "text/plain")
-        public String createDebitNoteXML(@RequestBody String clientName) throws Exception {
-                DebitNote input = createDebitNote(clientName);
-                ContentEnricher enricher = new ContentEnricher(defaults, dateProvider);
-                enricher.enrich(input);
-                String xml = TemplateProducer.getInstance().getDebitNote().data(input).render();
-                return signAndRender(xml);
-        }
+    @RequestMapping(method = RequestMethod.POST, value = "/api/create-xml/credit-note", produces = "text/plain")
+    public String createCreditNoteXML(@RequestBody String clientName) throws Exception {
+        CreditNote input = createCreditNote(clientName);
+        ContentEnricher enricher = new ContentEnricher(defaults, dateProvider);
+        enricher.enrich(input);
+        String xml = TemplateProducer.getInstance().getCreditNote().data(input).render();
+        return signAndRender(xml);
+    }
 
-        @RequestMapping(method = RequestMethod.POST, value = "/api/create-xml/voided-documents", produces = "text/plain")
-        public String createVoidedDocumentsXML(@RequestBody String clientName) throws Exception {
-                VoidedDocuments input = createVoidedDocuments(clientName);
-                ContentEnricher enricher = new ContentEnricher(defaults, dateProvider);
-                enricher.enrich(input);
-                String xml = TemplateProducer.getInstance().getVoidedDocument().data(input).render();
-                return signAndRender(xml);
-        }
+    @RequestMapping(method = RequestMethod.POST, value = "/api/create-xml/debit-note", produces = "text/plain")
+    public String createDebitNoteXML(@RequestBody String clientName) throws Exception {
+        DebitNote input = createDebitNote(clientName);
+        ContentEnricher enricher = new ContentEnricher(defaults, dateProvider);
+        enricher.enrich(input);
+        String xml = TemplateProducer.getInstance().getDebitNote().data(input).render();
+        return signAndRender(xml);
+    }
 
-        @RequestMapping(method = RequestMethod.POST, value = "/api/create-xml/summary-documents", produces = "text/plain")
-        public String createSummaryDocumentsXML(@RequestBody String clientName) throws Exception {
-                SummaryDocuments input = createSummaryDocuments(clientName);
-                ContentEnricher enricher = new ContentEnricher(defaults, dateProvider);
-                enricher.enrich(input);
-                String xml = TemplateProducer.getInstance().getSummaryDocuments().data(input).render();
-                return signAndRender(xml);
-        }
+    @RequestMapping(method = RequestMethod.POST, value = "/api/create-xml/voided-documents", produces = "text/plain")
+    public String createVoidedDocumentsXML(@RequestBody String clientName) throws Exception {
+        VoidedDocuments input = createVoidedDocuments(clientName);
+        ContentEnricher enricher = new ContentEnricher(defaults, dateProvider);
+        enricher.enrich(input);
+        String xml = TemplateProducer.getInstance().getVoidedDocument().data(input).render();
+        return signAndRender(xml);
+    }
 
-        @RequestMapping(method = RequestMethod.POST, value = "/api/create-xml/perception", produces = "text/plain")
-        public String createPerceptionXML(@RequestBody String clientName) throws Exception {
-                Perception input = createPerception(clientName);
-                ContentEnricher enricher = new ContentEnricher(defaults, dateProvider);
-                enricher.enrich(input);
-                String xml = TemplateProducer.getInstance().getPerception().data(input).render();
-                return signAndRender(xml);
-        }
+    @RequestMapping(method = RequestMethod.POST, value = "/api/create-xml/summary-documents", produces = "text/plain")
+    public String createSummaryDocumentsXML(@RequestBody String clientName) throws Exception {
+        SummaryDocuments input = createSummaryDocuments(clientName);
+        ContentEnricher enricher = new ContentEnricher(defaults, dateProvider);
+        enricher.enrich(input);
+        String xml = TemplateProducer.getInstance().getSummaryDocuments().data(input).render();
+        return signAndRender(xml);
+    }
 
-        @RequestMapping(method = RequestMethod.POST, value = "/api/create-xml/retention", produces = "text/plain")
-        public String createRetentionXML(@RequestBody String clientName) throws Exception {
-                Retention input = createRetention(clientName);
-                ContentEnricher enricher = new ContentEnricher(defaults, dateProvider);
-                enricher.enrich(input);
-                String xml = TemplateProducer.getInstance().getRetention().data(input).render();
-                return signAndRender(xml);
-        }
+    @RequestMapping(method = RequestMethod.POST, value = "/api/create-xml/perception", produces = "text/plain")
+    public String createPerceptionXML(@RequestBody String clientName) throws Exception {
+        Perception input = createPerception(clientName);
+        ContentEnricher enricher = new ContentEnricher(defaults, dateProvider);
+        enricher.enrich(input);
+        String xml = TemplateProducer.getInstance().getPerception().data(input).render();
+        return signAndRender(xml);
+    }
 
-        @RequestMapping(method = RequestMethod.POST, value = "/api/create-xml/despatch-advice", produces = "text/plain")
-        public String createDespatchAdviceXML(@RequestBody String clientName) throws Exception {
-                DespatchAdvice input = createDespatchAdvice(clientName);
-                ContentEnricher enricher = new ContentEnricher(defaults, dateProvider);
-                enricher.enrich(input);
-                String xml = TemplateProducer.getInstance().getDespatchAdvice().data(input).render();
-                return signAndRender(xml);
-        }
+    @RequestMapping(method = RequestMethod.POST, value = "/api/create-xml/retention", produces = "text/plain")
+    public String createRetentionXML(@RequestBody String clientName) throws Exception {
+        Retention input = createRetention(clientName);
+        ContentEnricher enricher = new ContentEnricher(defaults, dateProvider);
+        enricher.enrich(input);
+        String xml = TemplateProducer.getInstance().getRetention().data(input).render();
+        return signAndRender(xml);
+    }
 
-        @RequestMapping(method = RequestMethod.POST, value = "/api/create-xml/reversion", produces = "text/plain")
-        public String createReversionXML(@RequestBody String clientName) throws Exception {
-                Reversion input = createReversion(clientName);
-                ContentEnricher enricher = new ContentEnricher(defaults, dateProvider);
-                enricher.enrich(input);
-                String xml = TemplateProducer.getInstance().getReversion().data(input).render();
-                return signAndRender(xml);
-        }
+    @RequestMapping(method = RequestMethod.POST, value = "/api/create-xml/despatch-advice", produces = "text/plain")
+    public String createDespatchAdviceXML(@RequestBody String clientName) throws Exception {
+        DespatchAdvice input = createDespatchAdvice(clientName);
+        ContentEnricher enricher = new ContentEnricher(defaults, dateProvider);
+        enricher.enrich(input);
+        String xml = TemplateProducer.getInstance().getDespatchAdvice().data(input).render();
+        return signAndRender(xml);
+    }
 
-        private String signAndRender(String xml) throws Exception {
-                // Sign XML
-                InputStream ksInputStream = Thread.currentThread().getContextClassLoader()
-                                .getResourceAsStream("LLAMA-PE-CERTIFICADO-DEMO-12345678912.pfx");
-                CertificateDetails certificate = CertificateDetailsFactory.create(ksInputStream, "password");
+    @RequestMapping(method = RequestMethod.POST, value = "/api/create-xml/reversion", produces = "text/plain")
+    public String createReversionXML(@RequestBody String clientName) throws Exception {
+        Reversion input = createReversion(clientName);
+        ContentEnricher enricher = new ContentEnricher(defaults, dateProvider);
+        enricher.enrich(input);
+        String xml = TemplateProducer.getInstance().getReversion().data(input).render();
+        return signAndRender(xml);
+    }
 
-                X509Certificate x509Certificate = certificate.getX509Certificate();
-                PrivateKey privateKey = certificate.getPrivateKey();
-                Document signedXML = XMLSigner.signXML(xml, "Project OpenUBL", x509Certificate, privateKey);
+    private String signAndRender(String xml) throws Exception {
+        // Sign XML
+        InputStream ksInputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("LLAMA-PE-CERTIFICADO-DEMO-12345678912.pfx");
+        CertificateDetails certificate = CertificateDetailsFactory.create(ksInputStream, "password");
 
-                // Return
-                byte[] bytesFromDocument = XmlSignatureHelper.getBytesFromDocument(signedXML);
-                return new String(bytesFromDocument, StandardCharsets.ISO_8859_1);
-        }
+        X509Certificate x509Certificate = certificate.getX509Certificate();
+        PrivateKey privateKey = certificate.getPrivateKey();
+        Document signedXML = XMLSigner.signXML(xml, "Project OpenUBL", x509Certificate, privateKey);
 
-        private Invoice createInvoice(String clientName) {
-                return Invoice.builder()
-                                .serie("F001")
-                                .numero(1)
-                                .proveedor(Proveedor.builder()
-                                                .ruc("12345678912")
-                                                .razonSocial("Softgreen S.A.C.")
-                                                .build())
+        //  Return
+        byte[] bytesFromDocument = XmlSignatureHelper.getBytesFromDocument(signedXML);
+        return new String(bytesFromDocument, StandardCharsets.ISO_8859_1);
+    }
+
+    private Invoice createInvoice(String clientName) {
+        return Invoice.builder()
+                .serie("F001")
+                .numero(1)
+                .proveedor(Proveedor.builder()
+                        .ruc("12345678912")
+                        .razonSocial("Softgreen S.A.C.")
+                        .build()
+                )
+                .cliente(Cliente.builder()
+                        .nombre(clientName)
+                        .numeroDocumentoIdentidad("12121212121")
+                        .tipoDocumentoIdentidad(Catalog6.RUC.toString())
+                        .build()
+                )
+                .detalle(DocumentoVentaDetalle.builder()
+                        .descripcion("Item1")
+                        .cantidad(new BigDecimal("10"))
+                        .precio(new BigDecimal("100"))
+                        .unidadMedida("KGM")
+                        .build()
+                )
+                .detalle(DocumentoVentaDetalle.builder()
+                        .descripcion("Item2")
+                        .cantidad(new BigDecimal("10"))
+                        .precio(new BigDecimal("100"))
+                        .unidadMedida("KGM")
+                        .build()
+                )
+                .build();
+    }
+
+    private CreditNote createCreditNote(String clientName) {
+        return CreditNote.builder()
+                .serie("FC01")
+                .numero(1)
+                .comprobanteAfectadoSerieNumero("F001-1")
+                .sustentoDescripcion("mi sustento")
+                .proveedor(Proveedor.builder()
+                        .ruc("12345678912")
+                        .razonSocial("Softgreen S.A.C.")
+                        .build()
+                )
+                .cliente(Cliente.builder()
+                        .nombre(clientName)
+                        .numeroDocumentoIdentidad("12121212121")
+                        .tipoDocumentoIdentidad(Catalog6.RUC.toString())
+                        .build()
+                )
+                .detalle(DocumentoVentaDetalle.builder()
+                        .descripcion("Item1")
+                        .cantidad(new BigDecimal("10"))
+                        .precio(new BigDecimal("100"))
+                        .build()
+                )
+                .build();
+    }
+
+    private DebitNote createDebitNote(String clientName) {
+        return DebitNote.builder()
+                .serie("FD01")
+                .numero(1)
+                .comprobanteAfectadoSerieNumero("F001-1")
+                .sustentoDescripcion("mi sustento")
+                .proveedor(Proveedor.builder()
+                        .ruc("12345678912")
+                        .razonSocial("Softgreen S.A.C.")
+                        .build()
+                )
+                .cliente(Cliente.builder()
+                        .nombre(clientName)
+                        .numeroDocumentoIdentidad("12121212121")
+                        .tipoDocumentoIdentidad(Catalog6.RUC.toString())
+                        .build()
+                )
+                .detalle(DocumentoVentaDetalle.builder()
+                        .descripcion("Item1")
+                        .cantidad(new BigDecimal("10"))
+                        .precio(new BigDecimal("100"))
+                        .build()
+                )
+                .build();
+    }
+
+    private VoidedDocuments createVoidedDocuments(String clientName) {
+        return VoidedDocuments.builder()
+                .numero(1)
+                .fechaEmision(LocalDate.of(2022, 01, 31))
+                .fechaEmisionComprobantes(LocalDate.of(2022, 01, 29))
+                .proveedor(Proveedor.builder()
+                        .ruc("12345678912")
+                        .razonSocial("Softgreen S.A.C.")
+                        .build()
+                )
+                .comprobante(VoidedDocumentsItem.builder()
+                        .serie("F001")
+                        .numero(1)
+                        .tipoComprobante(Catalog1_Invoice.FACTURA.getCode())
+                        .descripcionSustento("Mi sustento1")
+                        .build()
+                )
+                .comprobante(VoidedDocumentsItem.builder()
+                        .serie("F001")
+                        .numero(2)
+                        .tipoComprobante(Catalog1_Invoice.FACTURA.getCode())
+                        .descripcionSustento("Mi sustento2")
+                        .build()
+                )
+                .build();
+    }
+
+    private SummaryDocuments createSummaryDocuments(String clientName) {
+        return SummaryDocuments.builder()
+                .numero(1)
+                .fechaEmisionComprobantes(dateProvider.now().minusDays(2))
+                .proveedor(Proveedor.builder()
+                        .ruc("12345678912")
+                        .razonSocial("Softgreen S.A.C.")
+                        .build()
+                )
+                .comprobante(SummaryDocumentsItem.builder()
+                        .tipoOperacion(Catalog19.ADICIONAR.toString())
+                        .comprobante(Comprobante.builder()
+                                .tipoComprobante(Catalog1_Invoice.BOLETA.getCode())//
+                                .serieNumero("B001-1")
                                 .cliente(Cliente.builder()
-                                                .nombre(clientName)
-                                                .numeroDocumentoIdentidad("12121212121")
-                                                .tipoDocumentoIdentidad(Catalog6.RUC.toString())
-                                                .build())
-                                .detalle(DocumentoVentaDetalle.builder()
-                                                .descripcion("Item1")
-                                                .cantidad(new BigDecimal("10"))
-                                                .precio(new BigDecimal("100"))
-                                                .unidadMedida("KGM")
-                                                .build())
-                                .detalle(DocumentoVentaDetalle.builder()
-                                                .descripcion("Item2")
-                                                .cantidad(new BigDecimal("10"))
-                                                .precio(new BigDecimal("100"))
-                                                .unidadMedida("KGM")
-                                                .build())
-                                .build();
-        }
+                                        .nombre(clientName)
+                                        .numeroDocumentoIdentidad("12345678")
+                                        .tipoDocumentoIdentidad(
+                                                Catalog6.DNI.getCode())
+                                        .build()
+                                )
+                                .impuestos(ComprobanteImpuestos.builder()
+                                        .igv(new BigDecimal("18"))
+                                        .icb(new BigDecimal(2))
+                                        .build()
+                                )
+                                .valorVenta(ComprobanteValorVenta.builder()
+                                        .importeTotal(new BigDecimal("120"))
+                                        .gravado(new BigDecimal("120"))
+                                        .build()
+                                )
+                                .build()
+                        )
+                        .build()
+                )
+                .build();
+    }
 
-        private CreditNote createCreditNote(String clientName) {
-                return CreditNote.builder()
-                                .serie("FC01")
-                                .numero(1)
-                                .comprobanteAfectadoSerieNumero("F001-1")
-                                .sustentoDescripcion("mi sustento")
-                                .proveedor(Proveedor.builder()
-                                                .ruc("12345678912")
-                                                .razonSocial("Softgreen S.A.C.")
-                                                .build())
-                                .cliente(Cliente.builder()
-                                                .nombre(clientName)
-                                                .numeroDocumentoIdentidad("12121212121")
-                                                .tipoDocumentoIdentidad(Catalog6.RUC.toString())
-                                                .build())
-                                .detalle(DocumentoVentaDetalle.builder()
-                                                .descripcion("Item1")
-                                                .cantidad(new BigDecimal("10"))
-                                                .precio(new BigDecimal("100"))
-                                                .build())
-                                .build();
-        }
-
-        private DebitNote createDebitNote(String clientName) {
-                return DebitNote.builder()
-                                .serie("FD01")
-                                .numero(1)
-                                .comprobanteAfectadoSerieNumero("F001-1")
-                                .sustentoDescripcion("mi sustento")
-                                .proveedor(Proveedor.builder()
-                                                .ruc("12345678912")
-                                                .razonSocial("Softgreen S.A.C.")
-                                                .build())
-                                .cliente(Cliente.builder()
-                                                .nombre(clientName)
-                                                .numeroDocumentoIdentidad("12121212121")
-                                                .tipoDocumentoIdentidad(Catalog6.RUC.toString())
-                                                .build())
-                                .detalle(DocumentoVentaDetalle.builder()
-                                                .descripcion("Item1")
-                                                .cantidad(new BigDecimal("10"))
-                                                .precio(new BigDecimal("100"))
-                                                .build())
-                                .build();
-        }
-
-        private VoidedDocuments createVoidedDocuments(String clientName) {
-                return VoidedDocuments.builder()
-                                .numero(1)
+    private Perception createPerception(String clientName) {
+        return Perception.builder()
+                .serie("P001")
+                .numero(1)
+                .fechaEmision(LocalDate.of(2022, 01, 31))
+                .proveedor(Proveedor.builder()
+                        .ruc("12345678912")
+                        .razonSocial("Softgreen S.A.C.")
+                        .build()
+                )
+                .cliente(Cliente.builder()
+                        .nombre(clientName)
+                        .numeroDocumentoIdentidad("12121212121")
+                        .tipoDocumentoIdentidad(Catalog6.RUC.getCode())
+                        .build()
+                )
+                .importeTotalPercibido(new BigDecimal("10"))
+                .importeTotalCobrado(new BigDecimal("210"))
+                .tipoRegimen(Catalog22.VENTA_INTERNA.getCode())
+                .tipoRegimenPorcentaje(Catalog22.VENTA_INTERNA.getPercent()) //
+                .operacion(PercepcionRetencionOperacion.builder()
+                        .numeroOperacion(1)
+                        .fechaOperacion(LocalDate.of(2022, 01, 31))
+                        .importeOperacion(new BigDecimal("100"))
+                        .comprobante(io.github.project.openubl.xbuilder.content.models.sunat.percepcionretencion.ComprobanteAfectado
+                                .builder()
+                                .tipoComprobante(Catalog1.FACTURA.getCode())
+                                .serieNumero("F001-1")
                                 .fechaEmision(LocalDate.of(2022, 01, 31))
-                                .fechaEmisionComprobantes(LocalDate.of(2022, 01, 29))
-                                .proveedor(Proveedor.builder()
-                                                .ruc("12345678912")
-                                                .razonSocial("Softgreen S.A.C.")
-                                                .build())
-                                .comprobante(VoidedDocumentsItem.builder()
-                                                .serie("F001")
-                                                .numero(1)
-                                                .tipoComprobante(Catalog1_Invoice.FACTURA.getCode())
-                                                .descripcionSustento("Mi sustento1")
-                                                .build())
-                                .comprobante(VoidedDocumentsItem.builder()
-                                                .serie("F001")
-                                                .numero(2)
-                                                .tipoComprobante(Catalog1_Invoice.FACTURA.getCode())
-                                                .descripcionSustento("Mi sustento2")
-                                                .build())
-                                .build();
-        }
+                                .importeTotal(new BigDecimal("200"))
+                                .moneda("PEN")
+                                .build()
+                        )
+                        .build()
+                )
+                .build();
+    }
 
-        private SummaryDocuments createSummaryDocuments(String clientName) {
-                return SummaryDocuments.builder()
-                                .numero(1)
-                                .fechaEmisionComprobantes(dateProvider.now().minusDays(2))
-                                .proveedor(Proveedor.builder()
-                                                .ruc("12345678912")
-                                                .razonSocial("Softgreen S.A.C.")
-                                                .build())
-                                .comprobante(SummaryDocumentsItem.builder()
-                                                .tipoOperacion(Catalog19.ADICIONAR.toString())
-                                                .comprobante(Comprobante.builder()
-                                                                .tipoComprobante(Catalog1_Invoice.BOLETA.getCode())//
-                                                                .serieNumero("B001-1")
-                                                                .cliente(Cliente.builder()
-                                                                                .nombre(clientName)
-                                                                                .numeroDocumentoIdentidad("12345678")
-                                                                                .tipoDocumentoIdentidad(
-                                                                                                Catalog6.DNI.getCode())
-                                                                                .build())
-                                                                .impuestos(ComprobanteImpuestos.builder()
-                                                                                .igv(new BigDecimal("18"))
-                                                                                .icb(new BigDecimal(2))
-                                                                                .build())
-                                                                .valorVenta(ComprobanteValorVenta.builder()
-                                                                                .importeTotal(new BigDecimal("120"))
-                                                                                .gravado(new BigDecimal("120"))
-                                                                                .build())
-                                                                .build())
-                                                .build())
-                                .build();
-        }
-
-        private Perception createPerception(String clientName) {
-                return Perception.builder()
-                                .serie("P001")
-                                .numero(1)
+    private Retention createRetention(String clientName) {
+        return Retention.builder()
+                .serie("R001")
+                .numero(1)
+                .fechaEmision(LocalDate.of(2022, 01, 31))
+                .proveedor(Proveedor.builder()
+                        .ruc("12345678912")
+                        .razonSocial("Softgreen S.A.C.")
+                        .build())
+                .cliente(Cliente.builder()
+                        .nombre(clientName)
+                        .numeroDocumentoIdentidad("12121212121")
+                        .tipoDocumentoIdentidad(Catalog6.RUC.getCode())
+                        .build()
+                )
+                .importeTotalRetenido(new BigDecimal("10"))
+                .importeTotalPagado(new BigDecimal("200"))
+                .tipoRegimen(Catalog23.TASA_TRES.getCode())
+                .tipoRegimenPorcentaje(Catalog23.TASA_TRES.getPercent()) //
+                .operacion(PercepcionRetencionOperacion.builder()
+                        .numeroOperacion(1)
+                        .fechaOperacion(LocalDate.of(2022, 01, 31))
+                        .importeOperacion(new BigDecimal("100"))
+                        .comprobante(io.github.project.openubl.xbuilder.content.models.sunat.percepcionretencion.ComprobanteAfectado
+                                .builder()
+                                .tipoComprobante(Catalog1.FACTURA.getCode())
+                                .serieNumero("F001-1")
                                 .fechaEmision(LocalDate.of(2022, 01, 31))
-                                .proveedor(Proveedor.builder()
-                                                .ruc("12345678912")
-                                                .razonSocial("Softgreen S.A.C.")
-                                                .build())
-                                .cliente(Cliente.builder()
-                                                .nombre(clientName)
-                                                .numeroDocumentoIdentidad("12121212121")
-                                                .tipoDocumentoIdentidad(Catalog6.RUC.getCode())
-                                                .build())
-                                .importeTotalPercibido(new BigDecimal("10"))
-                                .importeTotalCobrado(new BigDecimal("210"))
-                                .tipoRegimen(Catalog22.VENTA_INTERNA.getCode())
-                                .tipoRegimenPorcentaje(Catalog22.VENTA_INTERNA.getPercent()) //
-                                .operacion(PercepcionRetencionOperacion.builder()
-                                                .numeroOperacion(1)
-                                                .fechaOperacion(LocalDate.of(2022, 01, 31))
-                                                .importeOperacion(new BigDecimal("100"))
-                                                .comprobante(io.github.project.openubl.xbuilder.content.models.sunat.percepcionretencion.ComprobanteAfectado
-                                                                .builder()
-                                                                .tipoComprobante(Catalog1.FACTURA.getCode())
-                                                                .serieNumero("F001-1")
-                                                                .fechaEmision(LocalDate.of(2022, 01, 31))
-                                                                .importeTotal(new BigDecimal("200"))
-                                                                .moneda("PEN")
-                                                                .build())
-                                                .build())
-                                .build();
-        }
+                                .importeTotal(new BigDecimal("210"))
+                                .moneda("PEN")
+                                .build()
+                        )
+                        .build()
+                )
+                .build();
+    }
 
-        private Retention createRetention(String clientName) {
-                return Retention.builder()
-                                .serie("R001")
-                                .numero(1)
-                                .fechaEmision(LocalDate.of(2022, 01, 31))
-                                .proveedor(Proveedor.builder()
-                                                .ruc("12345678912")
-                                                .razonSocial("Softgreen S.A.C.")
-                                                .build())
-                                .cliente(Cliente.builder()
-                                                .nombre(clientName)
-                                                .numeroDocumentoIdentidad("12121212121")
-                                                .tipoDocumentoIdentidad(Catalog6.RUC.getCode())
-                                                .build())
-                                .importeTotalRetenido(new BigDecimal("10"))
-                                .importeTotalPagado(new BigDecimal("200"))
-                                .tipoRegimen(Catalog23.TASA_TRES.getCode())
-                                .tipoRegimenPorcentaje(Catalog23.TASA_TRES.getPercent()) //
-                                .operacion(PercepcionRetencionOperacion.builder()
-                                                .numeroOperacion(1)
-                                                .fechaOperacion(LocalDate.of(2022, 01, 31))
-                                                .importeOperacion(new BigDecimal("100"))
-                                                .comprobante(io.github.project.openubl.xbuilder.content.models.sunat.percepcionretencion.ComprobanteAfectado
-                                                                .builder()
-                                                                .tipoComprobante(Catalog1.FACTURA.getCode())
-                                                                .serieNumero("F001-1")
-                                                                .fechaEmision(LocalDate.of(2022, 01, 31))
-                                                                .importeTotal(new BigDecimal("210"))
-                                                                .moneda("PEN")
-                                                                .build())
-                                                .build())
-                                .build();
-        }
+    private DespatchAdvice createDespatchAdvice(String clientName) {
+        return DespatchAdvice.builder()
+                .serie("T001")
+                .numero(1)
+                .tipoComprobante(Catalog1.GUIA_REMISION_REMITENTE.getCode())
+                .remitente(Remitente.builder()
+                        .ruc("12345678912")
+                        .razonSocial("Softgreen S.A.C.")
+                        .build()
+                )
+                .destinatario(Destinatario.builder()
+                        .tipoDocumentoIdentidad(Catalog6.DNI.getCode())
+                        .numeroDocumentoIdentidad("12345678")
+                        .nombre(clientName)
+                        .build()
+                )
+                .envio(Envio.builder()
+                        .tipoTraslado(Catalog20.TRASLADO_EMISOR_ITINERANTE_CP.getCode())
+                        .pesoTotal(BigDecimal.ONE)
+                        .pesoTotalUnidadMedida("KG")
+                        .tipoModalidadTraslado(Catalog18.TRANSPORTE_PRIVADO.getCode())
+                        .fechaTraslado(dateProvider.now())
+                        .partida(Partida.builder()
+                                .direccion("DireccionOrigen")
+                                .ubigeo("010101")
+                                .build()
+                        )
+                        .destino(Destino.builder()
+                                .direccion("DireccionDestino")
+                                .ubigeo("020202")
+                                .build()
+                        )
+                        .build())
+                .detalle(DespatchAdviceItem.builder()
+                        .cantidad(new BigDecimal("0.5"))
+                        .unidadMedida("KG")
+                        .codigo("123456")
+                        .build()
+                )
+                .build();
+    }
 
-        private DespatchAdvice createDespatchAdvice(String clientName) {
-                return DespatchAdvice.builder()
-                                .serie("T001")
-                                .numero(1)
-                                .tipoComprobante(Catalog1.GUIA_REMISION_REMITENTE.getCode())
-                                .remitente(Remitente.builder()
-                                                .ruc("12345678912")
-                                                .razonSocial("Softgreen S.A.C.")
-                                                .build())
-                                .destinatario(Destinatario.builder()
-                                                .tipoDocumentoIdentidad(Catalog6.DNI.getCode())
-                                                .numeroDocumentoIdentidad("12345678")
-                                                .nombre(clientName)
-                                                .build())
-                                .envio(Envio.builder()
-                                                .tipoTraslado(Catalog20.TRASLADO_EMISOR_ITINERANTE_CP.getCode())
-                                                .pesoTotal(BigDecimal.ONE)
-                                                .pesoTotalUnidadMedida("KG")
-                                                .tipoModalidadTraslado(Catalog18.TRANSPORTE_PRIVADO.getCode())
-                                                .fechaTraslado(dateProvider.now())
-                                                .partida(Partida.builder()
-                                                                .direccion("DireccionOrigen")
-                                                                .ubigeo("010101")
-                                                                .build())
-                                                .destino(Destino.builder()
-                                                                .direccion("DireccionDestino")
-                                                                .ubigeo("020202")
-                                                                .build())
-                                                .build())
-                                .detalle(DespatchAdviceItem.builder()
-                                                .cantidad(new BigDecimal("0.5"))
-                                                .unidadMedida("KG")
-                                                .codigo("123456")
-                                                .build())
-                                .build();
-        }
-
-        private Reversion createReversion(String clientName) {
-                return Reversion.builder()
-                                .numero(1)
-                                .fechaEmision(LocalDate.now())
-                                .fechaEmisionComprobantes(LocalDate.now().minusDays(1))
-                                .proveedor(Proveedor.builder()
-                                                .ruc("12345678912")
-                                                .razonSocial("Softgreen S.A.C.")
-                                                .build())
-                                .comprobante(VoidedDocumentsItem.builder()
-                                                .serie("P001")
-                                                .numero(1)
-                                                .tipoComprobante(Catalog1.PERCEPCION.getCode())
-                                                .descripcionSustento("Anulacion de percepcion por error en emision")
-                                                .build())
-                                .comprobante(VoidedDocumentsItem.builder()
-                                                .serie("R001")
-                                                .numero(1)
-                                                .tipoComprobante(Catalog1.RETENCION.getCode())
-                                                .descripcionSustento("Anulacion de retencion por duplicado")
-                                                .build())
-                                .build();
-        }
+    private Reversion createReversion(String clientName) {
+        return Reversion.builder()
+                .numero(1)
+                .fechaEmision(LocalDate.now())
+                .fechaEmisionComprobantes(LocalDate.now().minusDays(1))
+                .proveedor(Proveedor.builder()
+                        .ruc("12345678912")
+                        .razonSocial("Softgreen S.A.C.")
+                        .build()
+                )
+                .comprobante(VoidedDocumentsItem.builder()
+                        .serie("P001")
+                        .numero(1)
+                        .tipoComprobante(Catalog1.PERCEPCION.getCode())
+                        .descripcionSustento("Anulacion de percepcion por error en emision")
+                        .build()
+                )
+                .comprobante(VoidedDocumentsItem.builder()
+                        .serie("R001")
+                        .numero(1)
+                        .tipoComprobante(Catalog1.RETENCION.getCode())
+                        .descripcionSustento("Anulacion de retencion por duplicado")
+                        .build()
+                )
+                .build();
+    }
 
 }

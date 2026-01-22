@@ -37,10 +37,8 @@ import org.mapstruct.Named;
 }, nullValuePropertyMappingStrategy = org.mapstruct.NullValuePropertyMappingStrategy.SET_TO_DEFAULT)
 public interface DespatchAdviceMapper {
 
-    @Mapping(target = "serie", source = "documentId", qualifiedBy = { SerieNumeroTranslator.class,
-            SerieTranslator.class })
-    @Mapping(target = "numero", source = "documentId", qualifiedBy = { SerieNumeroTranslator.class,
-            Numero2Translator.class })
+    @Mapping(target = "serie", source = "documentId", qualifiedBy = { SerieNumeroTranslator.class, SerieTranslator.class })
+    @Mapping(target = "numero", source = "documentId", qualifiedBy = { SerieNumeroTranslator.class, Numero2Translator.class })
     @Mapping(target = "version", source = "customizationId")
     @Mapping(target = "fechaEmision", source = "issueDate")
     @Mapping(target = "horaEmision", source = "issueTime")
@@ -148,8 +146,7 @@ public interface DespatchAdviceMapper {
     @Condition
     @Named("transportistaRequirements")
     default boolean conditionTransportista(XMLDespatchAdvice.ShipmentStage xml) {
-        return xml.getCarrierParty() != null && xml.getTransportMeans() != null && xml.getDriverPersons() != null
-                && !xml.getDriverPersons().isEmpty();
+        return xml.getCarrierParty() != null && xml.getTransportMeans() != null && xml.getDriverPersons() != null && !xml.getDriverPersons().isEmpty();
     }
 
     @Mapping(target = "tipoDocumentoIdentidad", source = "carrierParty.partyIdentification.id.schemeID")

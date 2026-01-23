@@ -23,7 +23,7 @@
     </modules>
 
     <properties>
-        <failsafe-plugin.version>3.0.0</failsafe-plugin.version>
+        <failsafe-plugin.version>3.5.3</failsafe-plugin.version>
         <main.basedir>${maven.multiModuleProjectDirectory}</main.basedir>
     </properties>
 

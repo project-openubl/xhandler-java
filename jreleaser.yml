@@ -5,9 +5,10 @@ project:
   authors:
     - Carlos E. Feria Vila
   license: Apache-2
-  java:
-    groupId: io.github.project-openubl
-    version: '17'
+  languages:
+    java:
+      groupId: io.github.project-openubl
+      version: '17'
   inceptionYear: '2019'
   links:
     homepage: https://project-openubl.github.io/
@@ -55,19 +56,17 @@ release:
 
 signing:
   active: ALWAYS
-  armored: true
+  pgp:
+    armored: true
 
 deploy:
   maven:
     pomchecker:
       failOnWarning: false
-    nexus2:
-      maven-central:
+    mavenCentral:
+      sonatype:
         active: ALWAYS
-        url: https://oss.sonatype.org/service/local
-        snapshotUrl: https://oss.sonatype.org/content/repositories/snapshots
-        closeRepository: true
-        releaseRepository: true
+        url: https://central.sonatype.com/api/v1/publisher
         stagingRepositories:
           - target/staging-deploy
 

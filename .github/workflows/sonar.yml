@@ -3,7 +3,7 @@ name: Sonar
 on:
   push:
     branches:
-      - master
+      - main
 
 env:
   CI: true

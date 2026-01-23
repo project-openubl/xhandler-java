@@ -1,5 +1,5 @@
 project:
-  name: xhandler
+  name: xhandler-java
   description: Libreria para crear y enviar XMLs a la SUNAT
   longDescription: Libreria para crear y enviar comprobantes electrónicos a los servicios web de la SUNAT y/o OSCE
   authors:
@@ -16,7 +16,7 @@ project:
 release:
   github:
     owner: project-openubl
-    name: xhandler
+    name: xhandler-java
     overwrite: true
     discussionCategoryName: Announcements
     issues:

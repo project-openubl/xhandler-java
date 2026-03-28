@@ -832,6 +832,7 @@ public class QuarkusXbuilderResourceTest {
                         "            <cac:TaxSubtotal>\n" +
                         "                <cbc:TaxAmount currencyID=\"PEN\">18</cbc:TaxAmount>\n" +
                         "                <cac:TaxCategory>\n" +
+                        "                    <cbc:Percent>20.00</cbc:Percent>\n" +
                         "                    <cac:TaxScheme>\n" +
                         "                        <cbc:ID>1000</cbc:ID>\n" +
                         "                        <cbc:Name>IGV</cbc:Name>\n" +
@@ -881,6 +882,7 @@ public class QuarkusXbuilderResourceTest {
                         "            <cac:TaxSubtotal>\n" +
                         "                <cbc:TaxAmount currencyID=\"PEN\">18</cbc:TaxAmount>\n" +
                         "                <cac:TaxCategory>\n" +
+                        "                    <cbc:Percent>20.00</cbc:Percent>\n" +
                         "                    <cac:TaxScheme>\n" +
                         "                        <cbc:ID>1000</cbc:ID>\n" +
                         "                        <cbc:Name>IGV</cbc:Name>\n" +

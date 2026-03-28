@@ -22,159 +22,174 @@ import java.util.stream.Stream;
 
 public class ContentEnricher {
 
-    private final Defaults defaults;
-    private final DateProvider dateProvider;
+        private final Defaults defaults;
+        private final DateProvider dateProvider;
 
-    public ContentEnricher(Defaults defaults, DateProvider dateProvider) {
-        this.defaults = defaults;
-        this.dateProvider = dateProvider;
-    }
+        public ContentEnricher(Defaults defaults, DateProvider dateProvider) {
+                this.defaults = defaults;
+                this.dateProvider = dateProvider;
+        }
 
-    public void enrich(Invoice input) {
-        Stream
-                .of(RulePhase.PhaseType.ENRICH, RulePhase.PhaseType.PROCESS, RulePhase.PhaseType.SUMMARY)
-                .forEach(phaseType -> {
-                    // Header
-                    HeaderRuleContext ruleContextHeader = HeaderRuleContext.builder()
-                            .localDate(dateProvider.now())
-                            .build();
-                    RuleUnit ruleUnitHeader = new HeaderRuleUnit(phaseType, defaults, ruleContextHeader);
-                    ruleUnitHeader.modify(input);
+        public void enrich(Invoice input) {
+                Stream
+                                .of(RulePhase.PhaseType.ENRICH, RulePhase.PhaseType.PROCESS,
+                                                RulePhase.PhaseType.SUMMARY)
+                                .forEach(phaseType -> {
+                                        // Header
+                                        HeaderRuleContext ruleContextHeader = HeaderRuleContext.builder()
+                                                        .localDate(dateProvider.now())
+                                                        .build();
+                                        RuleUnit ruleUnitHeader = new HeaderRuleUnit(phaseType, defaults,
+                                                        ruleContextHeader);
+                                        ruleUnitHeader.modify(input);
 
-                    // Body
-                    BodyRuleContext ruleContextBody = BodyRuleContext.builder()
-                            .moneda(input.getMoneda())
-                            .tasaIgv(input.getTasaIgv())
-                            .tasaIvap(input.getTasaIvap())
-                            .tasaIcb(input.getTasaIcb())
-                            .build();
-                    RuleUnit ruleUnitBody = new BodyRuleUnit(phaseType, defaults, ruleContextBody);
+                                        // Body
+                                        BodyRuleContext ruleContextBody = BodyRuleContext.builder()
+                                                        .moneda(input.getMoneda())
+                                                        .tasaIgv(input.getTasaIgv())
+                                                        .tasaIvap(input.getTasaIvap())
+                                                        .tasaIcb(input.getTasaIcb())
+                                                        .build();
+                                        RuleUnit ruleUnitBody = new BodyRuleUnit(phaseType, defaults, ruleContextBody);
 
-                    input.getDetalles().forEach(ruleUnitBody::modify);
-                    input.getAnticipos().forEach(ruleUnitBody::modify);
-                    input.getDescuentos().forEach(ruleUnitBody::modify);
-                });
-    }
+                                        input.getDetalles().forEach(ruleUnitBody::modify);
+                                        input.getAnticipos().forEach(ruleUnitBody::modify);
+                                        input.getDescuentos().forEach(ruleUnitBody::modify);
+                                });
+        }
 
-    public void enrich(CreditNote input) {
-        enrichNote(input);
-    }
+        public void enrich(CreditNote input) {
+                enrichNote(input);
+        }
 
-    public void enrich(DebitNote input) {
-        enrichNote(input);
-    }
+        public void enrich(DebitNote input) {
+                enrichNote(input);
+        }
 
-    private void enrichNote(Note input) {
-        Stream
-                .of(RulePhase.PhaseType.ENRICH, RulePhase.PhaseType.PROCESS, RulePhase.PhaseType.SUMMARY)
-                .forEach(phaseType -> {
-                    // Header
-                    HeaderRuleContext ruleContextHeader = HeaderRuleContext.builder()
-                            .localDate(dateProvider.now())
-                            .build();
-                    RuleUnit ruleUnitHeader = new HeaderRuleUnit(phaseType, defaults, ruleContextHeader);
-                    ruleUnitHeader.modify(input);
+        private void enrichNote(Note input) {
+                Stream
+                                .of(RulePhase.PhaseType.ENRICH, RulePhase.PhaseType.PROCESS,
+                                                RulePhase.PhaseType.SUMMARY)
+                                .forEach(phaseType -> {
+                                        // Header
+                                        HeaderRuleContext ruleContextHeader = HeaderRuleContext.builder()
+                                                        .localDate(dateProvider.now())
+                                                        .build();
+                                        RuleUnit ruleUnitHeader = new HeaderRuleUnit(phaseType, defaults,
+                                                        ruleContextHeader);
+                                        ruleUnitHeader.modify(input);
 
-                    // Body
-                    BodyRuleContext ruleContextBody = BodyRuleContext.builder()
-                            .moneda(input.getMoneda())
-                            .tasaIgv(input.getTasaIgv())
-                            .tasaIcb(input.getTasaIcb())
-                            .build();
-                    RuleUnit ruleUnitBody = new BodyRuleUnit(phaseType, defaults, ruleContextBody);
-                    input.getDetalles().forEach(ruleUnitBody::modify);
-                });
-    }
+                                        // Body
+                                        BodyRuleContext ruleContextBody = BodyRuleContext.builder()
+                                                        .moneda(input.getMoneda())
+                                                        .tasaIgv(input.getTasaIgv())
+                                                        .tasaIcb(input.getTasaIcb())
+                                                        .build();
+                                        RuleUnit ruleUnitBody = new BodyRuleUnit(phaseType, defaults, ruleContextBody);
+                                        input.getDetalles().forEach(ruleUnitBody::modify);
+                                });
+        }
 
-    public void enrich(VoidedDocuments input) {
-        Stream
-                .of(RulePhase.PhaseType.ENRICH, RulePhase.PhaseType.PROCESS, RulePhase.PhaseType.SUMMARY)
-                .forEach(phaseType -> {
-                    // Header
-                    HeaderRuleContext ruleContextHeader = HeaderRuleContext.builder()
-                            .localDate(dateProvider.now())
-                            .build();
-                    RuleUnit ruleUnitHeader = new HeaderRuleUnit(phaseType, defaults, ruleContextHeader);
-                    ruleUnitHeader.modify(input);
+        public void enrich(VoidedDocuments input) {
+                Stream
+                                .of(RulePhase.PhaseType.ENRICH, RulePhase.PhaseType.PROCESS,
+                                                RulePhase.PhaseType.SUMMARY)
+                                .forEach(phaseType -> {
+                                        // Header
+                                        HeaderRuleContext ruleContextHeader = HeaderRuleContext.builder()
+                                                        .localDate(dateProvider.now())
+                                                        .build();
+                                        RuleUnit ruleUnitHeader = new HeaderRuleUnit(phaseType, defaults,
+                                                        ruleContextHeader);
+                                        ruleUnitHeader.modify(input);
 
-                    // Body
-                    BodyRuleContext ruleContextBody = BodyRuleContext.builder()
-                            .moneda(input.getMoneda())
-                            .build();
+                                        // Body
+                                        BodyRuleContext ruleContextBody = BodyRuleContext.builder()
+                                                        .moneda(input.getMoneda())
+                                                        .build();
 
-                    RuleUnit ruleUnitBody = new BodyRuleUnit(phaseType, defaults, ruleContextBody);
-                    input.getComprobantes().forEach(ruleUnitBody::modify);
-                });
-    }
+                                        RuleUnit ruleUnitBody = new BodyRuleUnit(phaseType, defaults, ruleContextBody);
+                                        input.getComprobantes().forEach(ruleUnitBody::modify);
+                                });
+        }
 
-    public void enrich(SummaryDocuments input) {
-        Stream
-                .of(RulePhase.PhaseType.ENRICH, RulePhase.PhaseType.PROCESS, RulePhase.PhaseType.SUMMARY)
-                .forEach(phaseType -> {
-                    // Header
-                    HeaderRuleContext ruleContextHeader = HeaderRuleContext.builder()
-                            .localDate(dateProvider.now())
-                            .build();
-                    RuleUnit ruleUnitHeader = new HeaderRuleUnit(phaseType, defaults, ruleContextHeader);
-                    ruleUnitHeader.modify(input);
+        public void enrich(SummaryDocuments input) {
+                Stream
+                                .of(RulePhase.PhaseType.ENRICH, RulePhase.PhaseType.PROCESS,
+                                                RulePhase.PhaseType.SUMMARY)
+                                .forEach(phaseType -> {
+                                        // Header
+                                        HeaderRuleContext ruleContextHeader = HeaderRuleContext.builder()
+                                                        .localDate(dateProvider.now())
+                                                        .build();
+                                        RuleUnit ruleUnitHeader = new HeaderRuleUnit(phaseType, defaults,
+                                                        ruleContextHeader);
+                                        ruleUnitHeader.modify(input);
 
-                    // Body
-                    BodyRuleContext ruleContextBody = BodyRuleContext.builder()
-                            .moneda(input.getMoneda())
-                            .build();
+                                        // Body
+                                        BodyRuleContext ruleContextBody = BodyRuleContext.builder()
+                                                        .moneda(input.getMoneda())
+                                                        .tasaIgv(defaults.getIgvTasa())
+                                                        .build();
 
-                    RuleUnit ruleUnitBody = new BodyRuleUnit(phaseType, defaults, ruleContextBody);
-                    input.getComprobantes().forEach(ruleUnitBody::modify);
-                });
-    }
+                                        RuleUnit ruleUnitBody = new BodyRuleUnit(phaseType, defaults, ruleContextBody);
+                                        input.getComprobantes().forEach(ruleUnitBody::modify);
+                                });
+        }
 
-    public void enrich(Perception input) {
-        Stream
-                .of(RulePhase.PhaseType.ENRICH, RulePhase.PhaseType.PROCESS, RulePhase.PhaseType.SUMMARY)
-                .forEach(phaseType -> {
-                    // Header
-                    HeaderRuleContext ruleContextHeader = HeaderRuleContext.builder()
-                            .localDate(dateProvider.now())
-                            .build();
-                    RuleUnit ruleUnitHeader = new HeaderRuleUnit(phaseType, defaults, ruleContextHeader);
-                    ruleUnitHeader.modify(input);
+        public void enrich(Perception input) {
+                Stream
+                                .of(RulePhase.PhaseType.ENRICH, RulePhase.PhaseType.PROCESS,
+                                                RulePhase.PhaseType.SUMMARY)
+                                .forEach(phaseType -> {
+                                        // Header
+                                        HeaderRuleContext ruleContextHeader = HeaderRuleContext.builder()
+                                                        .localDate(dateProvider.now())
+                                                        .build();
+                                        RuleUnit ruleUnitHeader = new HeaderRuleUnit(phaseType, defaults,
+                                                        ruleContextHeader);
+                                        ruleUnitHeader.modify(input);
 
-                    // Body
-                });
-    }
+                                        // Body
+                                });
+        }
 
-    public void enrich(Retention input) {
-        Stream
-                .of(RulePhase.PhaseType.ENRICH, RulePhase.PhaseType.PROCESS, RulePhase.PhaseType.SUMMARY)
-                .forEach(phaseType -> {
-                    // Header
-                    HeaderRuleContext ruleContextHeader = HeaderRuleContext.builder()
-                            .localDate(dateProvider.now())
-                            .build();
-                    RuleUnit ruleUnitHeader = new HeaderRuleUnit(phaseType, defaults, ruleContextHeader);
-                    ruleUnitHeader.modify(input);
+        public void enrich(Retention input) {
+                Stream
+                                .of(RulePhase.PhaseType.ENRICH, RulePhase.PhaseType.PROCESS,
+                                                RulePhase.PhaseType.SUMMARY)
+                                .forEach(phaseType -> {
+                                        // Header
+                                        HeaderRuleContext ruleContextHeader = HeaderRuleContext.builder()
+                                                        .localDate(dateProvider.now())
+                                                        .build();
+                                        RuleUnit ruleUnitHeader = new HeaderRuleUnit(phaseType, defaults,
+                                                        ruleContextHeader);
+                                        ruleUnitHeader.modify(input);
 
-                    // Body
-                });
-    }
+                                        // Body
+                                });
+        }
 
-    public void enrich(DespatchAdvice input) {
-        Stream
-                .of(RulePhase.PhaseType.ENRICH, RulePhase.PhaseType.PROCESS, RulePhase.PhaseType.SUMMARY)
-                .forEach(phaseType -> {
-                    // Header
-                    HeaderRuleContext ruleContextHeader = HeaderRuleContext.builder()
-                            .localDate(dateProvider.now())
-                            .build();
-                    RuleUnit ruleUnitHeader = new HeaderRuleUnit(phaseType, defaults, ruleContextHeader);
-                    ruleUnitHeader.modify(input);
+        public void enrich(DespatchAdvice input) {
+                Stream
+                                .of(RulePhase.PhaseType.ENRICH, RulePhase.PhaseType.PROCESS,
+                                                RulePhase.PhaseType.SUMMARY)
+                                .forEach(phaseType -> {
+                                        // Header
+                                        HeaderRuleContext ruleContextHeader = HeaderRuleContext.builder()
+                                                        .localDate(dateProvider.now())
+                                                        .build();
+                                        RuleUnit ruleUnitHeader = new HeaderRuleUnit(phaseType, defaults,
+                                                        ruleContextHeader);
+                                        ruleUnitHeader.modify(input);
 
-                    // Body
-                    BodyRuleContext ruleContextBody = BodyRuleContext.builder()
-                            .build();
-                    RuleUnit ruleUnitBody = new BodyRuleUnit(phaseType, defaults, ruleContextBody);
-                    input.getDetalles().forEach(ruleUnitBody::modify);
-                });
-    }
+                                        // Body
+                                        BodyRuleContext ruleContextBody = BodyRuleContext.builder()
+                                                        .build();
+                                        RuleUnit ruleUnitBody = new BodyRuleUnit(phaseType, defaults, ruleContextBody);
+                                        input.getDetalles().forEach(ruleUnitBody::modify);
+                                });
+        }
 
 }

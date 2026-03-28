@@ -65,6 +65,7 @@
             <cac:TaxSubtotal>
                 <cbc:TaxAmount currencyID="PEN">18</cbc:TaxAmount>
                 <cac:TaxCategory>
+                    <cbc:Percent>18.00</cbc:Percent>
                     <cac:TaxScheme>
                         <cbc:ID>1000</cbc:ID>
                         <cbc:Name>IGV</cbc:Name>
@@ -114,6 +115,7 @@
             <cac:TaxSubtotal>
                 <cbc:TaxAmount currencyID="PEN">18</cbc:TaxAmount>
                 <cac:TaxCategory>
+                    <cbc:Percent>18.00</cbc:Percent>
                     <cac:TaxScheme>
                         <cbc:ID>1000</cbc:ID>
                         <cbc:Name>IGV</cbc:Name>

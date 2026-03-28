@@ -85,7 +85,8 @@ public class XMLAssertUtils {
     private static void assertSnapshot(String expected, Class<?> clasz, String snapshotFile) throws SAXException {
         String rootDir = clasz.getName().replaceAll("\\.", "/");
 
-        // Update snapshots and if updated do not verify since it doesn't make sense anymore
+        // Update snapshots and if updated do not verify since it doesn't make sense
+        // anymore
         boolean updateSnapshots = Boolean.parseBoolean(System.getProperty("xbuilder.snapshot.update", "false"));
         if (updateSnapshots) {
             try {
@@ -117,20 +118,21 @@ public class XMLAssertUtils {
         assertFalse(myDiff.hasDifferences(), expected + "\n" + myDiff);
     }
 
-    public static void assertSnapshot(String expected, String expectedReverse, Class<?> clasz, String snapshotFile) throws SAXException {
+    public static void assertSnapshot(String expected, String expectedReverse, Class<?> clasz, String snapshotFile)
+            throws SAXException {
         assertSnapshot(expected, clasz, snapshotFile);
         assertSnapshot(expectedReverse, clasz, snapshotFile);
     }
 
-    public static void assertSendSunat(String xmlWithoutSignature, String xsdSchema, String... allowedNotes) throws Exception {
+    public static void assertSendSunat(String xmlWithoutSignature, String xsdSchema, String... allowedNotes)
+            throws Exception {
         String skipSunat = System.getProperty("skipSunat", "false");
         if (skipSunat != null && skipSunat.equals("false")) {
             Document signedXML = XMLSigner.signXML(
                     xmlWithoutSignature,
                     SIGN_REFERENCE_ID,
                     CERTIFICATE.getX509Certificate(),
-                    CERTIFICATE.getPrivateKey()
-            );
+                    CERTIFICATE.getPrivateKey());
             isCompliantWithXsd(xsdSchema, signedXML);
             sendFileToSunat(signedXML, xmlWithoutSignature, allowedNotes);
         }
@@ -153,7 +155,8 @@ public class XMLAssertUtils {
 
     //
 
-    private static void sendFileToSunat(Document document, String xmlWithoutSignature, String... allowedNotes) throws Exception {
+    private static void sendFileToSunat(Document document, String xmlWithoutSignature, String... allowedNotes)
+            throws Exception {
         byte[] bytesFromDocument = XmlSignatureHelper.getBytesFromDocument(document);
 
         CamelContext camelContext = StandaloneCamel.getInstance().getMainCamel().getCamelContext();
@@ -176,8 +179,7 @@ public class XMLAssertUtils {
                         Constants.XSENDER_BILL_SERVICE_URI,
                         camelData.getBody(),
                         camelData.getHeaders(),
-                        SunatResponse.class
-                );
+                        SunatResponse.class);
 
         if (sendFileSunatResponse.getMetadata() != null && sendFileSunatResponse.getMetadata().getNotes() != null) {
             List<String> allowedNotesList = Arrays.asList(allowedNotes);
@@ -195,43 +197,52 @@ public class XMLAssertUtils {
 
         XmlContent xmlContent = fileAnalyzer.getXmlContent();
         // Check ticket
-        if (
-                !xmlContent.getDocumentType().equals(DocumentType.VOIDED_DOCUMENT) &&
-                        !xmlContent.getDocumentType().equals(DocumentType.SUMMARY_DOCUMENT)
-        ) {
+        if (!xmlContent.getDocumentType().equals(DocumentType.VOIDED_DOCUMENT) &&
+                !xmlContent.getDocumentType().equals(DocumentType.SUMMARY_DOCUMENT)) {
             assertEquals(
                     Status.ACEPTADO,
                     sendFileSunatResponse.getStatus(),
-                    xmlWithoutSignature + " \n sunat [codigo=" + sendFileSunatResponse.getMetadata().getResponseCode() + "], [descripcion=" + sendFileSunatResponse.getMetadata().getDescription() + "]"
-            );
+                    xmlWithoutSignature + " \n sunat [codigo=" + sendFileSunatResponse.getMetadata().getResponseCode()
+                            + "], [descripcion=" + sendFileSunatResponse.getMetadata().getDescription() + "]");
         } else {
+            assertNotNull(sendFileSunatResponse.getSunat(),
+                    "SunatResponse.getSunat() is null. Status=" + sendFileSunatResponse.getStatus()
+                            + ", Description="
+                            + (sendFileSunatResponse.getMetadata() != null
+                                    ? sendFileSunatResponse.getMetadata().getDescription()
+                                    : "null"));
             assertNotNull(sendFileSunatResponse.getSunat().getTicket());
 
             CamelData camelTicketData = CamelUtils.getBillServiceCamelData(
                     sendFileSunatResponse.getSunat().getTicket(),
                     ticketDestination,
-                    credentials
-            );
+                    credentials);
 
-            // TODO ticket get status are not working in SUNAT BETA so stopping it until it is supporeted
-//            SunatResponse verifyTicketSunatResponse = camelContext
-//                    .createProducerTemplate()
-//                    .requestBodyAndHeaders(
-//                            Constants.XSENDER_BILL_SERVICE_URI,
-//                            camelTicketData.getBody(),
-//                            camelTicketData.getHeaders(),
-//                            SunatResponse.class
-//                    );
-//
-//            assertEquals(
-//                    Status.ACEPTADO,
-//                    verifyTicketSunatResponse.getStatus(),
-//                    xmlWithoutSignature + " sunat [status=" + verifyTicketSunatResponse.getStatus() + "], [descripcion=" + verifyTicketSunatResponse.getMetadata().getDescription() + "]"
-//            );
-//            assertNotNull(
-//                    verifyTicketSunatResponse.getSunat().getCdr(),
-//                    xmlWithoutSignature + " sunat [codigo=" + verifyTicketSunatResponse.getMetadata().getResponseCode() + "], [descripcion=" + verifyTicketSunatResponse.getMetadata().getDescription() + "]"
-//            );
+            // TODO ticket get status are not working in SUNAT BETA so stopping it until it
+            // is supporeted
+            // SunatResponse verifyTicketSunatResponse = camelContext
+            // .createProducerTemplate()
+            // .requestBodyAndHeaders(
+            // Constants.XSENDER_BILL_SERVICE_URI,
+            // camelTicketData.getBody(),
+            // camelTicketData.getHeaders(),
+            // SunatResponse.class
+            // );
+            //
+            // assertEquals(
+            // Status.ACEPTADO,
+            // verifyTicketSunatResponse.getStatus(),
+            // xmlWithoutSignature + " sunat [status=" +
+            // verifyTicketSunatResponse.getStatus() + "], [descripcion=" +
+            // verifyTicketSunatResponse.getMetadata().getDescription() + "]"
+            // );
+            // assertNotNull(
+            // verifyTicketSunatResponse.getSunat().getCdr(),
+            // xmlWithoutSignature + " sunat [codigo=" +
+            // verifyTicketSunatResponse.getMetadata().getResponseCode() + "],
+            // [descripcion=" + verifyTicketSunatResponse.getMetadata().getDescription() +
+            // "]"
+            // );
         }
     }
 }

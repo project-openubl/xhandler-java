@@ -15,6 +15,27 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
+/**
+ * Modelo principal de la Guía de Remisión Electrónica (GRE).
+ * <p>
+ * Soporta ambos tipos:
+ * <ul>
+ * <li><b>GRE-Remitente (09)</b>: Serie Txxx. Emitida por el remitente de los
+ * bienes.
+ * El campo {@code remitente} contiene los datos del remitente (RUC + razón
+ * social).
+ * El {@code transportista} se consigna dentro de {@code envio} si modalidad es
+ * pública.</li>
+ * <li><b>GRE-Transportista (31)</b>: Serie Vxxx. Emitida por el transportista.
+ * El campo {@code remitente} contiene los datos del transportista emitente.
+ * El {@code tercero} contiene los datos del remitente original (quien envía los
+ * bienes).</li>
+ * </ul>
+ * <p>
+ * Fuente normativa: RS 000123-2022/SUNAT (base), RS 000240-2024/SUNAT (comercio
+ * exterior),
+ * RS 000133-2025/SUNAT (prórroga hasta 01-jul-2026).
+ */
 @Jacksonized
 @Data
 @Builder
@@ -27,7 +48,11 @@ public class DespatchAdvice {
     private String version;
 
     /**
-     * Serie del comprobante
+     * Serie del comprobante.
+     * <ul>
+     * <li>GRE-Remitente: Txxx (alfanumérico) desde SEE del contribuyente</li>
+     * <li>GRE-Transportista: Vxxx (alfanumérico) desde SEE del contribuyente</li>
+     * </ul>
      */
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, minLength = 4, pattern = "^[T|t|V|v].*$")
     private String serie;
@@ -50,6 +75,13 @@ public class DespatchAdvice {
     @Schema(description = "Format: \"HH:MM:SS\". Ejemplo 12:00:00", pattern = "^\\d{2}:\\d{2}:\\d{2}$")
     private LocalTime horaEmision;
 
+    /**
+     * Tipo de comprobante según Catálogo 01:
+     * <ul>
+     * <li>"09" = Guía de Remisión Remitente</li>
+     * <li>"31" = Guía de Remisión Transportista</li>
+     * </ul>
+     */
     @Schema(description = "Catalogo 01")
     private String tipoComprobante;
 
@@ -62,6 +94,18 @@ public class DespatchAdvice {
     private DocumentoRelacionado documentoRelacionado;
 
     /**
+     * Documentos relacionados adicionales.
+     * Permite vincular múltiples documentos como GRE-Remitente, DAM, DS, etc.
+     * Ver también {@link Envio#getDeclaracionesAduaneras()} para referencias DAM/DS
+     * específicas de comercio exterior.
+     *
+     * @since 2.0 - Permite múltiples documentos relacionados (antes solo uno).
+     */
+    @Singular("documentoRelacionadoAdicional")
+    @Schema(description = "Documentos relacionados adicionales (Catálogo 21)")
+    private List<DocumentoRelacionado> documentosRelacionados;
+
+    /**
      * Documentos adicionales relacionados al transporte (Catálogo 61)
      */
     @Singular("documentoAdicional")
@@ -71,6 +115,14 @@ public class DespatchAdvice {
     @Schema(description = "Persona que firma electrónicamente el comprobante. Si NULL los datos del proveedor son usados.")
     private Firmante firmante;
 
+    /**
+     * Datos del remitente.
+     * <ul>
+     * <li>GRE-Remitente (09): El remitente es quien envía los bienes.</li>
+     * <li>GRE-Transportista (31): El remitente es el transportista emisor
+     * (DespatchSupplierParty).</li>
+     * </ul>
+     */
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private Remitente remitente;
 
@@ -81,13 +133,18 @@ public class DespatchAdvice {
     private Proveedor proveedor;
 
     /**
-     * Datos del tercero (vendedor de los bienes cuando aplica)
+     * Datos del tercero (vendedor/remitente original de los bienes).
+     * <p>
+     * Aplica principalmente en GRE-Transportista (31): el tercero es el remitente
+     * original que solicita el servicio de transporte.
+     * Se mapea a {@code cac:SellerSupplierParty}.
      */
     @Schema(description = "Tercero/Vendedor de los bienes")
     private Tercero tercero;
 
     /**
-     * Datos del comprador (adquiriente de los bienes)
+     * Datos del comprador (adquiriente de los bienes).
+     * Se mapea a {@code cac:BuyerCustomerParty}.
      */
     @Schema(description = "Comprador/Adquiriente de los bienes")
     private Comprador comprador;
@@ -98,4 +155,20 @@ public class DespatchAdvice {
     @Singular
     @ArraySchema(minItems = 1, schema = @Schema(requiredMode = Schema.RequiredMode.REQUIRED))
     private List<DespatchAdviceItem> detalles;
+
+    // == Métodos utilitarios ==
+
+    /**
+     * Determina si esta GRE es de tipo Remitente (código 09).
+     */
+    public boolean isGRERemitente() {
+        return "09".equals(tipoComprobante);
+    }
+
+    /**
+     * Determina si esta GRE es de tipo Transportista (código 31).
+     */
+    public boolean isGRETransportista() {
+        return "31".equals(tipoComprobante);
+    }
 }

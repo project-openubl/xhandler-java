@@ -27,6 +27,8 @@ import io.github.project.openubl.xbuilder.content.models.standard.general.Credit
 import io.github.project.openubl.xbuilder.content.models.standard.general.DebitNote;
 import io.github.project.openubl.xbuilder.content.models.standard.general.Invoice;
 import io.github.project.openubl.xbuilder.content.models.standard.guia.DespatchAdvice;
+import io.github.project.openubl.xbuilder.content.models.standard.guia.GRERemitente;
+import io.github.project.openubl.xbuilder.content.models.standard.guia.GRETransportista;
 import io.github.project.openubl.xbuilder.content.models.sunat.baja.VoidedDocuments;
 import io.github.project.openubl.xbuilder.content.models.sunat.baja.Reversion;
 import io.github.project.openubl.xbuilder.content.models.sunat.percepcionretencion.Perception;
@@ -57,7 +59,8 @@ public class AbstractTest {
     private static final CreditNoteMapper creditNoteMapper = Mappers.getMapper(CreditNoteMapper.class);
     private static final DebitNoteMapper debitNoteMapper = Mappers.getMapper(DebitNoteMapper.class);
     private static final VoidedDocumentsMapper voidedDocumentsMapper = Mappers.getMapper(VoidedDocumentsMapper.class);
-    private static final SummaryDocumentsMapper summaryDocumentsMapper = Mappers.getMapper(SummaryDocumentsMapper.class);
+    private static final SummaryDocumentsMapper summaryDocumentsMapper = Mappers
+            .getMapper(SummaryDocumentsMapper.class);
     private static final PerceptionMapper perceptionMapper = Mappers.getMapper(PerceptionMapper.class);
     private static final RetentionMapper retentionMapper = Mappers.getMapper(RetentionMapper.class);
     private static final DespatchAdviceMapper despatchAdviceMapper = Mappers.getMapper(DespatchAdviceMapper.class);
@@ -82,7 +85,8 @@ public class AbstractTest {
     public void writeYaml(String kind, Object input, String snapshotFilename) throws URISyntaxException, IOException {
         String rootDir = getClass().getName().replaceAll("\\.", "/");
 
-        String snapshotFileContent = Files.readString(Paths.get(getClass().getClassLoader().getResource(rootDir + "/" + snapshotFilename).toURI()));
+        String snapshotFileContent = Files.readString(
+                Paths.get(getClass().getClassLoader().getResource(rootDir + "/" + snapshotFilename).toURI()));
 
         Path directoryPath = Paths.get("../quarkus-extension/integration-tests/src/test/resources").resolve(rootDir);
         Files.createDirectories(directoryPath);
@@ -91,8 +95,7 @@ public class AbstractTest {
         getYamlMapper().writeValue(filePath.toFile(), Map.of(
                 "kind", kind,
                 "input", input,
-                "snapshot", snapshotFileContent
-        ));
+                "snapshot", snapshotFileContent));
     }
 
     protected void assertInput(Invoice input, String snapshotFilename) throws Exception {
@@ -285,6 +288,14 @@ public class AbstractTest {
         XMLAssertUtils.assertSendSunat(xml, XMLAssertUtils.DESPATCH_ADVICE_XSD);
 
         writeYaml("DespatchAdvice", input, snapshotFilename);
+    }
+
+    protected void assertInput(GRERemitente input, String snapshotFilename) throws Exception {
+        assertInput(input.toDespatchAdvice(), snapshotFilename);
+    }
+
+    protected void assertInput(GRETransportista input, String snapshotFilename) throws Exception {
+        assertInput(input.toDespatchAdvice(), snapshotFilename);
     }
 
     protected void assertInputReversion(Reversion input, String snapshotFilename) throws Exception {

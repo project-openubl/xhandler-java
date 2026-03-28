@@ -11,6 +11,9 @@ io.github.project.openubl.xbuilder.enricher.kie.rules.enrich.header.ProveedorDir
 
 ## Enrich - Invoice
 io.github.project.openubl.xbuilder.enricher.kie.rules.enrich.header.invoice.FormaDePagoRule
+
+## Enrich - DespatchAdvice
+io.github.project.openubl.xbuilder.enricher.kie.rules.enrich.header.DespatchAdviceTipoComprobanteRule
 io.github.project.openubl.xbuilder.enricher.kie.rules.enrich.header.invoice.FormaDePagoTipoRule
 io.github.project.openubl.xbuilder.enricher.kie.rules.enrich.header.invoice.FormaDePagoTotalRule
 io.github.project.openubl.xbuilder.enricher.kie.rules.enrich.header.invoice.TipoComprobanteRule
@@ -63,6 +66,7 @@ io.github.project.openubl.xbuilder.enricher.kie.rules.enrich.body.voidedDocument
 ## Enrich - SummaryDocuments
 io.github.project.openubl.xbuilder.enricher.kie.rules.enrich.body.summaryDocumentItem.TipoOperacionRule
 io.github.project.openubl.xbuilder.enricher.kie.rules.enrich.body.summaryDocumentItem.MonedaRule
+io.github.project.openubl.xbuilder.enricher.kie.rules.enrich.body.summaryDocumentItem.TasaIgvRule
 
 ## Process - Detalle
 io.github.project.openubl.xbuilder.enricher.kie.rules.process.body.detalle.PrecioDeReferenciaRule

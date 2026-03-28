@@ -86,6 +86,7 @@
             <cac:TaxSubtotal>
                 <cbc:TaxAmount currencyID="{it.comprobante.moneda}">{it.comprobante.impuestos.igv}</cbc:TaxAmount>
                 <cac:TaxCategory>
+                    <cbc:Percent>{it.comprobante.impuestos.tasaIgv.multiplyByInt(100).scale(2)}</cbc:Percent>
                     <cac:TaxScheme>
                         <cbc:ID>1000</cbc:ID>
                         <cbc:Name>IGV</cbc:Name>

@@ -149,6 +149,9 @@ public class XMLSummaryDocumentsLine {
     @Data
     @NoArgsConstructor
     public static class TaxCategory {
+        @XmlElement(name = "Percent", namespace = XMLConstants.CBC)
+        private BigDecimal percent;
+
         @XmlElement(name = "TaxScheme", namespace = XMLConstants.CAC)
         private TaxScheme taxScheme;
     }

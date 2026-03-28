@@ -23,6 +23,12 @@
         <cbc:DocumentTypeCode listAgencyName="PE:SUNAT" listName="SUNAT:Identificador de documento relacionado" listURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo21">{documentoRelacionado.tipoDocumento}</cbc:DocumentTypeCode>
     </cac:AdditionalDocumentReference>
     {/if}
+    {#each documentosRelacionados.orEmpty}
+    <cac:AdditionalDocumentReference>
+        <cbc:ID>{it.serieNumero}</cbc:ID>
+        <cbc:DocumentTypeCode listAgencyName="PE:SUNAT" listName="SUNAT:Identificador de documento relacionado" listURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo21">{it.tipoDocumento}</cbc:DocumentTypeCode>
+    </cac:AdditionalDocumentReference>
+    {/each}
     {#each documentosAdicionales.orEmpty}
     <cac:AdditionalDocumentReference>
         <cbc:ID>{it.numero}</cbc:ID>
@@ -30,6 +36,19 @@
         {#if it.tipoDocumentoDescripcion}
         <cbc:DocumentType>{it.tipoDocumentoDescripcion}</cbc:DocumentType>
         {/if}
+        {#if it.rucEmisor}
+        <cac:IssuerParty>
+            <cac:PartyIdentification>
+                <cbc:ID schemeID="6" schemeName="Documento de Identidad" schemeAgencyName="PE:SUNAT" schemeURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06">{it.rucEmisor}</cbc:ID>
+            </cac:PartyIdentification>
+        </cac:IssuerParty>
+        {/if}
+    </cac:AdditionalDocumentReference>
+    {/each}
+    {#each envio.declaracionesAduaneras.orEmpty}
+    <cac:AdditionalDocumentReference>
+        <cbc:ID>{it.numero}</cbc:ID>
+        <cbc:DocumentTypeCode listAgencyName="PE:SUNAT" listName="Documento relacionado al transporte" listURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo61">{#if it.tipo == 'DS'}52{#else}50{/if}</cbc:DocumentTypeCode>
         {#if it.rucEmisor}
         <cac:IssuerParty>
             <cac:PartyIdentification>
@@ -183,8 +202,10 @@
         {#each envio.contenedores.orEmpty}
         <cac:TransportHandlingUnit>
             <cac:Package>
-                <cbc:ID>{it_index.add(1)}</cbc:ID>
-                <cbc:TraceID>{it}</cbc:TraceID>
+                <cbc:ID>{it.numero}</cbc:ID>
+                {#if it.precinto}
+                <cbc:TraceID>{it.precinto}</cbc:TraceID>
+                {/if}
             </cac:Package>
         </cac:TransportHandlingUnit>
         {/each}

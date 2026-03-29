@@ -15,16 +15,15 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Tests de integración que verifican la coherencia entre los tres validadores
- * (DespatchAdviceValidator, GRERemitente, GRETransportista) después de la
- * centralización en DespatchAdviceCommonValidator.
+ * Tests de integración que verifican la coherencia entre los tres validadores (DespatchAdviceValidator, GRERemitente,
+ * GRETransportista) después de la centralización en DespatchAdviceCommonValidator.
  * <p>
  * Asegura que:
  * <ul>
- *   <li>La misma regla produce el mismo resultado en los tres puntos de entrada</li>
- *   <li>Los mensajes de error tienen el texto esperado</li>
- *   <li>La conversión toDespatchAdvice() + validación produce resultados coherentes</li>
- *   <li>validate() y validateDetailed() son consistentes</li>
+ * <li>La misma regla produce el mismo resultado en los tres puntos de entrada</li>
+ * <li>Los mensajes de error tienen el texto esperado</li>
+ * <li>La conversión toDespatchAdvice() + validación produce resultados coherentes</li>
+ * <li>validate() y validateDetailed() son consistentes</li>
  * </ul>
  */
 public class ValidationCoherenceTest {
@@ -35,53 +34,79 @@ public class ValidationCoherenceTest {
 
     private static GRERemitente.GRERemitenteBuilder minimalRemitente() {
         return GRERemitente.builder()
-                .serie("T001").numero(1)
+                .serie("T001")
+                .numero(1)
                 .remitente(Remitente.builder().ruc("12345678912").razonSocial("Test S.A.C.").build())
                 .destinatario(Destinatario.builder()
                         .tipoDocumentoIdentidad(Catalog6.DNI.getCode())
-                        .numeroDocumentoIdentidad("12345678").nombre("Cliente").build())
+                        .numeroDocumentoIdentidad("12345678")
+                        .nombre("Cliente")
+                        .build())
                 .envio(Envio.builder()
                         .tipoTraslado(Catalog20.VENTA.getCode())
-                        .pesoTotal(BigDecimal.ONE).pesoTotalUnidadMedida("KGM")
+                        .pesoTotal(BigDecimal.ONE)
+                        .pesoTotalUnidadMedida("KGM")
                         .tipoModalidadTraslado(Catalog18.TRANSPORTE_PRIVADO.getCode())
                         .fechaTraslado(LocalDate.now())
                         .chofer(Driver.builder()
-                                .tipoDocumentoIdentidad("1").numeroDocumentoIdentidad("11111111")
-                                .nombres("J").apellidos("P").licencia("Q123").build())
+                                .tipoDocumentoIdentidad("1")
+                                .numeroDocumentoIdentidad("11111111")
+                                .nombres("J")
+                                .apellidos("P")
+                                .licencia("Q123")
+                                .build())
                         .vehiculo(Vehicle.builder().placa("ABC-123").build())
                         .partida(Partida.builder().ubigeo("010101").direccion("O").build())
                         .destino(Destino.builder().ubigeo("020202").direccion("D").build())
                         .build())
                 .detalle(DespatchAdviceItem.builder()
-                        .cantidad(BigDecimal.ONE).unidadMedida("NIU").codigo("001").build());
+                        .cantidad(BigDecimal.ONE)
+                        .unidadMedida("NIU")
+                        .codigo("001")
+                        .build());
     }
 
     private static GRETransportista.GRETransportistaBuilder minimalTransportista() {
         return GRETransportista.builder()
-                .serie("V001").numero(1)
+                .serie("V001")
+                .numero(1)
                 .transportistaEmisor(Transportista.builder()
                         .tipoDocumentoIdentidad(Catalog6.RUC.getCode())
-                        .numeroDocumentoIdentidad("20300030003").nombre("Transportes S.A.C.").build())
+                        .numeroDocumentoIdentidad("20300030003")
+                        .nombre("Transportes S.A.C.")
+                        .build())
                 .remitente(Tercero.builder()
                         .tipoDocumentoIdentidad(Catalog6.RUC.getCode())
-                        .numeroDocumentoIdentidad("20100010001").nombre("Remitente S.A.C.").build())
+                        .numeroDocumentoIdentidad("20100010001")
+                        .nombre("Remitente S.A.C.")
+                        .build())
                 .destinatario(Destinatario.builder()
                         .tipoDocumentoIdentidad(Catalog6.RUC.getCode())
-                        .numeroDocumentoIdentidad("20200020002").nombre("Destino S.A.").build())
+                        .numeroDocumentoIdentidad("20200020002")
+                        .nombre("Destino S.A.")
+                        .build())
                 .conductor(Driver.builder()
-                        .tipoDocumentoIdentidad("1").numeroDocumentoIdentidad("44444444")
-                        .nombres("M").apellidos("T").licencia("Q444").build())
+                        .tipoDocumentoIdentidad("1")
+                        .numeroDocumentoIdentidad("44444444")
+                        .nombres("M")
+                        .apellidos("T")
+                        .licencia("Q444")
+                        .build())
                 .vehiculo(Vehicle.builder().placa("XYZ-789").build())
                 .envio(Envio.builder()
                         .tipoTraslado(Catalog20.VENTA.getCode())
-                        .pesoTotal(BigDecimal.ONE).pesoTotalUnidadMedida("KGM")
+                        .pesoTotal(BigDecimal.ONE)
+                        .pesoTotalUnidadMedida("KGM")
                         .tipoModalidadTraslado(Catalog18.TRANSPORTE_PUBLICO.getCode())
                         .fechaTraslado(LocalDate.now())
                         .partida(Partida.builder().ubigeo("010101").direccion("O").build())
                         .destino(Destino.builder().ubigeo("020202").direccion("D").build())
                         .build())
                 .detalle(DespatchAdviceItem.builder()
-                        .cantidad(BigDecimal.ONE).unidadMedida("NIU").codigo("001").build());
+                        .cantidad(BigDecimal.ONE)
+                        .unidadMedida("NIU")
+                        .codigo("001")
+                        .build());
     }
 
     // ================================================================
@@ -182,8 +207,12 @@ public class ValidationCoherenceTest {
         public void testConversionInjectsConductoresAndVehiculo() {
             GRETransportista gre = minimalTransportista()
                     .conductor(Driver.builder()
-                            .tipoDocumentoIdentidad("1").numeroDocumentoIdentidad("99999999")
-                            .nombres("Extra").apellidos("D").licencia("Q999").build())
+                            .tipoDocumentoIdentidad("1")
+                            .numeroDocumentoIdentidad("99999999")
+                            .nombres("Extra")
+                            .apellidos("D")
+                            .licencia("Q999")
+                            .build())
                     .build();
 
             DespatchAdvice da = gre.toDespatchAdvice();
@@ -197,7 +226,8 @@ public class ValidationCoherenceTest {
         @Test
         public void testValidateAndValidateDetailedAreConsistent() {
             GRETransportista gre = minimalTransportista()
-                    .transportistaEmisor(null).build();
+                    .transportistaEmisor(null)
+                    .build();
 
             List<String> errors = gre.validate();
             ValidationResult result = gre.validateDetailed();
@@ -259,23 +289,37 @@ public class ValidationCoherenceTest {
         public void testComercioExteriorWarningsInAllThreeValidators() {
             // DespatchAdviceValidator
             DespatchAdvice da = DespatchAdvice.builder()
-                    .serie("T001").numero(1).tipoComprobante("09")
+                    .serie("T001")
+                    .numero(1)
+                    .tipoComprobante("09")
                     .remitente(Remitente.builder().ruc("12345678912").razonSocial("T").build())
                     .destinatario(Destinatario.builder()
-                            .tipoDocumentoIdentidad("1").numeroDocumentoIdentidad("12345678").nombre("C").build())
+                            .tipoDocumentoIdentidad("1")
+                            .numeroDocumentoIdentidad("12345678")
+                            .nombre("C")
+                            .build())
                     .envio(Envio.builder()
                             .tipoTraslado("08") // Importación
-                            .pesoTotal(BigDecimal.ONE).pesoTotalUnidadMedida("KGM")
-                            .tipoModalidadTraslado("02").fechaTraslado(LocalDate.now())
-                            .chofer(Driver.builder().tipoDocumentoIdentidad("1")
-                                    .numeroDocumentoIdentidad("11111111").nombres("J")
-                                    .apellidos("P").licencia("Q123").build())
+                            .pesoTotal(BigDecimal.ONE)
+                            .pesoTotalUnidadMedida("KGM")
+                            .tipoModalidadTraslado("02")
+                            .fechaTraslado(LocalDate.now())
+                            .chofer(Driver.builder()
+                                    .tipoDocumentoIdentidad("1")
+                                    .numeroDocumentoIdentidad("11111111")
+                                    .nombres("J")
+                                    .apellidos("P")
+                                    .licencia("Q123")
+                                    .build())
                             .vehiculo(Vehicle.builder().placa("ABC-123").build())
                             .partida(Partida.builder().ubigeo("010101").direccion("O").build())
                             .destino(Destino.builder().ubigeo("020202").direccion("D").build())
                             .build())
                     .detalle(DespatchAdviceItem.builder()
-                            .cantidad(BigDecimal.ONE).unidadMedida("NIU").codigo("001").build())
+                            .cantidad(BigDecimal.ONE)
+                            .unidadMedida("NIU")
+                            .codigo("001")
+                            .build())
                     .build();
 
             ValidationResult daResult = DespatchAdviceValidator.validateDetailed(da);
@@ -285,11 +329,18 @@ public class ValidationCoherenceTest {
 
             // GRERemitente: same
             GRERemitente gre = minimalRemitente().envio(Envio.builder()
-                    .tipoTraslado("08").pesoTotal(BigDecimal.ONE).pesoTotalUnidadMedida("KGM")
-                    .tipoModalidadTraslado("02").fechaTraslado(LocalDate.now())
-                    .chofer(Driver.builder().tipoDocumentoIdentidad("1")
-                            .numeroDocumentoIdentidad("11111111").nombres("J")
-                            .apellidos("P").licencia("Q123").build())
+                    .tipoTraslado("08")
+                    .pesoTotal(BigDecimal.ONE)
+                    .pesoTotalUnidadMedida("KGM")
+                    .tipoModalidadTraslado("02")
+                    .fechaTraslado(LocalDate.now())
+                    .chofer(Driver.builder()
+                            .tipoDocumentoIdentidad("1")
+                            .numeroDocumentoIdentidad("11111111")
+                            .nombres("J")
+                            .apellidos("P")
+                            .licencia("Q123")
+                            .build())
                     .vehiculo(Vehicle.builder().placa("ABC-123").build())
                     .partida(Partida.builder().ubigeo("010101").direccion("O").build())
                     .destino(Destino.builder().ubigeo("020202").direccion("D").build())
@@ -307,9 +358,11 @@ public class ValidationCoherenceTest {
             GRERemitente gre = minimalRemitente().serie(null).build();
             ValidationResult result = gre.validateDetailed();
             assertTrue(result.hasErrors());
-            assertTrue(result.getMessages().stream()
+            assertTrue(result.getMessages()
+                    .stream()
                     .filter(m -> m.getMessage().contains("serie"))
-                    .allMatch(m -> m.getSeverity() == io.github.project.openubl.xbuilder.content.models.standard.guia.validation.ValidationSeverity.ERROR));
+                    .allMatch(m -> m
+                            .getSeverity() == io.github.project.openubl.xbuilder.content.models.standard.guia.validation.ValidationSeverity.ERROR));
         }
     }
 }

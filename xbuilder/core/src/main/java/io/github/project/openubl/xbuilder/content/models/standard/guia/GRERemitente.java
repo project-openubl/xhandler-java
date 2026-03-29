@@ -1,6 +1,9 @@
 package io.github.project.openubl.xbuilder.content.models.standard.guia;
 
 import io.github.project.openubl.xbuilder.content.models.common.Firmante;
+import io.github.project.openubl.xbuilder.content.models.standard.guia.validation.DespatchAdviceCommonValidator;
+import io.github.project.openubl.xbuilder.content.models.standard.guia.validation.ValidationMessage;
+import io.github.project.openubl.xbuilder.content.models.standard.guia.validation.ValidationResult;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Singular;
@@ -27,15 +30,27 @@ import java.util.List;
  * 
  * <pre>{@code
  * GRERemitente gre = GRERemitente.builder()
- *         .serie("T001").numero(1)
+ *         .serie("T001")
+ *         .numero(1)
  *         .remitente(Remitente.builder().ruc("20100010001").razonSocial("Mi Empresa").build())
  *         .destinatario(Destinatario.builder()
- *                 .tipoDocumentoIdentidad("6").numeroDocumentoIdentidad("20200020002").nombre("Cliente").build())
+ *                 .tipoDocumentoIdentidad("6")
+ *                 .numeroDocumentoIdentidad("20200020002")
+ *                 .nombre("Cliente")
+ *                 .build())
  *         .envio(Envio.builder()
- *                 .tipoTraslado("01").pesoTotal(BigDecimal.ONE).pesoTotalUnidadMedida("KGM")
- *                 .tipoModalidadTraslado("02").fechaTraslado(LocalDate.now())
- *                 .chofer(Driver.builder().tipoDocumentoIdentidad("1").numeroDocumentoIdentidad("12345678")
- *                         .nombres("Juan").apellidos("Perez").licencia("Q123").build())
+ *                 .tipoTraslado("01")
+ *                 .pesoTotal(BigDecimal.ONE)
+ *                 .pesoTotalUnidadMedida("KGM")
+ *                 .tipoModalidadTraslado("02")
+ *                 .fechaTraslado(LocalDate.now())
+ *                 .chofer(Driver.builder()
+ *                         .tipoDocumentoIdentidad("1")
+ *                         .numeroDocumentoIdentidad("12345678")
+ *                         .nombres("Juan")
+ *                         .apellidos("Perez")
+ *                         .licencia("Q123")
+ *                         .build())
  *                 .vehiculo(Vehicle.builder().placa("ABC-123").build())
  *                 .partida(Partida.builder().ubigeo("150101").direccion("Origen").build())
  *                 .destino(Destino.builder().ubigeo("150102").direccion("Destino").build())
@@ -91,104 +106,59 @@ public class GRERemitente {
 
     /**
      * Valida las reglas de negocio para GRE-Remitente y retorna los errores.
+     * <p>
+     * Delega las validaciones comunes a {@link DespatchAdviceCommonValidator} y aplica solo las reglas específicas del
+     * tipo 09 (serie T*, modalidad remitente).
+     * <p>
+     * Solo retorna errores (severidad {@code ERROR}). Para obtener errores y advertencias diferenciados, use
+     * {@link #validateDetailed()}.
      *
      * @return lista de errores (vacía si es válido)
+     * @see #validateDetailed()
      */
     public List<String> validate() {
-        List<String> errors = new ArrayList<>();
-
-        // Serie
-        if (serie == null || serie.isBlank()) {
-            errors.add("La serie es requerida");
-        } else if (!serie.toUpperCase().startsWith("T")) {
-            errors.add("GRE-Remitente requiere serie que inicie con 'T'. Serie actual: " + serie);
-        }
-
-        // Número
-        if (numero == null || numero < 1) {
-            errors.add("El número debe ser mayor a 0");
-        }
-
-        // Remitente
-        if (remitente == null) {
-            errors.add("El remitente es requerido");
-        } else if (remitente.getRuc() == null || remitente.getRuc().length() != 11) {
-            errors.add("El RUC del remitente debe tener 11 dígitos");
-        }
-
-        // Destinatario
-        if (destinatario == null) {
-            errors.add("El destinatario es requerido");
-        }
-
-        // Envío
-        if (envio == null) {
-            errors.add("Los datos de envío son requeridos");
-        } else {
-            validateEnvio(envio, errors);
-        }
-
-        // Detalles
-        if (detalles == null || detalles.isEmpty()) {
-            errors.add("Se requiere al menos una línea de detalle");
-        }
-
-        return errors;
-    }
-
-    private void validateEnvio(Envio envio, List<String> errors) {
-        if (envio.getTipoTraslado() == null || envio.getTipoTraslado().isBlank()) {
-            errors.add("El motivo de traslado (Catálogo 20) es requerido");
-        }
-        if (envio.getPesoTotal() == null) {
-            errors.add("El peso total es requerido");
-        }
-        if (envio.getTipoModalidadTraslado() == null) {
-            errors.add("La modalidad de traslado (Catálogo 18) es requerida");
-        }
-        if (envio.getFechaTraslado() == null) {
-            errors.add("La fecha de traslado es requerida");
-        }
-        if (envio.getPartida() == null) {
-            errors.add("El punto de partida es requerido");
-        }
-        if (envio.getDestino() == null) {
-            errors.add("El punto de destino es requerido");
-        }
-
-        String modalidad = envio.getTipoModalidadTraslado();
-        if (modalidad == null)
-            return;
-
-        boolean tieneIndicadorM1L = envio.getIndicadores() != null &&
-                envio.getIndicadores().contains("SUNAT_Envio_IndicadorTrasladoVehiculoM1L");
-
-        if ("02".equals(modalidad)) {
-            // Transporte privado: requiere conductor y vehículo
-            if (!tieneIndicadorM1L) {
-                if (envio.getChoferes() == null || envio.getChoferes().isEmpty()) {
-                    errors.add("Transporte privado requiere al menos un conductor (salvo vehículo categoría M1/L)");
-                }
-                if (envio.getVehiculo() == null) {
-                    errors.add("Transporte privado requiere datos del vehículo (salvo vehículo categoría M1/L)");
-                }
-            }
-            // Transporte privado NO debe tener transportista externo
-            if (envio.getTransportista() != null) {
-                errors.add(
-                        "Transporte privado no debe consignar transportista externo (usar modalidad pública si subcontrata)");
-            }
-        } else if ("01".equals(modalidad)) {
-            // Transporte público: requiere transportista
-            if (envio.getTransportista() == null) {
-                errors.add("Transporte público requiere datos del transportista");
-            }
-        }
+        return validateDetailed().getErrors();
     }
 
     /**
-     * Convierte este modelo a {@link DespatchAdvice} para renderizado XML.
-     * El tipo de comprobante se fija a "09" (GRE-Remitente).
+     * Valida las reglas de negocio y retorna un {@link ValidationResult} con errores y advertencias diferenciados por
+     * severidad.
+     *
+     * @return resultado de validación con errores y advertencias
+     * @since 5.2.0
+     */
+    public ValidationResult validateDetailed() {
+        List<ValidationMessage> messages = new ArrayList<>();
+
+        // Campos básicos (serie, número)
+        DespatchAdviceCommonValidator.validateBasicFields(serie, numero, messages);
+
+        // Serie específica remitente: debe iniciar con 'T'
+        DespatchAdviceCommonValidator.validateSerieRemitente(serie, messages);
+
+        // Partes
+        DespatchAdviceCommonValidator.validateRemitente(remitente, messages);
+        DespatchAdviceCommonValidator.validateDestinatario(destinatario, messages);
+
+        // Envío
+        DespatchAdviceCommonValidator.validateEnvioRequired(envio, messages);
+        DespatchAdviceCommonValidator.validatePartidaDestino(envio, messages);
+
+        // Modalidad específica remitente (privado/público)
+        DespatchAdviceCommonValidator.validateModalidadRemitente(envio, messages);
+
+        // Comercio exterior (advertencias)
+        DespatchAdviceCommonValidator.validateComercioExterior(envio, messages);
+
+        // Detalles
+        DespatchAdviceCommonValidator.validateDetalles(detalles, messages);
+
+        return new ValidationResult(messages);
+    }
+
+    /**
+     * Convierte este modelo a {@link DespatchAdvice} para renderizado XML. El tipo de comprobante se fija a "09"
+     * (GRE-Remitente).
      *
      * @return DespatchAdvice listo para enriquecer y renderizar
      */

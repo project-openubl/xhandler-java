@@ -1,6 +1,5 @@
 package io.github.project.openubl.xbuilder.enricher.kie.rules.enrich.header;
 
-import io.github.project.openubl.xbuilder.content.models.standard.guia.DespatchAdvice;
 import io.github.project.openubl.xbuilder.enricher.kie.AbstractHeaderRule;
 import io.github.project.openubl.xbuilder.enricher.kie.RulePhase;
 
@@ -8,8 +7,7 @@ import static io.github.project.openubl.xbuilder.enricher.kie.rules.utils.Helper
 import static io.github.project.openubl.xbuilder.enricher.kie.rules.utils.Helpers.whenDespatchAdvice;
 
 /**
- * Regla de enriquecimiento para autodetectar el tipo de comprobante de la GRE
- * a partir del prefijo de la serie.
+ * Regla de enriquecimiento para autodetectar el tipo de comprobante de la GRE a partir del prefijo de la serie.
  * <p>
  * Regla funcional SUNAT:
  * <ul>
@@ -17,8 +15,8 @@ import static io.github.project.openubl.xbuilder.enricher.kie.rules.utils.Helper
  * <li>Serie V* → GRE-Transportista (tipo "31")</li>
  * </ul>
  * <p>
- * Esta regla solo se aplica si {@code tipoComprobante} no fue establecido
- * explícitamente por el usuario, permitiendo autocompletar.
+ * Esta regla solo se aplica si {@code tipoComprobante} no fue establecido explícitamente por el usuario, permitiendo
+ * autocompletar.
  */
 @RulePhase(type = RulePhase.PhaseType.ENRICH)
 public class DespatchAdviceTipoComprobanteRule extends AbstractHeaderRule {

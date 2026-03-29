@@ -31,7 +31,7 @@
         <xmlunit.version>2.10.0</xmlunit.version>
 
         <quarkus.version>3.15.1</quarkus.version>
-        <camel.version>4.4.0</camel.version>
+        <camel.version>4.18.1</camel.version>
         <springboot.version>3.2.5</springboot.version>
     </properties>
 

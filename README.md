@@ -142,6 +142,23 @@ Compilación nativa con GraalVM soportada:
 mvn package -Pnative
 ```
 
+Pruebas unitarias y de integracion.
+```bash
+mvn clean install compile
+mvn verify -Pexamples
+mvn -Pnative-image install -f xbuilder/quarkus-extension/integration-tests/ -Dquarkus.version=3.12.0
+mvn -Pnative-image install -f xbuilder/quarkus-extension/integration-tests/ -Dquarkus.version=3.8.6
+mvn -Pnative-image install -f xbuilder/quarkus-extension/integration-tests/ 
+mvn -Pnative-image install -f xsender/quarkus-extension/integration-tests/ -Dquarkus.version=3.12.0
+mvn -Pnative-image install -f xsender/quarkus-extension/integration-tests/ -Dquarkus.version=3.8.6
+mvn -Pnative-image install -f xsender/quarkus-extension/integration-tests/
+
+mvn install -f xsender/spring-boot-extension/integration-tests/ -Dspringboot.version=3.3.0
+mvn install -f xsender/spring-boot-extension/integration-tests/
+mvn install -f xsender/spring-boot-extension/integration-tests/ -Dspringboot.version=3.2.0
+
+```
+
 ### Spring Boot
 
 ```xml

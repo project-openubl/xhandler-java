@@ -20,46 +20,47 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 public class XSenderController {
 
-    @Autowired
-    private CamelContext camelContext;
+        @Autowired
+        private CamelContext camelContext;
 
-    CompanyURLs companyURLs = CompanyURLs.builder()
-            .invoice("https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService")
-            .perceptionRetention("https://e-beta.sunat.gob.pe/ol-ti-itemision-otroscpe-gem-beta/billService")
-            .despatch("https://api-cpe.sunat.gob.pe/v1/contribuyente/gem")
-            .build();
+        CompanyURLs companyURLs = CompanyURLs.builder()
+                        .invoice("https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService")
+                        .perceptionRetention(
+                                        "https://e-beta.sunat.gob.pe/ol-ti-itemision-otroscpe-gem-beta/billService")
+                        .despatch("https://api-cpe.sunat.gob.pe/v1/contribuyente/gem")
+                        .build();
 
-    CompanyCredentials credentials = CompanyCredentials.builder()
-            .username("12345678959MODDATOS")
-            .password("MODDATOS")
-            .token("accessTokenParaGuiasDeRemision")
-            .build();
+        CompanyCredentials credentials = CompanyCredentials.builder()
+                        .username("12345678959MODDATOS")
+                        .password("MODDATOS")
+                        .token("accessTokenParaGuiasDeRemision")
+                        .build();
 
-    @PostMapping("/api/file/upload")
-    public String uploadFile(@RequestParam("file") MultipartFile file) throws Exception {
-        byte[] bytes = file.getBytes();
+        @PostMapping("/api/file/upload")
+        public String uploadFile(@RequestParam("file")
+        MultipartFile file) throws Exception {
+                byte[] bytes = file.getBytes();
 
-        BillServiceFileAnalyzer fileAnalyzer = new BillServiceXMLFileAnalyzer(bytes, companyURLs);
+                BillServiceFileAnalyzer fileAnalyzer = new BillServiceXMLFileAnalyzer(bytes, companyURLs);
 
-        // Archivo ZIP
-        ZipFile zipFile = fileAnalyzer.getZipFile();
+                // Archivo ZIP
+                ZipFile zipFile = fileAnalyzer.getZipFile();
 
-        // Configuración para enviar xml y Configuración para consultar ticket
-        BillServiceDestination fileDestination = fileAnalyzer.getSendFileDestination();
-        BillServiceDestination ticketDestination = fileAnalyzer.getVerifyTicketDestination();
+                // Configuración para enviar xml y Configuración para consultar ticket
+                BillServiceDestination fileDestination = fileAnalyzer.getSendFileDestination();
+                BillServiceDestination ticketDestination = fileAnalyzer.getVerifyTicketDestination();
 
-        // Send file
-        CamelData camelData = CamelUtils.getBillServiceCamelData(zipFile, fileDestination, credentials);
+                // Send file
+                CamelData camelData = CamelUtils.getBillServiceCamelData(zipFile, fileDestination, credentials);
 
-        SunatResponse sendFileSunatResponse = camelContext.createProducerTemplate()
-                .requestBodyAndHeaders(
-                        Constants.XSENDER_BILL_SERVICE_URI,
-                        camelData.getBody(),
-                        camelData.getHeaders(),
-                        SunatResponse.class
-                );
+                SunatResponse sendFileSunatResponse = camelContext.createProducerTemplate()
+                                .requestBodyAndHeaders(
+                                                Constants.XSENDER_BILL_SERVICE_URI,
+                                                camelData.getBody(),
+                                                camelData.getHeaders(),
+                                                SunatResponse.class);
 
-        return fileAnalyzer.getXmlContent().getDocumentType() + " " + sendFileSunatResponse.getStatus();
-    }
+                return fileAnalyzer.getXmlContent().getDocumentType() + " " + sendFileSunatResponse.getStatus();
+        }
 
 }

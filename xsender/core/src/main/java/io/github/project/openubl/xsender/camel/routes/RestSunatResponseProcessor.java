@@ -26,8 +26,7 @@ public class RestSunatResponseProcessor implements Processor {
                 sunatResponse = SunatResponse.builder()
                         .sunat(Sunat.builder()
                                 .ticket(responseDto.getNumTicket())
-                                .build()
-                        )
+                                .build())
                         .build();
             } else if (responseDto.getArcCdr() != null) {
                 String cdrBase64Hex = responseDto.getArcCdr();
@@ -35,18 +34,22 @@ public class RestSunatResponseProcessor implements Processor {
                 byte[] cdrBytes = Base64.getDecoder().decode(bytes);
                 CdrReader cdrReader = new CdrReader(cdrBytes);
 
-                SunatResponse.builder()
+                sunatResponse = SunatResponse.builder()
                         .status(cdrReader.getStatus())
                         .metadata(cdrReader.getMetadata())
                         .sunat(Sunat.builder()
                                 .cdr(cdrBytes)
-                                .build()
-                        );
+                                .build())
+                        .build();
             } else if (responseDto.getCodRespuesta() != null) {
                 int statusCode = Integer.parseInt(responseDto.getCodRespuesta());
 
-                Optional<String> responseErrorCode = responseDto.getError() != null ? Optional.ofNullable(responseDto.getError().getNumError()) : Optional.empty();
-                Optional<String> responseErrorDescription = responseDto.getError() != null ? Optional.ofNullable(responseDto.getError().getDesError()) : Optional.empty();
+                Optional<String> responseErrorCode = responseDto.getError() != null
+                        ? Optional.ofNullable(responseDto.getError().getNumError())
+                        : Optional.empty();
+                Optional<String> responseErrorDescription = responseDto.getError() != null
+                        ? Optional.ofNullable(responseDto.getError().getDesError())
+                        : Optional.empty();
 
                 Metadata metadata = Metadata.builder()
                         .responseCode(responseErrorCode.map(Integer::parseInt).orElse(statusCode))

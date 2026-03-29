@@ -12,9 +12,9 @@
     <packaging>pom</packaging>
 
     <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
-        <maven.compiler.release>17</maven.compiler.release>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+        <maven.compiler.release>21</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
@@ -26,13 +26,13 @@
 
         <license.dir>${basedir}</license.dir>
 
-        <lombok.version>1.18.30</lombok.version>
+        <lombok.version>1.18.34</lombok.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
         <xmlunit.version>2.10.0</xmlunit.version>
 
-        <quarkus.version>3.4.1</quarkus.version>
-        <camel.version>4.0.0</camel.version>
-        <springboot.version>3.0.6</springboot.version>
+        <quarkus.version>3.15.1</quarkus.version>
+        <camel.version>4.18.1</camel.version>
+        <springboot.version>3.2.5</springboot.version>
     </properties>
 
     <url>https://project-openubl.github.io/</url>

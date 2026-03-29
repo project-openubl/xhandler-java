@@ -119,7 +119,7 @@
                 <cbc:TaxAmount currencyID="PEN">20.00</cbc:TaxAmount>
                 <cac:TaxCategory>
                     <cbc:Percent>10.00</cbc:Percent>
-                    <cbc:TierRange>02</cbc:TierRange>
+                    <cbc:TierRange>03</cbc:TierRange>
                     <cac:TaxScheme>
                         <cbc:ID>2000</cbc:ID>
                         <cbc:Name>ISC</cbc:Name>

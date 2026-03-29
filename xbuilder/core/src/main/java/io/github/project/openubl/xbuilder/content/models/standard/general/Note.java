@@ -7,9 +7,18 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 /**
- * Clase base para CreditNote y DebitNOte.
+ * Clase base abstracta para Nota de Crédito ({@link CreditNote}) y Nota de Débito ({@link DebitNote}).
+ * <p>
+ * Ambas notas comparten la misma estructura: referencia al comprobante afectado, motivo de emisión y sustento
+ * descriptivo. Las diferencias normativas son:
+ * <ul>
+ * <li><b>Nota de Crédito</b>: Catálogo 09 para {@code tipoNota}. Anula total o parcialmente una factura/boleta.</li>
+ * <li><b>Nota de Débito</b>: Catálogo 10 para {@code tipoNota}. Incrementa el importe del documento afectado.</li>
+ * </ul>
+ * </p>
  *
- * @author <a href="mailto:carlosthe19916@gmail.com">Carlos Feria</a>
+ * @see io.github.project.openubl.xbuilder.content.catalogs.Catalog9
+ * @see io.github.project.openubl.xbuilder.content.catalogs.Catalog10
  */
 @Data
 @SuperBuilder
@@ -28,8 +37,7 @@ public abstract class Note extends SalesDocument {
     private String tipoNota;
 
     /**
-     * Serie y número del comprobante al que le aplica la nota de crédito/débito.
-     * Ejemplo: F001-1
+     * Serie y número del comprobante al que le aplica la nota de crédito/débito. Ejemplo: F001-1
      */
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private String comprobanteAfectadoSerieNumero;

@@ -4,18 +4,27 @@
 [![CI](https://github.com/project-openubl/xhandler/actions/workflows/ci.yml/badge.svg)](https://github.com/project-openubl/xhandler/actions/workflows/ci.yml)
 
 [![Project Chat](https://img.shields.io/badge/zulip-join_chat-brightgreen.svg?style=for-the-badge&logo=zulip)](https://projectopenubl.zulipchat.com/)
-[![Supported JVM Versions](https://img.shields.io/badge/JVM--17-brightgreen.svg?style=for-the-badge&logo=Java)](https://github.com/project-openubl/xhandler/actions/)
+[![Supported JVM Versions](https://img.shields.io/badge/JVM--21-brightgreen.svg?style=for-the-badge&logo=Java)](https://github.com/project-openubl/xhandler/actions/)
 
-**XHandler Java** es una suite de herramientas diseñada para facilitar la integración de **Facturación Electrónica en Perú (SUNAT)** en aplicaciones Java. Este repositorio es un "monorepo" que alberga las librerías `XBuilder` y `XSender`, proporcionando una solución integral para crear, firmar y enviar comprobantes de pago electrónicos.
+Suite de librerías Java para **Facturación Electrónica en Perú (SUNAT)**: creación, firma y envío de comprobantes de pago electrónicos conforme a UBL 2.1.
 
 > [!TIP]
-> Si buscas integrar facturación electrónica de manera rápida y estándar, estás en el lugar correcto.
+> Si buscas integrar facturación electrónica SUNAT de manera rápida y estándar, estás en el lugar correcto.
 
 ---
 
-## 📦 Ecosistema
+## Requisitos
 
-El proyecto se divide en módulos principales y extensiones para frameworks populares:
+| Requisito     | Versión mínima |
+|--------------|----------------|
+| **Java**      | 21             |
+| **Maven**     | 3.8+           |
+| **Quarkus**   | 3.8+ (extensiones) |
+| **Spring Boot** | 3.2+ (extensión)  |
+
+---
+
+## Ecosistema
 
 | Componente | Descripción | Maven Central |
 |------------|-------------|---------------|
@@ -27,70 +36,233 @@ El proyecto se divide en módulos principales y extensiones para frameworks popu
 
 ---
 
-## 🛠️ XBuilder
+## Inicio rápido
 
-XBuilder abstrae la complejidad de los estándares UBL y XML, permitiéndote construir documentos tributarios válidos escribiendo código Java simple.
+### 1. Agregar dependencia
 
-### Características
-- **Simple**: No necesitas manipular XML directamente ni conciliar namespaces complejos.
-- **Completo**: Soporte para Facturas, Boletas, Notas de Crédito/Débito, Guías de Remisión y Percepciones/Retenciones.
-- **Validado**: Realiza cálculos automáticos y validaciones básicas según normativa SUNAT.
-
-### Ejemplo de Uso
-
-```java
-// Ejemplo simplificado de creación de factura
-Invoice invoice = Invoice.builder()
-    .serie("F001")
-    .numero(1)
-    .proveedor(proveedor)
-    .cliente(cliente)
-    .detalle(detalle)
-    .build();
-
-XMLInvoice xml = new InvoiceXMLBuilder().build(invoice);
+```xml
+<dependency>
+    <groupId>io.github.project-openubl</groupId>
+    <artifactId>xbuilder</artifactId>
+    <version>LATEST</version>
+</dependency>
 ```
 
-> [!NOTE]
-> Para actualizar los snapshots de prueba en desarrollo local, ejecuta:
-> `mvn clean test -Dxbuilder.snapshot.update`
+### 2. Crear una Factura
+
+```java
+var invoice = Invoice.builder()
+        .serie("F001")
+        .numero(1)
+        .proveedor(Proveedor.builder()
+                .ruc("20123456789")
+                .razonSocial("Mi Empresa S.A.C.")
+                .build())
+        .cliente(Cliente.builder()
+                .nombre("Cliente Ejemplo")
+                .numeroDocumentoIdentidad("10467793549")
+                .tipoDocumentoIdentidad(Catalog6.RUC.toString())
+                .build())
+        .detalle(DocumentoVentaDetalle.builder()
+                .descripcion("Servicio de consultoría")
+                .cantidad(new BigDecimal("1"))
+                .precio(new BigDecimal("500"))
+                .build())
+        .build();
+```
+
+### 3. Generar XML UBL 2.1
+
+```java
+var enricher = new ContentEnricher(defaults, dateProvider);
+enricher.enrich(invoice);
+
+Template template = TemplateProducer.getInstance().getInvoice();
+String xml = template.data(invoice).render();
+```
+
+### 4. Enviar a SUNAT (con XSender)
+
+```xml
+<dependency>
+    <groupId>io.github.project-openubl</groupId>
+    <artifactId>xsender</artifactId>
+    <version>LATEST</version>
+</dependency>
+```
 
 ---
 
-## 🚀 XSender
+## Documentos soportados
 
-XSender se encarga de la comunicación con los servicios SOAP de la SUNAT o de los Operadores de Servicios Electrónicos (OSE).
-
-### Características
-- **Compatible**: Soporta los diversos endpoints de SUNAT (Beta/Producción) y OSEs.
-- **Resiliente**: Gestiona el envío de archivos ZIP y el procesamiento de respuestas (CDR, Tickets).
-- **Flexible**: Fácil integración con frameworks modernos como Quarkus y Spring Boot.
-
----
-
-## 💻 Ejemplos
-
-Explora la carpeta `examples/` para ver implementaciones de referencia:
-
-- [**Spring Boot**](./examples/springbot): Ejemplo de integración completa usando Spring Boot.
-- [**Wildfly**](./examples/wildfly): Ejemplo para servidores de aplicaciones Jakarta EE.
-- [**Tomcat**](./examples/tomcat): Ejemplo ligero desplegable en Tomcat.
-- [**XBuilder/XSender**](./examples): Ejemplos "standalone" de uso de las librerías.
+| Documento | Clase | Descripción |
+|-----------|-------|-------------|
+| Factura | `Invoice` | Ventas gravadas, exoneradas, inafectas, gratuitas |
+| Boleta de Venta | `Invoice` | Con `tipoComprobante = "03"` |
+| Nota de Crédito | `CreditNote` | Anulaciones, descuentos, devoluciones |
+| Nota de Débito | `DebitNote` | Intereses, penalidades, ajustes |
+| Guía de Remisión | `DespatchAdvice` | GRE-Remitente (09) y GRE-Transportista (31) |
+| Resumen Diario | `SummaryDocuments` | Informar emisión de boletas |
+| Comunicación de Baja | `VoidedDocuments` | Anular comprobantes emitidos |
+| Percepción | `Perception` | Comprobantes de percepción |
+| Retención | `Retention` | Comprobantes de retención |
+| Reversión | `Reversion` | Anular percepciones/retenciones |
 
 ---
 
-## 📚 Documentación
+## Extensiones para frameworks
 
-Para guías detalladas, referencia de API y tutoriales, consulta nuestra documentación oficial.
+### Quarkus
 
-- 📖 **Sitio Web**: [project-openubl.github.io](https://project-openubl.github.io)
-- 💬 **Comunidad**: [Únete al chat en Zulip](https://projectopenubl.zulipchat.com/)
-- 🐛 **Soporte**: [Reportar un problema o discutir mejoras](https://github.com/project-openubl/xsender/discussions)
+```xml
+<!-- XBuilder -->
+<dependency>
+    <groupId>io.github.project-openubl</groupId>
+    <artifactId>quarkus-xbuilder</artifactId>
+    <version>LATEST</version>
+</dependency>
+
+<!-- XSender -->
+<dependency>
+    <groupId>io.github.project-openubl</groupId>
+    <artifactId>quarkus-xsender</artifactId>
+    <version>LATEST</version>
+</dependency>
+```
+
+Configuración en `application.properties`:
+```properties
+quarkus.xbuilder.igv-tasa=0.18
+quarkus.xbuilder.icb-tasa=0.2
+quarkus.xsender.enable-logging-feature=false
+```
+
+Compilación nativa con GraalVM soportada:
+```bash
+mvn package -Pnative
+```
+
+Pruebas unitarias y de integracion.
+```bash
+mvn clean install compile
+mvn verify -Pexamples
+mvn -Pnative-image install -f xbuilder/quarkus-extension/integration-tests/ -Dquarkus.version=3.12.0
+mvn -Pnative-image install -f xbuilder/quarkus-extension/integration-tests/ -Dquarkus.version=3.8.6
+mvn -Pnative-image install -f xbuilder/quarkus-extension/integration-tests/ 
+mvn -Pnative-image install -f xsender/quarkus-extension/integration-tests/ -Dquarkus.version=3.12.0
+mvn -Pnative-image install -f xsender/quarkus-extension/integration-tests/ -Dquarkus.version=3.8.6
+mvn -Pnative-image install -f xsender/quarkus-extension/integration-tests/
+
+mvn install -f xsender/spring-boot-extension/integration-tests/ -Dspringboot.version=3.3.0
+mvn install -f xsender/spring-boot-extension/integration-tests/
+mvn install -f xsender/spring-boot-extension/integration-tests/ -Dspringboot.version=3.2.0
+
+```
+
+### Spring Boot
+
+```xml
+<dependency>
+    <groupId>io.github.project-openubl</groupId>
+    <artifactId>spring-boot-xsender</artifactId>
+    <version>LATEST</version>
+</dependency>
+```
 
 ---
 
-## 📄 Licencia
+## Estructura del proyecto
 
-Este proyecto se distribuye bajo la licencia **Apache 2.0**. Consulta el archivo [LICENSE](LICENSE) para más detalles.
+```
+xhandler-java/
+├── xbuilder/
+│   ├── core/                  # Librería principal XBuilder
+│   └── quarkus-extension/     # Extensión Quarkus para XBuilder
+│       ├── deployment/
+│       ├── runtime/
+│       └── integration-tests/
+├── xsender/
+│   ├── core/                  # Librería principal XSender
+│   ├── quarkus-extension/     # Extensión Quarkus para XSender
+│   └── spring-boot-extension/ # Starter Spring Boot para XSender
+└── examples/
+    ├── xbuilder/              # Ejemplo standalone XBuilder
+    ├── xsender/               # Ejemplo standalone XSender
+    ├── springbot/             # Integración Spring Boot
+    ├── tomcat/                # Despliegue en Tomcat
+    └── wildfly/               # Despliegue en WildFly
+```
 
-Copyright © Project OpenUBL.
+---
+
+## Dependencias principales
+
+| Librería | Versión | Uso |
+|----------|---------|-----|
+| Fastjson2 | 2.0.49 | Serialización JSON |
+| Quarkus Qute | 3.15.1 | Plantillas XML |
+| Apache Camel | 4.4.0 | Rutas SOAP (XSender) |
+| Lombok | 1.18.34 | Reducción de boilerplate |
+| MapStruct | 1.5.5 | Mapeo XML-JAXB a modelos |
+| JAXB | 4.0.5 | Parsing XML UBL |
+
+---
+
+## Desarrollo local
+
+### Compilar y ejecutar tests
+
+```bash
+# Tests unitarios (xbuilder + xsender)
+mvn clean verify
+
+# Solo xbuilder core (278 tests)
+cd xbuilder/core && mvn test -DskipSunat=true
+
+# Extensión Quarkus (JVM)
+mvn clean install -f xbuilder/quarkus-extension/integration-tests/
+
+# Extensión Quarkus (nativa GraalVM)
+mvn -Pnative-image install -f xbuilder/quarkus-extension/integration-tests/
+
+# Spring Boot
+mvn clean install -f xsender/spring-boot-extension/integration-tests/
+```
+
+### Actualizar snapshots de test
+
+```bash
+mvn clean test -Dxbuilder.snapshot.update
+```
+
+### Matriz de compatibilidad CI
+
+El CI valida automáticamente estas combinaciones:
+
+| Framework | Versiones probadas |
+|-----------|--------------------|
+| Quarkus   | 3.8.6, 3.12.0, 3.15.1 (actual) |
+| Spring Boot | 3.2.0, 3.2.5 (actual), 3.3.0 |
+
+---
+
+## Contribuir
+
+1. Fork del repositorio
+2. Crear branch: `git checkout -b feature/mi-mejora`
+3. Hacer commit: `git commit -m 'Agregar mejora'`
+4. Push: `git push origin feature/mi-mejora`
+5. Abrir Pull Request
+
+### Comunidad
+
+- [Chat en Zulip](https://projectopenubl.zulipchat.com/)
+- [Reportar problemas](https://github.com/project-openubl/xsender/discussions)
+
+---
+
+## Licencia
+
+Distribuido bajo licencia [Apache 2.0](LICENSE).
+
+Copyright Project OpenUBL.

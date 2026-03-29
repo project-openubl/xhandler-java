@@ -28,7 +28,6 @@ import io.github.project.openubl.xbuilder.content.models.sunat.percepcionretenci
 import io.github.project.openubl.xbuilder.content.models.sunat.resumen.SummaryDocuments;
 import io.github.project.openubl.xbuilder.enricher.ContentEnricher;
 import io.quarkus.qute.Template;
-import io.vertx.core.json.JsonObject;
 import org.mapstruct.factory.Mappers;
 import org.xml.sax.InputSource;
 
@@ -72,15 +71,15 @@ public class QuarkusXbuilderResource {
     private static final CreditNoteMapper creditNoteMapper = Mappers.getMapper(CreditNoteMapper.class);
     private static final DebitNoteMapper debitNoteMapper = Mappers.getMapper(DebitNoteMapper.class);
     private static final VoidedDocumentsMapper voidedDocumentsMapper = Mappers.getMapper(VoidedDocumentsMapper.class);
-    private static final SummaryDocumentsMapper summaryDocumentsMapper = Mappers.getMapper(SummaryDocumentsMapper.class);
+    private static final SummaryDocumentsMapper summaryDocumentsMapper = Mappers
+            .getMapper(SummaryDocumentsMapper.class);
     private static final PerceptionMapper perceptionMapper = Mappers.getMapper(PerceptionMapper.class);
     private static final RetentionMapper retentionMapper = Mappers.getMapper(RetentionMapper.class);
     private static final DespatchAdviceMapper despatchAdviceMapper = Mappers.getMapper(DespatchAdviceMapper.class);
 
     @POST
     @Path("Invoice/from-json")
-    public String createInvoiceXml(JsonObject json) {
-        Invoice invoice = json.mapTo(Invoice.class);
+    public String createInvoiceFromJson(Invoice invoice) {
 
         ContentEnricher enricher = new ContentEnricher(xBuilder.getDefaults(), () -> LocalDate.of(2022, 1, 25));
         enricher.enrich(invoice);
@@ -92,7 +91,7 @@ public class QuarkusXbuilderResource {
     @POST
     @Consumes(MediaType.TEXT_PLAIN)
     @Path("Invoice/from-xml")
-    public String createInvoiceXml(String xml) throws IOException, JAXBException {
+    public String createInvoiceFromXml(String xml) throws IOException, JAXBException {
         Template template = xBuilder.getTemplate(INVOICE);
 
         try (StringReader reader = new StringReader(xml)) {
@@ -106,8 +105,7 @@ public class QuarkusXbuilderResource {
 
     @POST
     @Path("CreditNote/from-json")
-    public String createCreditNote(JsonObject json) {
-        CreditNote creditNote = json.mapTo(CreditNote.class);
+    public String createCreditNoteFromJson(CreditNote creditNote) {
 
         ContentEnricher enricher = new ContentEnricher(xBuilder.getDefaults(), () -> LocalDate.of(2022, 1, 25));
         enricher.enrich(creditNote);
@@ -119,7 +117,7 @@ public class QuarkusXbuilderResource {
     @POST
     @Consumes(MediaType.TEXT_PLAIN)
     @Path("CreditNote/from-xml")
-    public String createCreditNoteXml(String xml) {
+    public String createCreditNoteFromXml(String xml) {
         Template template = xBuilder.getTemplate(CREDIT_NOTE);
 
         try (StringReader reader = new StringReader(xml)) {
@@ -133,8 +131,7 @@ public class QuarkusXbuilderResource {
 
     @POST
     @Path("DebitNote/from-json")
-    public String createDebitNote(JsonObject json) {
-        DebitNote debitNote = json.mapTo(DebitNote.class);
+    public String createDebitNoteFromJson(DebitNote debitNote) {
 
         ContentEnricher enricher = new ContentEnricher(xBuilder.getDefaults(), () -> LocalDate.of(2022, 1, 25));
         enricher.enrich(debitNote);
@@ -146,7 +143,7 @@ public class QuarkusXbuilderResource {
     @POST
     @Consumes(MediaType.TEXT_PLAIN)
     @Path("DebitNote/from-xml")
-    public String createDebitNoteXml(String xml) {
+    public String createDebitNoteFromXml(String xml) {
         Template template = xBuilder.getTemplate(DEBIT_NOTE);
 
         try (StringReader reader = new StringReader(xml)) {
@@ -160,8 +157,7 @@ public class QuarkusXbuilderResource {
 
     @POST
     @Path("VoidedDocuments/from-json")
-    public String createVoidedDocuments(JsonObject json) {
-        VoidedDocuments voidedDocuments = json.mapTo(VoidedDocuments.class);
+    public String createVoidedDocumentsFromJson(VoidedDocuments voidedDocuments) {
 
         ContentEnricher enricher = new ContentEnricher(xBuilder.getDefaults(), () -> LocalDate.of(2022, 1, 25));
         enricher.enrich(voidedDocuments);
@@ -173,7 +169,7 @@ public class QuarkusXbuilderResource {
     @POST
     @Consumes(MediaType.TEXT_PLAIN)
     @Path("VoidedDocuments/from-xml")
-    public String createVoidedDocumentsXml(String xml) {
+    public String createVoidedDocumentsFromXml(String xml) {
         Template template = xBuilder.getTemplate(VOIDED_DOCUMENTS);
 
         try (StringReader reader = new StringReader(xml)) {
@@ -187,8 +183,7 @@ public class QuarkusXbuilderResource {
 
     @POST
     @Path("SummaryDocuments/from-json")
-    public String createSummaryDocuments(JsonObject json) {
-        SummaryDocuments summaryDocuments = json.mapTo(SummaryDocuments.class);
+    public String createSummaryDocumentsFromJson(SummaryDocuments summaryDocuments) {
 
         ContentEnricher enricher = new ContentEnricher(xBuilder.getDefaults(), () -> LocalDate.of(2022, 1, 25));
         enricher.enrich(summaryDocuments);
@@ -200,7 +195,7 @@ public class QuarkusXbuilderResource {
     @POST
     @Consumes(MediaType.TEXT_PLAIN)
     @Path("SummaryDocuments/from-xml")
-    public String createSummaryDocumentsXml(String xml) {
+    public String createSummaryDocumentsFromXml(String xml) {
         Template template = xBuilder.getTemplate(SUMMARY_DOCUMENTS);
 
         try (StringReader reader = new StringReader(xml)) {
@@ -214,8 +209,7 @@ public class QuarkusXbuilderResource {
 
     @POST
     @Path("Perception/from-json")
-    public String createPerception(JsonObject json) {
-        Perception perception = json.mapTo(Perception.class);
+    public String createPerceptionFromJson(Perception perception) {
 
         ContentEnricher enricher = new ContentEnricher(xBuilder.getDefaults(), () -> LocalDate.of(2022, 1, 25));
         enricher.enrich(perception);
@@ -227,7 +221,7 @@ public class QuarkusXbuilderResource {
     @POST
     @Consumes(MediaType.TEXT_PLAIN)
     @Path("Perception/from-xml")
-    public String createPerceptionXml(String xml) {
+    public String createPerceptionFromXml(String xml) {
         Template template = xBuilder.getTemplate(PERCEPTION);
 
         try (StringReader reader = new StringReader(xml)) {
@@ -241,8 +235,7 @@ public class QuarkusXbuilderResource {
 
     @POST
     @Path("Retention/from-json")
-    public String createRetention(JsonObject json) {
-        Retention retention = json.mapTo(Retention.class);
+    public String createRetentionFromJson(Retention retention) {
 
         ContentEnricher enricher = new ContentEnricher(xBuilder.getDefaults(), () -> LocalDate.of(2022, 1, 25));
         enricher.enrich(retention);
@@ -254,7 +247,7 @@ public class QuarkusXbuilderResource {
     @POST
     @Consumes(MediaType.TEXT_PLAIN)
     @Path("Retention/from-xml")
-    public String createRetentionXml(String xml) {
+    public String createRetentionFromXml(String xml) {
         Template template = xBuilder.getTemplate(RETENTION);
 
         try (StringReader reader = new StringReader(xml)) {
@@ -268,8 +261,7 @@ public class QuarkusXbuilderResource {
 
     @POST
     @Path("DespatchAdvice/from-json")
-    public String createDespatchAdvice(JsonObject json) {
-        DespatchAdvice despatchAdvice = json.mapTo(DespatchAdvice.class);
+    public String createDespatchAdviceFromJson(DespatchAdvice despatchAdvice) {
 
         ContentEnricher enricher = new ContentEnricher(xBuilder.getDefaults(), () -> LocalDate.of(2022, 1, 25));
         enricher.enrich(despatchAdvice);
@@ -281,7 +273,7 @@ public class QuarkusXbuilderResource {
     @POST
     @Consumes(MediaType.TEXT_PLAIN)
     @Path("DespatchAdvice/from-xml")
-    public String createDespatchAdviceXml(String xml) {
+    public String createDespatchAdviceFromXml(String xml) {
         Template template = xBuilder.getTemplate(DESPATCH_ADVICE);
 
         try (StringReader reader = new StringReader(xml)) {
@@ -295,8 +287,7 @@ public class QuarkusXbuilderResource {
 
     @POST
     @Path("Reversion/from-json")
-    public String createReversion(JsonObject json) {
-        Reversion reversion = json.mapTo(Reversion.class);
+    public String createReversionFromJson(Reversion reversion) {
 
         ContentEnricher enricher = new ContentEnricher(xBuilder.getDefaults(), () -> LocalDate.of(2022, 1, 25));
         enricher.enrich(reversion);
@@ -308,7 +299,7 @@ public class QuarkusXbuilderResource {
     @POST
     @Consumes(MediaType.TEXT_PLAIN)
     @Path("Reversion/from-xml")
-    public String createReversionXml(String xml) {
+    public String createReversionFromXml(String xml) {
         Template template = xBuilder.getTemplate(REVERSION);
 
         try (StringReader reader = new StringReader(xml)) {

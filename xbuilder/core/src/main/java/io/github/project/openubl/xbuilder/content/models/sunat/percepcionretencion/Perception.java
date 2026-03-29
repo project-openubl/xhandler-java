@@ -6,11 +6,9 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
-import lombok.extern.jackson.Jacksonized;
 
 import java.math.BigDecimal;
 
-@Jacksonized
 @Data
 @SuperBuilder
 @NoArgsConstructor

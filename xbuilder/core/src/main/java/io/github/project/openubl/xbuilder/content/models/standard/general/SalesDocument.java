@@ -2,6 +2,7 @@ package io.github.project.openubl.xbuilder.content.models.standard.general;
 
 import io.github.project.openubl.xbuilder.content.models.common.Cliente;
 import io.github.project.openubl.xbuilder.content.models.common.Document;
+import io.github.project.openubl.xbuilder.content.models.common.TipoCambio;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -99,6 +100,13 @@ public abstract class SalesDocument extends Document {
     @Singular
     @ArraySchema
     private List<DocumentoRelacionado> documentosRelacionados;
+
+    /**
+     * Tipo de cambio aplicable cuando la moneda es distinta a PEN. Obligatorio si {@code moneda} ≠ "PEN" (Regla de
+     * validación SUNAT). Fuente: Guía XML Factura 2.1 – "PaymentExchangeRate".
+     */
+    @Schema(description = "Tipo de cambio cuando moneda ≠ PEN")
+    private TipoCambio tipoCambio;
 
     /**
      * Cargos globales del documento

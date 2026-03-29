@@ -15,9 +15,10 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <surefire.plugin.version>3.0.0-M4</surefire.plugin.version>
+        <surefire.plugin.version>3.3.1</surefire.plugin.version>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <spring.boot-version>2.7.8</spring.boot-version>
+        <spring.boot-version>3.2.5</spring.boot-version>
+        <camel.version>4.18.1</camel.version>
     </properties>
 
     <dependencyManagement>
@@ -32,7 +33,14 @@
             <dependency>
                 <groupId>org.apache.camel.springboot</groupId>
                 <artifactId>camel-spring-boot-bom</artifactId>
-                <version>3.20.3</version>
+                <version>${camel.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.camel</groupId>
+                <artifactId>camel-bom</artifactId>
+                <version>${camel.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -47,7 +55,7 @@
         <dependency>
             <groupId>io.github.project-openubl</groupId>
             <artifactId>spring-boot-xsender</artifactId>
-            <version>4.1.4</version>
+            <version>${project.version}</version>
         </dependency>
 
         <!-- Spring minimum libraries -->
@@ -91,9 +99,9 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.13.0</version>
                 <configuration>
-                    <release>11</release>
-                    <source>11</source>
-                    <target>11</target>
+                    <release>21</release>
+                    <source>21</source>
+                    <target>21</target>
                 </configuration>
             </plugin>
         </plugins>

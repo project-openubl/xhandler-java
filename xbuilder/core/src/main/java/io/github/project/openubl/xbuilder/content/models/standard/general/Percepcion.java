@@ -8,6 +8,23 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
+/**
+ * Percepción asociada a una factura electrónica.
+ * <p>
+ * Obligatoria cuando {@code tipoOperacion} = "2001" (Catálogo 51). El {@code tipo} corresponde al Catálogo 53 (códigos
+ * de percepción: "51", "52", "53").
+ * </p>
+ * <p>
+ * <b>Campos auto-calculados por el enricher:</b>
+ * <ul>
+ * <li>{@code montoBase} = importeSinImpuestos del documento</li>
+ * <li>{@code monto} = montoBase × porcentaje</li>
+ * <li>{@code montoTotal} = montoBase + monto</li>
+ * </ul>
+ * </p>
+ *
+ * @see io.github.project.openubl.xbuilder.content.catalogs.Catalog53
+ */
 @Data
 @Builder
 @NoArgsConstructor

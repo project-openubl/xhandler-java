@@ -9,11 +9,9 @@ import lombok.NoArgsConstructor;
 import lombok.Singular;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
-import lombok.extern.jackson.Jacksonized;
 
 import java.util.List;
 
-@Jacksonized
 @Data
 @SuperBuilder
 @NoArgsConstructor

@@ -8,12 +8,28 @@ import lombok.NoArgsConstructor;
 import lombok.Singular;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
-import lombok.extern.jackson.Jacksonized;
 
 import java.time.LocalDate;
 import java.util.List;
 
-@Jacksonized
+/**
+ * Modelo de Factura Electrónica (01) y Boleta de Venta Electrónica (03).
+ * <p>
+ * Ambos documentos comparten la misma estructura UBL 2.1 ({@code Invoice}). La diferencia normativa está en:
+ * <ul>
+ * <li><b>Serie</b>: Factura = Fxxx, Boleta = Bxxx</li>
+ * <li><b>Tipo comprobante</b> (Catálogo 01): Factura = "01", Boleta = "03"</li>
+ * <li><b>Receptor</b>: Factura requiere RUC (6). Boleta acepta DNI (1), CE (4), etc.</li>
+ * <li><b>Detracción</b>: Solo aplica a facturas</li>
+ * <li><b>Resumen diario</b>: Las boletas se informan vía ResumenDiario; las facturas se envían individualmente</li>
+ * </ul>
+ * <p>
+ * El campo {@code tipoComprobante} se deduce automáticamente de la serie si no se especifica.
+ * </p>
+ *
+ * @see io.github.project.openubl.xbuilder.content.catalogs.Catalog1_Invoice
+ * @see io.github.project.openubl.xbuilder.content.catalogs.Catalog51
+ */
 @Data
 @SuperBuilder
 @NoArgsConstructor

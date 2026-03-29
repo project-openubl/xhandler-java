@@ -17,6 +17,9 @@ public class ComprobanteImpuestos {
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, description = "IGV del comprobante")
     private BigDecimal igv;
 
+    @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED, description = "Tasa de IGV del comprobante. Ejemplo: 0.18")
+    private BigDecimal tasaIgv;
+
     @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED, description = "ICB del comprobante")
     private BigDecimal icb;
 

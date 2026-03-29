@@ -11,6 +11,7 @@ import io.github.project.openubl.xbuilder.content.jaxb.models.XMLDespatchAdviceL
 import io.github.project.openubl.xbuilder.content.models.common.Proveedor;
 import io.github.project.openubl.xbuilder.content.models.standard.guia.DespatchAdvice;
 import io.github.project.openubl.xbuilder.content.models.standard.guia.DespatchAdviceItem;
+import io.github.project.openubl.xbuilder.content.models.standard.guia.Contenedor;
 import io.github.project.openubl.xbuilder.content.models.standard.guia.Comprador;
 import io.github.project.openubl.xbuilder.content.models.standard.guia.Tercero;
 import io.github.project.openubl.xbuilder.content.models.standard.guia.Destinatario;
@@ -37,8 +38,10 @@ import org.mapstruct.Named;
 }, nullValuePropertyMappingStrategy = org.mapstruct.NullValuePropertyMappingStrategy.SET_TO_DEFAULT)
 public interface DespatchAdviceMapper {
 
-    @Mapping(target = "serie", source = "documentId", qualifiedBy = { SerieNumeroTranslator.class, SerieTranslator.class })
-    @Mapping(target = "numero", source = "documentId", qualifiedBy = { SerieNumeroTranslator.class, Numero2Translator.class })
+    @Mapping(target = "serie", source = "documentId", qualifiedBy = { SerieNumeroTranslator.class,
+            SerieTranslator.class })
+    @Mapping(target = "numero", source = "documentId", qualifiedBy = { SerieNumeroTranslator.class,
+            Numero2Translator.class })
     @Mapping(target = "version", source = "customizationId")
     @Mapping(target = "fechaEmision", source = "issueDate")
     @Mapping(target = "horaEmision", source = "issueTime")
@@ -57,6 +60,8 @@ public interface DespatchAdviceMapper {
     @Mapping(target = "comprador", source = "buyerCustomerParty")
     @Mapping(target = "documentoAdicional", ignore = true)
     @Mapping(target = "detalle", ignore = true)
+    @Mapping(target = "documentoRelacionadoAdicional", ignore = true)
+    @Mapping(target = "documentosRelacionados", ignore = true)
     DespatchAdvice map(XMLDespatchAdvice xml);
 
     @Mapping(target = "tipoDocumento", source = "orderTypeCode")
@@ -141,12 +146,15 @@ public interface DespatchAdviceMapper {
     @Mapping(target = "chofer", ignore = true)
     @Mapping(target = "indicador", ignore = true)
     @Mapping(target = "contenedor", ignore = true)
+    @Mapping(target = "declaracionAduanera", ignore = true)
+    @Mapping(target = "declaracionesAduaneras", ignore = true)
+    @Mapping(target = "numeroManifiesto", ignore = true)
     Envio mapEnvio(XMLDespatchAdvice.Shipment xml);
 
     @Condition
     @Named("transportistaRequirements")
     default boolean conditionTransportista(XMLDespatchAdvice.ShipmentStage xml) {
-        return xml.getCarrierParty() != null && xml.getTransportMeans() != null && xml.getDriverPersons() != null && !xml.getDriverPersons().isEmpty();
+        return xml.getCarrierParty() != null;
     }
 
     @Mapping(target = "tipoDocumentoIdentidad", source = "carrierParty.partyIdentification.id.schemeID")
@@ -225,23 +233,18 @@ public interface DespatchAdviceMapper {
     }
 
     @Named("mapContenedores")
-    default List<String> mapContenedores(List<XMLDespatchAdvice.TransportHandlingUnit> units) {
+    default List<Contenedor> mapContenedores(List<XMLDespatchAdvice.TransportHandlingUnit> units) {
         if (units == null)
             return java.util.Collections.emptyList();
-        List<String> result = new java.util.ArrayList<>();
+        List<Contenedor> result = new java.util.ArrayList<>();
         for (XMLDespatchAdvice.TransportHandlingUnit unit : units) {
             if (unit.getPackages() != null) {
-                unit.getPackages().stream().map(XMLDespatchAdvice.Package::getTraceID)
-                        .filter(java.util.Objects::nonNull)
-                        .forEach(result::add);
-            }
-            if (unit.getTransportEquipments() != null) {
-                // Only add as container if it's NOT a vehicle (simple ID, no transport means)
-                unit.getTransportEquipments().stream()
-                        .filter(e -> e.getApplicableTransportMeans() == null)
-                        .map(XMLDespatchAdvice.TransportEquipment::getId)
-                        .filter(java.util.Objects::nonNull)
-                        .forEach(result::add);
+                for (XMLDespatchAdvice.Package pkg : unit.getPackages()) {
+                    result.add(Contenedor.builder()
+                            .numero(pkg.getId())
+                            .precinto(pkg.getTraceID())
+                            .build());
+                }
             }
         }
         return result;
@@ -294,11 +297,27 @@ public interface DespatchAdviceMapper {
     default Vehicle mapVehiculo(List<XMLDespatchAdvice.TransportHandlingUnit> units) {
         if (units == null)
             return null;
-        // The first equipment with transport means or multiple are usually vehicles
-        return units.stream()
+        // First try: find equipment with transport means or attached (vehicle with
+        // details)
+        Vehicle detailed = units.stream()
                 .filter(u -> u.getTransportEquipments() != null)
                 .flatMap(u -> u.getTransportEquipments().stream())
-                .filter(e -> e.getApplicableTransportMeans() != null || e.getAttachedTransportEquipments() != null)
+                .filter(e -> e.getApplicableTransportMeans() != null || e.getAttachedTransportEquipments() != null
+                        || e.getShipmentDocumentReferences() != null)
+                .findFirst()
+                .map(this::mapDetailedVehicle)
+                .orElse(null);
+        if (detailed != null)
+            return detailed;
+
+        // Fallback: find any TransportEquipment as vehicle
+        // Identify vehicles by exclusion: TransportEquipment that is in a THU
+        // separate from packages (containers). A THU with only TransportEquipment
+        // and no Packages is assumed to be a vehicle.
+        return units.stream()
+                .filter(u -> u.getTransportEquipments() != null && !u.getTransportEquipments().isEmpty())
+                .filter(u -> u.getPackages() == null || u.getPackages().isEmpty())
+                .flatMap(u -> u.getTransportEquipments().stream())
                 .findFirst()
                 .map(this::mapDetailedVehicle)
                 .orElse(null);

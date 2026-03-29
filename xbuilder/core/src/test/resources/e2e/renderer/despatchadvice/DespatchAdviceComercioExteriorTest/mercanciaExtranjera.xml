@@ -32,7 +32,6 @@
         </cac:DigitalSignatureAttachment>
     </cac:Signature>
     <cac:DespatchSupplierParty>
-        <cbc:CustomerAssignedAccountID schemeID="6">20600060006</cbc:CustomerAssignedAccountID>
         <cac:Party>
             <cac:PartyIdentification>
                 <cbc:ID schemeID="6" schemeName="Documento de Identidad" schemeAgencyName="PE:SUNAT" schemeURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06">20600060006</cbc:ID>

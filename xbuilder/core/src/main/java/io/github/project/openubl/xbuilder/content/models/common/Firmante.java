@@ -28,4 +28,12 @@ public class Firmante {
      */
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private String razonSocial;
+
+    /**
+     * URI de referencia para la firma digital (cbc:URI dentro de cac:DigitalSignatureAttachment). Si no se proporciona,
+     * se usa el valor por defecto {@code #PROJECT-OPENUBL-SIGN}.
+     */
+    @Schema(description = "URI de referencia para la firma digital", defaultValue = "#PROJECT-OPENUBL-SIGN")
+    @Builder.Default
+    private String signatureUri = "#PROJECT-OPENUBL-SIGN";
 }

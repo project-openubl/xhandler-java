@@ -9,9 +9,20 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 
 /**
- * Detracción asociada a un Invoice
+ * Detracción asociada a una factura electrónica.
+ * <p>
+ * Obligatoria cuando {@code tipoOperacion} = "1001" (Catálogo 51). Se renderiza en el XML como:
+ * <ul>
+ * <li>{@code cac:PaymentMeans} con {@code PaymentMeansCode} = Catálogo 59</li>
+ * <li>{@code cac:PaymentTerms} con monto, porcentaje y código de detracción (Catálogo 54)</li>
+ * </ul>
+ * <p>
+ * <b>Regla SUNAT:</b> El monto de detracción se calcula como {@code porcentaje × importeConImpuestos} y se auto-calcula
+ * por el enricher si no se especifica explícitamente.
+ * </p>
  *
- * @author <a href="mailto:carlosthe19916@gmail.com">Carlos Feria</a>
+ * @see io.github.project.openubl.xbuilder.content.catalogs.Catalog54
+ * @see io.github.project.openubl.xbuilder.content.catalogs.Catalog59
  */
 @Data
 @Builder

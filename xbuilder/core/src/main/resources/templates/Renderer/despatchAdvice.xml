@@ -60,7 +60,6 @@
     {/each}
     {#include ubl/common/signature.xml firmante=this.firmante /}
     <cac:DespatchSupplierParty>
-        <cbc:CustomerAssignedAccountID schemeID="6">{remitente.ruc}</cbc:CustomerAssignedAccountID>
         <cac:Party>
             <cac:PartyIdentification>
                 <cbc:ID schemeID="6" schemeName="Documento de Identidad" schemeAgencyName="PE:SUNAT" schemeURI="urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06">{remitente.ruc}</cbc:ID>
@@ -266,9 +265,11 @@
             {#if it.descripcion}
             <cbc:Description><![CDATA[{it.descripcion.raw}]]></cbc:Description>
             {/if}
+            {#if it.codigo}
             <cac:SellersItemIdentification>
                 <cbc:ID>{it.codigo}</cbc:ID>
             </cac:SellersItemIdentification>
+            {/if}
             {#if it.codigoSunat}
             <cac:CommodityClassification>
                 <cbc:ItemClassificationCode listID="UNSPSC" listAgencyName="GS1 US" listName="Item Classification">{it.codigoSunat}</cbc:ItemClassificationCode>

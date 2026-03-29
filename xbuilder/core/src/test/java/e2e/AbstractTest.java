@@ -1,11 +1,7 @@
 package e2e;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
-import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONWriter;
 import e2e.renderer.XMLAssertUtils;
 import io.github.project.openubl.xbuilder.content.jaxb.mappers.CreditNoteMapper;
 import io.github.project.openubl.xbuilder.content.jaxb.mappers.DebitNoteMapper;
@@ -41,8 +37,11 @@ import io.github.project.openubl.xbuilder.renderer.TemplateProducer;
 import io.quarkus.qute.Template;
 import org.mapstruct.factory.Mappers;
 import org.xml.sax.InputSource;
+import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.Yaml;
 
 import jakarta.xml.bind.JAXBContext;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringReader;
 import java.math.BigDecimal;
@@ -51,6 +50,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class AbstractTest {
@@ -73,29 +73,36 @@ public class AbstractTest {
 
     protected static final DateProvider dateProvider = () -> LocalDate.of(2019, 12, 24);
 
-    public YAMLMapper getYamlMapper() {
-        YAMLMapper mapper = new YAMLMapper(new YAMLFactory());
-        mapper.registerModule(new JavaTimeModule());
-        mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-        mapper.configure(YAMLGenerator.Feature.LITERAL_BLOCK_STYLE, true);
-        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        return mapper;
+    private Yaml createYaml() {
+        var options = new DumperOptions();
+        options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+        options.setDefaultScalarStyle(DumperOptions.ScalarStyle.LITERAL);
+        options.setPrettyFlow(true);
+        return new Yaml(options);
     }
 
+    @SuppressWarnings("unchecked")
     public void writeYaml(String kind, Object input, String snapshotFilename) throws URISyntaxException, IOException {
-        String rootDir = getClass().getName().replaceAll("\\.", "/");
+        String rootDir = getClass().getName().replace('.', '/');
 
         String snapshotFileContent = Files.readString(
                 Paths.get(getClass().getClassLoader().getResource(rootDir + "/" + snapshotFilename).toURI()));
 
         Path directoryPath = Paths.get("../quarkus-extension/integration-tests/src/test/resources").resolve(rootDir);
         Files.createDirectories(directoryPath);
-        Path filePath = directoryPath.resolve(snapshotFilename.replaceAll(".xml", "") + ".yaml");
+        Path filePath = directoryPath.resolve(snapshotFilename.replace(".xml", "") + ".yaml");
 
-        getYamlMapper().writeValue(filePath.toFile(), Map.of(
-                "kind", kind,
-                "input", input,
-                "snapshot", snapshotFileContent));
+        String jsonStr = JSON.toJSONString(input, JSONWriter.Feature.NotWriteDefaultValue);
+        Map<String, Object> inputMap = JSON.parseObject(jsonStr, LinkedHashMap.class);
+
+        Map<String, Object> data = new LinkedHashMap<>();
+        data.put("kind", kind);
+        data.put("input", inputMap);
+        data.put("snapshot", snapshotFileContent);
+
+        try (var writer = new FileWriter(filePath.toFile())) {
+            createYaml().dump(data, writer);
+        }
     }
 
     protected void assertInput(Invoice input, String snapshotFilename) throws Exception {

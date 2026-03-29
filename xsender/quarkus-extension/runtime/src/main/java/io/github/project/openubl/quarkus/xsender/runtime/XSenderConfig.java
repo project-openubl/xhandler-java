@@ -1,15 +1,17 @@
 package io.github.project.openubl.quarkus.xsender.runtime;
 
-import io.quarkus.runtime.annotations.ConfigItem;
 import io.quarkus.runtime.annotations.ConfigPhase;
 import io.quarkus.runtime.annotations.ConfigRoot;
+import io.smallrye.config.ConfigMapping;
+import io.smallrye.config.WithDefault;
 
-@ConfigRoot(name = "xsender", phase = ConfigPhase.RUN_TIME)
-public class XSenderConfig {
+@ConfigRoot(phase = ConfigPhase.RUN_TIME)
+@ConfigMapping(prefix = "quarkus.xsender")
+public interface XSenderConfig {
 
     /**
      * Enable logging feature
      */
-    @ConfigItem
-    public boolean enableLoggingFeature;
+    @WithDefault("false")
+    boolean enableLoggingFeature();
 }

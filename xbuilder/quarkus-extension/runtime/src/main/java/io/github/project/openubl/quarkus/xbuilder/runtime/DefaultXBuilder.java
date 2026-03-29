@@ -25,8 +25,7 @@ public class DefaultXBuilder implements XBuilder {
 
     void configureEngine(@Observes EngineBuilder builder) {
         builder.addResultMapper(
-                new HtmlEscaper(List.of("text/html", "text/xml", "application/xml", "application/xhtml+xml"))
-        );
+                new HtmlEscaper(List.of("text/html", "text/xml", "application/xml", "application/xhtml+xml")));
 
         EngineProducer.getInstance().getEngine().getValueResolvers().forEach(builder::addValueResolver);
     }
@@ -39,8 +38,8 @@ public class DefaultXBuilder implements XBuilder {
     @Override
     public Defaults getDefaults() {
         return Defaults.builder()
-                .igvTasa(config.igvTasa.orElse(new BigDecimal("0.18")))
-                .icbTasa(config.icbTasa.orElse(new BigDecimal("0.2")))
+                .igvTasa(config.igvTasa().orElse(new BigDecimal("0.18")))
+                .icbTasa(config.icbTasa().orElse(new BigDecimal("0.2")))
                 .build();
     }
 }

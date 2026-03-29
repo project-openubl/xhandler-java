@@ -18,21 +18,21 @@ public class XSender {
     @ApplicationScoped
     @Named("cxfBillServiceEndpoint")
     CxfEndpoint produceCxfBillServiceEndpoint() {
-        return new CxfEndpointConfiguration().cxfBillServiceEndpoint(config.enableLoggingFeature);
+        return new CxfEndpointConfiguration().cxfBillServiceEndpoint(config.enableLoggingFeature());
     }
 
     @Produces
     @ApplicationScoped
     @Named("cxfBillConsultServiceEndpoint")
     CxfEndpoint produceCxfBillConsultServiceEndpoint() {
-        return new CxfEndpointConfiguration().cxfBillConsultServiceEndpoint(config.enableLoggingFeature);
+        return new CxfEndpointConfiguration().cxfBillConsultServiceEndpoint(config.enableLoggingFeature());
     }
 
     @Produces
     @ApplicationScoped
     @Named("cxfBillValidServiceEndpoint")
     CxfEndpoint produceCxfBillValidServiceEndpoint() {
-        return new CxfEndpointConfiguration().cxfBillValidServiceEndpoint(config.enableLoggingFeature);
+        return new CxfEndpointConfiguration().cxfBillValidServiceEndpoint(config.enableLoggingFeature());
     }
 
 }

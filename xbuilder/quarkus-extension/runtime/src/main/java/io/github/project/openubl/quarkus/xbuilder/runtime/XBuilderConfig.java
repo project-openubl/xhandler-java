@@ -1,24 +1,23 @@
 package io.github.project.openubl.quarkus.xbuilder.runtime;
 
-import io.quarkus.runtime.annotations.ConfigItem;
 import io.quarkus.runtime.annotations.ConfigPhase;
 import io.quarkus.runtime.annotations.ConfigRoot;
+import io.smallrye.config.ConfigMapping;
 
 import java.math.BigDecimal;
 import java.util.Optional;
 
-@ConfigRoot(name = "xbuilder", phase = ConfigPhase.RUN_TIME)
-public class XBuilderConfig {
+@ConfigRoot(phase = ConfigPhase.RUN_TIME)
+@ConfigMapping(prefix = "quarkus.xbuilder")
+public interface XBuilderConfig {
 
     /**
      * Default igvTasa
      */
-    @ConfigItem
-    public Optional<BigDecimal> igvTasa;
+    Optional<BigDecimal> igvTasa();
 
     /**
      * Default icbTasa
      */
-    @ConfigItem
-    public Optional<BigDecimal> icbTasa;
+    Optional<BigDecimal> icbTasa();
 }

@@ -9,7 +9,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Singular;
-import lombok.extern.jackson.Jacksonized;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -36,7 +35,6 @@ import java.util.List;
  * exterior),
  * RS 000133-2025/SUNAT (prórroga hasta 01-jul-2026).
  */
-@Jacksonized
 @Data
 @Builder
 @NoArgsConstructor

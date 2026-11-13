@@ -1,0 +1,17 @@
+name: Auto-merge Dependabot PRs
+
+# Approves Dependabot PRs and enables auto-merge; the merge happens only once the required
+# checks on main pass. See project-openubl/release-tools README.
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  auto-merge:
+    uses: project-openubl/release-tools/.github/workflows/auto-merge-dependabot.yaml@main
+    secrets: inherit

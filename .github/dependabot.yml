@@ -1,4 +1,9 @@
 version: 2
+
+# Dependabot PRs are auto-approved and auto-merged once CI passes
+# (.github/workflows/auto-merge-dependabot.yaml), so the cooldown keeps freshly published
+# (possibly compromised) releases out; security updates skip it.
+# Groups take minor/patch only, so a breaking major arrives as its own PR.
 updates:
 
   # Maintain dependencies for GitHub Actions
@@ -6,14 +11,26 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    cooldown:
+      default-days: 7
     commit-message:
-      prefix: "GitHub Actions"
+      prefix: "chore"
       include: "scope"
+    groups:
+      github-actions:
+        update-types: ["minor", "patch"]
+
   # Maintain dependencies for pom.xml
   - package-ecosystem: "maven"
     directory: "/"
     schedule:
       interval: "weekly"
+    cooldown:
+      default-days: 7
+      semver-major-days: 14
     commit-message:
-      prefix: "Maven pom.xml"
+      prefix: "chore"
       include: "scope"
+    groups:
+      maven:
+        update-types: ["minor", "patch"]

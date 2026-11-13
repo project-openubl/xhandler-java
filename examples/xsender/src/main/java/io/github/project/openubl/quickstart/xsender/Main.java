@@ -5,7 +5,7 @@ import io.github.project.openubl.xsender.company.CompanyCredentials;
 import io.github.project.openubl.xsender.company.CompanyURLs;
 import io.github.project.openubl.xsender.models.SunatResponse;
 
-import java.nio.file.Path;
+import java.io.InputStream;
 
 public class Main {
     public static void main(String[] args) throws Exception {
@@ -22,7 +22,10 @@ public class Main {
 
         XSender xsender = new XSender(companyURLs, credentials);
 
-        Path xml = Path.of(Main.class.getClassLoader().getResource("invoice.xml").toURI());
+        byte[] xml;
+        try (InputStream is = Main.class.getClassLoader().getResourceAsStream("invoice.xml")) {
+            xml = is.readAllBytes();
+        }
         SunatResponse response = xsender.send(xml);
 
         System.out.println("SUNAT status: " + response.getStatus());

@@ -1,5 +1,7 @@
 package io.github.project.openubl.quarkus.xsender.runtime;
 
+import io.github.project.openubl.xsender.company.CompanyCredentials;
+import io.github.project.openubl.xsender.company.CompanyURLs;
 import io.github.project.openubl.xsender.sunat.SunatClient;
 import io.quarkus.runtime.annotations.ConfigPhase;
 import io.quarkus.runtime.annotations.ConfigRoot;
@@ -58,5 +60,18 @@ public interface XSenderConfig {
          * API client secret, required for guías de remisión
          */
         Optional<String> clientSecret();
+
+        default CompanyURLs urls() {
+            return new CompanyURLs(invoiceUrl().orElse(null), perceptionRetentionUrl().orElse(null), despatchUrl().orElse(null));
+        }
+
+        default CompanyCredentials credentials() {
+            return CompanyCredentials.builder()
+                    .username(username())
+                    .password(password())
+                    .clientId(clientId().orElse(null))
+                    .clientSecret(clientSecret().orElse(null))
+                    .build();
+        }
     }
 }

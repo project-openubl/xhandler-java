@@ -25,6 +25,11 @@ import java.util.Optional;
  * xsender.company.client-id=...        (guías de remisión)
  * xsender.company.client-secret=...    (guías de remisión)
  * </pre>
+ * Without {@code xsender.company.username} and {@code password}, injecting an
+ * XSender fails with an {@link XSenderException} when the first bean using it is created.
+ * <p>
+ * To provide your own SunatClient or XSender (e.g. one per company), produce it
+ * as an {@code @Alternative @Priority(1)} bean so it takes precedence over these.
  */
 @ApplicationScoped
 public class XSenderProducer {
@@ -49,7 +54,8 @@ public class XSenderProducer {
         );
         CompanyCredentials credentials = CompanyCredentials.builder()
                 .username(username)
-                .password(optional(config, "password").orElse(null))
+                .password(optional(config, "password")
+                        .orElseThrow(() -> new XSenderException("xsender.company.password is required")))
                 .clientId(optional(config, "client-id").orElse(null))
                 .clientSecret(optional(config, "client-secret").orElse(null))
                 .build();

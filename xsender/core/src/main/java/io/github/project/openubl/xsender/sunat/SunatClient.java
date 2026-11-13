@@ -11,6 +11,7 @@ import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.util.Base64;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Calls SUNAT's services: the SOAP bill, consult and validation services, and
@@ -22,6 +23,7 @@ import java.util.List;
 public class SunatClient {
 
     public static final String SUNAT_SECURITY_API_URL = "https://api-seguridad.sunat.gob.pe";
+    private static final Duration RETRY_DELAY = Duration.ofSeconds(1);
 
     private final HttpClient httpClient;
     private final GreClient greClient;
@@ -45,8 +47,12 @@ public class SunatClient {
         this.greClient = new GreClient(httpClient, securityApiUrl);
     }
 
+    /**
+     * HTTP/1.1: SUNAT's front proxy often rejects HTTP/2 requests with a 401 page
+     */
     static HttpClient defaultHttpClient() {
         return HttpClient.newBuilder()
+                .version(HttpClient.Version.HTTP_1_1)
                 .connectTimeout(Duration.ofSeconds(30))
                 .build();
     }
@@ -124,6 +130,10 @@ public class SunatClient {
 
     /**
      * SUNAT answers SOAP faults with HTTP 500, so any status with a SOAP body is a response.
+     * <p>
+     * A body that is not SOAP comes from SUNAT's front proxy (e.g. a sporadic nginx
+     * "401 Authorization Required" page): the service never saw the request, so it
+     * is retried once, after a pause since those rejections come in bursts.
      */
     private SoapResponse callSoap(String url, String operation, String envelope) {
         HttpRequest request = Http.request(url)
@@ -132,7 +142,14 @@ public class SunatClient {
                 .POST(HttpRequest.BodyPublishers.ofString(envelope))
                 .build();
         HttpResponse<byte[]> response = Http.send(httpClient, request);
-        return SoapResponse.parse(response.body()).orElseThrow(() -> Http.unexpectedResponse(response));
+        Optional<SoapResponse> soapResponse = SoapResponse.parse(response.body());
+        if (soapResponse.isEmpty()) {
+            Http.pause(RETRY_DELAY);
+            response = Http.send(httpClient, request);
+            soapResponse = SoapResponse.parse(response.body());
+        }
+        HttpResponse<byte[]> lastResponse = response;
+        return soapResponse.orElseThrow(() -> Http.unexpectedResponse(lastResponse));
     }
 
     private static SunatResponse faultResponse(SoapResponse response) {

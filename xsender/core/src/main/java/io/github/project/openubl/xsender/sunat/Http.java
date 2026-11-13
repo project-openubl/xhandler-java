@@ -36,6 +36,15 @@ final class Http {
         }
     }
 
+    static void pause(Duration duration) {
+        try {
+            Thread.sleep(duration);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new XSenderException("Interrupted while waiting to retry a SUNAT call", e);
+        }
+    }
+
     static XSenderException unexpectedResponse(HttpResponse<byte[]> response) {
         String body = new String(response.body(), StandardCharsets.UTF_8);
         String excerpt = body.length() > 500 ? body.substring(0, 500) + "..." : body;

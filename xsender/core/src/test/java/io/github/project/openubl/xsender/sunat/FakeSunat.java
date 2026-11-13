@@ -70,8 +70,10 @@ public class FakeSunat implements AutoCloseable {
     }
 
     /** Answers the first request with the first response, and the following ones with the second */
-    public void respondJsonSequence(String path, int firstStatus, String firstJson, int thenStatus, String thenJson) {
-        respond(path, new Response(firstStatus, "application/json", firstJson), new Response(thenStatus, "application/json", thenJson));
+    public void respondSequence(String path,
+                                int firstStatus, String firstContentType, String firstBody,
+                                int thenStatus, String thenContentType, String thenBody) {
+        respond(path, new Response(firstStatus, firstContentType, firstBody), new Response(thenStatus, thenContentType, thenBody));
     }
 
     private void respond(String path, Response... sequence) {

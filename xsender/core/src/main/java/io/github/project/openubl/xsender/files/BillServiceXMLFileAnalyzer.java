@@ -7,12 +7,11 @@ import io.github.project.openubl.xsender.files.xml.XmlContent;
 import io.github.project.openubl.xsender.files.xml.XmlContentProvider;
 import io.github.project.openubl.xsender.sunat.BillServiceDestination;
 import io.github.project.openubl.xsender.sunat.catalog.Catalog1;
-import jodd.io.ZipBuilder;
-import org.apache.cxf.helpers.IOUtils;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,6 +20,8 @@ import java.nio.file.Path;
 import java.text.MessageFormat;
 import java.util.Optional;
 import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 public class BillServiceXMLFileAnalyzer implements BillServiceFileAnalyzer {
 
@@ -42,18 +43,11 @@ public class BillServiceXMLFileAnalyzer implements BillServiceFileAnalyzer {
     }
 
     public BillServiceXMLFileAnalyzer(InputStream is, CompanyURLs urLs) throws IOException, ParserConfigurationException, UnsupportedXMLFileException, SAXException {
-        this(IOUtils.readBytesFromStream(is), urLs);
+        this(is.readAllBytes(), urLs);
     }
 
     public BillServiceXMLFileAnalyzer(byte[] file, CompanyURLs urls) throws ParserConfigurationException, IOException, SAXException, UnsupportedXMLFileException {
         this.xmlContent = XmlContentProvider.getSunatDocument(new ByteArrayInputStream(file));
-
-        if (xmlContent.getDocumentType().equals(DocumentType.VOIDED_DOCUMENT)) {
-            String voidedLineDocumentTypeCode = xmlContent.getVoidedLineDocumentTypeCode();
-            Optional<Catalog1> catalog1Optional = Catalog1.valueOfCode(voidedLineDocumentTypeCode);
-            if (catalog1Optional.isPresent() && catalog1Optional.get().equals(Catalog1.BOLETA)) {
-            }
-        }
 
         String fileNameWithoutExtension = BillServiceXMLFileAnalyzer
                 .getFileNameWithoutExtension(xmlContent)
@@ -66,12 +60,7 @@ public class BillServiceXMLFileAnalyzer implements BillServiceFileAnalyzer {
                 .orElse(null);
 
         String zipFileName = fileNameWithoutExtension + ".zip";
-        byte[] zipFile = ZipBuilder
-                .createZipInMemory()
-                .add(file)
-                .path(fileNameWithoutExtension + ".xml")
-                .save()
-                .toBytes();
+        byte[] zipFile = zip(fileNameWithoutExtension + ".xml", file);
 
         this.zipFile = new ZipFile(zipFile, zipFileName);
         this.fileDestination = fileDestination;
@@ -96,6 +85,16 @@ public class BillServiceXMLFileAnalyzer implements BillServiceFileAnalyzer {
     @Override
     public XmlContent getXmlContent() {
         return xmlContent;
+    }
+
+    private static byte[] zip(String entryName, byte[] content) throws IOException {
+        ByteArrayOutputStream zip = new ByteArrayOutputStream();
+        try (ZipOutputStream zipOutputStream = new ZipOutputStream(zip)) {
+            zipOutputStream.putNextEntry(new ZipEntry(entryName));
+            zipOutputStream.write(content);
+            zipOutputStream.closeEntry();
+        }
+        return zip.toByteArray();
     }
 
     private static Optional<String> getFileNameWithoutExtension(XmlContent xmlContent) {

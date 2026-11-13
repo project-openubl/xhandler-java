@@ -111,6 +111,18 @@ class SunatClientSoapTest {
     }
 
     @Test
+    void nonSoapResponse_isRetriedOnce() {
+        sunat.respondSequence(PATH,
+                401, "text/html", "<html>401 Authorization Required</html>",
+                200, "text/xml", FakeSunat.resource("/sunat/bill_service_response_ok.xml"));
+
+        SunatResponse response = client.sendFile(destination(BillServiceDestination.SoapOperation.SEND_BILL), zipFile, credentials);
+
+        assertEquals(Status.ACEPTADO, response.getStatus());
+        assertEquals(2, sunat.requests(PATH).size());
+    }
+
+    @Test
     void xmlThatIsNotAnEnvelope_throws() {
         sunat.respondJson(PATH, 200, "<html><body>Mantenimiento</body></html>");
 

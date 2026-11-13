@@ -4,21 +4,15 @@ import io.github.project.openubl.xbuilder.signature.CertificateDetails;
 import io.github.project.openubl.xbuilder.signature.CertificateDetailsFactory;
 import io.github.project.openubl.xbuilder.signature.XMLSigner;
 import io.github.project.openubl.xbuilder.signature.XmlSignatureHelper;
-import io.github.project.openubl.xsender.Constants;
-import io.github.project.openubl.xsender.camel.StandaloneCamel;
-import io.github.project.openubl.xsender.camel.utils.CamelData;
-import io.github.project.openubl.xsender.camel.utils.CamelUtils;
+import io.github.project.openubl.xsender.XSender;
 import io.github.project.openubl.xsender.company.CompanyCredentials;
 import io.github.project.openubl.xsender.company.CompanyURLs;
 import io.github.project.openubl.xsender.files.BillServiceFileAnalyzer;
 import io.github.project.openubl.xsender.files.BillServiceXMLFileAnalyzer;
-import io.github.project.openubl.xsender.files.ZipFile;
 import io.github.project.openubl.xsender.files.xml.DocumentType;
 import io.github.project.openubl.xsender.files.xml.XmlContent;
 import io.github.project.openubl.xsender.models.Status;
 import io.github.project.openubl.xsender.models.SunatResponse;
-import io.github.project.openubl.xsender.sunat.BillServiceDestination;
-import org.apache.camel.CamelContext;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 import org.xmlunit.builder.DiffBuilder;
@@ -40,7 +34,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static io.github.project.openubl.xsender.camel.utils.CamelUtils.getBillServiceCamelData;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -67,6 +60,8 @@ public class XMLAssertUtils {
             .username("12345678959MODDATOS")
             .password("MODDATOS")
             .build();
+
+    private static final XSender XSENDER = new XSender(companyURLs, credentials);
 
     private static final String SIGN_REFERENCE_ID = "PROJECT-OPENUBL";
     private static final String KEYSTORE = "LLAMA-PE-CERTIFICADO-DEMO-10467793549.pfx";
@@ -156,28 +151,15 @@ public class XMLAssertUtils {
     private static void sendFileToSunat(Document document, String xmlWithoutSignature, String... allowedNotes) throws Exception {
         byte[] bytesFromDocument = XmlSignatureHelper.getBytesFromDocument(document);
 
-        CamelContext camelContext = StandaloneCamel.getInstance().getMainCamel().getCamelContext();
-
         BillServiceFileAnalyzer fileAnalyzer = new BillServiceXMLFileAnalyzer(bytesFromDocument, companyURLs);
-        ZipFile zipFile = fileAnalyzer.getZipFile();
-        BillServiceDestination fileDestination = fileAnalyzer.getSendFileDestination();
-        BillServiceDestination ticketDestination = fileAnalyzer.getVerifyTicketDestination();
 
         // TODO mock a Sunat server and test REST sends
-        if (fileDestination.getRestOperation() != null) {
+        if (fileAnalyzer.getSendFileDestination().getRestOperation() != null) {
             System.out.println("WARNING: Skipping REST send to SUNAT");
             return;
         }
 
-        CamelData camelData = getBillServiceCamelData(zipFile, fileDestination, credentials);
-        SunatResponse sendFileSunatResponse = camelContext
-                .createProducerTemplate()
-                .requestBodyAndHeaders(
-                        Constants.XSENDER_BILL_SERVICE_URI,
-                        camelData.getBody(),
-                        camelData.getHeaders(),
-                        SunatResponse.class
-                );
+        SunatResponse sendFileSunatResponse = XSENDER.send(bytesFromDocument);
 
         if (sendFileSunatResponse.getMetadata() != null && sendFileSunatResponse.getMetadata().getNotes() != null) {
             List<String> allowedNotesList = Arrays.asList(allowedNotes);
@@ -194,7 +176,6 @@ public class XMLAssertUtils {
         }
 
         XmlContent xmlContent = fileAnalyzer.getXmlContent();
-        // Check ticket
         if (
                 !xmlContent.getDocumentType().equals(DocumentType.VOIDED_DOCUMENT) &&
                         !xmlContent.getDocumentType().equals(DocumentType.SUMMARY_DOCUMENT)
@@ -205,33 +186,8 @@ public class XMLAssertUtils {
                     xmlWithoutSignature + " \n sunat [codigo=" + sendFileSunatResponse.getMetadata().getResponseCode() + "], [descripcion=" + sendFileSunatResponse.getMetadata().getDescription() + "]"
             );
         } else {
+            // Verifying the ticket is not tested: getStatus does not work in SUNAT BETA
             assertNotNull(sendFileSunatResponse.getSunat().getTicket());
-
-            CamelData camelTicketData = CamelUtils.getBillServiceCamelData(
-                    sendFileSunatResponse.getSunat().getTicket(),
-                    ticketDestination,
-                    credentials
-            );
-
-            // TODO ticket get status are not working in SUNAT BETA so stopping it until it is supporeted
-//            SunatResponse verifyTicketSunatResponse = camelContext
-//                    .createProducerTemplate()
-//                    .requestBodyAndHeaders(
-//                            Constants.XSENDER_BILL_SERVICE_URI,
-//                            camelTicketData.getBody(),
-//                            camelTicketData.getHeaders(),
-//                            SunatResponse.class
-//                    );
-//
-//            assertEquals(
-//                    Status.ACEPTADO,
-//                    verifyTicketSunatResponse.getStatus(),
-//                    xmlWithoutSignature + " sunat [status=" + verifyTicketSunatResponse.getStatus() + "], [descripcion=" + verifyTicketSunatResponse.getMetadata().getDescription() + "]"
-//            );
-//            assertNotNull(
-//                    verifyTicketSunatResponse.getSunat().getCdr(),
-//                    xmlWithoutSignature + " sunat [codigo=" + verifyTicketSunatResponse.getMetadata().getResponseCode() + "], [descripcion=" + verifyTicketSunatResponse.getMetadata().getDescription() + "]"
-//            );
         }
     }
 }

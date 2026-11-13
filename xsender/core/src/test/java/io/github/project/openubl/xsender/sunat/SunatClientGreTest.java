@@ -113,10 +113,10 @@ class SunatClientGreTest {
         BillServiceDestination destination = destination(BillServiceDestination.RestOperation.SEND_DOCUMENT);
         client.sendFile(destination, zipFile, credentials);
 
-        sunat.respondJsonSequence(SEND_PATH,
-                401, """
+        sunat.respondSequence(SEND_PATH,
+                401, "application/json", """
                         {"cod": "401", "msg": "No autorizado"}""",
-                200, """
+                200, "application/json", """
                         {"numTicket": "my-second-ticket"}""");
         SunatResponse response = client.sendFile(destination, zipFile, credentials);
 

@@ -48,6 +48,9 @@ final class SunatResponses {
      */
     static SunatResponse status(String code, String description, List<String> notes) {
         Integer responseCode = parseCode(code);
+        if (description == null && Integer.valueOf(98).equals(responseCode)) {
+            description = "En proceso";
+        }
         return SunatResponse.builder()
                 .status(responseCode != null ? Status.fromCode(responseCode) : Status.UNKNOWN)
                 .metadata(new Metadata(responseCode, description, notes))

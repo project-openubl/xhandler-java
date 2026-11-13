@@ -1,10 +1,10 @@
 package io.github.project.openubl.xsender.sunat;
 
+import io.github.project.openubl.xsender.XSenderException;
 import io.github.project.openubl.xsender.company.CompanyCredentials;
 import io.github.project.openubl.xsender.files.ZipFile;
 import io.github.project.openubl.xsender.models.SunatResponse;
 
-import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -38,7 +38,7 @@ public class SunatClient {
         this.greClient = new GreClient(httpClient, securityApiUrl);
     }
 
-    public static HttpClient defaultHttpClient() {
+    static HttpClient defaultHttpClient() {
         return HttpClient.newBuilder()
                 .connectTimeout(Duration.ofSeconds(30))
                 .build();
@@ -51,7 +51,7 @@ public class SunatClient {
      */
     public SunatResponse sendFile(BillServiceDestination destination, ZipFile zipFile, CompanyCredentials credentials) {
         if (destination.getRestOperation() != null) {
-            return greClient.sendDocument(destination.getUrl(), zipFile, credentials);
+            return greClient.sendDocument(destination, zipFile, credentials);
         }
 
         String operation = destination.getSoapOperation().getWebMethod();
@@ -65,7 +65,7 @@ public class SunatClient {
         return response.get("applicationResponse")
                 .map(cdr -> SunatResponses.cdr(Base64.getMimeDecoder().decode(cdr)))
                 .or(() -> response.get("ticket").map(SunatResponses::ticket))
-                .orElseGet(() -> SunatResponses.status(null, "SUNAT returned neither a CDR nor a ticket", List.of()));
+                .orElseThrow(() -> new XSenderException("SUNAT answered " + operation + " with neither a CDR nor a ticket"));
     }
 
     /**
@@ -75,7 +75,7 @@ public class SunatClient {
      */
     public SunatResponse verifyTicket(BillServiceDestination destination, String ticket, CompanyCredentials credentials) {
         if (destination.getRestOperation() != null) {
-            return greClient.verifyTicket(destination.getUrl(), ticket, credentials);
+            return greClient.verifyTicket(destination, ticket, credentials);
         }
 
         SoapResponse response = callSoap(destination.getUrl(), "getStatus", SoapEnvelopes.getStatus(credentials, ticket));
@@ -84,11 +84,9 @@ public class SunatClient {
         }
         return response.get("content")
                 .map(cdr -> SunatResponses.cdr(Base64.getMimeDecoder().decode(cdr)))
-                .orElseGet(() -> {
-                    String statusCode = response.get("statusCode").orElse(null);
-                    String description = "98".equals(statusCode) ? "En proceso" : response.get("statusMessage").orElse(null);
-                    return SunatResponses.status(statusCode, description, List.of());
-                });
+                .orElseGet(() -> SunatResponses.status(
+                        response.get("statusCode").orElse(null), response.get("statusMessage").orElse(null), List.of()
+                ));
     }
 
     /**
@@ -121,7 +119,7 @@ public class SunatClient {
      * SUNAT answers SOAP faults with HTTP 500, so any status with a SOAP body is a response.
      */
     private SoapResponse callSoap(String url, String operation, String envelope) {
-        HttpRequest request = Http.request(URI.create(url))
+        HttpRequest request = Http.request(url)
                 .header("Content-Type", "text/xml; charset=utf-8")
                 .header("SOAPAction", "urn:" + operation)
                 .POST(HttpRequest.BodyPublishers.ofString(envelope))

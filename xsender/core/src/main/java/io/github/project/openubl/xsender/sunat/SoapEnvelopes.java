@@ -90,7 +90,7 @@ final class SoapEnvelopes {
                 </soap:Envelope>""".formatted(escape(credentials.getUsername()), escape(credentials.getPassword()), body);
     }
 
-    static String escape(String text) {
+    private static String escape(String text) {
         if (text == null) {
             return "";
         }

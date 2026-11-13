@@ -81,20 +81,68 @@ class SunatClientGreTest {
     }
 
     @Test
-    void accessToken_isReusedUntilSunatRejectsIt() {
+    void accessToken_isReused() {
         sunat.respondJson(SEND_PATH, 200, """
                 {"numTicket": "my-ticket"}""");
         BillServiceDestination destination = destination(BillServiceDestination.RestOperation.SEND_DOCUMENT);
 
         client.sendFile(destination, zipFile, credentials);
         client.sendFile(destination, zipFile, credentials);
-        assertEquals(1, sunat.requests(TOKEN_PATH).size());
 
-        sunat.respondJson(SEND_PATH, 401, """
-                {"cod": "401", "msg": "No autorizado"}""");
+        assertEquals(1, sunat.requests(TOKEN_PATH).size());
+    }
+
+    @Test
+    void accessToken_isRequestedAgainOnceExpired() {
+        sunat.respondJson(TOKEN_PATH, 200, """
+                {"access_token": "my-token", "expires_in": 60}""");
+        sunat.respondJson(SEND_PATH, 200, """
+                {"numTicket": "my-ticket"}""");
+        BillServiceDestination destination = destination(BillServiceDestination.RestOperation.SEND_DOCUMENT);
+
         client.sendFile(destination, zipFile, credentials);
         client.sendFile(destination, zipFile, credentials);
+
         assertEquals(2, sunat.requests(TOKEN_PATH).size());
+    }
+
+    @Test
+    void rejectedAccessToken_isReplacedAndTheRequestRetried() {
+        sunat.respondJson(SEND_PATH, 200, """
+                {"numTicket": "my-ticket"}""");
+        BillServiceDestination destination = destination(BillServiceDestination.RestOperation.SEND_DOCUMENT);
+        client.sendFile(destination, zipFile, credentials);
+
+        sunat.respondJsonSequence(SEND_PATH,
+                401, """
+                        {"cod": "401", "msg": "No autorizado"}""",
+                200, """
+                        {"numTicket": "my-second-ticket"}""");
+        SunatResponse response = client.sendFile(destination, zipFile, credentials);
+
+        assertEquals("my-second-ticket", response.getSunat().getTicket());
+        assertEquals(2, sunat.requests(TOKEN_PATH).size());
+    }
+
+    @Test
+    void tokenInTheCredentials_isUsedAsIs() {
+        sunat.respondJson(SEND_PATH, 200, """
+                {"numTicket": "my-ticket"}""");
+        CompanyCredentials withToken = CompanyCredentials.builder().token("given-token").build();
+
+        client.sendFile(destination(BillServiceDestination.RestOperation.SEND_DOCUMENT), zipFile, withToken);
+
+        assertEquals("Bearer given-token", sunat.lastRequest(SEND_PATH).header("Authorization"));
+        assertTrue(sunat.requests(TOKEN_PATH).isEmpty());
+    }
+
+    @Test
+    void serverError_throws() {
+        sunat.respondJson(SEND_PATH, 503, """
+                {"cod": "503", "msg": "Service Unavailable"}""");
+
+        assertThrows(XSenderException.class,
+                () -> client.sendFile(destination(BillServiceDestination.RestOperation.SEND_DOCUMENT), zipFile, credentials));
     }
 
     @Test

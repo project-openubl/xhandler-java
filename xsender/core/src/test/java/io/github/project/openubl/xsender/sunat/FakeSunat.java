@@ -7,9 +7,11 @@ import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
+import java.util.Deque;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -31,12 +33,12 @@ public class FakeSunat implements AutoCloseable {
     }
 
     private final HttpServer server;
-    private final Map<String, Response> responses = new ConcurrentHashMap<>();
+    private final Map<String, Deque<Response>> responses = new ConcurrentHashMap<>();
     private final List<Request> requests = new CopyOnWriteArrayList<>();
 
     public FakeSunat() {
         try {
-            server = HttpServer.create(new InetSocketAddress("localhost", 0), 0);
+            server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
@@ -45,7 +47,7 @@ public class FakeSunat implements AutoCloseable {
             String body = new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
             requests.add(new Request(exchange.getRequestMethod(), path, exchange.getRequestHeaders(), body));
 
-            Response response = responses.getOrDefault(path, new Response(404, "text/html", "<html>Not found</html>"));
+            Response response = nextResponse(path);
             byte[] responseBody = response.body().getBytes(StandardCharsets.UTF_8);
             exchange.getResponseHeaders().set("Content-Type", response.contentType());
             exchange.sendResponseHeaders(response.status(), responseBody.length);
@@ -56,15 +58,33 @@ public class FakeSunat implements AutoCloseable {
     }
 
     public String url(String path) {
-        return "http://localhost:" + server.getAddress().getPort() + path;
+        return "http://127.0.0.1:" + server.getAddress().getPort() + path;
     }
 
     public void respondXml(String path, int status, String resource) {
-        responses.put(path, new Response(status, "text/xml", resource(resource)));
+        respond(path, new Response(status, "text/xml", resource(resource)));
     }
 
     public void respondJson(String path, int status, String json) {
-        responses.put(path, new Response(status, "application/json", json));
+        respond(path, new Response(status, "application/json", json));
+    }
+
+    /** Answers the first request with the first response, and the following ones with the second */
+    public void respondJsonSequence(String path, int firstStatus, String firstJson, int thenStatus, String thenJson) {
+        respond(path, new Response(firstStatus, "application/json", firstJson), new Response(thenStatus, "application/json", thenJson));
+    }
+
+    private void respond(String path, Response... sequence) {
+        responses.put(path, new ConcurrentLinkedDeque<>(List.of(sequence)));
+    }
+
+    /** The last response of a sequence answers every remaining request */
+    private Response nextResponse(String path) {
+        Deque<Response> sequence = responses.get(path);
+        if (sequence == null) {
+            return new Response(404, "text/html", "<html>Not found</html>");
+        }
+        return sequence.size() > 1 ? sequence.poll() : sequence.peek();
     }
 
     public List<Request> requests(String path) {

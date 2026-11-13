@@ -7,7 +7,8 @@ package io.github.project.openubl.xsender.sunat;
  *
  * @param statusCode    SUNAT's code, or the error code of a SOAP fault
  * @param statusMessage SUNAT's message, or the fault message
- * @param cdr           the zipped CDR when SUNAT returns one, otherwise null
+ * @param cdr           the zipped CDR when SUNAT returns one, otherwise null. Being an array,
+ *                      it is not part of equals/hashCode.
  */
 public record ConsultResponse(String statusCode, String statusMessage, byte[] cdr) {
 }

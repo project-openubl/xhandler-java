@@ -16,6 +16,10 @@ import java.util.Optional;
  */
 record SoapResponse(Map<String, String> values) {
 
+    SoapResponse {
+        values = Map.copyOf(values);
+    }
+
     private static final String SOAP_ENVELOPE_NS = "http://schemas.xmlsoap.org/soap/envelope/";
     private static final XMLInputFactory XML_INPUT_FACTORY = createInputFactory();
 

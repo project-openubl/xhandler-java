@@ -111,6 +111,22 @@ class SunatClientSoapTest {
     }
 
     @Test
+    void xmlThatIsNotAnEnvelope_throws() {
+        sunat.respondJson(PATH, 200, "<html><body>Mantenimiento</body></html>");
+
+        assertThrows(XSenderException.class,
+                () -> client.sendFile(destination(BillServiceDestination.SoapOperation.SEND_BILL), zipFile, credentials));
+    }
+
+    @Test
+    void envelopeWithoutCdrNorTicket_throws() {
+        sunat.respondXml(PATH, 200, "/sunat/get_status_response_in_progress.xml");
+
+        assertThrows(XSenderException.class,
+                () -> client.sendFile(destination(BillServiceDestination.SoapOperation.SEND_BILL), zipFile, credentials));
+    }
+
+    @Test
     void unreachableSunat_throws() {
         BillServiceDestination destination = BillServiceDestination.builder()
                 .url("http://localhost:1/billService")
@@ -173,6 +189,21 @@ class SunatClientSoapTest {
     }
 
     @Test
+    void consultDocument_getStatus() {
+        sunat.respondXml("/consult", 200, "/sunat/valida_cdp_response.xml");
+        BillConsultServiceDestination destination = BillConsultServiceDestination.builder()
+                .url(sunat.url("/consult"))
+                .operation(BillConsultServiceDestination.Operation.GET_STATUS)
+                .build();
+
+        ConsultResponse response = client.consultDocument(destination, new DocumentQuery("12345678959", "01", "F001", 102), credentials);
+
+        assertEquals("0", response.statusCode());
+        assertEquals("urn:getStatus", sunat.lastRequest("/consult").header("SOAPAction"));
+        assertTrue(sunat.lastRequest("/consult").body().contains("<ns2:getStatus xmlns:ns2=\"http://service.sunat.gob.pe\">"));
+    }
+
+    @Test
     void validateCdp() {
         sunat.respondXml("/valid", 200, "/sunat/valida_cdp_response.xml");
         BillValidServiceDestination destination = new BillValidServiceDestination(sunat.url("/valid"));
@@ -197,5 +228,18 @@ class SunatClientSoapTest {
 
         assertEquals("0111", response.statusCode());
         assertTrue(response.statusMessage().startsWith("No tiene el perfil"));
+    }
+
+    @Test
+    void validateFile_postsTheFile() {
+        sunat.respondXml("/valid", 200, "/sunat/valida_cdp_response.xml");
+        BillValidServiceDestination destination = new BillValidServiceDestination(sunat.url("/valid"));
+
+        client.validateFile(destination, "F001-1.xml", "abc".getBytes(StandardCharsets.UTF_8), credentials);
+
+        FakeSunat.Request request = sunat.lastRequest("/valid");
+        assertEquals("urn:verificaCPEarchivo", request.header("SOAPAction"));
+        assertTrue(request.body().contains("<nombre>F001-1.xml</nombre>"));
+        assertTrue(request.body().contains("<archivo>YWJj</archivo>"));
     }
 }

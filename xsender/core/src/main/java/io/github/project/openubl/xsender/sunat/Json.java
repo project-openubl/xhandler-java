@@ -10,6 +10,9 @@ import java.util.Optional;
  * Just enough JSON for SUNAT's REST API. Objects become {@code Map<String, Object>},
  * arrays {@code List<Object>}, numbers and strings {@code String}, booleans
  * {@code Boolean} and null {@code null}.
+ * <p>
+ * Lenient by design (e.g. it doesn't validate number formats): it only reads
+ * responses from SUNAT, not arbitrary input.
  */
 final class Json {
 

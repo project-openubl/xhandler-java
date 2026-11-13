@@ -5,7 +5,6 @@ import io.github.project.openubl.xsender.company.CompanyCredentials;
 import io.github.project.openubl.xsender.files.ZipFile;
 import io.github.project.openubl.xsender.models.SunatResponse;
 
-import java.net.URI;
 import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -16,10 +15,12 @@ import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
 import java.util.Base64;
 import java.util.HexFormat;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -46,101 +47,129 @@ final class GreClient {
     }
 
     /** POST {url}/comprobantes/{name}; SUNAT answers with a ticket */
-    SunatResponse sendDocument(String url, ZipFile zipFile, CompanyCredentials credentials) {
+    SunatResponse sendDocument(BillServiceDestination destination, ZipFile zipFile, CompanyCredentials credentials) {
         String name = zipFile.getFilename().replaceFirst("\\.zip$", "");
         String payload = "{\"archivo\":{\"nomArchivo\":%s,\"arcGreZip\":%s,\"hashZip\":%s}}".formatted(
                 Json.quote(zipFile.getFilename()),
                 Json.quote(Base64.getEncoder().encodeToString(zipFile.getFile())),
                 Json.quote(sha256Hex(zipFile.getFile()))
         );
+        String url = destination.getUrl() + destination.getRestOperation().getPath() + "/" + pathSegment(name);
 
-        HttpResponse<byte[]> response = sendWithToken(credentials, Http.request(URI.create(url + "/comprobantes/" + name))
+        HttpResponse<byte[]> response = sendWithToken(credentials, token -> Http.request(url)
+                .header("Authorization", "Bearer " + token)
                 .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(payload)));
+                .POST(HttpRequest.BodyPublishers.ofString(payload))
+                .build());
 
         Map<String, Object> json = parseJson(response);
         return text(json.get("numTicket"))
                 .map(SunatResponses::ticket)
-                .or(() -> restError(json))
+                .or(() -> restError(response, json))
                 .orElseThrow(() -> Http.unexpectedResponse(response));
     }
 
     /** GET {url}/comprobantes/envios/{ticket} */
-    SunatResponse verifyTicket(String url, String ticket, CompanyCredentials credentials) {
-        HttpResponse<byte[]> response = sendWithToken(credentials, Http.request(URI.create(url + "/comprobantes/envios/" + ticket))
-                .GET());
+    SunatResponse verifyTicket(BillServiceDestination destination, String ticket, CompanyCredentials credentials) {
+        String url = destination.getUrl() + destination.getRestOperation().getPath() + "/" + pathSegment(ticket);
+
+        HttpResponse<byte[]> response = sendWithToken(credentials, token -> Http.request(url)
+                .header("Authorization", "Bearer " + token)
+                .GET()
+                .build());
 
         Map<String, Object> json = parseJson(response);
         Optional<String> statusCode = text(json.get("codRespuesta"));
         if (statusCode.isEmpty()) {
-            return restError(json).orElseThrow(() -> Http.unexpectedResponse(response));
+            return restError(response, json).orElseThrow(() -> Http.unexpectedResponse(response));
         }
 
         Optional<String> cdr = text(json.get("arcCdr"));
         if (cdr.isPresent()) {
-            return SunatResponses.cdr(Base64.getDecoder().decode(cdr.get()));
+            return SunatResponses.cdr(Base64.getMimeDecoder().decode(cdr.get()));
         }
-        if (json.get("error") instanceof Map<?, ?> error && text(error.get("numError")).isPresent()) {
-            return SunatResponses.status(text(error.get("numError")).get(), text(error.get("desError")).orElse(null), List.of());
+        if (json.get("error") instanceof Map<?, ?> error) {
+            Optional<SunatResponse> rejection = text(error.get("numError"))
+                    .map(code -> SunatResponses.status(code, text(error.get("desError")).orElse(null), List.of()));
+            if (rejection.isPresent()) {
+                return rejection.get();
+            }
         }
         return SunatResponses.status(statusCode.get(), null, List.of());
     }
 
-    private HttpResponse<byte[]> sendWithToken(CompanyCredentials credentials, HttpRequest.Builder request) {
-        HttpResponse<byte[]> response = Http.send(httpClient, request
-                .header("Authorization", "Bearer " + accessToken(credentials))
-                .build());
-        if (response.statusCode() == 401) {
-            // SUNAT may revoke a token before it expires; don't keep reusing it
-            tokens.remove(tokenKey(credentials));
+    /**
+     * A 401 means SUNAT revoked the token before it expired and did not process
+     * the request, so it is retried once with a new token.
+     */
+    private HttpResponse<byte[]> sendWithToken(CompanyCredentials credentials, Function<String, HttpRequest> request) {
+        String token = accessToken(credentials);
+        HttpResponse<byte[]> response = Http.send(httpClient, request.apply(token));
+        if (response.statusCode() == 401 && credentials.getToken() == null) {
+            forgetToken(credentials, token);
+            response = Http.send(httpClient, request.apply(accessToken(credentials)));
         }
         return response;
     }
 
+    /**
+     * The token given in the credentials, if any, or one requested with the
+     * SOL user and the API client id/secret and reused until it is about to expire.
+     */
     private String accessToken(CompanyCredentials credentials) {
-        if (credentials.getClientId() == null || credentials.getClientSecret() == null) {
-            throw new XSenderException("clientId and clientSecret are required to send guías de remisión");
+        if (credentials.getToken() != null) {
+            return credentials.getToken();
+        }
+        if (credentials.getClientId() == null || credentials.getClientSecret() == null
+                || credentials.getUsername() == null || credentials.getPassword() == null) {
+            throw new XSenderException("username, password, clientId and clientSecret are required to send guías de remisión");
         }
 
-        String key = tokenKey(credentials);
-        AccessToken cached = tokens.get(key);
+        AccessToken cached = tokens.get(tokenKey(credentials));
         if (cached != null && Instant.now().isBefore(cached.reuseUntil())) {
             return cached.value();
         }
 
         AccessToken token = requestAccessToken(credentials);
-        tokens.put(key, token);
+        tokens.put(tokenKey(credentials), token);
         return token.value();
     }
 
+    /** Only if no other thread replaced it with a new one meanwhile */
+    private void forgetToken(CompanyCredentials credentials, String token) {
+        tokens.computeIfPresent(tokenKey(credentials), (key, cached) -> cached.value().equals(token) ? null : cached);
+    }
+
     private AccessToken requestAccessToken(CompanyCredentials credentials) {
-        String form = formEncode(Map.of(
-                "grant_type", "password",
-                "scope", TOKEN_SCOPE,
-                "client_id", credentials.getClientId(),
-                "client_secret", credentials.getClientSecret(),
-                "username", credentials.getUsername(),
-                "password", credentials.getPassword()
-        ));
-        URI uri = URI.create(securityApiUrl + "/v1/clientessol/" + credentials.getClientId() + "/oauth2/token/");
-        HttpResponse<byte[]> response = Http.send(httpClient, Http.request(uri)
+        Map<String, String> form = new LinkedHashMap<>();
+        form.put("grant_type", "password");
+        form.put("scope", TOKEN_SCOPE);
+        form.put("client_id", credentials.getClientId());
+        form.put("client_secret", credentials.getClientSecret());
+        form.put("username", credentials.getUsername());
+        form.put("password", credentials.getPassword());
+
+        String url = securityApiUrl + "/v1/clientessol/" + pathSegment(credentials.getClientId()) + "/oauth2/token/";
+        HttpResponse<byte[]> response = Http.send(httpClient, Http.request(url)
                 .header("Content-Type", "application/x-www-form-urlencoded")
-                .POST(HttpRequest.BodyPublishers.ofString(form))
+                .POST(HttpRequest.BodyPublishers.ofString(formEncode(form)))
                 .build());
 
         Map<String, Object> json = parseJson(response);
         String token = text(json.get("access_token")).orElseThrow(() -> Http.unexpectedResponse(response));
-        long expiresIn = text(json.get("expires_in")).map(Long::parseLong).orElse(DEFAULT_TOKEN_LIFETIME_SECONDS);
-        return new AccessToken(token, Instant.now().plusSeconds(expiresIn - TOKEN_EXPIRY_MARGIN_SECONDS));
+        long expiresIn = text(json.get("expires_in")).map(GreClient::seconds).orElse(DEFAULT_TOKEN_LIFETIME_SECONDS);
+        return new AccessToken(token, Instant.now().plusSeconds(Math.max(0, expiresIn - TOKEN_EXPIRY_MARGIN_SECONDS)));
     }
 
     /**
-     * SUNAT's REST error body: {@code {cod|status, msg|message, errors: [{cod, msg}]}}.
+     * SUNAT's REST error body for requests it refuses (4xx):
+     * {@code {cod|status, msg|message, errors: [{cod, msg}]}}.
      * The detailed errors become the notes, as "cod - msg".
+     * A server error (5xx) is not an answer about the document, so it is not mapped.
      */
-    private static Optional<SunatResponse> restError(Map<String, Object> json) {
+    private static Optional<SunatResponse> restError(HttpResponse<byte[]> response, Map<String, Object> json) {
         Optional<String> code = text(json.get("cod")).or(() -> text(json.get("status")));
-        if (code.isEmpty()) {
+        if (response.statusCode() >= 500 || code.isEmpty()) {
             return Optional.empty();
         }
 
@@ -160,13 +189,26 @@ final class GreClient {
                 .orElseThrow(() -> Http.unexpectedResponse(response));
     }
 
-    /** A non-empty string or number */
+    /** A non-empty string; {@link Json} also returns numbers as strings */
     private static Optional<String> text(Object value) {
         return value instanceof String string && !string.isEmpty() ? Optional.of(string) : Optional.empty();
     }
 
+    /** "3600" or "3600.0" */
+    private static long seconds(String value) {
+        try {
+            return (long) Double.parseDouble(value);
+        } catch (NumberFormatException e) {
+            return DEFAULT_TOKEN_LIFETIME_SECONDS;
+        }
+    }
+
     private static String tokenKey(CompanyCredentials credentials) {
         return credentials.getClientId() + ":" + credentials.getUsername();
+    }
+
+    private static String pathSegment(String value) {
+        return URLEncoder.encode(value, StandardCharsets.UTF_8).replace("+", "%20");
     }
 
     private static String formEncode(Map<String, String> fields) {

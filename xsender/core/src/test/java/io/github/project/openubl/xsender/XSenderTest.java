@@ -10,6 +10,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 import java.net.URISyntaxException;
+import java.net.http.HttpClient;
 import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -28,7 +29,7 @@ class XSenderTest {
             .username("12345678959MODDATOS")
             .password("MODDATOS")
             .build();
-    private final XSender xsender = new XSender(urls, credentials, new SunatClient(SunatClient.defaultHttpClient(), sunat.url("")));
+    private final XSender xsender = new XSender(urls, credentials, new SunatClient(HttpClient.newHttpClient(), sunat.url("")));
 
     @AfterEach
     void stopSunat() {

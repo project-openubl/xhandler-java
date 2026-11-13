@@ -18,7 +18,8 @@ import java.nio.file.Path;
  *
  * <pre>{@code
  * XSender xsender = new XSender(urls, credentials);
- * SunatResponse response = xsender.send(Path.of("F001-1.xml"));
+ * Path xml = Path.of("RA-20200328-1.xml");
+ * SunatResponse response = xsender.send(xml);
  * if (response.isTicket()) {
  *     response = xsender.verifyTicket(xml, response.getSunat().getTicket());
  * }

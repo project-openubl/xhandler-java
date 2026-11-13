@@ -25,7 +25,6 @@ class SunatBetaTest {
             CompanyURLs.builder()
                     .invoice("https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService")
                     .perceptionRetention("https://e-beta.sunat.gob.pe/ol-ti-itemision-otroscpe-gem-beta/billService")
-                    .despatch("https://api-cpe.sunat.gob.pe/v1/contribuyente/gem")
                     .build(),
             CompanyCredentials.builder()
                     .username("12345678959MODDATOS")
@@ -48,6 +47,13 @@ class SunatBetaTest {
 
         assertEquals(Status.RECHAZADO, response.getStatus());
         assertEquals(2335, response.getMetadata().getResponseCode());
+    }
+
+    @Test
+    void retention_isAccepted() throws IOException {
+        SunatResponse response = xsender.send(xml("20494637074-20-R001-00000001.xml"));
+
+        assertEquals(Status.ACEPTADO, response.getStatus());
     }
 
     @Test

@@ -11,7 +11,6 @@ import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.util.Base64;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Calls SUNAT's services: the SOAP bill, consult and validation services, and
@@ -23,7 +22,7 @@ import java.util.Optional;
 public class SunatClient {
 
     public static final String SUNAT_SECURITY_API_URL = "https://api-seguridad.sunat.gob.pe";
-    private static final Duration RETRY_DELAY = Duration.ofSeconds(1);
+    private static final int RATE_LIMIT_RETRIES = 2;
 
     private final HttpClient httpClient;
     private final GreClient greClient;
@@ -40,6 +39,7 @@ public class SunatClient {
     }
 
     /**
+     * @param httpClient     prefer {@link HttpClient.Version#HTTP_1_1}: SUNAT's front proxy often rejects HTTP/2 requests
      * @param securityApiUrl where the guías de remisión access tokens are requested
      */
     public SunatClient(HttpClient httpClient, String securityApiUrl) {
@@ -131,9 +131,8 @@ public class SunatClient {
     /**
      * SUNAT answers SOAP faults with HTTP 500, so any status with a SOAP body is a response.
      * <p>
-     * A body that is not SOAP comes from SUNAT's front proxy (e.g. a sporadic nginx
-     * "401 Authorization Required" page): the service never saw the request, so it
-     * is retried once, after a pause since those rejections come in bursts.
+     * SUNAT's front proxy rate-limits with a non-SOAP "401 Authorization Required" page.
+     * The service never saw those requests, so they are retried after a growing pause.
      */
     private SoapResponse callSoap(String url, String operation, String envelope) {
         HttpRequest request = Http.request(url)
@@ -142,14 +141,16 @@ public class SunatClient {
                 .POST(HttpRequest.BodyPublishers.ofString(envelope))
                 .build();
         HttpResponse<byte[]> response = Http.send(httpClient, request);
-        Optional<SoapResponse> soapResponse = SoapResponse.parse(response.body());
-        if (soapResponse.isEmpty()) {
-            Http.pause(RETRY_DELAY);
+        for (int retry = 1; retry <= RATE_LIMIT_RETRIES && isRateLimited(response); retry++) {
+            Http.pause(Duration.ofSeconds(retry));
             response = Http.send(httpClient, request);
-            soapResponse = SoapResponse.parse(response.body());
         }
         HttpResponse<byte[]> lastResponse = response;
-        return soapResponse.orElseThrow(() -> Http.unexpectedResponse(lastResponse));
+        return SoapResponse.parse(lastResponse.body()).orElseThrow(() -> Http.unexpectedResponse(lastResponse));
+    }
+
+    private static boolean isRateLimited(HttpResponse<byte[]> response) {
+        return response.statusCode() == 401 && SoapResponse.parse(response.body()).isEmpty();
     }
 
     private static SunatResponse faultResponse(SoapResponse response) {

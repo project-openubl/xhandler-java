@@ -114,10 +114,10 @@ class SunatClientGreTest {
         client.sendFile(destination, zipFile, credentials);
 
         sunat.respondSequence(SEND_PATH,
-                401, "application/json", """
-                        {"cod": "401", "msg": "No autorizado"}""",
-                200, "application/json", """
-                        {"numTicket": "my-second-ticket"}""");
+                new FakeSunat.Response(401, "application/json", """
+                        {"cod": "401", "msg": "No autorizado"}"""),
+                new FakeSunat.Response(200, "application/json", """
+                        {"numTicket": "my-second-ticket"}"""));
         SunatResponse response = client.sendFile(destination, zipFile, credentials);
 
         assertEquals("my-second-ticket", response.getSunat().getTicket());

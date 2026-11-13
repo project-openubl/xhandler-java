@@ -108,18 +108,28 @@ class SunatClientSoapTest {
                 () -> client.sendFile(destination(BillServiceDestination.SoapOperation.SEND_BILL), zipFile, credentials));
 
         assertTrue(exception.getMessage().contains("HTTP 404"));
+        assertEquals(1, sunat.requests(PATH).size(), "only proxy 401s are retried");
     }
 
     @Test
     void nonSoapResponse_isRetriedOnce() {
         sunat.respondSequence(PATH,
-                401, "text/html", "<html>401 Authorization Required</html>",
-                200, "text/xml", FakeSunat.resource("/sunat/bill_service_response_ok.xml"));
+                new FakeSunat.Response(401, "text/html", "<html>401 Authorization Required</html>"),
+                new FakeSunat.Response(200, "text/xml", FakeSunat.resource("/sunat/bill_service_response_ok.xml")));
 
         SunatResponse response = client.sendFile(destination(BillServiceDestination.SoapOperation.SEND_BILL), zipFile, credentials);
 
         assertEquals(Status.ACEPTADO, response.getStatus());
         assertEquals(2, sunat.requests(PATH).size());
+    }
+
+    @Test
+    void persistent401_throwsAfterTwoRetries() {
+        sunat.respondHtml(PATH, 401, "<html>401 Authorization Required</html>");
+
+        assertThrows(XSenderException.class,
+                () -> client.sendFile(destination(BillServiceDestination.SoapOperation.SEND_BILL), zipFile, credentials));
+        assertEquals(3, sunat.requests(PATH).size());
     }
 
     @Test

@@ -29,7 +29,7 @@ public class FakeSunat implements AutoCloseable {
         }
     }
 
-    private record Response(int status, String contentType, String body) {
+    public record Response(int status, String contentType, String body) {
     }
 
     private final HttpServer server;
@@ -65,15 +65,17 @@ public class FakeSunat implements AutoCloseable {
         respond(path, new Response(status, "text/xml", resource(resource)));
     }
 
+    public void respondHtml(String path, int status, String body) {
+        respond(path, new Response(status, "text/html", body));
+    }
+
     public void respondJson(String path, int status, String json) {
         respond(path, new Response(status, "application/json", json));
     }
 
     /** Answers the first request with the first response, and the following ones with the second */
-    public void respondSequence(String path,
-                                int firstStatus, String firstContentType, String firstBody,
-                                int thenStatus, String thenContentType, String thenBody) {
-        respond(path, new Response(firstStatus, firstContentType, firstBody), new Response(thenStatus, thenContentType, thenBody));
+    public void respondSequence(String path, Response first, Response then) {
+        respond(path, first, then);
     }
 
     private void respond(String path, Response... sequence) {

@@ -21,6 +21,7 @@ El proyecto se divide en módulos principales y extensiones para frameworks popu
 |------------|-------------|---------------|
 | **XBuilder** | Creación y firma de XMLs (UBL 2.1) | [![Maven Central](https://img.shields.io/maven-central/v/io.github.project-openubl/xbuilder)](https://search.maven.org/artifact/io.github.project-openubl/xbuilder/) |
 | **XSender** | Envío de comprobantes a SUNAT/OSE | [![Maven Central](https://img.shields.io/maven-central/v/io.github.project-openubl/xsender)](https://search.maven.org/artifact/io.github.project-openubl/xsender/) |
+| **XSender CDI** | Beans de XSender para WildFly / Jakarta EE / MicroProfile | [![Maven Central](https://img.shields.io/maven-central/v/io.github.project-openubl/xsender-cdi)](https://search.maven.org/artifact/io.github.project-openubl/xsender-cdi/) |
 | **Quarkus XBuilder** | Extensión XBuilder para Quarkus | [![Maven Central](https://img.shields.io/maven-central/v/io.github.project-openubl/quarkus-xbuilder)](https://search.maven.org/artifact/io.github.project-openubl/quarkus-xbuilder/) |
 | **Quarkus XSender** | Extensión XSender para Quarkus | [![Maven Central](https://img.shields.io/maven-central/v/io.github.project-openubl/quarkus-xsender)](https://search.maven.org/artifact/io.github.project-openubl/quarkus-xsender/) |
 | **Spring Boot XSender** | Starter XSender para Spring Boot | [![Maven Central](https://img.shields.io/maven-central/v/io.github.project-openubl/spring-boot-xsender)](https://search.maven.org/artifact/io.github.project-openubl/spring-boot-xsender/) |
@@ -59,7 +60,7 @@ XMLInvoice xml = new InvoiceXMLBuilder().build(invoice);
 
 ## 🚀 XSender
 
-XSender envía tus comprobantes firmados a la SUNAT: servicios SOAP (`billService`, consulta y validación) y la API REST de guías de remisión (con su token OAuth).
+XSender envía tus comprobantes firmados a la SUNAT (o a un OSE): servicios SOAP (`billService`, consulta y validación) y la API REST de guías de remisión (con su token OAuth).
 
 ### Características
 - **Sin dependencias**: solo usa el JDK (`java.net.http`, StAX, `java.util.zip`). Funciona en Java SE, Spring Boot, Quarkus (JVM y nativo), WildFly/Jakarta EE, Tomcat, etc.
@@ -73,13 +74,10 @@ XSender xsender = new XSender(
         CompanyURLs.builder()
                 .invoice("https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService")
                 .perceptionRetention("https://e-beta.sunat.gob.pe/ol-ti-itemision-otroscpe-gem-beta/billService")
-                .despatch("https://api-cpe.sunat.gob.pe/v1/contribuyente/gem")
                 .build(),
         CompanyCredentials.builder()
                 .username("12345678959MODDATOS")
                 .password("MODDATOS")
-                .clientId("...")       // solo para guías de remisión
-                .clientSecret("...")   // solo para guías de remisión
                 .build()
 );
 
@@ -89,6 +87,8 @@ if (response.isTicket()) {
 }
 System.out.println(response.getStatus());           // ACEPTADO, RECHAZADO, EXCEPCION, EN_PROCESO...
 ```
+
+Para guías de remisión agrega `.despatch("https://api-cpe.sunat.gob.pe/v1/contribuyente/gem")` a las URLs y `clientId`/`clientSecret` a las credenciales; la SUNAT no ofrece un entorno beta para ellas, así que necesitas credenciales reales.
 
 Si envías comprobantes de varias empresas, comparte un solo `SunatClient` (conexiones y tokens) entre sus `XSender`: `new XSender(urls, credentials, sunatClient)`.
 
@@ -100,12 +100,14 @@ Si envías comprobantes de varias empresas, comparte un solo `SunatClient` (cone
 | Quarkus | `quarkus-xsender` | `quarkus.xsender.company.*` |
 | WildFly / Jakarta EE / MicroProfile | `xsender-cdi` | `xsender.company.*` (MicroProfile Config) |
 
-Todas exponen un `SunatClient` compartido y, si configuras una empresa, un `XSender` listo para inyectar:
+Todas exponen un `SunatClient` compartido y un `XSender` para la empresa configurada (en Quarkus y CDI, inyectar `XSender` sin configurar la empresa lanza `XSenderException`). Spring Boot / CDI (en Quarkus antepón `quarkus.`):
 
 ```properties
 xsender.company.invoice-url=https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService
 xsender.company.username=12345678959MODDATOS
 xsender.company.password=MODDATOS
+# xsender.company.perception-retention-url, despatch-url, client-id, client-secret
+# xsender.security-api-url  (por defecto https://api-seguridad.sunat.gob.pe, útil para pruebas)
 ```
 
 > [!NOTE]

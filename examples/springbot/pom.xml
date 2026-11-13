@@ -15,9 +15,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <surefire.plugin.version>3.0.0-M4</surefire.plugin.version>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <spring.boot-version>2.7.8</spring.boot-version>
     </properties>
 
     <dependencyManagement>
@@ -25,14 +23,14 @@
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
-                <version>${spring.boot-version}</version>
+                <version>${springboot.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.apache.camel.springboot</groupId>
                 <artifactId>camel-spring-boot-bom</artifactId>
-                <version>3.20.3</version>
+                <version>${camel.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -47,7 +45,7 @@
         <dependency>
             <groupId>io.github.project-openubl</groupId>
             <artifactId>spring-boot-xsender</artifactId>
-            <version>4.1.4</version>
+            <version>${project.version}</version>
         </dependency>
 
         <!-- Spring minimum libraries -->
@@ -64,7 +62,7 @@
         </dependency>
         <dependency>
             <groupId>org.apache.camel</groupId>
-            <artifactId>camel-test-spring-junit5</artifactId>
+            <artifactId>camel-test-spring-junit6</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -74,7 +72,7 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>${spring.boot-version}</version>
+                <version>${springboot.version}</version>
                 <executions>
                     <execution>
                         <goals>
@@ -85,16 +83,7 @@
             </plugin>
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>${surefire.plugin.version}</version>
-            </plugin>
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.13.0</version>
-                <configuration>
-                    <release>11</release>
-                    <source>11</source>
-                    <target>11</target>
-                </configuration>
+                <version>${surefire-plugin.version}</version>
             </plugin>
         </plugins>
     </build>

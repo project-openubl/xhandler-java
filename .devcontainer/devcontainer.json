@@ -1,9 +1,9 @@
 {
   "name": "xhandler",
-  "image": "mcr.microsoft.com/devcontainers/java:17-bullseye",
+  "image": "mcr.microsoft.com/devcontainers/java:25-trixie",
   "features": {
     "ghcr.io/devcontainers/features/java:1": {
-      "version": "17",
+      "version": "25",
       "installMaven": "true",
       "installGradle": "false"
     },

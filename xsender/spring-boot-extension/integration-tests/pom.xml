@@ -12,7 +12,7 @@
     <name>Spring Boot XSender - Integration Tests</name>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <surefire.plugin.version>3.3.1</surefire.plugin.version>
+        <surefire.plugin.version>${surefire-plugin.version}</surefire.plugin.version>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
 
@@ -37,13 +37,14 @@
         </dependency>
         <dependency>
             <groupId>org.apache.camel</groupId>
-            <artifactId>camel-test-spring-junit5</artifactId>
+            <artifactId>camel-test-spring-junit6</artifactId>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
+            <version>6.3.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

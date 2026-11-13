@@ -4,7 +4,7 @@
 [![CI](https://github.com/project-openubl/xhandler/actions/workflows/ci.yml/badge.svg)](https://github.com/project-openubl/xhandler/actions/workflows/ci.yml)
 
 [![Project Chat](https://img.shields.io/badge/zulip-join_chat-brightgreen.svg?style=for-the-badge&logo=zulip)](https://projectopenubl.zulipchat.com/)
-[![Supported JVM Versions](https://img.shields.io/badge/JVM--17-brightgreen.svg?style=for-the-badge&logo=Java)](https://github.com/project-openubl/xhandler/actions/)
+[![Supported JVM Versions](https://img.shields.io/badge/JVM--25-brightgreen.svg?style=for-the-badge&logo=Java)](https://github.com/project-openubl/xhandler/actions/)
 
 **XHandler Java** es una suite de herramientas diseñada para facilitar la integración de **Facturación Electrónica en Perú (SUNAT)** en aplicaciones Java. Este repositorio es un "monorepo" que alberga las librerías `XBuilder` y `XSender`, proporcionando una solución integral para crear, firmar y enviar comprobantes de pago electrónicos.
 

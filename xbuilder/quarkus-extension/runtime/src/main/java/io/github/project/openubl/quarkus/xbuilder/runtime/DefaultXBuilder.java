@@ -39,8 +39,8 @@ public class DefaultXBuilder implements XBuilder {
     @Override
     public Defaults getDefaults() {
         return Defaults.builder()
-                .igvTasa(config.igvTasa.orElse(new BigDecimal("0.18")))
-                .icbTasa(config.icbTasa.orElse(new BigDecimal("0.2")))
+                .igvTasa(config.igvTasa().orElse(new BigDecimal("0.18")))
+                .icbTasa(config.icbTasa().orElse(new BigDecimal("0.2")))
                 .build();
     }
 }

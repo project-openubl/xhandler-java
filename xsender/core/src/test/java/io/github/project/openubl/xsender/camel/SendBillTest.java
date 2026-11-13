@@ -17,6 +17,7 @@ import jodd.io.ZipBuilder;
 import org.apache.camel.CamelContext;
 import org.apache.camel.CamelExecutionException;
 import org.apache.camel.main.Main;
+import org.apache.cxf.transport.http.HTTPException;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -31,6 +32,7 @@ import static io.github.project.openubl.xsender.camel.utils.CamelUtils.getBillSe
 import static io.github.project.openubl.xsender.camel.utils.CamelUtils.getBillValidService;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -291,7 +293,6 @@ public class SendBillTest {
 
     // Consult Service
 
-    @Disabled("SUNAT now answers invalid credentials with HTTP 401 instead of the 'El Usuario ingresado no existe' SOAP fault")
     @Test
     public void consultService_getStatus() {
         BillConsultServiceDestination destination = BillConsultServiceDestination.builder()
@@ -314,10 +315,12 @@ public class SendBillTest {
                     .requestBodyAndHeaders(Constants.XSENDER_BILL_CONSULT_SERVICE_URI, camelData.getBody(), camelData.getHeaders(), service.sunat.gob.pe.billconsultservice.StatusResponse.class);
         });
 
-        assertEquals("El Usuario ingresado no existe", exception.getCause().getMessage());
+        // SUNAT rejects invalid credentials with HTTP 401 (it used to answer with the
+        // "El Usuario ingresado no existe" SOAP fault)
+        HTTPException httpException = assertInstanceOf(HTTPException.class, exception.getCause());
+        assertEquals(401, httpException.getResponseCode());
     }
 
-    @Disabled("SUNAT now answers invalid credentials with HTTP 401 instead of the 'El Usuario ingresado no existe' SOAP fault")
     @Test
     public void consultService_getStatusCdr() {
         BillConsultServiceDestination destination = BillConsultServiceDestination.builder()
@@ -340,12 +343,14 @@ public class SendBillTest {
                     .requestBodyAndHeaders(Constants.XSENDER_BILL_CONSULT_SERVICE_URI, camelData.getBody(), camelData.getHeaders(), service.sunat.gob.pe.billconsultservice.StatusResponse.class);
         });
 
-        assertEquals("El Usuario ingresado no existe", exception.getCause().getMessage());
+        // SUNAT rejects invalid credentials with HTTP 401 (it used to answer with the
+        // "El Usuario ingresado no existe" SOAP fault)
+        HTTPException httpException = assertInstanceOf(HTTPException.class, exception.getCause());
+        assertEquals(401, httpException.getResponseCode());
     }
 
     // Consult valid service
 
-    @Disabled("SUNAT now answers invalid credentials with HTTP 401 instead of the 'El Usuario ingresado no existe' SOAP fault")
     @Test
     public void consultValidService_validateData() {
         BillValidServiceDestination destination = BillValidServiceDestination.builder()
@@ -372,10 +377,12 @@ public class SendBillTest {
                     .requestBodyAndHeaders(Constants.XSENDER_BILL_VALID_SERVICE_URI, camelData.getBody(), camelData.getHeaders(), service.sunat.gob.pe.billvalidservice.StatusResponse.class);
         });
 
-        assertEquals("El Usuario ingresado no existe", exception.getCause().getMessage());
+        // SUNAT rejects invalid credentials with HTTP 401 (it used to answer with the
+        // "El Usuario ingresado no existe" SOAP fault)
+        HTTPException httpException = assertInstanceOf(HTTPException.class, exception.getCause());
+        assertEquals(401, httpException.getResponseCode());
     }
 
-    @Disabled("SUNAT now answers invalid credentials with HTTP 401 instead of the 'El Usuario ingresado no existe' SOAP fault")
     @Test
     public void consultValidService_validateFile() throws IOException {
         String fileName = "12345678912-01-F001-1.xml";
@@ -402,6 +409,9 @@ public class SendBillTest {
                     .requestBodyAndHeaders(Constants.XSENDER_BILL_VALID_SERVICE_URI, camelData.getBody(), camelData.getHeaders(), service.sunat.gob.pe.billvalidservice.StatusResponse.class);
         });
 
-        assertEquals("El Usuario ingresado no existe", exception.getCause().getMessage());
+        // SUNAT rejects invalid credentials with HTTP 401 (it used to answer with the
+        // "El Usuario ingresado no existe" SOAP fault)
+        HTTPException httpException = assertInstanceOf(HTTPException.class, exception.getCause());
+        assertEquals(401, httpException.getResponseCode());
     }
 }

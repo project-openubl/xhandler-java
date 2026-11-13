@@ -59,12 +59,57 @@ XMLInvoice xml = new InvoiceXMLBuilder().build(invoice);
 
 ## 🚀 XSender
 
-XSender se encarga de la comunicación con los servicios SOAP de la SUNAT o de los Operadores de Servicios Electrónicos (OSE).
+XSender envía tus comprobantes firmados a la SUNAT: servicios SOAP (`billService`, consulta y validación) y la API REST de guías de remisión (con su token OAuth).
 
 ### Características
-- **Compatible**: Soporta los diversos endpoints de SUNAT (Beta/Producción) y OSEs.
-- **Resiliente**: Gestiona el envío de archivos ZIP y el procesamiento de respuestas (CDR, Tickets).
-- **Flexible**: Fácil integración con frameworks modernos como Quarkus y Spring Boot.
+- **Sin dependencias**: solo usa el JDK (`java.net.http`, StAX, `java.util.zip`). Funciona en Java SE, Spring Boot, Quarkus (JVM y nativo), WildFly/Jakarta EE, Tomcat, etc.
+- **Automático**: lee el XML para decidir el nombre del archivo, el servicio y la operación (`sendBill`, `sendSummary`, guía de remisión REST...).
+- **Respuestas claras**: CDR, ticket o error de la SUNAT llegan como un `SunatResponse`; los fallos de red como `XSenderException`.
+
+### Ejemplo de Uso
+
+```java
+XSender xsender = new XSender(
+        CompanyURLs.builder()
+                .invoice("https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService")
+                .perceptionRetention("https://e-beta.sunat.gob.pe/ol-ti-itemision-otroscpe-gem-beta/billService")
+                .despatch("https://api-cpe.sunat.gob.pe/v1/contribuyente/gem")
+                .build(),
+        CompanyCredentials.builder()
+                .username("12345678959MODDATOS")
+                .password("MODDATOS")
+                .clientId("...")       // solo para guías de remisión
+                .clientSecret("...")   // solo para guías de remisión
+                .build()
+);
+
+SunatResponse response = xsender.send(signedXml);   // byte[] o Path
+if (response.isTicket()) {
+    response = xsender.verifyTicket(signedXml, response.getSunat().getTicket());
+}
+System.out.println(response.getStatus());           // ACEPTADO, RECHAZADO, EXCEPCION, EN_PROCESO...
+```
+
+Si envías comprobantes de varias empresas, comparte un solo `SunatClient` (conexiones y tokens) entre sus `XSender`: `new XSender(urls, credentials, sunatClient)`.
+
+### Frameworks
+
+| Framework | Dependencia | Configuración |
+|-----------|-------------|---------------|
+| Spring Boot | `spring-boot-xsender` | `xsender.company.*` en `application.properties` |
+| Quarkus | `quarkus-xsender` | `quarkus.xsender.company.*` |
+| WildFly / Jakarta EE / MicroProfile | `xsender-cdi` | `xsender.company.*` (MicroProfile Config) |
+
+Todas exponen un `SunatClient` compartido y, si configuras una empresa, un `XSender` listo para inyectar:
+
+```properties
+xsender.company.invoice-url=https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService
+xsender.company.username=12345678959MODDATOS
+xsender.company.password=MODDATOS
+```
+
+> [!NOTE]
+> ¿Vienes de XSender 5.x (Apache Camel)? Revisa la [guía de migración](./xsender/MIGRATION.md).
 
 ---
 

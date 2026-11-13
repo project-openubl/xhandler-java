@@ -17,6 +17,7 @@
 
     <modules>
         <module>core</module>
+        <module>cdi</module>
         <module>quarkus-extension</module>
         <module>spring-boot-extension</module>
     </modules>

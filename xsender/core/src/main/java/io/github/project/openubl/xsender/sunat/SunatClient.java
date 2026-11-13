@@ -27,7 +27,14 @@ public class SunatClient {
     private final GreClient greClient;
 
     public SunatClient() {
-        this(defaultHttpClient(), SUNAT_SECURITY_API_URL);
+        this(SUNAT_SECURITY_API_URL);
+    }
+
+    /**
+     * @param securityApiUrl where the guías de remisión access tokens are requested
+     */
+    public SunatClient(String securityApiUrl) {
+        this(defaultHttpClient(), securityApiUrl);
     }
 
     /**

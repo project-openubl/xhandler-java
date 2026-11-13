@@ -14,7 +14,7 @@ workflows:
     '.github/workflows/codeql-analysis.yml':
         - 'actions/checkout@v4.4.0'
         - 'actions/setup-java@v4.9.1'
-        - 'github/codeql-action@v3.39.3'
+        - 'github/codeql-action@v4.39.3'
     '.github/workflows/release.yml':
         - 'actions/checkout@v4.4.0'
         - 'actions/setup-java@v4.9.1'
@@ -49,9 +49,9 @@ dependencies:
         commit: 'sha1-ea165f8d65b6e75b540449e92b4886f43607fa02'
         owner_id: 44036562
         repo_id: 192625955
-    'github/codeql-action@v3.39.3':
-        ref: 'v3.39.3'
-        commit: 'sha1-9418214df1f2c4b8128c770156c409013b07d6b9'
+    'github/codeql-action@v4.39.3':
+        ref: 'v4.39.3'
+        commit: 'sha1-33d7b85da1a04171e211befe2c739303b9a4c066'
         owner_id: 9919
         repo_id: 259445878
     'jreleaser/release-action@v2':

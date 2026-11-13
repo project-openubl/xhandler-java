@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
-import org.apache.camel.component.http.HttpMethods;
 
 @Data
 @Builder
@@ -28,10 +27,9 @@ public class BillServiceDestination {
     @Getter
     @AllArgsConstructor
     public enum RestOperation {
-        SEND_DOCUMENT(HttpMethods.POST, "/comprobantes"),
-        VERIFY_TICKET(HttpMethods.GET, "/comprobantes/envios");
+        SEND_DOCUMENT("/comprobantes"),
+        VERIFY_TICKET("/comprobantes/envios");
 
-        private final HttpMethods method;
         private final String path;
     }
 

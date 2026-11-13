@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<env:Envelope xmlns:env="http://schemas.xmlsoap.org/soap/envelope/">
+    <env:Header/>
+    <env:Body>
+        <env:Fault>
+            <faultcode>env:Client.2335</faultcode>
+            <faultstring>El documento electrónico ingresado ha sido alterado - Detalle: <![CDATA[xxx.xxx.xxx value='ticket: 1 error: 2335']]></faultstring>
+        </env:Fault>
+    </env:Body>
+</env:Envelope>

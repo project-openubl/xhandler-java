@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<soap-env:Envelope xmlns:soap-env="http://schemas.xmlsoap.org/soap/envelope/">
+    <soap-env:Body>
+        <ns2:validaCDPcriteriosResponse xmlns:ns2="http://service.sunat.gob.pe">
+            <status>
+                <statusCode>0</statusCode>
+                <statusMessage>El comprobante existe y está aceptado.</statusMessage>
+            </status>
+        </ns2:validaCDPcriteriosResponse>
+    </soap-env:Body>
+</soap-env:Envelope>

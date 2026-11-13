@@ -21,6 +21,7 @@ El proyecto se divide en módulos principales y extensiones para frameworks popu
 |------------|-------------|---------------|
 | **XBuilder** | Creación y firma de XMLs (UBL 2.1) | [![Maven Central](https://img.shields.io/maven-central/v/io.github.project-openubl/xbuilder)](https://search.maven.org/artifact/io.github.project-openubl/xbuilder/) |
 | **XSender** | Envío de comprobantes a SUNAT/OSE | [![Maven Central](https://img.shields.io/maven-central/v/io.github.project-openubl/xsender)](https://search.maven.org/artifact/io.github.project-openubl/xsender/) |
+| **XSender CDI** | Beans de XSender para WildFly / Jakarta EE / MicroProfile | [![Maven Central](https://img.shields.io/maven-central/v/io.github.project-openubl/xsender-cdi)](https://search.maven.org/artifact/io.github.project-openubl/xsender-cdi/) |
 | **Quarkus XBuilder** | Extensión XBuilder para Quarkus | [![Maven Central](https://img.shields.io/maven-central/v/io.github.project-openubl/quarkus-xbuilder)](https://search.maven.org/artifact/io.github.project-openubl/quarkus-xbuilder/) |
 | **Quarkus XSender** | Extensión XSender para Quarkus | [![Maven Central](https://img.shields.io/maven-central/v/io.github.project-openubl/quarkus-xsender)](https://search.maven.org/artifact/io.github.project-openubl/quarkus-xsender/) |
 | **Spring Boot XSender** | Starter XSender para Spring Boot | [![Maven Central](https://img.shields.io/maven-central/v/io.github.project-openubl/spring-boot-xsender)](https://search.maven.org/artifact/io.github.project-openubl/spring-boot-xsender/) |
@@ -59,12 +60,58 @@ XMLInvoice xml = new InvoiceXMLBuilder().build(invoice);
 
 ## 🚀 XSender
 
-XSender se encarga de la comunicación con los servicios SOAP de la SUNAT o de los Operadores de Servicios Electrónicos (OSE).
+XSender envía tus comprobantes firmados a la SUNAT (o a un OSE): servicios SOAP (`billService`, consulta y validación) y la API REST de guías de remisión (con su token OAuth).
 
 ### Características
-- **Compatible**: Soporta los diversos endpoints de SUNAT (Beta/Producción) y OSEs.
-- **Resiliente**: Gestiona el envío de archivos ZIP y el procesamiento de respuestas (CDR, Tickets).
-- **Flexible**: Fácil integración con frameworks modernos como Quarkus y Spring Boot.
+- **Sin dependencias**: solo usa el JDK (`java.net.http`, StAX, `java.util.zip`). Funciona en Java SE, Spring Boot, Quarkus (JVM y nativo), WildFly/Jakarta EE, Tomcat, etc.
+- **Automático**: lee el XML para decidir el nombre del archivo, el servicio y la operación (`sendBill`, `sendSummary`, guía de remisión REST...).
+- **Respuestas claras**: CDR, ticket o error de la SUNAT llegan como un `SunatResponse`; los fallos de red como `XSenderException`.
+
+### Ejemplo de Uso
+
+```java
+XSender xsender = new XSender(
+        CompanyURLs.builder()
+                .invoice("https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService")
+                .perceptionRetention("https://e-beta.sunat.gob.pe/ol-ti-itemision-otroscpe-gem-beta/billService")
+                .build(),
+        CompanyCredentials.builder()
+                .username("12345678959MODDATOS")
+                .password("MODDATOS")
+                .build()
+);
+
+SunatResponse response = xsender.send(signedXml);   // byte[] o Path
+if (response.isTicket()) {
+    response = xsender.verifyTicket(signedXml, response.getSunat().getTicket());
+}
+System.out.println(response.getStatus());           // ACEPTADO, RECHAZADO, EXCEPCION, EN_PROCESO...
+```
+
+Para guías de remisión agrega `.despatch("https://api-cpe.sunat.gob.pe/v1/contribuyente/gem")` a las URLs y `clientId`/`clientSecret` a las credenciales; la SUNAT no ofrece un entorno beta para ellas, así que necesitas credenciales reales.
+
+Si envías comprobantes de varias empresas, comparte un solo `SunatClient` (conexiones y tokens) entre sus `XSender`: `new XSender(urls, credentials, sunatClient)`.
+
+### Frameworks
+
+| Framework | Dependencia | Configuración |
+|-----------|-------------|---------------|
+| Spring Boot | `spring-boot-xsender` | `xsender.company.*` en `application.properties` |
+| Quarkus | `quarkus-xsender` | `quarkus.xsender.company.*` |
+| WildFly / Jakarta EE / MicroProfile | `xsender-cdi` | `xsender.company.*` (MicroProfile Config) |
+
+Todas exponen un `SunatClient` compartido y un `XSender` para la empresa configurada (en Quarkus y CDI, inyectar `XSender` sin configurar la empresa lanza `XSenderException`). Spring Boot / CDI (en Quarkus antepón `quarkus.`):
+
+```properties
+xsender.company.invoice-url=https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService
+xsender.company.username=12345678959MODDATOS
+xsender.company.password=MODDATOS
+# xsender.company.perception-retention-url, despatch-url, client-id, client-secret
+# xsender.security-api-url  (por defecto https://api-seguridad.sunat.gob.pe, útil para pruebas)
+```
+
+> [!NOTE]
+> ¿Vienes de XSender 5.x (Apache Camel)? Revisa la [guía de migración](./xsender/MIGRATION.md).
 
 ---
 

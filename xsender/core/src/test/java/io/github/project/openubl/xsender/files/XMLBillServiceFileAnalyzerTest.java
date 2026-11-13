@@ -4,9 +4,15 @@ import io.github.project.openubl.xsender.company.CompanyURLs;
 import io.github.project.openubl.xsender.sunat.BillServiceDestination;
 import org.junit.jupiter.api.Test;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -26,6 +32,20 @@ public class XMLBillServiceFileAnalyzerTest {
         assertNotNull(zipFile);
         assertNotNull(zipFile.getFile());
         assertEquals(expectedZipFileName, zipFile.getFilename());
+    }
+
+    @Test
+    public void zip_containsTheXmlUnchanged() throws Exception {
+        Path xml = Paths.get(getClass().getResource("/xmls/invoice_factura.xml").toURI());
+        BillServiceXMLFileAnalyzer xmlFileAnalyzer = new BillServiceXMLFileAnalyzer(xml, urls);
+
+        try (ZipInputStream zip = new ZipInputStream(new ByteArrayInputStream(xmlFileAnalyzer.getZipFile().getFile()))) {
+            ZipEntry entry = zip.getNextEntry();
+            assertNotNull(entry);
+            assertEquals("12345678912-01-F001-1.xml", entry.getName());
+            assertArrayEquals(Files.readAllBytes(xml), zip.readAllBytes());
+            assertNull(zip.getNextEntry());
+        }
     }
 
     protected void assertFileDeliveryTarget(

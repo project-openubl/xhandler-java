@@ -3,6 +3,7 @@ package io.github.project.openubl.xsender.company;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.ToString;
 
 @Data
 @Builder
@@ -10,9 +11,11 @@ import lombok.Data;
 public class CompanyCredentials {
 
     private final String username;
+    @ToString.Exclude
     private final String password;
     private final String clientId;
+    @ToString.Exclude
     private final String clientSecret;
+    @ToString.Exclude
     private final String token;
-    
 }

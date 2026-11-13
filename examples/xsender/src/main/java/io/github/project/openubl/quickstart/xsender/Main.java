@@ -1,20 +1,11 @@
 package io.github.project.openubl.quickstart.xsender;
 
-import io.github.project.openubl.xsender.Constants;
-import io.github.project.openubl.xsender.camel.StandaloneCamel;
-import io.github.project.openubl.xsender.camel.utils.CamelData;
-import io.github.project.openubl.xsender.camel.utils.CamelUtils;
+import io.github.project.openubl.xsender.XSender;
 import io.github.project.openubl.xsender.company.CompanyCredentials;
 import io.github.project.openubl.xsender.company.CompanyURLs;
-import io.github.project.openubl.xsender.files.BillServiceFileAnalyzer;
-import io.github.project.openubl.xsender.files.BillServiceXMLFileAnalyzer;
-import io.github.project.openubl.xsender.files.ZipFile;
 import io.github.project.openubl.xsender.models.SunatResponse;
-import io.github.project.openubl.xsender.sunat.BillServiceDestination;
-import org.apache.camel.CamelContext;
 
-import java.io.File;
-import java.nio.file.Paths;
+import java.io.InputStream;
 
 public class Main {
     public static void main(String[] args) throws Exception {
@@ -29,31 +20,14 @@ public class Main {
                 .password("MODDATOS")
                 .build();
 
-        File xml = Paths.get(Main.class.getClassLoader().getResource("invoice.xml").toURI()).toFile();
-        BillServiceFileAnalyzer fileAnalyzer = new BillServiceXMLFileAnalyzer(xml, companyURLs);
+        XSender xsender = new XSender(companyURLs, credentials);
 
-        // Archivo ZIP
-        ZipFile zipFile = fileAnalyzer.getZipFile();
+        byte[] xml;
+        try (InputStream is = Main.class.getClassLoader().getResourceAsStream("invoice.xml")) {
+            xml = is.readAllBytes();
+        }
+        SunatResponse response = xsender.send(xml);
 
-        // Configuración para enviar xml y Configuración para consultar ticket
-        BillServiceDestination fileDestination = fileAnalyzer.getSendFileDestination();
-        BillServiceDestination ticketDestination = fileAnalyzer.getVerifyTicketDestination();
-
-        // Send file
-        CamelContext camelContext = StandaloneCamel.getInstance()
-                .getMainCamel()
-                .getCamelContext();
-
-        CamelData camelData = CamelUtils.getBillServiceCamelData(zipFile, fileDestination, credentials);
-
-        SunatResponse sendFileSunatResponse = camelContext.createProducerTemplate()
-                .requestBodyAndHeaders(
-                        Constants.XSENDER_BILL_SERVICE_URI,
-                        camelData.getBody(),
-                        camelData.getHeaders(),
-                        SunatResponse.class
-                );
-
-        System.out.println("SUNAT status: " + sendFileSunatResponse.getStatus());
+        System.out.println("SUNAT status: " + response.getStatus());
     }
 }

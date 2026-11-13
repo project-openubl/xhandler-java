@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<S:Envelope xmlns:S="http://schemas.xmlsoap.org/soap/envelope/">
+    <S:Body>
+        <ns2:getStatusCdrResponse xmlns:ns2="http://service.sunat.gob.pe">
+            <statusCdr>
+                <content>UEsDBA==</content>
+                <statusCode>0004</statusCode>
+                <statusMessage>La constancia existe</statusMessage>
+            </statusCdr>
+        </ns2:getStatusCdrResponse>
+    </S:Body>
+</S:Envelope>

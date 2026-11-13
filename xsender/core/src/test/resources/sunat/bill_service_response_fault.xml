@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<soap-env:Envelope xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:soap-env="http://schemas.xmlsoap.org/soap/envelope/">
+    <soap-env:Header/>
+    <soap-env:Body>
+        <soap-env:Fault xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+            <faultcode>soap-env:Client.0111</faultcode>
+            <faultstring>No tiene el perfil para enviar comprobantes electronicos - Detalle: Rejected by policy.</faultstring>
+        </soap-env:Fault>
+    </soap-env:Body>
+</soap-env:Envelope>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<S:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:S="http://schemas.xmlsoap.org/soap/envelope/">
+    <S:Body>
+        <ns2:getStatusResponse xmlns:ns2="http://service.sunat.gob.pe">
+            <status>
+                <content>UEsDBBQAAgAIAK07lVcAAAAAAgAAAAAAAAAGAAAAZHVtbXkvAwBQSwMEFAACAAgArTuVV2PumuIyBAAACA0AAB8AAABSLTEyMzQ1Njc4OTEyLVJBLTIwMjAwMzI4LTEueG1stVdRT+M4EH7fXxGVh5X2LjhJoYUoZFUo3FULPba0gPbNJEMbLrFzttMWfv2OkyZNS9C2K53gwZn55puZz2MbvK/LJDbmIGTE2VnLPrRaBrCAhxGbnrUm4yvzpPXV/+RR4fbSNI4CqhA4AplyJsHAYCbPWplgLqcyki6jCUhXphBEzyuwmz3FrgxmkFB3KUN3wOY8CsB0WkW4S8WeDA2VrNlgqfaku+BJwtnlUgHTKuAnUgJTck0aPAW/RXqO8KCRkP4eYW86FTClCppIQ9yKmVKpS8hisThctA+5mBLHsixinRLEhDKaHpRoyWla4YtE8hBd2p4H6gUBNoeYp0CqJJi8CoOljFUO1mZpUhaaKsJeqiRlnzJjVH3YZwoiqzd7p9FNvdol8fKjXm3yeHN9l1OVWGSBZdpQNDqymAoTvQKk3nzZ8j2cIHdyfl0NhCzHvMFXWGqzw3ClfO8ummIHmaiOyA77gsdMh0E4YM/c/2QY3gVlnKFOcfSWa3UDasZDoxdPuYjULPlQAtvStNhXYAb2ETt4QLQeIK1hi+TcVYU7k1pHZa1mwgUcCElNOaPHtrOiHMEzCLw9wJiMBlouNKJ5LCiTz1wksjDUTb9MuyFROYyhKcvqi9R7ku4iEBKS7cq9fjQFqfZUDBU5qOtU8dzTOAP/hS7D/iWx5peB9eMvMumyf9KnvmN/z0bf528L/kYerkZXr7Ph+ViSm5voPusOX5aTq6Pn3n8PCfs7kT+GycPL203YW9BR6jyO/7gNF2dnHqln0ftDqg3CUSObs1afiCLiy62I5nj6jH/h1fh8Dore4lHF6wyE+mwwrows/VLQ1KK8b/Cac3qPx9ZpnyparHRUceaReYjXQGgEa9OKv0iIDDX+7eCcbSBlBuIORETjukUT709fi825Ct5hljyB2J9tI7qeoCyXrJUhlVprHXHdfKeQ95fPO5P0PXyrtOm+eNMHfd85tDzyzprjLjKpeLK6XdBol9BtR47WgK7Vtjt2t9M5alt2ga3cukvsC0jte4yvgW9Zbv67wlf2HFY+4TrSdyynbdqO6ay4N5wb8IK46zqnrtPZBK+4aeDWRF1Vqi13k2FvXKu9AnLxekuFei1s+XIQovbVY1XROJbdxh/n9Ph4TUQ+jiodxZDpgHxVq6TwkC0k+ag4PNuRonHVYE8pGsySfFC0X0+EYDReH/liMEYD/2BLA20rEjUEkV8lI9s6609gIYj/R0rSmGAEAUTznXPaTvvouNM9ObWdnXM2pOjzINMqlINX1lJ95UO50hJTjHomDrhltZ0TsxrwtXtjvi94iPO9Odi5LUf1QQYiSvPyrqmBT1em/1AI8NsIwXiiL9TYyPanMaOGjEJu0ABSRUNaUNeJyj7rzaxb3Jij5mYqFZuiCgmjNEL7jtvUMffZnQ1q0rw/pPkfGf8nUEsBAgAAFAACAAgArTuVVwAAAAACAAAAAAAAAAYAAAAAAAAAAAAAAAAAAAAAAGR1bW15L1BLAQIAABQAAgAIAK07lVdj7priMgQAAAgNAAAfAAAAAAAAAAEAAAAAACYAAABSLTEyMzQ1Njc4OTEyLVJBLTIwMjAwMzI4LTEueG1sUEsFBgAAAAACAAIAgQAAAJUEAAAAAA==</content>
+                <statusCode>0</statusCode>
+            </status>
+        </ns2:getStatusResponse>
+    </S:Body>
+</S:Envelope>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<S:Envelope xmlns:S="http://schemas.xmlsoap.org/soap/envelope/">
+    <S:Body>
+        <S:Fault>
+            <faultcode>S:Client.0127</faultcode>
+            <faultstring>El ticket no existe</faultstring>
+        </S:Fault>
+    </S:Body>
+</S:Envelope>

@@ -1,0 +1,14 @@
+name: Verify PR title
+
+# Fails unless the PR title follows Conventional Commits (e.g. `feat(xbuilder): add field`).
+# PRs are squash-merged with the PR title as the commit title. See project-openubl/release-tools README.
+on:
+  pull_request_target:
+    types: [opened, edited, synchronize, reopened]
+
+permissions:
+  pull-requests: read
+
+jobs:
+  verify-pr-title:
+    uses: project-openubl/release-tools/.github/workflows/verify-pr-title.yaml@main

@@ -7,26 +7,26 @@ workflows:
     '.github/workflows/backport.yml':
         - 'sorenlouv/backport-github-action@v9.5.1'
     '.github/workflows/ci.yml':
-        - 'actions/checkout@v4.4.0'
+        - 'actions/checkout@v7.0.1'
         - 'actions/download-artifact@v4.3.0'
         - 'actions/setup-java@v6.2.0'
         - 'actions/upload-artifact@v4.6.2'
     '.github/workflows/codeql-analysis.yml':
-        - 'actions/checkout@v4.4.0'
+        - 'actions/checkout@v7.0.1'
         - 'actions/setup-java@v6.2.0'
         - 'github/codeql-action@v4.39.3'
     '.github/workflows/release.yml':
-        - 'actions/checkout@v4.4.0'
+        - 'actions/checkout@v7.0.1'
         - 'actions/setup-java@v6.2.0'
         - 'jreleaser/release-action@v2'
     '.github/workflows/sonar.yml':
-        - 'actions/checkout@v4.4.0'
+        - 'actions/checkout@v7.0.1'
         - 'actions/setup-java@v6.2.0'
     '.github/workflows/verify-pr-title.yaml': []
 dependencies:
-    'actions/checkout@v4.4.0':
-        ref: 'v4.4.0'
-        commit: 'sha1-11d5960a326750d5838078e36cf38b85af677262'
+    'actions/checkout@v7.0.1':
+        ref: 'v7.0.1'
+        commit: 'sha1-3d3c42e5aac5ba805825da76410c181273ba90b1'
         owner_id: 44036562
         repo_id: 197814629
     'actions/download-artifact@v4.3.0':

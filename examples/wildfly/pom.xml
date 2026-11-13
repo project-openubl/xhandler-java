@@ -17,17 +17,17 @@
 
     <properties>
         <!--wildfly-->
-        <version.server.bom>26.1.3.Final</version.server.bom>
+        <version.server.bom>42.0.0.Final</version.server.bom>
         <version.wildfly.maven.plugin>6.2.0.Final</version.wildfly.maven.plugin>
     </properties>
 
     <dependencyManagement>
         <dependencies>
-            <!-- importing the jakartaee8-with-tools BOM adds specs and other useful artifacts as
+            <!-- importing the ee-with-tools BOM adds specs and other useful artifacts as
             managed dependencies -->
             <dependency>
                 <groupId>org.wildfly.bom</groupId>
-                <artifactId>wildfly-jakartaee8-with-tools</artifactId>
+                <artifactId>wildfly-ee-with-tools</artifactId>
                 <version>${version.server.bom}</version>
                 <type>pom</type>
                 <scope>import</scope>
@@ -41,7 +41,7 @@
             <artifactId>xbuilder</artifactId>
         </dependency>
 
-        <!-- Import the CDI API, we use provided scope as the API is included in JBoss EAP -->
+        <!-- Import the CDI API, we use provided scope as the API is included in WildFly -->
         <dependency>
             <groupId>jakarta.enterprise</groupId>
             <artifactId>jakarta.enterprise.cdi-api</artifactId>
@@ -49,17 +49,17 @@
         </dependency>
 
         <!-- Import the Common Annotations API (JSR-250), we use provided
-            scope as the API is included in JBoss EAP -->
+            scope as the API is included in WildFly -->
         <dependency>
-            <groupId>org.jboss.spec.javax.annotation</groupId>
-            <artifactId>jboss-annotations-api_1.3_spec</artifactId>
+            <groupId>jakarta.annotation</groupId>
+            <artifactId>jakarta.annotation-api</artifactId>
             <scope>provided</scope>
         </dependency>
 
-        <!-- Import the JAX-RS API, we use provided scope as the API is included in JBoss EAP. -->
+        <!-- Import the JAX-RS API, we use provided scope as the API is included in WildFly. -->
         <dependency>
-            <groupId>org.jboss.spec.javax.ws.rs</groupId>
-            <artifactId>jboss-jaxrs-api_2.1_spec</artifactId>
+            <groupId>jakarta.ws.rs</groupId>
+            <artifactId>jakarta.ws.rs-api</artifactId>
             <scope>provided</scope>
         </dependency>
     </dependencies>

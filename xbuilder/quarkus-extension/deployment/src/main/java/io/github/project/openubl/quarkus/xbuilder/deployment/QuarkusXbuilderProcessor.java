@@ -95,13 +95,13 @@ class QuarkusXbuilderProcessor {
 
         // register every listed implementation class for reflection so their annotations can be read
         reflectiveClass.produce(
-                new ReflectiveClassBuildItem(true, false, implementations.toArray(new String[0]))
+                ReflectiveClassBuildItem.builder( implementations.toArray(new String[0])).methods(true).fields(false).build()
         );
     }
 
     @BuildStep
     ReflectiveClassBuildItem reflectionModelsLombok() {
-        return new ReflectiveClassBuildItem(true, false,
+        return ReflectiveClassBuildItem.builder(
                 "io.github.project.openubl.xbuilder.content.models.standard.general.CreditNote$CreditNoteBuilderImpl",
                 "io.github.project.openubl.xbuilder.content.models.standard.general.DebitNote$DebitNoteBuilderImpl",
                 "io.github.project.openubl.xbuilder.content.models.standard.general.Invoice$InvoiceBuilderImpl",
@@ -123,12 +123,12 @@ class QuarkusXbuilderProcessor {
                 "io.github.project.openubl.xbuilder.enricher.config.Defaults$DefaultsBuilder",
                 "io.github.project.openubl.xbuilder.enricher.kie.ruleunits.BodyRuleContext$BodyRuleContextBuilder",
                 "io.github.project.openubl.xbuilder.enricher.kie.ruleunits.HeaderRuleContext$HeaderRuleContextBuilder"
-        );
+        ).methods(true).fields(false).build();
     }
 
     @BuildStep
     ReflectiveClassBuildItem reflectionJaxbLombok() {
-        return new ReflectiveClassBuildItem(true, true,
+        return ReflectiveClassBuildItem.builder(
                 "io.github.project.openubl.xbuilder.content.jaxb.models.XMLAddress$AddressLine",
                 "io.github.project.openubl.xbuilder.content.jaxb.models.XMLAddress$Country",
 
@@ -245,15 +245,14 @@ class QuarkusXbuilderProcessor {
                 "io.github.project.openubl.xbuilder.content.jaxb.models.XMLSupplierSunat$Party",
                 "io.github.project.openubl.xbuilder.content.jaxb.models.XMLSupplierSunat$PartyLegalEntity",
                 "io.github.project.openubl.xbuilder.content.jaxb.models.XMLSupplierSunat$PartyName"
-        );
+        ).methods(true).fields(true).build();
     }
 
     @BuildStep
     ReflectiveClassBuildItem reflectionModels() {
-        return new ReflectiveClassBuildItem(true, false,
+        return ReflectiveClassBuildItem.builder(
                 io.github.project.openubl.quarkus.xbuilder.runtime.DefaultXBuilder.class,
                 io.github.project.openubl.quarkus.xbuilder.runtime.CustomTemplateLocator.class,
-                io.github.project.openubl.quarkus.xbuilder.runtime.XBuilderConfig.class,
                 io.github.project.openubl.xbuilder.enricher.config.Defaults.class,
                 io.github.project.openubl.xbuilder.enricher.kie.ruleunits.BodyRuleContext.class,
                 io.github.project.openubl.xbuilder.enricher.kie.ruleunits.HeaderRuleContext.class,
@@ -421,12 +420,12 @@ class QuarkusXbuilderProcessor {
                 io.github.project.openubl.xbuilder.content.models.sunat.percepcionretencion.PercepcionRetencionOperacion.class,
                 io.github.project.openubl.xbuilder.content.models.sunat.percepcionretencion.PercepcionRetencionOperacion.PercepcionRetencionOperacionBuilder.class,
                 io.github.project.openubl.xbuilder.content.models.sunat.resumen.SummaryPerception.class
-        );
+        ).methods(true).fields(false).build();
     }
 
     @BuildStep
     ReflectiveClassBuildItem reflectionJaxb() {
-        return new ReflectiveClassBuildItem(true, true,
+        return ReflectiveClassBuildItem.builder(
                 io.github.project.openubl.xbuilder.content.jaxb.adapters.LocalDateAdapter.class,
                 io.github.project.openubl.xbuilder.content.jaxb.adapters.LocalTimeAdapter.class,
 
@@ -483,12 +482,12 @@ class QuarkusXbuilderProcessor {
                 io.github.project.openubl.xbuilder.content.jaxb.models.XMLSupplierSunat.class,
                 io.github.project.openubl.xbuilder.content.jaxb.models.XMLVoidedDocuments.class,
                 io.github.project.openubl.xbuilder.content.jaxb.models.XMLVoidedDocumentsLine.class
-        );
+        ).methods(true).fields(true).build();
     }
 
     @BuildStep
     ReflectiveClassBuildItem mapstruct() {
-        return new ReflectiveClassBuildItem(true, false,
+        return ReflectiveClassBuildItem.builder(
                 "io.github.project.openubl.xbuilder.content.jaxb.mappers.common.ClienteMapperImpl",
                 "io.github.project.openubl.xbuilder.content.jaxb.mappers.common.ContactoMapperImpl",
                 "io.github.project.openubl.xbuilder.content.jaxb.mappers.common.DireccionMapperImpl",
@@ -504,7 +503,7 @@ class QuarkusXbuilderProcessor {
                 "io.github.project.openubl.xbuilder.content.jaxb.mappers.RetentionMapperImpl",
                 "io.github.project.openubl.xbuilder.content.jaxb.mappers.SummaryDocumentsMapperImpl",
                 "io.github.project.openubl.xbuilder.content.jaxb.mappers.VoidedDocumentsMapperImpl"
-        );
+        ).methods(true).fields(false).build();
     }
 
     @BuildStep

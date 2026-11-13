@@ -44,9 +44,7 @@ class QuarkusXsenderProcessor {
 
     @BuildStep
     ReflectiveClassBuildItem projectReflection() {
-        return new ReflectiveClassBuildItem(
-                true,
-                false,
+        return ReflectiveClassBuildItem.builder(
                 io.github.project.openubl.xsender.Constants.class,
                 io.github.project.openubl.xsender.camel.routes.CxfEndpointConfiguration.class,
                 io.github.project.openubl.xsender.camel.routes.RestSunatErrorResponseProcessor.class,
@@ -107,33 +105,27 @@ class QuarkusXsenderProcessor {
                 io.github.project.openubl.xsender.sunat.catalog.Catalog1.class,
                 io.github.project.openubl.xsender.utils.ByteUtils.class,
                 io.github.project.openubl.xsender.utils.CdrReader.class
-        );
+        ).methods(true).fields(false).build();
     }
 
     @BuildStep
     ReflectiveClassBuildItem soapReflection() {
-        return new ReflectiveClassBuildItem(
-                true,
-                false,
+        return ReflectiveClassBuildItem.builder(
                 org.apache.cxf.binding.soap.SoapFault.class,
                 org.apache.cxf.transport.http.HTTPException.class
-        );
+        ).methods(true).fields(false).build();
     }
 
     @BuildStep
     ReflectiveClassBuildItem restReflection() {
-        return new ReflectiveClassBuildItem(
-                true,
-                false,
+        return ReflectiveClassBuildItem.builder(
                 org.apache.camel.http.base.HttpOperationFailedException.class
-        );
+        ).methods(true).fields(false).build();
     }
 
     @BuildStep
     ReflectiveClassBuildItem sunatReflection() {
-        return new ReflectiveClassBuildItem(
-                true,
-                true,
+        return ReflectiveClassBuildItem.builder(
                 service.sunat.gob.pe.billservice.BillService.class,
                 service.sunat.gob.pe.billservice.StatusResponse.class,
                 service.sunat.gob.pe.billservice.GetStatus.class,
@@ -161,6 +153,6 @@ class QuarkusXsenderProcessor {
                 service.sunat.gob.pe.billvalidservice.VerificaCPEarchivo.class,
                 service.sunat.gob.pe.billvalidservice.VerificaCPEarchivoResponse.class,
                 service.sunat.gob.pe.billvalidservice.ObjectFactory.class
-        );
+        ).methods(true).fields(true).build();
     }
 }

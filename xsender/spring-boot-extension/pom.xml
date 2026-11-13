@@ -22,7 +22,6 @@
     </modules>
 
     <properties>
-        <failsafe-plugin.version>3.1.2</failsafe-plugin.version>
         <main.basedir>${maven.multiModuleProjectDirectory}</main.basedir>
     </properties>
 

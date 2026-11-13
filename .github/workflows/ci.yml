@@ -66,7 +66,7 @@ jobs:
     strategy:
       matrix:
         module: [ xbuilder, xsender ]
-        quarkus-version: [ 3.27.6.1, 3.33.4.2 ]
+        quarkus-version: [ 3.33.4.2, 3.39.5 ]
       fail-fast: false
     steps:
       - uses: actions/checkout@v7.0.1

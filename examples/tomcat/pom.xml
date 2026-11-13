@@ -17,7 +17,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <surefire.plugin.version>3.0.0</surefire.plugin.version>
+        <surefire.plugin.version>3.6.1</surefire.plugin.version>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <tomcat.id>9x</tomcat.id>
@@ -48,7 +48,7 @@
             <plugin>
                 <groupId>org.codehaus.cargo</groupId>
                 <artifactId>cargo-maven3-plugin</artifactId>
-                <version>1.9.10</version>
+                <version>1.10.30</version>
                 <configuration>
                     <container>
                         <containerId>tomcat${tomcat.id}</containerId>
@@ -74,7 +74,7 @@
             </plugin>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.13.0</version>
+                <version>3.16.0</version>
                 <configuration>
                     <release>11</release>
                     <source>11</source>

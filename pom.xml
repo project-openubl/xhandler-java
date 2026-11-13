@@ -18,20 +18,20 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <compiler-plugin.version>3.13.0</compiler-plugin.version>
-        <surefire-plugin.version>3.3.1</surefire-plugin.version>
-        <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
-        <maven-javadoc-plugin.version>3.8.0</maven-javadoc-plugin.version>
+        <compiler-plugin.version>3.16.0</compiler-plugin.version>
+        <surefire-plugin.version>3.6.1</surefire-plugin.version>
+        <maven-source-plugin.version>3.4.0</maven-source-plugin.version>
+        <maven-javadoc-plugin.version>3.12.0</maven-javadoc-plugin.version>
         <maven-gpg-plugin.version>3.1.0</maven-gpg-plugin.version>
 
         <license.dir>${basedir}</license.dir>
 
-        <lombok.version>1.18.30</lombok.version>
-        <mapstruct.version>1.5.5.Final</mapstruct.version>
-        <xmlunit.version>2.10.0</xmlunit.version>
+        <lombok.version>1.18.48</lombok.version>
+        <mapstruct.version>1.6.3</mapstruct.version>
+        <xmlunit.version>2.14.0</xmlunit.version>
 
-        <quarkus.version>3.4.1</quarkus.version>
-        <camel.version>4.0.0</camel.version>
+        <quarkus.version>3.40.1.1</quarkus.version>
+        <camel.version>4.23.0</camel.version>
         <springboot.version>3.0.6</springboot.version>
     </properties>
 
@@ -91,7 +91,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-deploy-plugin</artifactId>
-                    <version>3.0.0</version>
+                    <version>3.2.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -167,7 +167,7 @@
                     <plugin>
                         <groupId>org.jacoco</groupId>
                         <artifactId>jacoco-maven-plugin</artifactId>
-                        <version>0.8.10</version>
+                        <version>0.8.16</version>
                         <executions>
                             <execution>
                                 <id>prepare-agent</id>

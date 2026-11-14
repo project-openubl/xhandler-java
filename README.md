@@ -78,7 +78,7 @@ Python, ejecutado en la JVM como WebAssembly compilado a bytecode
 XSender envía tus comprobantes firmados a la SUNAT (o a un OSE): servicios SOAP (`billService`, consulta y validación) y la API REST de guías de remisión (con su token OAuth).
 
 ### Características
-- **Sin dependencias**: solo usa el JDK (`java.net.http`, StAX, `java.util.zip`). Funciona en Java SE, Spring Boot, Quarkus (JVM y nativo), WildFly/Jakarta EE, Tomcat, etc.
+- **Sin código nativo**: el núcleo xhandler corre en la JVM (Chicory) y el envío usa `java.net.http`; solo depende de Jackson y Chicory. Funciona en Java SE, Spring Boot, Quarkus (JVM y nativo), WildFly/Jakarta EE, Tomcat, etc.
 - **Automático**: lee el XML para decidir el nombre del archivo, el servicio y la operación (`sendBill`, `sendSummary`, guía de remisión REST...).
 - **Respuestas claras**: CDR, ticket o error de la SUNAT llegan como un `SunatResponse`; los fallos de red como `XSenderException`.
 
@@ -86,10 +86,7 @@ XSender envía tus comprobantes firmados a la SUNAT (o a un OSE): servicios SOAP
 
 ```java
 XSender xsender = new XSender(
-        CompanyURLs.builder()
-                .invoice("https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService")
-                .perceptionRetention("https://e-beta.sunat.gob.pe/ol-ti-itemision-otroscpe-gem-beta/billService")
-                .build(),
+        CompanyURLs.beta(),
         CompanyCredentials.builder()
                 .username("12345678959MODDATOS")
                 .password("MODDATOS")
@@ -103,7 +100,7 @@ if (response.isTicket()) {
 System.out.println(response.getStatus());           // ACEPTADO, RECHAZADO, EXCEPCION, EN_PROCESO...
 ```
 
-Para guías de remisión agrega `.despatch("https://api-cpe.sunat.gob.pe/v1/contribuyente/gem")` a las URLs y `clientId`/`clientSecret` a las credenciales; la SUNAT no ofrece un entorno beta para ellas, así que necesitas credenciales reales.
+Para guías de remisión usa `CompanyURLs.production()` (o agrega `.despatch("https://api-cpe.sunat.gob.pe/v1/contribuyente/gem")` a tus URLs) y `clientId`/`clientSecret` a las credenciales; la SUNAT no ofrece un entorno beta para ellas, así que necesitas credenciales reales.
 
 Si envías comprobantes de varias empresas, comparte un solo `SunatClient` (conexiones y tokens) entre sus `XSender`: `new XSender(urls, credentials, sunatClient)`.
 

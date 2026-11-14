@@ -11,7 +11,9 @@ import org.junit.jupiter.api.Test;
 
 import java.net.URISyntaxException;
 import java.net.http.HttpClient;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -71,6 +73,19 @@ class XSenderTest {
         assertEquals(Status.ACEPTADO, verified.getStatus());
         assertEquals("urn:getStatus", sunat.lastRequest("/invoice").header("SOAPAction"));
         assertTrue(sunat.lastRequest("/invoice").body().contains("<ticket>1703154974517</ticket>"));
+    }
+
+    @Test
+    void sendsInvoicesTogetherWithSendPack() throws Exception {
+        sunat.respondXml("/invoice", 200, "/sunat/bill_service_response_ticket.xml");
+        byte[] invoice = Files.readAllBytes(xml("/xmls/invoice_factura.xml"));
+
+        SunatResponse response = xsender.sendPack("12345678912-20200328-1", List.of(invoice));
+
+        assertEquals("1703154974517", response.getSunat().getTicket());
+        FakeSunat.Request request = sunat.lastRequest("/invoice");
+        assertEquals("urn:sendPack", request.header("SOAPAction"));
+        assertTrue(request.body().contains("<fileName>12345678912-20200328-1.zip</fileName>"));
     }
 
     @Test

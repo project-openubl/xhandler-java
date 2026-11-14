@@ -16,6 +16,7 @@ import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Base64;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -54,7 +55,10 @@ public class XSender {
      * @return the CDR, a ticket to {@link #verifyTicket verify} later, or SUNAT's error
      */
     public SunatResponse send(byte[] xml) {
-        JsonNode prepared = core("prepare_send_file", xml);
+        return send(core("prepare_send_file", xmlInput(xml)));
+    }
+
+    private SunatResponse send(JsonNode prepared) {
         JsonNode file = prepared.get("file");
         ZipFile zipFile = new ZipFile(Base64.getDecoder().decode(file.get("zip").asText()), file.get("filename").asText());
         return sunatClient.sendFile(Destinations.sendFile(prepared.get("send_target")), zipFile, credentials);
@@ -65,11 +69,26 @@ public class XSender {
     }
 
     /**
+     * Sends several invoices in one zip (sendPack).
+     *
+     * @param name name of the zip, without ".zip"
+     * @return a ticket to verify later, or SUNAT's error
+     */
+    public SunatResponse sendPack(String name, List<byte[]> xmls) {
+        Map<String, Object> input = Map.of(
+                "name", name,
+                "files", xmls.stream().map(Base64.getEncoder()::encodeToString).toList(),
+                "urls", urlsJson()
+        );
+        return send(core("prepare_send_pack", input));
+    }
+
+    /**
      * @param xml    the document the ticket was given for
      * @param ticket returned when the document was sent
      */
     public SunatResponse verifyTicket(byte[] xml, String ticket) {
-        BillServiceDestination destination = Destinations.verifyTicket(core("verify_ticket_target", xml));
+        BillServiceDestination destination = Destinations.verifyTicket(core("verify_ticket_target", xmlInput(xml)));
         return sunatClient.verifyTicket(destination, ticket, credentials);
     }
 
@@ -77,15 +96,22 @@ public class XSender {
         return verifyTicket(readAllBytes(xml), ticket);
     }
 
-    /** Asks the xhandler core how the document goes to SUNAT */
-    private JsonNode core(String op, byte[] xml) {
-        Map<String, Object> urls = Map.of(
-                "invoice", Objects.toString(this.urls.getInvoice(), ""),
-                "perception_retention", Objects.toString(this.urls.getPerceptionRetention(), ""),
-                "despatch", Objects.toString(this.urls.getDespatch(), "")
+    private Map<String, Object> xmlInput(byte[] xml) {
+        return Map.of("xml", Base64.getEncoder().encodeToString(xml), "urls", urlsJson());
+    }
+
+    private Map<String, Object> urlsJson() {
+        return Map.of(
+                "invoice", Objects.toString(urls.getInvoice(), ""),
+                "perception_retention", Objects.toString(urls.getPerceptionRetention(), ""),
+                "despatch", Objects.toString(urls.getDespatch(), "")
         );
+    }
+
+    /** Asks the xhandler core how the documents go to SUNAT */
+    private static JsonNode core(String op, Map<String, Object> input) {
         try {
-            return Xhandler.invoke(op, Map.of("xml", Base64.getEncoder().encodeToString(xml), "urls", urls));
+            return Xhandler.invoke(op, input);
         } catch (XhandlerException e) {
             throw new XSenderException("Could not send the document: " + e.getMessage(), e);
         }

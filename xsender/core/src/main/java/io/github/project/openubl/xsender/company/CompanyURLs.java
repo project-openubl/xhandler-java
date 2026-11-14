@@ -12,4 +12,27 @@ public class CompanyURLs {
     private final String invoice;
     private final String perceptionRetention;
     private final String despatch;
+
+    /**
+     * SUNAT beta (testing) services. SUNAT has no beta for guías de remisión, so
+     * {@code despatch} is null.
+     */
+    public static CompanyURLs beta() {
+        return new CompanyURLs(
+                "https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService",
+                "https://e-beta.sunat.gob.pe/ol-ti-itemision-otroscpe-gem-beta/billService",
+                null
+        );
+    }
+
+    /**
+     * SUNAT production services.
+     */
+    public static CompanyURLs production() {
+        return new CompanyURLs(
+                "https://e-factura.sunat.gob.pe/ol-ti-itcpfegem/billService",
+                "https://e-factura.sunat.gob.pe/ol-ti-itemision-otroscpe-gem/billService",
+                "https://api-cpe.sunat.gob.pe/v1/contribuyente/gem"
+        );
+    }
 }

@@ -27,7 +27,7 @@ public enum ErrorKind {
     /** The answer of SUNAT can't be read, e.g. an HTML error page. */
     @JsonProperty("response")
     RESPONSE,
-    /** SUNAT's front proxy refused the request (rate limiting): retry it after a pause. */
+    /** SUNAT's front proxy kept refusing the request (rate limiting); it was already retried. */
     @JsonProperty("rate_limited")
     RATE_LIMITED
 }

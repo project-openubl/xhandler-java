@@ -1,7 +1,7 @@
 # RUST_REPO is a checkout of xhandler-rust; `make sync` copies what its
 # `make -C xhandler-wasm dist` produced: the WebAssembly module, the generated
 # models and the conformance corpus.
-RUST_REPO ?= ../xhandler-rust-wasm
+RUST_REPO ?= ../xhandler-rust
 DIST := $(RUST_REPO)/dist
 CORE := xhandler-core/src/main
 MODELS := xbuilder/core/src/main/java/io/github/project/openubl/xbuilder/models

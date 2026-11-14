@@ -48,11 +48,14 @@ public class Detalle {
     private CodigoGs1 codigoGs1;
 
     /**
-     * Precio + bool. True si el precio incluye impuestos, false si no incluye impuestos
+     * Precio unitario sin impuestos; se calcula de `precio_con_impuestos` si no se da
      */
     @JsonProperty("precio")
     private BigDecimal precio;
 
+    /**
+     * Precio unitario con impuestos; se calcula de `precio` si no se da
+     */
     @JsonProperty("precio_con_impuestos")
     private BigDecimal precioConImpuestos;
 

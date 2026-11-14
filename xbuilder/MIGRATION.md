@@ -23,22 +23,41 @@ The models are generated from the core and live in
 is the one of the Rust core (`snake_case`), so documents can be stored or exchanged with
 the other libraries as `{"kind": "Invoice", "spec": {...}}`.
 
+The abstract bases (`Document`, `SalesDocument`, `Note`, `SunatDocument`,
+`BasePercepcionRetencion`) are gone: every document implements the `Document`
+interface, and `Reversion` no longer extends `VoidedDocuments` (it has the same fields).
+
 | 5.x | 6.0 |
 |---|---|
 | `content.models.standard.general.Invoice`, `CreditNote`, `DebitNote` | `models.Invoice`, `CreditNote`, `DebitNote` |
-| `.serie("F001").numero(1)` | `.serieNumero("F001-1")` |
-| `.detalle(d1).detalle(d2)` | `.detalles(List.of(d1, d2))` |
+| `.serie("F001").numero(1)` (Invoice, notes, DespatchAdvice) | `.serieNumero("F001-1")`; Perception and Retention keep `serie` + `numero`; summaries, voided documents and reversions only have `numero` |
+| `.detalle(d1).detalle(d2)`, `.cargo(..)`, `.guia(..)`... (`@Singular`) | `.detalles(List.of(d1, d2))`, `.cargos(..)`, `.guias(..)`: lists only |
 | `DocumentoVentaDetalle` | `Detalle` |
+| `Detalle.precioConImpuestos(true)`: a flag, "`precio` includes taxes" | `precioConImpuestos(BigDecimal)`: the price with taxes. Give `precio` or `precioConImpuestos`; the other one is computed |
 | `tasaIgv`, `tasaIcb`, `tasaIsc`, `tasaIvap` | `igvTasa`, `icbTasa`, `iscTasa`, `ivapTasa` |
 | `formaDePago` / `FormaDePago` / `CuotaDePago` | `formaPago` / `FormaPago` / `CuotaPago` |
+| `FormaPago.tipo` (`String`) | the enum `TipoFormaPago` (`CREDITO`, `CONTADO`) |
+| `Detraccion.medioDePago` | `medioPago` |
 | `ordenDeCompra` | `ordenCompra` |
 | `sustentoDescripcion` (notes) | `descripcionSustento` |
-| `EmbededDespatch` | `GuiaEmbebida` |
-| `CargoDescuento` | `Cargo`, `Descuento` |
-| `standard.guia.*` (`Driver`, `Vehicle`, `Destino`, `GuiaItemAttribute`, `DocumentoBaja`...) | `Chofer`, `Vehiculo`, `Partida`, `DespatchAdviceAtributo`, `DespatchAdviceDocumentoBaja`... |
-| `sunat.resumen.Comprobante`, `ComprobanteValorVenta`, `ComprobanteImpuestos` | `SummaryDocumentsItemComprobante`, `SummaryDocumentsValorVenta`, `SummaryDocumentsImpuestos` |
+| `EmbededDespatch` | `GuiaEmbebida`, with `llegada` → `destino`, `nroLicencia` → `licencia`, `transpPlaca` → `placa`, `modTraslado` → `tipoModalidadTraslado`, `undPesoBruto` → `pesoBrutoUnidadMedida`; `transpCodeAuth` and `transpMarca` are removed |
+| `CargoDescuento` | `Cargo`, `Descuento`: `porcentaje` → `factor`, `tipoDescuento` → `tipo`, new `montoBase`, no `serieNumero`; `cargos` only exist in invoices |
+| `TotalImporteNote.importeConImpuestos` | removed |
+| `standard.guia.Driver`, `Vehicle` | `Chofer`, `Vehiculo` |
+| `standard.guia.Comprador`, `Tercero` | `Destinatario` |
+| `standard.guia.Proveedor` | the shared `Proveedor` |
+| `standard.guia.Destino` | `Partida` (`Envio.destino` keeps its name) |
+| `standard.guia.GuiaItemAttribute` (`code`, `name`, `value`) | `DespatchAdviceAtributo` (`codigo`, `nombre`, `valor`) |
+| `standard.guia.DocumentoBaja`, `DocumentoRelacionado` (`tipoDocumento`) | `DespatchAdviceDocumentoBaja` (`tipoComprobante`), `DespatchAdviceDocumentoRelacionado` |
+| `Guia.tipoDocumento` | `tipoComprobante` |
+| `numeroRegistroMTC`, `Envio.numeroDeBultos` | `numeroRegistroMtc`, `numeroBultos` |
+| `sunat.resumen.Comprobante`, `ComprobanteValorVenta`, `ComprobanteImpuestos`, `ComprobanteAfectado` | `SummaryDocumentsItemComprobante`, `SummaryDocumentsValorVenta`, `SummaryDocumentsImpuestos`, `SummaryDocumentsComprobanteAfectado` |
+| `sunat.resumen.SummaryPerception` (`codReg`, `tasa`, `mtoBase`, `mto`, `mtoTotal`) | `SummaryDocumentsPercepcion` (`tipoRegimen`, `porcentaje`, `montoBase`, `monto`, `montoTotal`) |
+| The client of a summary item | `SummaryDocumentsCliente`, without `nombre` |
 | `sunat.percepcionretencion.ComprobanteAfectado` | `PercepcionRetencionComprobanteAfectado` |
-| `Catalog6.RUC.toString()` and the other catalog enums | the codes as strings, e.g. `"6"` |
+| `PercepcionRetencionOperacion.comprobante` | `comprobanteAfectado` |
+| Perception / Retention `observacion` | `observaciones` |
+| `Catalog6.RUC.toString()` and the other catalog enums | the codes as strings, e.g. `"6"` (only `FormaPago.tipo` is an enum) |
 | Numbers (`numero`) `Integer` | `Long` |
 
 ## Signing
@@ -54,7 +73,8 @@ The signature id is always `PROJECT-OPENUBL-SIGN`, the one the generated XML ref
 
 ## XSender
 
-`XSender` and `SunatClient` keep their API (see [the XSender guide](../xsender/MIGRATION.md))
-and now use the same core: a guía de remisión REST error has its details in
+`XSender` and `SunatClient` keep their API (see [the XSender guide](../xsender/MIGRATION.md)),
+gain `XSender.sendPack`, `CompanyURLs.beta()` / `production()` and
+`XSenderException.getKind()`, and now use the same core: a guía de remisión REST error has its details in
 `metadata.description` (`"Unprocessable Entity; 1033 - ..."`) instead of
 `metadata.notes`.

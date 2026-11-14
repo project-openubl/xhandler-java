@@ -34,10 +34,7 @@ class E2ETest {
         byte[] signed = new XSigner().sign(xml.getBytes(StandardCharsets.UTF_8), testKeyPair());
 
         XSender xsender = new XSender(
-                CompanyURLs.builder()
-                        .invoice("https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService")
-                        .perceptionRetention("https://e-beta.sunat.gob.pe/ol-ti-itemision-otroscpe-gem-beta/billService")
-                        .build(),
+                CompanyURLs.beta(),
                 CompanyCredentials.builder().username("12345678959MODDATOS").password("MODDATOS").build()
         );
         SunatResponse response = xsender.send(signed);

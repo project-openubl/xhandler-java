@@ -1,0 +1,53 @@
+{
+  "input": {
+    "document": {
+      "kind": "Retention",
+      "spec": {
+        "cliente": {
+          "contacto": null,
+          "direccion": null,
+          "nombre": "Carlos Feria",
+          "numero_documento_identidad": "12121212121",
+          "tipo_documento_identidad": "6"
+        },
+        "documento_id": null,
+        "fecha_emision": "2022-01-31",
+        "firmante": null,
+        "importe_total_pagado": "200",
+        "importe_total_retenido": "10",
+        "moneda": null,
+        "numero": 1,
+        "observaciones": "Retencion de prueba",
+        "operacion": {
+          "comprobante_afectado": {
+            "fecha_emision": "2022-01-31",
+            "importe_total": "210",
+            "moneda": "PEN",
+            "serie_numero": "F001-1",
+            "tipo_comprobante": "01"
+          },
+          "fecha_operacion": "2022-01-31",
+          "importe_operacion": "100",
+          "numero_operacion": 1,
+          "tipo_cambio": null
+        },
+        "proveedor": {
+          "contacto": null,
+          "direccion": null,
+          "nombre_comercial": null,
+          "razon_social": "Softgreen S.A.C.",
+          "ruc": "12345678912"
+        },
+        "serie": "R001",
+        "tipo_regimen": "01",
+        "tipo_regimen_porcentaje": "3"
+      }
+    },
+    "defaults": {
+      "fecha_emision": "2019-12-24"
+    }
+  },
+  "expected": {
+    "ok": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Retention xmlns=\"urn:sunat:names:specification:ubl:peru:schema:xsd:Retention-1\"\n           xmlns:cac=\"urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2\"\n           xmlns:cbc=\"urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2\"\n           xmlns:ccts=\"urn:un:unece:uncefact:documentation:2\"\n           xmlns:ds=\"http://www.w3.org/2000/09/xmldsig#\"\n           xmlns:ext=\"urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2\"\n           xmlns:qdt=\"urn:oasis:names:specification:ubl:schema:xsd:QualifiedDatatypes-2\"\n           xmlns:sac=\"urn:sunat:names:specification:ubl:peru:schema:xsd:SunatAggregateComponents-1\"\n           xmlns:udt=\"urn:un:unece:uncefact:data:specification:UnqualifiedDataTypesSchemaModule:2\"\n           xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n    <ext:UBLExtensions>\n        <ext:UBLExtension>\n            <ext:ExtensionContent />\n        </ext:UBLExtension>\n    </ext:UBLExtensions>\n    <cbc:UBLVersionID>2.0</cbc:UBLVersionID>\n    <cbc:CustomizationID>1.0</cbc:CustomizationID>\n    <cac:Signature>\n        <cbc:ID>12345678912</cbc:ID>\n        <cac:SignatoryParty>\n            <cac:PartyIdentification>\n                <cbc:ID>12345678912</cbc:ID>\n            </cac:PartyIdentification>\n            <cac:PartyName>\n                <cbc:Name><![CDATA[Softgreen S.A.C.]]></cbc:Name>\n            </cac:PartyName>\n        </cac:SignatoryParty>\n        <cac:DigitalSignatureAttachment>\n            <cac:ExternalReference>\n                <cbc:URI>#PROJECT-OPENUBL-SIGN</cbc:URI>\n            </cac:ExternalReference>\n        </cac:DigitalSignatureAttachment>\n    </cac:Signature>\n    <cbc:ID>R001-1</cbc:ID>\n    <cbc:IssueDate>2022-01-31</cbc:IssueDate>\n    <cac:AgentParty>\n        <cac:PartyIdentification>\n            <cbc:ID schemeID=\"6\">12345678912</cbc:ID>\n        </cac:PartyIdentification>\n        <cac:PartyLegalEntity>\n            <cbc:RegistrationName><![CDATA[Softgreen S.A.C.]]></cbc:RegistrationName>\n        </cac:PartyLegalEntity>\n    </cac:AgentParty>\n    <cac:ReceiverParty>\n        <cac:PartyIdentification>\n            <cbc:ID schemeID=\"6\">12121212121</cbc:ID>\n        </cac:PartyIdentification>\n        <cac:PartyLegalEntity>\n            <cbc:RegistrationName><![CDATA[Carlos Feria]]></cbc:RegistrationName>\n        </cac:PartyLegalEntity>\n    </cac:ReceiverParty>\n    <sac:SUNATRetentionSystemCode>01</sac:SUNATRetentionSystemCode>\n    <sac:SUNATRetentionPercent>3</sac:SUNATRetentionPercent>\n    <cbc:Note><![CDATA[Retencion de prueba]]></cbc:Note>\n    <cbc:TotalInvoiceAmount currencyID=\"PEN\">10</cbc:TotalInvoiceAmount>\n    <sac:SUNATTotalPaid currencyID=\"PEN\">200</sac:SUNATTotalPaid>\n    <sac:SUNATRetentionDocumentReference>\n        <cbc:ID schemeID=\"01\">F001-1</cbc:ID>\n        <cbc:IssueDate>2022-01-31</cbc:IssueDate>\n        <cbc:TotalInvoiceAmount currencyID=\"PEN\">210</cbc:TotalInvoiceAmount>\n        <cac:Payment>\n            <cbc:ID>1</cbc:ID>\n            <cbc:PaidAmount currencyID=\"PEN\">100</cbc:PaidAmount>\n            <cbc:PaidDate>2022-01-31</cbc:PaidDate>\n        </cac:Payment>\n        <sac:SUNATRetentionInformation>\n            <sac:SUNATRetentionAmount currencyID=\"PEN\">10</sac:SUNATRetentionAmount>\n            <sac:SUNATRetentionDate>2022-01-31</sac:SUNATRetentionDate>\n            <sac:SUNATNetTotalPaid currencyID=\"PEN\">200</sac:SUNATNetTotalPaid>\n        </sac:SUNATRetentionInformation>\n    </sac:SUNATRetentionDocumentReference>\n</Retention>\n"
+  }
+}

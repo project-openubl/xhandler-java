@@ -1,0 +1,35 @@
+{
+  "input": {
+    "document": {
+      "kind": "Invoice",
+      "spec": {
+        "serie_numero": "F001-1",
+        "proveedor": {
+          "ruc": "12345678912",
+          "razon_social": "Softgreen S.A.C."
+        },
+        "cliente": {
+          "tipo_documento_identidad": "6",
+          "numero_documento_identidad": "12121212121",
+          "nombre": "Carlos Feria"
+        },
+        "detalles": [
+          {
+            "descripcion": "Item",
+            "cantidad": "1",
+            "precio": "100",
+            "igv_tipo": "XX"
+          }
+        ]
+      }
+    },
+    "defaults": {
+      "fecha_emision": "2019-12-24"
+    }
+  },
+  "expected": {
+    "error": {
+      "kind": "validation"
+    }
+  }
+}

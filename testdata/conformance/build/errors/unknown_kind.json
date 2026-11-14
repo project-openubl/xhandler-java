@@ -1,0 +1,16 @@
+{
+  "input": {
+    "document": {
+      "kind": "Nope",
+      "spec": {}
+    },
+    "defaults": {
+      "fecha_emision": "2019-12-24"
+    }
+  },
+  "expected": {
+    "error": {
+      "kind": "invalid_input"
+    }
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "input": {
+    "document": {
+      "kind": "SummaryDocuments",
+      "spec": {
+        "comprobantes": [
+          {
+            "comprobante": {
+              "cliente": {
+                "numero_documento_identidad": "12345678",
+                "tipo_documento_identidad": "1"
+              },
+              "comprobante_afectado": null,
+              "impuestos": {
+                "icb": null,
+                "igv": "0",
+                "igv_tasa": null,
+                "isc": null,
+                "ivap": null,
+                "otros": null
+              },
+              "moneda": null,
+              "percepcion": null,
+              "serie_numero": "B001-1",
+              "tipo_comprobante": "03",
+              "valor_venta": {
+                "exonerado": "0",
+                "gratuito": null,
+                "gravado": "0",
+                "importe_total": "100",
+                "inafecto": null,
+                "otros_cargos": null
+              }
+            },
+            "tipo_operacion": "3"
+          }
+        ],
+        "documento_id": null,
+        "fecha_emision": "2019-12-24",
+        "fecha_emision_comprobantes": "2019-12-22",
+        "firmante": null,
+        "moneda": null,
+        "numero": 1,
+        "proveedor": {
+          "contacto": null,
+          "direccion": null,
+          "nombre_comercial": null,
+          "razon_social": "Softgreen S.A.C.",
+          "ruc": "12345678912"
+        }
+      }
+    },
+    "defaults": {
+      "fecha_emision": "2019-12-24"
+    }
+  },
+  "expected": {
+    "ok": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<SummaryDocuments xmlns=\"urn:sunat:names:specification:ubl:peru:schema:xsd:SummaryDocuments-1\"\n                  xmlns:cac=\"urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2\"\n                  xmlns:cbc=\"urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2\"\n                  xmlns:ccts=\"urn:un:unece:uncefact:documentation:2\" xmlns:ds=\"http://www.w3.org/2000/09/xmldsig#\"\n                  xmlns:ext=\"urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2\"\n                  xmlns:ns11=\"urn:sunat:names:specification:ubl:peru:schema:xsd:Perception-1\"\n                  xmlns:qdt=\"urn:oasis:names:specification:ubl:schema:xsd:QualifiedDatatypes-2\"\n                  xmlns:sac=\"urn:sunat:names:specification:ubl:peru:schema:xsd:SunatAggregateComponents-1\"\n                  xmlns:udt=\"urn:un:unece:uncefact:data:specification:UnqualifiedDataTypesSchemaModule:2\"\n                  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n    <ext:UBLExtensions>\n        <ext:UBLExtension>\n            <ext:ExtensionContent />\n        </ext:UBLExtension>\n    </ext:UBLExtensions>\n    <cbc:UBLVersionID>2.0</cbc:UBLVersionID>\n    <cbc:CustomizationID>1.1</cbc:CustomizationID>\n    <cbc:ID>RC-20191224-1</cbc:ID>\n    <cbc:ReferenceDate>2019-12-22</cbc:ReferenceDate>\n    <cbc:IssueDate>2019-12-24</cbc:IssueDate>\n    <cac:Signature>\n        <cbc:ID>12345678912</cbc:ID>\n        <cac:SignatoryParty>\n            <cac:PartyIdentification>\n                <cbc:ID>12345678912</cbc:ID>\n            </cac:PartyIdentification>\n            <cac:PartyName>\n                <cbc:Name><![CDATA[Softgreen S.A.C.]]></cbc:Name>\n            </cac:PartyName>\n        </cac:SignatoryParty>\n        <cac:DigitalSignatureAttachment>\n            <cac:ExternalReference>\n                <cbc:URI>#PROJECT-OPENUBL-SIGN</cbc:URI>\n            </cac:ExternalReference>\n        </cac:DigitalSignatureAttachment>\n    </cac:Signature>\n    <cac:AccountingSupplierParty>\n        <cbc:CustomerAssignedAccountID>12345678912</cbc:CustomerAssignedAccountID>\n        <cbc:AdditionalAccountID>6</cbc:AdditionalAccountID>\n        <cac:Party>\n            <cac:PartyLegalEntity>\n                <cbc:RegistrationName><![CDATA[Softgreen S.A.C.]]></cbc:RegistrationName>\n            </cac:PartyLegalEntity>\n        </cac:Party>\n    </cac:AccountingSupplierParty>\n    <sac:SummaryDocumentsLine>\n        <cbc:LineID>1</cbc:LineID>\n        <cbc:DocumentTypeCode>03</cbc:DocumentTypeCode>\n        <cbc:ID>B001-1</cbc:ID>\n        <cac:AccountingCustomerParty>\n            <cbc:CustomerAssignedAccountID>12345678</cbc:CustomerAssignedAccountID>\n            <cbc:AdditionalAccountID>1</cbc:AdditionalAccountID>\n        </cac:AccountingCustomerParty>\n        <cac:Status>\n            <cbc:ConditionCode>3</cbc:ConditionCode>\n        </cac:Status>\n        <sac:TotalAmount currencyID=\"PEN\">100</sac:TotalAmount>\n        <cac:TaxTotal>\n            <cbc:TaxAmount currencyID=\"PEN\">0</cbc:TaxAmount>\n            <cac:TaxSubtotal>\n                <cbc:TaxAmount currencyID=\"PEN\">0</cbc:TaxAmount>\n                <cac:TaxCategory>\n                    <cbc:Percent>18</cbc:Percent>\n                    <cac:TaxScheme>\n                        <cbc:ID>1000</cbc:ID>\n                        <cbc:Name>IGV</cbc:Name>\n                        <cbc:TaxTypeCode>VAT</cbc:TaxTypeCode>\n                    </cac:TaxScheme>\n                </cac:TaxCategory>\n            </cac:TaxSubtotal>\n        </cac:TaxTotal>\n    </sac:SummaryDocumentsLine>\n</SummaryDocuments>\n"
+  }
+}

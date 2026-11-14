@@ -1,0 +1,98 @@
+{
+  "input": {
+    "document": {
+      "kind": "Retention",
+      "spec": {
+        "cliente": {
+          "contacto": null,
+          "direccion": null,
+          "nombre": "Carlos Feria",
+          "numero_documento_identidad": "12121212121",
+          "tipo_documento_identidad": "6"
+        },
+        "documento_id": null,
+        "fecha_emision": "2022-01-31",
+        "firmante": null,
+        "importe_total_pagado": "200",
+        "importe_total_retenido": "10",
+        "moneda": null,
+        "numero": 1,
+        "observaciones": "Retencion de prueba",
+        "operacion": {
+          "comprobante_afectado": {
+            "fecha_emision": "2022-01-31",
+            "importe_total": "210",
+            "moneda": "PEN",
+            "serie_numero": "F001-1",
+            "tipo_comprobante": "01"
+          },
+          "fecha_operacion": "2022-01-31",
+          "importe_operacion": "100",
+          "numero_operacion": 1,
+          "tipo_cambio": null
+        },
+        "proveedor": {
+          "contacto": null,
+          "direccion": null,
+          "nombre_comercial": null,
+          "razon_social": "Softgreen S.A.C.",
+          "ruc": "12345678912"
+        },
+        "serie": "R001",
+        "tipo_regimen": "01",
+        "tipo_regimen_porcentaje": "3"
+      }
+    },
+    "defaults": {
+      "fecha_emision": "2019-12-24"
+    }
+  },
+  "expected": {
+    "ok": {
+      "kind": "Retention",
+      "spec": {
+        "serie": "R001",
+        "numero": 1,
+        "fecha_emision": "2022-01-31",
+        "moneda": "PEN",
+        "proveedor": {
+          "ruc": "12345678912",
+          "razon_social": "Softgreen S.A.C.",
+          "nombre_comercial": null,
+          "direccion": null,
+          "contacto": null
+        },
+        "cliente": {
+          "tipo_documento_identidad": "6",
+          "numero_documento_identidad": "12121212121",
+          "nombre": "Carlos Feria",
+          "direccion": null,
+          "contacto": null
+        },
+        "firmante": {
+          "ruc": "12345678912",
+          "razon_social": "Softgreen S.A.C."
+        },
+        "tipo_regimen": "01",
+        "tipo_regimen_porcentaje": "3",
+        "importe_total_retenido": "10",
+        "importe_total_pagado": "200",
+        "observaciones": "Retencion de prueba",
+        "operacion": {
+          "numero_operacion": 1,
+          "fecha_operacion": "2022-01-31",
+          "importe_operacion": "100",
+          "comprobante_afectado": {
+            "tipo_comprobante": "01",
+            "serie_numero": "F001-1",
+            "fecha_emision": "2022-01-31",
+            "importe_total": "210",
+            "moneda": "PEN"
+          },
+          "tipo_cambio": null
+        },
+        "documento_id": "R001-1"
+      }
+    }
+  }
+}

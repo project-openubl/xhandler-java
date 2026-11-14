@@ -1,0 +1,41 @@
+{
+  "input": {
+    "document": {
+      "kind": "VoidedDocuments",
+      "spec": {
+        "comprobantes": [
+          {
+            "descripcion_sustento": "Mi sustento1",
+            "numero": 1,
+            "serie": "F001",
+            "tipo_comprobante": "01"
+          },
+          {
+            "descripcion_sustento": "Mi sustento2",
+            "numero": 2,
+            "serie": "F001",
+            "tipo_comprobante": "01"
+          }
+        ],
+        "documento_id": null,
+        "fecha_emision": "2022-01-31",
+        "fecha_emision_comprobantes": "2022-01-29",
+        "firmante": null,
+        "numero": 1,
+        "proveedor": {
+          "contacto": null,
+          "direccion": null,
+          "nombre_comercial": null,
+          "razon_social": "Softgreen S.A.C.",
+          "ruc": "12345678912"
+        }
+      }
+    },
+    "defaults": {
+      "fecha_emision": "2019-12-24"
+    }
+  },
+  "expected": {
+    "ok": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<VoidedDocuments xmlns=\"urn:sunat:names:specification:ubl:peru:schema:xsd:VoidedDocuments-1\"\n                 xmlns:cac=\"urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2\"\n                 xmlns:cbc=\"urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2\"\n                 xmlns:ds=\"http://www.w3.org/2000/09/xmldsig#\"\n                 xmlns:ext=\"urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2\"\n                 xmlns:sac=\"urn:sunat:names:specification:ubl:peru:schema:xsd:SunatAggregateComponents-1\"\n                 xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n    <ext:UBLExtensions>\n        <ext:UBLExtension>\n            <ext:ExtensionContent/>\n        </ext:UBLExtension>\n    </ext:UBLExtensions>\n    <cbc:UBLVersionID>2.0</cbc:UBLVersionID>\n    <cbc:CustomizationID>1.0</cbc:CustomizationID>\n    <cbc:ID>RA-20220131-1</cbc:ID>\n    <cbc:ReferenceDate>2022-01-29</cbc:ReferenceDate>\n    <cbc:IssueDate>2022-01-31</cbc:IssueDate>\n    <cac:Signature>\n        <cbc:ID>12345678912</cbc:ID>\n        <cac:SignatoryParty>\n            <cac:PartyIdentification>\n                <cbc:ID>12345678912</cbc:ID>\n            </cac:PartyIdentification>\n            <cac:PartyName>\n                <cbc:Name><![CDATA[Softgreen S.A.C.]]></cbc:Name>\n            </cac:PartyName>\n        </cac:SignatoryParty>\n        <cac:DigitalSignatureAttachment>\n            <cac:ExternalReference>\n                <cbc:URI>#PROJECT-OPENUBL-SIGN</cbc:URI>\n            </cac:ExternalReference>\n        </cac:DigitalSignatureAttachment>\n    </cac:Signature>\n    <cac:AccountingSupplierParty>\n        <cbc:CustomerAssignedAccountID>12345678912</cbc:CustomerAssignedAccountID>\n        <cbc:AdditionalAccountID>6</cbc:AdditionalAccountID>\n        <cac:Party>\n            <cac:PartyLegalEntity>\n                <cbc:RegistrationName><![CDATA[Softgreen S.A.C.]]></cbc:RegistrationName>\n            </cac:PartyLegalEntity>\n        </cac:Party>\n    </cac:AccountingSupplierParty>\n    <sac:VoidedDocumentsLine>\n        <cbc:LineID>1</cbc:LineID>\n        <cbc:DocumentTypeCode>01</cbc:DocumentTypeCode>\n        <sac:DocumentSerialID>F001</sac:DocumentSerialID>\n        <sac:DocumentNumberID>1</sac:DocumentNumberID>\n        <sac:VoidReasonDescription>Mi sustento1</sac:VoidReasonDescription>\n    </sac:VoidedDocumentsLine>\n    <sac:VoidedDocumentsLine>\n        <cbc:LineID>2</cbc:LineID>\n        <cbc:DocumentTypeCode>01</cbc:DocumentTypeCode>\n        <sac:DocumentSerialID>F001</sac:DocumentSerialID>\n        <sac:DocumentNumberID>2</sac:DocumentNumberID>\n        <sac:VoidReasonDescription>Mi sustento2</sac:VoidReasonDescription>\n    </sac:VoidedDocumentsLine>\n</VoidedDocuments>\n"
+  }
+}

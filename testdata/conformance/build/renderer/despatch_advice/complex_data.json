@@ -1,0 +1,137 @@
+{
+  "input": {
+    "document": {
+      "kind": "DespatchAdvice",
+      "spec": {
+        "comprador": {
+          "nombre": "Mi Cliente S.A.C.",
+          "numero_documento_identidad": "12345678",
+          "tipo_documento_identidad": "1"
+        },
+        "destinatario": {
+          "nombre": "Mi Cliente S.A.C.",
+          "numero_documento_identidad": "12345678",
+          "tipo_documento_identidad": "1"
+        },
+        "detalles": [
+          {
+            "atributos": [
+              {
+                "codigo": "1001",
+                "nombre": "Color",
+                "valor": "Rojo"
+              },
+              {
+                "codigo": "1002",
+                "nombre": "Marca",
+                "valor": "ToolMaster"
+              }
+            ],
+            "cantidad": "5.00",
+            "codigo": "ITEM-01",
+            "codigo_sunat": null,
+            "descripcion": "Caja de herramientas",
+            "unidad_medida": "NIU"
+          }
+        ],
+        "documento_baja": null,
+        "documento_relacionado": null,
+        "documentos_adicionales": [
+          {
+            "numero": "T001-1",
+            "ruc_emisor": "20100010001",
+            "tipo_documento": "09",
+            "tipo_documento_descripcion": "GUIA REMISION"
+          }
+        ],
+        "envio": {
+          "aeropuerto": null,
+          "choferes": [
+            {
+              "apellidos": "Perez",
+              "licencia": "Q1234567",
+              "nombres": "Juan",
+              "numero_documento_identidad": "11111111",
+              "tipo": "CONDUCTOR_PRINCIPAL",
+              "tipo_documento_identidad": "1"
+            },
+            {
+              "apellidos": "Gomez",
+              "licencia": null,
+              "nombres": "Jose",
+              "numero_documento_identidad": "22222222",
+              "tipo": "COPILOTO",
+              "tipo_documento_identidad": "1"
+            }
+          ],
+          "contenedores": [
+            "CONT-001",
+            "CONT-002"
+          ],
+          "destino": {
+            "codigo_local": "0002",
+            "direccion": "Av. Destino 456",
+            "ruc": "87654321098",
+            "ubigeo": "020202"
+          },
+          "fecha_traslado": "2019-12-24",
+          "indicadores": [],
+          "motivo_traslado": null,
+          "numero_bultos": 10,
+          "partida": {
+            "codigo_local": "0001",
+            "direccion": "Av. Origen 123",
+            "ruc": "12345678912",
+            "ubigeo": "010101"
+          },
+          "peso_items": "90.00",
+          "peso_total": "100.50",
+          "peso_total_unidad_medida": "KGM",
+          "puerto": {
+            "codigo": "CALLAO",
+            "nombre": "Puerto del Callao"
+          },
+          "sustento_peso": "Empaque madera",
+          "tipo_modalidad_traslado": "01",
+          "tipo_traslado": "01",
+          "transportista": null,
+          "vehiculo": {
+            "codigo_emisor": "MTC",
+            "numero_autorizacion": "AUTH-001",
+            "numero_circulacion": "TUC-001",
+            "placa": "ABC-123",
+            "secundarios": [
+              {
+                "codigo_emisor": null,
+                "numero_autorizacion": null,
+                "numero_circulacion": "TUC-SEC",
+                "placa": "CAR-456",
+                "secundarios": []
+              }
+            ]
+          }
+        },
+        "fecha_emision": null,
+        "firmante": null,
+        "hora_emision": null,
+        "observaciones": null,
+        "proveedor": null,
+        "remitente": {
+          "numero_registro_mtc": null,
+          "razon_social": "Softgreen S.A.C.",
+          "ruc": "12345678912"
+        },
+        "serie_numero": "T001-100",
+        "tercero": null,
+        "tipo_comprobante": "09",
+        "version": "2.1"
+      }
+    },
+    "defaults": {
+      "fecha_emision": "2019-12-24"
+    }
+  },
+  "expected": {
+    "ok": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<DespatchAdvice xmlns=\"urn:oasis:names:specification:ubl:schema:xsd:DespatchAdvice-2\"\n                xmlns:ds=\"http://www.w3.org/2000/09/xmldsig#\"\n                xmlns:cac=\"urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2\"\n                xmlns:cbc=\"urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2\"\n                xmlns:ext=\"urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2\"\n>\n    <ext:UBLExtensions>\n        <ext:UBLExtension>\n            <ext:ExtensionContent/>\n        </ext:UBLExtension>\n    </ext:UBLExtensions>\n    <cbc:UBLVersionID>2.1</cbc:UBLVersionID>\n    <cbc:CustomizationID>2.1</cbc:CustomizationID>\n    <cbc:ID>T001-100</cbc:ID>\n    <cbc:IssueDate>2019-12-24</cbc:IssueDate>\n    <cbc:DespatchAdviceTypeCode listAgencyName=\"PE:SUNAT\" listName=\"Tipo de Documento\" listURI=\"urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo01\">09</cbc:DespatchAdviceTypeCode>\n    <cac:AdditionalDocumentReference>\n        <cbc:ID>T001-1</cbc:ID>\n        <cbc:DocumentTypeCode listAgencyName=\"PE:SUNAT\" listName=\"Documento relacionado al transporte\" listURI=\"urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo61\">09</cbc:DocumentTypeCode>\n        <cbc:DocumentType>GUIA REMISION</cbc:DocumentType>\n        <cac:IssuerParty>\n            <cac:PartyIdentification>\n                <cbc:ID schemeID=\"6\" schemeName=\"Documento de Identidad\" schemeAgencyName=\"PE:SUNAT\" schemeURI=\"urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06\">20100010001</cbc:ID>\n            </cac:PartyIdentification>\n        </cac:IssuerParty>\n    </cac:AdditionalDocumentReference>\n    <cac:Signature>\n        <cbc:ID>12345678912</cbc:ID>\n        <cac:SignatoryParty>\n            <cac:PartyIdentification>\n                <cbc:ID>12345678912</cbc:ID>\n            </cac:PartyIdentification>\n            <cac:PartyName>\n                <cbc:Name><![CDATA[Softgreen S.A.C.]]></cbc:Name>\n            </cac:PartyName>\n        </cac:SignatoryParty>\n        <cac:DigitalSignatureAttachment>\n            <cac:ExternalReference>\n                <cbc:URI>#PROJECT-OPENUBL-SIGN</cbc:URI>\n            </cac:ExternalReference>\n        </cac:DigitalSignatureAttachment>\n    </cac:Signature>\n    <cac:DespatchSupplierParty>\n        <cbc:CustomerAssignedAccountID schemeID=\"6\">12345678912</cbc:CustomerAssignedAccountID>\n        <cac:Party>\n            <cac:PartyIdentification>\n                <cbc:ID schemeID=\"6\" schemeName=\"Documento de Identidad\" schemeAgencyName=\"PE:SUNAT\" schemeURI=\"urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06\">12345678912</cbc:ID>\n            </cac:PartyIdentification>\n            <cac:PartyLegalEntity>\n                <cbc:RegistrationName><![CDATA[Softgreen S.A.C.]]></cbc:RegistrationName>\n            </cac:PartyLegalEntity>\n        </cac:Party>\n    </cac:DespatchSupplierParty>\n    <cac:DeliveryCustomerParty>\n        <cac:Party>\n            <cac:PartyIdentification>\n                <cbc:ID schemeID=\"1\" schemeName=\"Documento de Identidad\" schemeAgencyName=\"PE:SUNAT\" schemeURI=\"urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06\">12345678</cbc:ID>\n            </cac:PartyIdentification>\n            <cac:PartyLegalEntity>\n                <cbc:RegistrationName><![CDATA[Mi Cliente S.A.C.]]></cbc:RegistrationName>\n            </cac:PartyLegalEntity>\n        </cac:Party>\n    </cac:DeliveryCustomerParty>\n    <cac:BuyerCustomerParty>\n        <cac:Party>\n            <cac:PartyIdentification>\n                <cbc:ID schemeID=\"1\" schemeName=\"Documento de Identidad\" schemeAgencyName=\"PE:SUNAT\" schemeURI=\"urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06\">12345678</cbc:ID>\n            </cac:PartyIdentification>\n            <cac:PartyLegalEntity>\n                <cbc:RegistrationName><![CDATA[Mi Cliente S.A.C.]]></cbc:RegistrationName>\n            </cac:PartyLegalEntity>\n        </cac:Party>\n    </cac:BuyerCustomerParty>\n    <cac:Shipment>\n        <cbc:ID>SUNAT_Envio</cbc:ID>\n        <cbc:HandlingCode listAgencyName=\"PE:SUNAT\" listName=\"Motivo de traslado\" listURI=\"urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo20\">01</cbc:HandlingCode>\n        <cbc:Information>Empaque madera</cbc:Information>\n        <cbc:GrossWeightMeasure unitCode=\"KGM\">100.500</cbc:GrossWeightMeasure>\n        <cbc:NetWeightMeasure unitCode=\"KGM\">90.000</cbc:NetWeightMeasure>\n        <cbc:TotalTransportHandlingUnitQuantity>10</cbc:TotalTransportHandlingUnitQuantity>\n        <cac:ShipmentStage>\n            <cbc:TransportModeCode listName=\"Modalidad de traslado\" listAgencyName=\"PE:SUNAT\" listURI=\"urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo18\">01</cbc:TransportModeCode>\n            <cac:TransitPeriod>\n                <cbc:StartDate>2019-12-24</cbc:StartDate>\n            </cac:TransitPeriod>\n            <cac:DriverPerson>\n                <cbc:ID schemeID=\"1\" schemeName=\"Documento de Identidad\" schemeAgencyName=\"PE:SUNAT\" schemeURI=\"urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06\">11111111</cbc:ID>\n                <cbc:FirstName>Juan</cbc:FirstName>\n                <cbc:FamilyName>Perez</cbc:FamilyName>\n                <cbc:JobTitle>CONDUCTOR_PRINCIPAL</cbc:JobTitle>\n                <cac:IdentityDocumentReference>\n                    <cbc:ID>Q1234567</cbc:ID>\n                </cac:IdentityDocumentReference>\n            </cac:DriverPerson>\n            <cac:DriverPerson>\n                <cbc:ID schemeID=\"1\" schemeName=\"Documento de Identidad\" schemeAgencyName=\"PE:SUNAT\" schemeURI=\"urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06\">22222222</cbc:ID>\n                <cbc:FirstName>Jose</cbc:FirstName>\n                <cbc:FamilyName>Gomez</cbc:FamilyName>\n                <cbc:JobTitle>COPILOTO</cbc:JobTitle>\n            </cac:DriverPerson>\n        </cac:ShipmentStage>\n        <cac:Delivery>\n            <cac:DeliveryAddress>\n                <cbc:ID schemeAgencyName=\"PE:INEI\" schemeName=\"Ubigeos\">020202</cbc:ID>\n                <cbc:AddressTypeCode listID=\"87654321098\">0002</cbc:AddressTypeCode>\n                <cac:AddressLine>\n                    <cbc:Line>Av. Destino 456</cbc:Line>\n                </cac:AddressLine>\n            </cac:DeliveryAddress>\n            <cac:Despatch>\n                <cac:DespatchAddress>\n                    <cbc:ID schemeAgencyName=\"PE:INEI\" schemeName=\"Ubigeos\">010101</cbc:ID>\n                    <cbc:AddressTypeCode listID=\"12345678912\">0001</cbc:AddressTypeCode>\n                    <cac:AddressLine>\n                        <cbc:Line>Av. Origen 123</cbc:Line>\n                    </cac:AddressLine>\n                </cac:DespatchAddress>\n            </cac:Despatch>\n        </cac:Delivery>\n        <cac:TransportHandlingUnit>\n            <cac:Package>\n                <cbc:ID>1</cbc:ID>\n                <cbc:TraceID>CONT-001</cbc:TraceID>\n            </cac:Package>\n        </cac:TransportHandlingUnit>\n        <cac:TransportHandlingUnit>\n            <cac:Package>\n                <cbc:ID>2</cbc:ID>\n                <cbc:TraceID>CONT-002</cbc:TraceID>\n            </cac:Package>\n        </cac:TransportHandlingUnit>\n        <cac:TransportHandlingUnit>\n            <cac:TransportEquipment>\n                <cbc:ID>ABC-123</cbc:ID>\n                <cac:ApplicableTransportMeans>\n                    <cbc:RegistrationNationalityID>TUC-001</cbc:RegistrationNationalityID>\n                </cac:ApplicableTransportMeans>\n                <cac:AttachedTransportEquipment>\n                    <cbc:ID>CAR-456</cbc:ID>\n                    <cac:ApplicableTransportMeans>\n                        <cbc:RegistrationNationalityID>TUC-SEC</cbc:RegistrationNationalityID>\n                    </cac:ApplicableTransportMeans>\n                </cac:AttachedTransportEquipment>\n                <cac:ShipmentDocumentReference>\n                    <cbc:ID schemeID=\"MTC\" schemeName=\"Entidad Autorizadora\" schemeAgencyName=\"PE:SUNAT\">AUTH-001</cbc:ID>\n                </cac:ShipmentDocumentReference>\n            </cac:TransportEquipment>\n        </cac:TransportHandlingUnit>\n        <cac:FirstArrivalPortLocation>\n            <cbc:ID schemeAgencyName=\"PE:SUNAT\" schemeName=\"Puertos\" schemeURI=\"urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo63\">CALLAO</cbc:ID>\n            <cbc:LocationTypeCode>1</cbc:LocationTypeCode>\n            <cbc:Name>Puerto del Callao</cbc:Name>\n        </cac:FirstArrivalPortLocation>\n    </cac:Shipment>\n    <cac:DespatchLine>\n        <cbc:ID>1</cbc:ID>\n        <cbc:DeliveredQuantity unitCode=\"NIU\">5.00</cbc:DeliveredQuantity>\n        <cac:OrderLineReference>\n            <cbc:LineID>1</cbc:LineID>\n        </cac:OrderLineReference>\n        <cac:Item>\n            <cbc:Description><![CDATA[Caja de herramientas]]></cbc:Description>\n            <cac:SellersItemIdentification>\n                <cbc:ID>ITEM-01</cbc:ID>\n            </cac:SellersItemIdentification>\n            <cac:AdditionalItemProperty>\n                <cbc:Name>Color</cbc:Name>\n                <cbc:NameCode>1001</cbc:NameCode>\n                <cbc:Value>Rojo</cbc:Value>\n            </cac:AdditionalItemProperty>\n            <cac:AdditionalItemProperty>\n                <cbc:Name>Marca</cbc:Name>\n                <cbc:NameCode>1002</cbc:NameCode>\n                <cbc:Value>ToolMaster</cbc:Value>\n            </cac:AdditionalItemProperty>\n        </cac:Item>\n    </cac:DespatchLine>\n</DespatchAdvice>\n"
+  }
+}

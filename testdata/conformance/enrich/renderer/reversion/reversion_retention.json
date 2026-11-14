@@ -1,0 +1,62 @@
+{
+  "input": {
+    "document": {
+      "kind": "Reversion",
+      "spec": {
+        "comprobantes": [
+          {
+            "descripcion_sustento": "Anulacion de retencion por error en calculo",
+            "numero": 1,
+            "serie": "R001",
+            "tipo_comprobante": null
+          }
+        ],
+        "documento_id": null,
+        "fecha_emision": "2022-01-31",
+        "fecha_emision_comprobantes": "2022-01-29",
+        "firmante": null,
+        "numero": 2,
+        "proveedor": {
+          "contacto": null,
+          "direccion": null,
+          "nombre_comercial": null,
+          "razon_social": "Softgreen S.A.C.",
+          "ruc": "12345678912"
+        }
+      }
+    },
+    "defaults": {
+      "fecha_emision": "2019-12-24"
+    }
+  },
+  "expected": {
+    "ok": {
+      "kind": "Reversion",
+      "spec": {
+        "numero": 2,
+        "fecha_emision": "2022-01-31",
+        "fecha_emision_comprobantes": "2022-01-29",
+        "proveedor": {
+          "ruc": "12345678912",
+          "razon_social": "Softgreen S.A.C.",
+          "nombre_comercial": null,
+          "direccion": null,
+          "contacto": null
+        },
+        "firmante": {
+          "ruc": "12345678912",
+          "razon_social": "Softgreen S.A.C."
+        },
+        "comprobantes": [
+          {
+            "tipo_comprobante": "20",
+            "serie": "R001",
+            "numero": 1,
+            "descripcion_sustento": "Anulacion de retencion por error en calculo"
+          }
+        ],
+        "documento_id": "RR-20220131-2"
+      }
+    }
+  }
+}

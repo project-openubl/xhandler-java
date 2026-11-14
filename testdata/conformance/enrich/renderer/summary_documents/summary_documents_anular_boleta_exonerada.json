@@ -1,0 +1,112 @@
+{
+  "input": {
+    "document": {
+      "kind": "SummaryDocuments",
+      "spec": {
+        "comprobantes": [
+          {
+            "comprobante": {
+              "cliente": {
+                "numero_documento_identidad": "12345678",
+                "tipo_documento_identidad": "1"
+              },
+              "comprobante_afectado": null,
+              "impuestos": {
+                "icb": null,
+                "igv": "0",
+                "igv_tasa": null,
+                "isc": null,
+                "ivap": null,
+                "otros": null
+              },
+              "moneda": null,
+              "percepcion": null,
+              "serie_numero": "B001-1",
+              "tipo_comprobante": "03",
+              "valor_venta": {
+                "exonerado": "0",
+                "gratuito": null,
+                "gravado": "0",
+                "importe_total": "100",
+                "inafecto": null,
+                "otros_cargos": null
+              }
+            },
+            "tipo_operacion": "3"
+          }
+        ],
+        "documento_id": null,
+        "fecha_emision": "2019-12-24",
+        "fecha_emision_comprobantes": "2019-12-22",
+        "firmante": null,
+        "moneda": null,
+        "numero": 1,
+        "proveedor": {
+          "contacto": null,
+          "direccion": null,
+          "nombre_comercial": null,
+          "razon_social": "Softgreen S.A.C.",
+          "ruc": "12345678912"
+        }
+      }
+    },
+    "defaults": {
+      "fecha_emision": "2019-12-24"
+    }
+  },
+  "expected": {
+    "ok": {
+      "kind": "SummaryDocuments",
+      "spec": {
+        "numero": 1,
+        "fecha_emision": "2019-12-24",
+        "fecha_emision_comprobantes": "2019-12-22",
+        "moneda": "PEN",
+        "proveedor": {
+          "ruc": "12345678912",
+          "razon_social": "Softgreen S.A.C.",
+          "nombre_comercial": null,
+          "direccion": null,
+          "contacto": null
+        },
+        "firmante": {
+          "ruc": "12345678912",
+          "razon_social": "Softgreen S.A.C."
+        },
+        "comprobantes": [
+          {
+            "tipo_operacion": "3",
+            "comprobante": {
+              "tipo_comprobante": "03",
+              "serie_numero": "B001-1",
+              "moneda": "PEN",
+              "cliente": {
+                "numero_documento_identidad": "12345678",
+                "tipo_documento_identidad": "1"
+              },
+              "comprobante_afectado": null,
+              "percepcion": null,
+              "valor_venta": {
+                "importe_total": "100",
+                "gravado": "0",
+                "exonerado": "0",
+                "inafecto": null,
+                "gratuito": null,
+                "otros_cargos": null
+              },
+              "impuestos": {
+                "igv": "0",
+                "igv_tasa": "18",
+                "icb": null,
+                "isc": null,
+                "ivap": null,
+                "otros": null
+              }
+            }
+          }
+        ],
+        "documento_id": "RC-20191224-1"
+      }
+    }
+  }
+}

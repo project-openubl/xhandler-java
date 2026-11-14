@@ -11,7 +11,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Forma de pago
+ * Forma de pago. A missing `tipo` is filled in by the enricher, and
+ * payment in full ("contado") has no `cuotas`.
  */
 @Data
 @Builder(toBuilder = true)

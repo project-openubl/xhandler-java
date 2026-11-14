@@ -5,20 +5,9 @@
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.project-openubl/xbuilder)](https://central.sonatype.com/namespace/io.github.project-openubl)
 [![Project Chat](https://img.shields.io/badge/zulip-join_chat-brightgreen.svg?logo=zulip)](https://projectopenubl.zulipchat.com/)
 
-Crea, firma y envía los comprobantes electrónicos (XML UBL) de la SUNAT del Perú desde Java.
-
-| Librería | Qué hace |
-|---|---|
-| `xbuilder` | Crea el XML de facturas, boletas, notas de crédito y débito, guías de remisión, percepciones, retenciones, resúmenes diarios, comunicaciones de baja y reversiones. Solo das los datos esenciales: los valores por defecto, impuestos y totales se calculan. También firma el XML (RSA-SHA256, certificados PEM o PKCS#12) |
-| `xsender` | Envía a la SUNAT (servicios SOAP y API REST de guías) y lee el CDR, tickets y errores |
-| `quarkus-xbuilder`, `quarkus-xsender` | Extensiones para Quarkus (JVM y nativo) |
-| `spring-boot-xsender` | Starter para Spring Boot |
-| `xsender-cdi` | Beans para WildFly / Jakarta EE / MicroProfile |
-
-Usa el [núcleo xhandler](https://github.com/project-openubl/xhandler-rust), el mismo de las
-librerías de [Go](https://github.com/project-openubl/xhandler-go) y
-[Python](https://github.com/project-openubl/xhandler-python), ejecutado en la JVM como WebAssembly
-compilado a bytecode: sin código nativo y compatible con GraalVM native.
+Crea, firma y envía los comprobantes electrónicos (XML UBL) de la SUNAT del Perú desde Java, con
+extensiones para Quarkus, Spring Boot y Jakarta EE. Sin código nativo; compatible con GraalVM
+native.
 
 ## Instalación
 
@@ -78,8 +67,9 @@ if (response.isTicket()) { // resúmenes, bajas y guías: consulta el ticket des
 System.out.println(response.getStatus()); // ACEPTADO, RECHAZADO, EXCEPCION, EN_PROCESO...
 ```
 
-- **Crear**: `new XBuilder().enrich(invoice)` devuelve el documento con los valores calculados
-  (impuestos, totales, leyendas) en lugar del XML. `Defaults` cambia la fecha de emisión o las
+- **Crear**: facturas, boletas, notas de crédito y débito, guías de remisión, percepciones,
+  retenciones, resúmenes diarios, bajas y reversiones. `new XBuilder().enrich(invoice)` devuelve
+  el documento con los valores calculados (impuestos, totales, leyendas) en lugar del XML. `Defaults` cambia la fecha de emisión o las
   tasas.
 - **Firmar**: `SigningKey.fromPem(llavePrivada, certificado)` o
   `SigningKey.fromKeyStore(keyStore, alias, password)`.
@@ -115,7 +105,7 @@ Ejemplos completos en [`examples/`](examples): Spring Boot, WildFly, Tomcat y Ja
 
 ## Contribuir
 
-Revisa [CONTRIBUTING.md](CONTRIBUTING.md). Preguntas e ideas en el
+Revisa [CONTRIBUTING.md](CONTRIBUTING.md). Preguntas en el
 [chat de Zulip](https://projectopenubl.zulipchat.com/).
 
 ## Licencia

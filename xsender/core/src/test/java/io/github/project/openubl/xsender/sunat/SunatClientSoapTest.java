@@ -1,5 +1,6 @@
 package io.github.project.openubl.xsender.sunat;
 
+import io.github.project.openubl.xhandler.core.ErrorKind;
 import io.github.project.openubl.xsender.XSenderException;
 import io.github.project.openubl.xsender.company.CompanyCredentials;
 import io.github.project.openubl.xsender.files.ZipFile;
@@ -127,9 +128,10 @@ class SunatClientSoapTest {
     void persistent401_throwsAfterTwoRetries() {
         sunat.respondHtml(PATH, 401, "<html>401 Authorization Required</html>");
 
-        assertThrows(XSenderException.class,
+        XSenderException error = assertThrows(XSenderException.class,
                 () -> client.sendFile(destination(BillServiceDestination.SoapOperation.SEND_BILL), zipFile, credentials));
         assertEquals(3, sunat.requests(PATH).size());
+        assertEquals(ErrorKind.RATE_LIMITED, error.getKind());
     }
 
     @Test

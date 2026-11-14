@@ -2,6 +2,9 @@ package io.github.project.openubl.xsender.sunat;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import java.net.ConnectException;
+import java.net.http.HttpConnectTimeoutException;
+
 import io.github.project.openubl.xsender.XSenderException;
 
 import java.io.IOException;
@@ -40,9 +43,16 @@ final class Http {
         return builder.method(request.get("method").asText(), publisher).build();
     }
 
+    /**
+     * Sends the request, again once if the connection failed: the request never reached SUNAT.
+     */
     static HttpResponse<byte[]> send(HttpClient httpClient, HttpRequest request) {
         try {
-            return httpClient.send(request, HttpResponse.BodyHandlers.ofByteArray());
+            try {
+                return httpClient.send(request, HttpResponse.BodyHandlers.ofByteArray());
+            } catch (ConnectException | HttpConnectTimeoutException e) {
+                return httpClient.send(request, HttpResponse.BodyHandlers.ofByteArray());
+            }
         } catch (IOException e) {
             throw new XSenderException("Could not reach SUNAT at " + request.uri(), e);
         } catch (InterruptedException e) {

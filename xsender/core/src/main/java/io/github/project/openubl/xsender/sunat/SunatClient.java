@@ -60,8 +60,8 @@ public class SunatClient {
      * @param securityApiUrl where the guías de remisión access tokens are requested
      */
     public SunatClient(HttpClient httpClient, String securityApiUrl) {
-        this.httpClient = httpClient;
-        this.securityApiUrl = securityApiUrl;
+        this.httpClient = Objects.requireNonNull(httpClient, "httpClient");
+        this.securityApiUrl = Objects.requireNonNull(securityApiUrl, "securityApiUrl");
     }
 
     /**
@@ -125,7 +125,7 @@ public class SunatClient {
         cdp.put("ruc", query.ruc());
         cdp.put("tipo_comprobante", query.documentType());
         cdp.put("serie", query.serie());
-        cdp.put("numero", Long.parseLong(query.number()));
+        cdp.put("numero", number(query.number()));
         cdp.put("tipo_documento_identidad_receptor", query.receiverIdType());
         cdp.put("numero_documento_identidad_receptor", query.receiverIdNumber());
         cdp.put("fecha_emision", query.issueDate());
@@ -141,6 +141,14 @@ public class SunatClient {
     public ConsultResponse validateFile(BillValidServiceDestination destination, String filename, byte[] file, CompanyCredentials credentials) {
         Map<String, Object> call = Map.of("validate_file", Map.of("url", destination.getUrl(), "file", file(filename, file)));
         return SunatResponses.consult(exchange(call, false, credentials));
+    }
+
+    private static long number(String number) {
+        try {
+            return Long.parseLong(number);
+        } catch (NumberFormatException e) {
+            throw new XSenderException("Invalid document number: " + number, e);
+        }
     }
 
     private static Map<String, Object> file(String filename, byte[] zip) {
@@ -215,15 +223,27 @@ public class SunatClient {
         if (credentials.getToken() != null) {
             return credentials.getToken();
         }
-        AccessToken cached = tokens.get(tokenKey(credentials));
+        String key = tokenKey(credentials);
+        AccessToken cached = tokens.get(key);
         if (cached != null && Instant.now().isBefore(cached.reuseUntil())) {
             return cached.value();
         }
+        // One token request at a time, so concurrent calls don't revoke each other's tokens
+        synchronized (tokens) {
+            cached = tokens.get(key);
+            if (cached != null && Instant.now().isBefore(cached.reuseUntil())) {
+                return cached.value();
+            }
+            return requestAccessToken(key, credentials);
+        }
+    }
+
+    private String requestAccessToken(String key, CompanyCredentials credentials) {
         Map<String, Object> call = Map.of("token", Map.of("url", securityApiUrl));
         JsonNode token = exchange(call, false, credentials).get("token");
         long reuseFor = Math.max(0, token.get("expires_in").asLong() - 60);
         AccessToken accessToken = new AccessToken(token.get("access_token").asText(), Instant.now().plusSeconds(reuseFor));
-        tokens.put(tokenKey(credentials), accessToken);
+        tokens.put(key, accessToken);
         return accessToken.value();
     }
 
@@ -241,8 +261,6 @@ public class SunatClient {
     }
 
     private static XSenderException unexpectedResponse(HttpResponse<byte[]> response, XhandlerException cause) {
-        XSenderException exception = Http.unexpectedResponse(response);
-        exception.initCause(cause);
-        return exception;
+        return new XSenderException(Http.unexpectedResponse(response).getMessage(), cause);
     }
 }

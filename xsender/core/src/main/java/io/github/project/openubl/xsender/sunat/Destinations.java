@@ -42,10 +42,12 @@ public final class Destinations {
         if (target.get("protocol").asText().equals("rest")) {
             return destination.restOperation(BillServiceDestination.RestOperation.SEND_DOCUMENT).build();
         }
-        return destination.soapOperation(switch (target.get("action").asText()) {
+        String action = target.path("action").asText();
+        return destination.soapOperation(switch (action) {
+            case "bill" -> BillServiceDestination.SoapOperation.SEND_BILL;
             case "summary" -> BillServiceDestination.SoapOperation.SEND_SUMMARY;
             case "pack" -> BillServiceDestination.SoapOperation.SEND_PACK;
-            default -> BillServiceDestination.SoapOperation.SEND_BILL;
+            default -> throw new IllegalArgumentException("Unknown SOAP file action: " + action);
         }).build();
     }
 

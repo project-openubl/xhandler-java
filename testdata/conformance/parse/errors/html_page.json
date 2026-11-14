@@ -1,0 +1,24 @@
+{
+  "input": {
+    "call": {
+      "send_file": {
+        "target": {
+          "protocol": "soap",
+          "url": "https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService",
+          "action": "bill"
+        },
+        "file": {
+          "filename": "12345678912-01-F001-1.zip",
+          "zip": "UEsFBgAAAAAAAAAAAAAAAAAAAAAAAA=="
+        }
+      }
+    },
+    "status": 503,
+    "body": "<html><body>Service Unavailable</body></html>"
+  },
+  "expected": {
+    "error": {
+      "kind": "response"
+    }
+  }
+}

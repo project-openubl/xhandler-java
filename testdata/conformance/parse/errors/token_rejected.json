@@ -1,0 +1,14 @@
+{
+  "input": {
+    "call": {
+      "token": {}
+    },
+    "status": 401,
+    "body": "{\"error\":\"invalid_client\"}"
+  },
+  "expected": {
+    "error": {
+      "kind": "response"
+    }
+  }
+}

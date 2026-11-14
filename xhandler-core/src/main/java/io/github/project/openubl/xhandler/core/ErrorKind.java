@@ -18,7 +18,16 @@ public enum ErrorKind {
     /** The XML could not be rendered. */
     @JsonProperty("render")
     RENDER,
-    /** The private key or certificate can't be read, e.g. a wrong keystore password. */
+    /**
+     * The private key or certificate can't be read (e.g. a wrong keystore
+     * password), or the certificate is not the one of the private key.
+     */
     @JsonProperty("invalid_key")
-    INVALID_KEY
+    INVALID_KEY,
+    /** The answer of SUNAT can't be read, e.g. an HTML error page. */
+    @JsonProperty("response")
+    RESPONSE,
+    /** SUNAT's front proxy refused the request (rate limiting): retry it after a pause. */
+    @JsonProperty("rate_limited")
+    RATE_LIMITED
 }

@@ -1,0 +1,29 @@
+{
+  "input": {
+    "call": {
+      "token": {
+        "url": "http://localhost:8080"
+      }
+    },
+    "credentials": {
+      "username": "12345678959MODDATOS",
+      "password": "MODDATOS",
+      "client_id": "client-id",
+      "client_secret": "client-secret"
+    },
+    "token": "the-token"
+  },
+  "expected": {
+    "ok": {
+      "method": "POST",
+      "url": "http://localhost:8080/v1/clientessol/client-id/oauth2/token/",
+      "headers": [
+        [
+          "Content-Type",
+          "application/x-www-form-urlencoded"
+        ]
+      ],
+      "body": "grant_type=password&scope=https%3A%2F%2Fapi-cpe.sunat.gob.pe&client_id=client-id&client_secret=client-secret&username=12345678959MODDATOS&password=MODDATOS"
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "input": {
+    "call": {
+      "send_file": {
+        "target": {
+          "protocol": "soap",
+          "url": "https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService",
+          "action": "bill"
+        },
+        "file": {
+          "filename": "12345678912-01-F001-1.zip",
+          "zip": "UEsFBgAAAAAAAAAAAAAAAAAAAAAAAA=="
+        }
+      }
+    },
+    "status": 500,
+    "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<soap-env:Envelope xmlns:wsse=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:soap-env=\"http://schemas.xmlsoap.org/soap/envelope/\">\n    <soap-env:Header/>\n    <soap-env:Body>\n        <soap-env:Fault xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">\n            <faultcode>soap-env:Client.0111</faultcode>\n            <faultstring>No tiene el perfil para enviar comprobantes electronicos - Detalle: Rejected by policy.</faultstring>\n        </soap-env:Fault>\n    </soap-env:Body>\n</soap-env:Envelope>"
+  },
+  "expected": {
+    "ok": {
+      "fault": {
+        "code": "soap-env:Client.0111",
+        "sunat_code": 111,
+        "message": "No tiene el perfil para enviar comprobantes electronicos - Detalle: Rejected by policy.",
+        "status": "EXCEPCION"
+      }
+    }
+  }
+}

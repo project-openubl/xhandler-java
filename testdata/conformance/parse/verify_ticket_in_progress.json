@@ -1,0 +1,23 @@
+{
+  "input": {
+    "call": {
+      "verify_ticket": {
+        "target": {
+          "protocol": "soap",
+          "url": "https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService"
+        },
+        "ticket": "1703154974517"
+      }
+    },
+    "status": 200,
+    "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<S:Envelope xmlns:S=\"http://schemas.xmlsoap.org/soap/envelope/\">\n    <S:Body>\n        <ns2:getStatusResponse xmlns:ns2=\"http://service.sunat.gob.pe\">\n            <status>\n                <statusCode>98</statusCode>\n            </status>\n        </ns2:getStatusResponse>\n    </S:Body>\n</S:Envelope>\n"
+  },
+  "expected": {
+    "ok": {
+      "no_cdr": {
+        "status_code": "98",
+        "status": "EN_PROCESO"
+      }
+    }
+  }
+}

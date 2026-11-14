@@ -1,0 +1,26 @@
+{
+  "input": {
+    "call": {
+      "get_status_cdr": {
+        "url": "https://sunat/billConsultService",
+        "document": {
+          "ruc": "12345678912",
+          "tipo_comprobante": "01",
+          "serie": "F001",
+          "numero": 1
+        }
+      }
+    },
+    "status": 200,
+    "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<S:Envelope xmlns:S=\"http://schemas.xmlsoap.org/soap/envelope/\">\n    <S:Body>\n        <ns2:getStatusCdrResponse xmlns:ns2=\"http://service.sunat.gob.pe\">\n            <statusCdr>\n                <content>UEsDBA==</content>\n                <statusCode>0004</statusCode>\n                <statusMessage>La constancia existe</statusMessage>\n            </statusCdr>\n        </ns2:getStatusCdrResponse>\n    </S:Body>\n</S:Envelope>\n"
+  },
+  "expected": {
+    "ok": {
+      "status": {
+        "status_code": "0004",
+        "status_message": "La constancia existe",
+        "cdr_zip": "UEsDBA=="
+      }
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "input": {
+    "call": {
+      "verify_ticket": {
+        "target": {
+          "protocol": "soap",
+          "url": "https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService"
+        },
+        "ticket": "1703154974517"
+      }
+    },
+    "status": 500,
+    "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<S:Envelope xmlns:S=\"http://schemas.xmlsoap.org/soap/envelope/\">\n    <S:Body>\n        <S:Fault>\n            <faultcode>S:Client.0127</faultcode>\n            <faultstring>El ticket no existe</faultstring>\n        </S:Fault>\n    </S:Body>\n</S:Envelope>\n"
+  },
+  "expected": {
+    "ok": {
+      "fault": {
+        "code": "S:Client.0127",
+        "sunat_code": 127,
+        "message": "El ticket no existe",
+        "status": "EXCEPCION"
+      }
+    }
+  }
+}

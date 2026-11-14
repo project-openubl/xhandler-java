@@ -1,0 +1,40 @@
+{
+  "input": {
+    "call": {
+      "send_file": {
+        "target": {
+          "protocol": "rest",
+          "url": "https://api-cpe.sunat.gob.pe/v1/contribuyente/gem"
+        },
+        "file": {
+          "filename": "12345678912-01-F001-1.zip",
+          "zip": "UEsFBgAAAAAAAAAAAAAAAAAAAAAAAA=="
+        }
+      }
+    },
+    "credentials": {
+      "username": "12345678959MODDATOS",
+      "password": "MODDATOS",
+      "client_id": "client-id",
+      "client_secret": "client-secret"
+    },
+    "token": "the-token"
+  },
+  "expected": {
+    "ok": {
+      "method": "POST",
+      "url": "https://api-cpe.sunat.gob.pe/v1/contribuyente/gem/comprobantes/12345678912-01-F001-1",
+      "headers": [
+        [
+          "Authorization",
+          "Bearer the-token"
+        ],
+        [
+          "Content-Type",
+          "application/json"
+        ]
+      ],
+      "body": "{\"archivo\":{\"arcGreZip\":\"UEsFBgAAAAAAAAAAAAAAAAAAAAAAAA==\",\"hashZip\":\"8739c76e681f900923b900c9df0ef75cf421d39cabb54650c4b9ad19b6a76d85\",\"nomArchivo\":\"12345678912-01-F001-1.zip\"}}"
+    }
+  }
+}

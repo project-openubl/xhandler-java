@@ -1,82 +1,77 @@
 package io.github.project.openubl.xsender.sunat;
 
-import io.github.project.openubl.xsender.XSenderException;
+import com.fasterxml.jackson.databind.JsonNode;
 import io.github.project.openubl.xsender.models.Metadata;
 import io.github.project.openubl.xsender.models.Status;
 import io.github.project.openubl.xsender.models.Sunat;
 import io.github.project.openubl.xsender.models.SunatResponse;
-import io.github.project.openubl.xsender.utils.CdrReader;
 
+import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
- * Builds {@link SunatResponse}s from the pieces SUNAT answers with.
+ * Builds the responses from the answers of the xhandler core: {@code {cdr}},
+ * {@code {ticket}}, {@code {no_cdr}}, {@code {fault}} or {@code {status}}.
  */
 final class SunatResponses {
-
-    /** The code in a SOAP faultcode like "soap-env:Client.0111" */
-    private static final Pattern FAULT_CODE = Pattern.compile("(?:.*:)?(?:Client\\.|Server\\.)?(\\d+)");
-    private static final Pattern NUMBER = Pattern.compile("\\d+");
 
     private SunatResponses() {
     }
 
-    static SunatResponse cdr(byte[] zippedCdr) {
-        CdrReader cdrReader;
-        try {
-            cdrReader = new CdrReader(zippedCdr);
-        } catch (Exception e) {
-            throw new XSenderException("Could not read the CDR returned by SUNAT", e);
+    static SunatResponse of(JsonNode answer) {
+        if (answer.has("cdr")) {
+            JsonNode cdr = answer.get("cdr");
+            return SunatResponse.builder()
+                    .status(Status.valueOf(cdr.get("status").asText()))
+                    .metadata(new Metadata(number(cdr.get("response_code")), cdr.get("description").asText(), notes(cdr)))
+                    .sunat(Sunat.builder().cdr(Base64.getDecoder().decode(cdr.get("zip").asText())).build())
+                    .build();
         }
+        if (answer.has("ticket")) {
+            return SunatResponse.builder()
+                    .sunat(Sunat.builder().ticket(answer.get("ticket").asText()).build())
+                    .build();
+        }
+        if (answer.has("no_cdr")) {
+            JsonNode noCdr = answer.get("no_cdr");
+            Integer code = number(noCdr.get("status_code"));
+            return SunatResponse.builder()
+                    .status(Status.valueOf(noCdr.get("status").asText()))
+                    .metadata(new Metadata(code, Integer.valueOf(98).equals(code) ? "En proceso" : null, List.of()))
+                    .build();
+        }
+        JsonNode fault = answer.get("fault");
         return SunatResponse.builder()
-                .status(cdrReader.getStatus())
-                .metadata(cdrReader.getMetadata())
-                .sunat(Sunat.builder().cdr(zippedCdr).build())
+                .status(Status.valueOf(fault.get("status").asText()))
+                .metadata(new Metadata(fault.get("sunat_code").isNull() ? null : fault.get("sunat_code").asInt(), fault.get("message").asText(), List.of()))
                 .build();
     }
 
-    static SunatResponse ticket(String ticket) {
-        return SunatResponse.builder()
-                .sunat(Sunat.builder().ticket(ticket).build())
-                .build();
-    }
-
-    /**
-     * A status without CDR, e.g. 98 while SUNAT is still processing a ticket
-     */
-    static SunatResponse status(String code, String description, List<String> notes) {
-        Integer responseCode = parseCode(code);
-        if (description == null && Integer.valueOf(98).equals(responseCode)) {
-            description = "En proceso";
+    static ConsultResponse consult(JsonNode answer) {
+        if (answer.has("fault")) {
+            JsonNode fault = answer.get("fault");
+            // SUNAT's error codes have 4 digits, e.g. "0111"
+            String code = fault.get("sunat_code").isNull() ? null : "%04d".formatted(fault.get("sunat_code").asInt());
+            return new ConsultResponse(code, fault.get("message").asText(), null);
         }
-        return SunatResponse.builder()
-                .status(responseCode != null ? Status.fromCode(responseCode) : Status.UNKNOWN)
-                .metadata(new Metadata(responseCode, description, notes))
-                .build();
+        JsonNode status = answer.get("status");
+        JsonNode cdr = status.get("cdr_zip");
+        return new ConsultResponse(
+                status.get("status_code").asText(),
+                status.get("status_message").isNull() ? null : status.get("status_message").asText(),
+                cdr.isNull() ? null : Base64.getDecoder().decode(cdr.asText())
+        );
     }
 
-    static SunatResponse fault(String faultCode, String faultString) {
-        return status(faultErrorCode(faultCode, faultString), faultString, List.of());
+    private static Integer number(JsonNode code) {
+        String text = code.asText();
+        return text.matches("\\d+") ? Integer.valueOf(text) : null;
     }
 
-    /**
-     * SUNAT puts its error code in the faultcode ("soap-env:Client.0111") or,
-     * sometimes, as the whole faultstring ("0306").
-     */
-    static String faultErrorCode(String faultCode, String faultString) {
-        Matcher matcher = FAULT_CODE.matcher(faultCode == null ? "" : faultCode.trim());
-        if (matcher.matches()) {
-            return matcher.group(1);
-        }
-        if (faultString != null && NUMBER.matcher(faultString.trim()).matches()) {
-            return faultString.trim();
-        }
-        return null;
-    }
-
-    private static Integer parseCode(String code) {
-        return code != null && NUMBER.matcher(code).matches() ? Integer.valueOf(code) : null;
+    private static List<String> notes(JsonNode cdr) {
+        List<String> notes = new ArrayList<>();
+        cdr.get("notes").forEach(note -> notes.add(note.asText()));
+        return notes;
     }
 }

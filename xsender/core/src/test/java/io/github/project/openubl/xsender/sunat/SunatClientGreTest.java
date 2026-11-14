@@ -76,8 +76,9 @@ class SunatClientGreTest {
         FakeSunat.Request send = sunat.lastRequest(SEND_PATH);
         assertEquals("Bearer my-token", send.header("Authorization"));
         assertEquals("""
-                {"archivo":{"nomArchivo":"20123456789-09-T001-1.zip","arcGreZip":"YWJj",\
-                "hashZip":"ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"}}""", send.body());
+                {"archivo":{"arcGreZip":"YWJj",\
+                "hashZip":"ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",\
+                "nomArchivo":"20123456789-09-T001-1.zip"}}""", send.body());
     }
 
     @Test
@@ -154,8 +155,7 @@ class SunatClientGreTest {
         SunatResponse response = client.sendFile(destination(BillServiceDestination.RestOperation.SEND_DOCUMENT), zipFile, credentials);
 
         assertEquals(422, response.getMetadata().getResponseCode());
-        assertEquals("Unprocessable Entity", response.getMetadata().getDescription());
-        assertEquals(List.of("1033 - El comprobante fue registrado previamente"), response.getMetadata().getNotes());
+        assertEquals("Unprocessable Entity; 1033 - El comprobante fue registrado previamente", response.getMetadata().getDescription());
     }
 
     @Test

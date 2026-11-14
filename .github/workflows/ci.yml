@@ -15,13 +15,19 @@ env:
 
 jobs:
   test:
-    name: JDK ${{matrix.java-version}} JVM Tests
+    # Linux keeps the name of the required check "JDK 25 JVM Tests"
+    name: ${{ matrix.os == 'ubuntu-latest' && format('JDK {0} JVM Tests', matrix.java-version) || format('JDK {0} JVM Tests ({1})', matrix.java-version, matrix.os) }}
     strategy:
       matrix:
         java-version: [ 25 ]
+        # Linux and Windows on x64, macOS on arm64. The xhandler core is
+        # WebAssembly compiled to JVM bytecode: no native code per platform.
+        os: [ ubuntu-latest, macos-latest, windows-latest ]
       fail-fast: false
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     steps:
+      # The test fixtures (XML, conformance corpus) must keep their LF line endings
+      - run: git config --global core.autocrlf false
       - uses: actions/checkout@v7.0.1
       - uses: actions/setup-java@v6.2.0
         with:

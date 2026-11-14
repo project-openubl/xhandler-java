@@ -27,10 +27,8 @@ import io.github.project.openubl.xbuilder.models.SummaryDocumentsItemComprobante
 import io.github.project.openubl.xbuilder.models.SummaryDocumentsValorVenta;
 import io.github.project.openubl.xbuilder.models.VoidedDocuments;
 import io.github.project.openubl.xbuilder.models.VoidedDocumentsItem;
-import io.github.project.openubl.xbuilder.signature.CertificateDetails;
-import io.github.project.openubl.xbuilder.signature.CertificateDetailsFactory;
-import io.github.project.openubl.xbuilder.signature.XMLSigner;
-import io.github.project.openubl.xbuilder.signature.XmlSignatureHelper;
+import io.github.project.openubl.xbuilder.signature.KeyPair;
+import io.github.project.openubl.xbuilder.signature.XSigner;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,7 +37,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.io.InputStream;
 import java.math.BigDecimal;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -53,6 +50,7 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 public class XBuilderController {
 
     private final XBuilder xbuilder = new XBuilder();
+    private final XSigner xsigner = new XSigner();
 
     @PostMapping(value = "/api/create-xml/{kind}", produces = "text/plain")
     public String createXML(@PathVariable String kind, @RequestBody String clientName) throws Exception {
@@ -72,10 +70,9 @@ public class XBuilderController {
     }
 
     private String sign(String xml) throws Exception {
-        InputStream keyStore = Thread.currentThread().getContextClassLoader().getResourceAsStream("LLAMA-PE-CERTIFICADO-DEMO-12345678912.pfx");
-        CertificateDetails certificate = CertificateDetailsFactory.create(keyStore, "password");
-        org.w3c.dom.Document signed = XMLSigner.signXML(xml, "Project OpenUBL", certificate.getX509Certificate(), certificate.getPrivateKey());
-        return new String(XmlSignatureHelper.getBytesFromDocument(signed), StandardCharsets.ISO_8859_1);
+        try (InputStream keyStore = getClass().getResourceAsStream("/LLAMA-PE-CERTIFICADO-DEMO-12345678912.pfx")) {
+            return xsigner.sign(xml, KeyPair.fromPkcs12(keyStore.readAllBytes(), "password"));
+        }
     }
 
     private static Proveedor proveedor() {

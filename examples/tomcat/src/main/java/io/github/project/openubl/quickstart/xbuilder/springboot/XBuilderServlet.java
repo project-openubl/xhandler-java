@@ -5,11 +5,8 @@ import io.github.project.openubl.xbuilder.models.Cliente;
 import io.github.project.openubl.xbuilder.models.Detalle;
 import io.github.project.openubl.xbuilder.models.Invoice;
 import io.github.project.openubl.xbuilder.models.Proveedor;
-import io.github.project.openubl.xbuilder.signature.CertificateDetails;
-import io.github.project.openubl.xbuilder.signature.CertificateDetailsFactory;
-import io.github.project.openubl.xbuilder.signature.XMLSigner;
-import io.github.project.openubl.xbuilder.signature.XmlSignatureHelper;
-import org.w3c.dom.Document;
+import io.github.project.openubl.xbuilder.signature.KeyPair;
+import io.github.project.openubl.xbuilder.signature.XSigner;
 
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -18,13 +15,13 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @WebServlet("/api/create-xml/")
 public class XBuilderServlet extends HttpServlet {
 
     private final XBuilder xbuilder = new XBuilder();
+    private final XSigner xsigner = new XSigner();
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -34,10 +31,10 @@ public class XBuilderServlet extends HttpServlet {
             String xml = xbuilder.build(createInvoice(clientName));
 
             // Sign XML
-            InputStream ksInputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("LLAMA-PE-CERTIFICADO-DEMO-12345678912.pfx");
-            CertificateDetails certificate = CertificateDetailsFactory.create(ksInputStream, "password");
-            Document signedXML = XMLSigner.signXML(xml, "Project OpenUBL", certificate.getX509Certificate(), certificate.getPrivateKey());
-            String xmlString = new String(XmlSignatureHelper.getBytesFromDocument(signedXML), StandardCharsets.ISO_8859_1);
+            String xmlString;
+            try (InputStream keyStore = getClass().getResourceAsStream("/LLAMA-PE-CERTIFICADO-DEMO-12345678912.pfx")) {
+                xmlString = xsigner.sign(xml, KeyPair.fromPkcs12(keyStore.readAllBytes(), "password"));
+            }
 
             // Response
             resp.setStatus(HttpServletResponse.SC_OK);

@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class XBuilderTest {
+public class XBuilderTest {
 
     private final XBuilder xbuilder = new XBuilder();
 
@@ -64,7 +64,7 @@ class XBuilderTest {
         assertEquals(expected, xbuilder.enrich(document, defaultsOf(c)));
     }
 
-    static Invoice invoice() {
+    public static Invoice invoice() {
         return Invoice.builder()
                 .serieNumero("F001-1")
                 .proveedor(Proveedor.builder().ruc("12345678912").razonSocial("Softgreen S.A.C.").build())

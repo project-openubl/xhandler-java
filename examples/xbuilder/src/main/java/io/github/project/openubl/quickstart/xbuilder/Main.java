@@ -6,15 +6,11 @@ import io.github.project.openubl.xbuilder.models.Defaults;
 import io.github.project.openubl.xbuilder.models.Detalle;
 import io.github.project.openubl.xbuilder.models.Invoice;
 import io.github.project.openubl.xbuilder.models.Proveedor;
-import io.github.project.openubl.xbuilder.signature.CertificateDetails;
-import io.github.project.openubl.xbuilder.signature.CertificateDetailsFactory;
-import io.github.project.openubl.xbuilder.signature.XMLSigner;
-import io.github.project.openubl.xbuilder.signature.XmlSignatureHelper;
-import org.w3c.dom.Document;
+import io.github.project.openubl.xbuilder.signature.KeyPair;
+import io.github.project.openubl.xbuilder.signature.XSigner;
 
 import java.io.InputStream;
 import java.math.BigDecimal;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -28,13 +24,8 @@ public class Main {
         System.out.println(xml);
 
         // Sign XML
-        Document signedXML = signXML(xml);
-
-        byte[] bytesFromDocument = XmlSignatureHelper.getBytesFromDocument(signedXML);
-        String signedXMLString = new String(bytesFromDocument, StandardCharsets.ISO_8859_1);
-
         System.out.println("\n Your signed XML is:");
-        System.out.println(signedXMLString);
+        System.out.println(signXML(xml));
     }
 
     public static String createUnsignedXML() {
@@ -43,10 +34,10 @@ public class Main {
         return new XBuilder().build(invoiceFactory(), defaults);
     }
 
-    public static Document signXML(String xml) throws Exception {
-        InputStream ksInputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("LLAMA-PE-CERTIFICADO-DEMO-12345678912.pfx");
-        CertificateDetails certificate = CertificateDetailsFactory.create(ksInputStream, "password");
-        return XMLSigner.signXML(xml, "Project OpenUBL", certificate.getX509Certificate(), certificate.getPrivateKey());
+    public static String signXML(String xml) throws Exception {
+        try (InputStream keyStore = Main.class.getResourceAsStream("/LLAMA-PE-CERTIFICADO-DEMO-12345678912.pfx")) {
+            return new XSigner().sign(xml, KeyPair.fromPkcs12(keyStore.readAllBytes(), "password"));
+        }
     }
 
     public static Invoice invoiceFactory() {

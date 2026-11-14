@@ -17,5 +17,8 @@ public enum ErrorKind {
     VALIDATION,
     /** The XML could not be rendered. */
     @JsonProperty("render")
-    RENDER
+    RENDER,
+    /** The private key or certificate can't be read, e.g. a wrong keystore password. */
+    @JsonProperty("invalid_key")
+    INVALID_KEY
 }

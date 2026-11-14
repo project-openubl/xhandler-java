@@ -99,8 +99,8 @@
 
     <modules>
         <module>xhandler-core</module>
-        <module>xbuilder</module>
         <module>xsender</module>
+        <module>xbuilder</module>
     </modules>
 
     <build>

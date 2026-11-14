@@ -1,0 +1,33 @@
+{
+  "input": {
+    "call": {
+      "verify_ticket": {
+        "target": {
+          "protocol": "rest",
+          "url": "https://api-cpe.sunat.gob.pe/v1/contribuyente/gem"
+        },
+        "ticket": "a7b3c1d2-0001"
+      }
+    },
+    "credentials": {
+      "username": "12345678959MODDATOS",
+      "password": "MODDATOS",
+      "client_id": "client-id",
+      "client_secret": "client-secret"
+    },
+    "token": "the-token"
+  },
+  "expected": {
+    "ok": {
+      "method": "GET",
+      "url": "https://api-cpe.sunat.gob.pe/v1/contribuyente/gem/comprobantes/envios/a7b3c1d2-0001",
+      "headers": [
+        [
+          "Authorization",
+          "Bearer the-token"
+        ]
+      ],
+      "body": null
+    }
+  }
+}

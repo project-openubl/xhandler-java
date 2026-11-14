@@ -1,0 +1,100 @@
+{
+  "input": {
+    "defaults": {
+      "fecha_emision": "2019-12-24",
+      "icb_tasa": "0.2",
+      "igv_tasa": "0.18",
+      "ivap_tasa": "0.04"
+    },
+    "document": {
+      "kind": "DespatchAdvice",
+      "spec": {
+        "comprador": null,
+        "destinatario": {
+          "nombre": "Cliente Final S.A.",
+          "numero_documento_identidad": "20876543210",
+          "tipo_documento_identidad": "6"
+        },
+        "detalles": [
+          {
+            "atributos": [],
+            "cantidad": "10.00",
+            "codigo": "PROD-99",
+            "codigo_sunat": null,
+            "descripcion": "Mercaderia variada",
+            "unidad_medida": "NIU"
+          }
+        ],
+        "documento_baja": null,
+        "documento_relacionado": null,
+        "documentos_adicionales": [],
+        "envio": {
+          "aeropuerto": null,
+          "choferes": [
+            {
+              "apellidos": "Guerrero",
+              "licencia": "L5555555",
+              "nombres": "Carlos",
+              "numero_documento_identidad": "44444444",
+              "tipo": null,
+              "tipo_documento_identidad": "1"
+            }
+          ],
+          "contenedores": [],
+          "destino": {
+            "codigo_local": null,
+            "direccion": "Tienda Centro",
+            "ruc": null,
+            "ubigeo": "150102"
+          },
+          "fecha_traslado": "2019-12-24",
+          "indicadores": [],
+          "motivo_traslado": null,
+          "numero_bultos": null,
+          "partida": {
+            "codigo_local": null,
+            "direccion": "Almacen Principal",
+            "ruc": null,
+            "ubigeo": "150101"
+          },
+          "peso_items": null,
+          "peso_total": "500.00",
+          "peso_total_unidad_medida": "KGM",
+          "puerto": null,
+          "sustento_peso": null,
+          "tipo_modalidad_traslado": "01",
+          "tipo_traslado": "01",
+          "transportista": null,
+          "vehiculo": {
+            "codigo_emisor": null,
+            "numero_autorizacion": null,
+            "numero_circulacion": "TUC-V001",
+            "placa": "XYZ-789",
+            "secundarios": []
+          }
+        },
+        "fecha_emision": null,
+        "firmante": null,
+        "hora_emision": null,
+        "observaciones": null,
+        "proveedor": null,
+        "remitente": {
+          "numero_registro_mtc": "MTC-654321",
+          "razon_social": "Transportes Veloz S.A.C.",
+          "ruc": "20123456789"
+        },
+        "serie_numero": "V001-1",
+        "tercero": {
+          "nombre": "Empresa Vendedora S.A.C.",
+          "numero_documento_identidad": "20555555555",
+          "tipo_documento_identidad": "6"
+        },
+        "tipo_comprobante": "31",
+        "version": "2.1"
+      }
+    }
+  },
+  "expected": {
+    "ok": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<DespatchAdvice xmlns=\"urn:oasis:names:specification:ubl:schema:xsd:DespatchAdvice-2\"\n                xmlns:ds=\"http://www.w3.org/2000/09/xmldsig#\"\n                xmlns:cac=\"urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2\"\n                xmlns:cbc=\"urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2\"\n                xmlns:ext=\"urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2\"\n>\n    <ext:UBLExtensions>\n        <ext:UBLExtension>\n            <ext:ExtensionContent/>\n        </ext:UBLExtension>\n    </ext:UBLExtensions>\n    <cbc:UBLVersionID>2.1</cbc:UBLVersionID>\n    <cbc:CustomizationID>2.1</cbc:CustomizationID>\n    <cbc:ID>V001-1</cbc:ID>\n    <cbc:IssueDate>2019-12-24</cbc:IssueDate>\n    <cbc:DespatchAdviceTypeCode listAgencyName=\"PE:SUNAT\" listName=\"Tipo de Documento\" listURI=\"urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo01\">31</cbc:DespatchAdviceTypeCode>\n    <cac:Signature>\n        <cbc:ID>20123456789</cbc:ID>\n        <cac:SignatoryParty>\n            <cac:PartyIdentification>\n                <cbc:ID>20123456789</cbc:ID>\n            </cac:PartyIdentification>\n            <cac:PartyName>\n                <cbc:Name><![CDATA[Transportes Veloz S.A.C.]]></cbc:Name>\n            </cac:PartyName>\n        </cac:SignatoryParty>\n        <cac:DigitalSignatureAttachment>\n            <cac:ExternalReference>\n                <cbc:URI>#PROJECT-OPENUBL-SIGN</cbc:URI>\n            </cac:ExternalReference>\n        </cac:DigitalSignatureAttachment>\n    </cac:Signature>\n    <cac:DespatchSupplierParty>\n        <cbc:CustomerAssignedAccountID schemeID=\"6\">20123456789</cbc:CustomerAssignedAccountID>\n        <cac:Party>\n            <cac:PartyIdentification>\n                <cbc:ID schemeID=\"6\" schemeName=\"Documento de Identidad\" schemeAgencyName=\"PE:SUNAT\" schemeURI=\"urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06\">20123456789</cbc:ID>\n            </cac:PartyIdentification>\n            <cac:PartyLegalEntity>\n                <cbc:RegistrationName><![CDATA[Transportes Veloz S.A.C.]]></cbc:RegistrationName>\n                <cbc:CompanyID>MTC-654321</cbc:CompanyID>\n            </cac:PartyLegalEntity>\n        </cac:Party>\n    </cac:DespatchSupplierParty>\n    <cac:DeliveryCustomerParty>\n        <cac:Party>\n            <cac:PartyIdentification>\n                <cbc:ID schemeID=\"6\" schemeName=\"Documento de Identidad\" schemeAgencyName=\"PE:SUNAT\" schemeURI=\"urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06\">20876543210</cbc:ID>\n            </cac:PartyIdentification>\n            <cac:PartyLegalEntity>\n                <cbc:RegistrationName><![CDATA[Cliente Final S.A.]]></cbc:RegistrationName>\n            </cac:PartyLegalEntity>\n        </cac:Party>\n    </cac:DeliveryCustomerParty>\n    <cac:SellerSupplierParty>\n        <cac:Party>\n            <cac:PartyIdentification>\n                <cbc:ID schemeID=\"6\" schemeName=\"Documento de Identidad\" schemeAgencyName=\"PE:SUNAT\" schemeURI=\"urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06\">20555555555</cbc:ID>\n            </cac:PartyIdentification>\n            <cac:PartyLegalEntity>\n                <cbc:RegistrationName><![CDATA[Empresa Vendedora S.A.C.]]></cbc:RegistrationName>\n            </cac:PartyLegalEntity>\n        </cac:Party>\n    </cac:SellerSupplierParty>\n    <cac:Shipment>\n        <cbc:ID>SUNAT_Envio</cbc:ID>\n        <cbc:HandlingCode listAgencyName=\"PE:SUNAT\" listName=\"Motivo de traslado\" listURI=\"urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo20\">01</cbc:HandlingCode>\n        <cbc:GrossWeightMeasure unitCode=\"KGM\">500.000</cbc:GrossWeightMeasure>\n        <cac:ShipmentStage>\n            <cbc:TransportModeCode listName=\"Modalidad de traslado\" listAgencyName=\"PE:SUNAT\" listURI=\"urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo18\">01</cbc:TransportModeCode>\n            <cac:TransitPeriod>\n                <cbc:StartDate>2019-12-24</cbc:StartDate>\n            </cac:TransitPeriod>\n            <cac:DriverPerson>\n                <cbc:ID schemeID=\"1\" schemeName=\"Documento de Identidad\" schemeAgencyName=\"PE:SUNAT\" schemeURI=\"urn:pe:gob:sunat:cpe:see:gem:catalogos:catalogo06\">44444444</cbc:ID>\n                <cbc:FirstName>Carlos</cbc:FirstName>\n                <cbc:FamilyName>Guerrero</cbc:FamilyName>\n                <cac:IdentityDocumentReference>\n                    <cbc:ID>L5555555</cbc:ID>\n                </cac:IdentityDocumentReference>\n            </cac:DriverPerson>\n        </cac:ShipmentStage>\n        <cac:Delivery>\n            <cac:DeliveryAddress>\n                <cbc:ID schemeAgencyName=\"PE:INEI\" schemeName=\"Ubigeos\">150102</cbc:ID>\n                <cac:AddressLine>\n                    <cbc:Line>Tienda Centro</cbc:Line>\n                </cac:AddressLine>\n            </cac:DeliveryAddress>\n            <cac:Despatch>\n                <cac:DespatchAddress>\n                    <cbc:ID schemeAgencyName=\"PE:INEI\" schemeName=\"Ubigeos\">150101</cbc:ID>\n                    <cac:AddressLine>\n                        <cbc:Line>Almacen Principal</cbc:Line>\n                    </cac:AddressLine>\n                </cac:DespatchAddress>\n            </cac:Despatch>\n        </cac:Delivery>\n        <cac:TransportHandlingUnit>\n            <cac:TransportEquipment>\n                <cbc:ID>XYZ-789</cbc:ID>\n                <cac:ApplicableTransportMeans>\n                    <cbc:RegistrationNationalityID>TUC-V001</cbc:RegistrationNationalityID>\n                </cac:ApplicableTransportMeans>\n            </cac:TransportEquipment>\n        </cac:TransportHandlingUnit>\n    </cac:Shipment>\n    <cac:DespatchLine>\n        <cbc:ID>1</cbc:ID>\n        <cbc:DeliveredQuantity unitCode=\"NIU\">10.00</cbc:DeliveredQuantity>\n        <cac:OrderLineReference>\n            <cbc:LineID>1</cbc:LineID>\n        </cac:OrderLineReference>\n        <cac:Item>\n            <cbc:Description><![CDATA[Mercaderia variada]]></cbc:Description>\n            <cac:SellersItemIdentification>\n                <cbc:ID>PROD-99</cbc:ID>\n            </cac:SellersItemIdentification>\n        </cac:Item>\n    </cac:DespatchLine>\n</DespatchAdvice>\n"
+  }
+}

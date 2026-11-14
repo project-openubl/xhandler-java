@@ -1,0 +1,109 @@
+package io.github.project.openubl.xsender;
+
+import io.github.project.openubl.xhandler.core.XhandlerException;
+import io.github.project.openubl.xsender.Credentials;
+import io.github.project.openubl.xsender.URLs;
+import io.github.project.openubl.xsender.models.Status;
+import io.github.project.openubl.xsender.models.SunatResponse;
+import io.github.project.openubl.xsender.sunat.FakeSunat;
+import io.github.project.openubl.xsender.sunat.SunatClient;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+
+import java.net.URISyntaxException;
+import java.net.http.HttpClient;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+class FileSenderTest {
+
+    private final FakeSunat sunat = new FakeSunat();
+    private final URLs urls = URLs.builder()
+            .invoice(sunat.url("/invoice"))
+            .perceptionRetention(sunat.url("/perception"))
+            .despatch(sunat.url("/despatch"))
+            .build();
+    private final Credentials credentials = Credentials.builder()
+            .username("12345678959MODDATOS")
+            .password("MODDATOS")
+            .build();
+    private final FileSender xsender = new FileSender(urls, credentials, new SunatClient(HttpClient.newHttpClient(), sunat.url("")));
+
+    @AfterEach
+    void stopSunat() {
+        sunat.close();
+    }
+
+    @Test
+    void sendsAnInvoiceWithSendBill() {
+        sunat.respondXml("/invoice", 200, "/sunat/bill_service_response_ok.xml");
+
+        SunatResponse response = xsender.sendFile(xml("/xmls/invoice_factura.xml"));
+
+        assertEquals(Status.ACEPTADO, response.getStatus());
+        FakeSunat.Request request = sunat.lastRequest("/invoice");
+        assertEquals("urn:sendBill", request.header("SOAPAction"));
+        assertTrue(request.body().contains("<fileName>12345678912-01-F001-1.zip</fileName>"));
+    }
+
+    @Test
+    void sendsAPerceptionToThePerceptionUrl() {
+        sunat.respondXml("/perception", 200, "/sunat/bill_service_response_ok.xml");
+
+        xsender.sendFile(xml("/xmls/perception.xml"));
+
+        assertEquals("urn:sendBill", sunat.lastRequest("/perception").header("SOAPAction"));
+    }
+
+    @Test
+    void sendsAVoidedDocumentAndVerifiesItsTicket() {
+        sunat.respondXml("/invoice", 200, "/sunat/bill_service_response_ticket.xml");
+        Path voided = xml("/xmls/voided-document.xml");
+
+        SunatResponse sent = xsender.sendFile(voided);
+        assertEquals("urn:sendSummary", sunat.lastRequest("/invoice").header("SOAPAction"));
+
+        sunat.respondXml("/invoice", 200, "/sunat/get_status_response_ok.xml");
+        SunatResponse verified = xsender.verifyFileTicket(voided, sent.getSunat().getTicket());
+
+        assertEquals(Status.ACEPTADO, verified.getStatus());
+        assertEquals("urn:getStatus", sunat.lastRequest("/invoice").header("SOAPAction"));
+        assertTrue(sunat.lastRequest("/invoice").body().contains("<ticket>1703154974517</ticket>"));
+    }
+
+    @Test
+    void sendsInvoicesTogetherWithSendPack() throws Exception {
+        sunat.respondXml("/invoice", 200, "/sunat/bill_service_response_ticket.xml");
+        byte[] invoice = Files.readAllBytes(xml("/xmls/invoice_factura.xml"));
+
+        SunatResponse response = xsender.sendPack("12345678912-20200328-1", List.of(invoice));
+
+        assertEquals("1703154974517", response.getSunat().getTicket());
+        FakeSunat.Request request = sunat.lastRequest("/invoice");
+        assertEquals("urn:sendPack", request.header("SOAPAction"));
+        assertTrue(request.body().contains("<fileName>12345678912-20200328-1.zip</fileName>"));
+    }
+
+    @Test
+    void verifyTicket_ofAnInvoice_throws() {
+        assertThrows(XhandlerException.class, () -> xsender.verifyFileTicket(xml("/xmls/invoice_factura.xml"), "123"));
+    }
+
+    @Test
+    void send_ofAnUnsupportedXml_throws() {
+        assertThrows(XhandlerException.class, () -> xsender.sendFile("<foo/>".getBytes()));
+    }
+
+    private static Path xml(String resource) {
+        try {
+            return Path.of(FileSenderTest.class.getResource(resource).toURI());
+        } catch (URISyntaxException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+}

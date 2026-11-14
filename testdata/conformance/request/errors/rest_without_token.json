@@ -1,0 +1,27 @@
+{
+  "input": {
+    "call": {
+      "send_file": {
+        "target": {
+          "protocol": "rest",
+          "url": "https://api-cpe.sunat.gob.pe/v1/contribuyente/gem"
+        },
+        "file": {
+          "filename": "12345678912-01-F001-1.zip",
+          "zip": "UEsFBgAAAAAAAAAAAAAAAAAAAAAAAA=="
+        }
+      }
+    },
+    "credentials": {
+      "username": "12345678959MODDATOS",
+      "password": "MODDATOS",
+      "client_id": "client-id",
+      "client_secret": "client-secret"
+    }
+  },
+  "expected": {
+    "error": {
+      "kind": "invalid_input"
+    }
+  }
+}

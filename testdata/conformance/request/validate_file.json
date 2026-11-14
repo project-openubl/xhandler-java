@@ -1,0 +1,37 @@
+{
+  "input": {
+    "call": {
+      "validate_file": {
+        "url": "https://sunat/billValidService",
+        "file": {
+          "filename": "12345678912-01-F001-1.zip",
+          "zip": "UEsFBgAAAAAAAAAAAAAAAAAAAAAAAA=="
+        }
+      }
+    },
+    "credentials": {
+      "username": "12345678959MODDATOS",
+      "password": "MODDATOS",
+      "client_id": "client-id",
+      "client_secret": "client-secret"
+    },
+    "token": "the-token"
+  },
+  "expected": {
+    "ok": {
+      "method": "POST",
+      "url": "https://sunat/billValidService",
+      "headers": [
+        [
+          "Content-Type",
+          "text/xml; charset=utf-8"
+        ],
+        [
+          "SOAPAction",
+          "urn:verificaCPEarchivo"
+        ]
+      ],
+      "body": "<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">\n    <soap:Header>\n        <wsse:Security xmlns:wsse=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd\" xmlns:wsu=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd\">\n            <wsse:UsernameToken>\n                <wsse:Username>12345678959MODDATOS</wsse:Username>\n                <wsse:Password Type=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText\">MODDATOS</wsse:Password>\n            </wsse:UsernameToken>\n        </wsse:Security>\n    </soap:Header>\n    <soap:Body>\n        <ns2:verificaCPEarchivo xmlns:ns2=\"http://service.sunat.gob.pe\">\n            <nombre>12345678912-01-F001-1.zip</nombre>\n            <archivo>UEsFBgAAAAAAAAAAAAAAAAAAAAAAAA==</archivo>\n        </ns2:verificaCPEarchivo>\n    </soap:Body>\n</soap:Envelope>"
+    }
+  }
+}

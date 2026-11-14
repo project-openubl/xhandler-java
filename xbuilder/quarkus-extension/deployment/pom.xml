@@ -17,14 +17,6 @@
             <artifactId>quarkus-arc-deployment</artifactId>
         </dependency>
         <dependency>
-            <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-qute-deployment</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-jaxb-deployment</artifactId>
-        </dependency>
-        <dependency>
             <groupId>io.github.project-openubl</groupId>
             <artifactId>quarkus-xbuilder</artifactId>
             <version>${project.version}</version>

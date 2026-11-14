@@ -1,0 +1,29 @@
+{
+  "input": {
+    "call": {
+      "send_file": {
+        "target": {
+          "protocol": "rest",
+          "url": "https://api-cpe.sunat.gob.pe/v1/contribuyente/gem"
+        },
+        "file": {
+          "filename": "12345678912-01-F001-1.zip",
+          "zip": "UEsFBgAAAAAAAAAAAAAAAAAAAAAAAA=="
+        }
+      }
+    },
+    "status": 422,
+    "body": "{\"cod\":\"422\",\"msg\":\"Unprocessable Entity\",\"errors\":[{\"cod\":\"1033\",\"msg\":\"El comprobante fue registrado previamente\"}]}"
+  },
+  "expected": {
+    "ok": {
+      "fault": {
+        "code": "1033",
+        "sunat_code": 1033,
+        "http_status": 422,
+        "message": "Unprocessable Entity; 1033 - El comprobante fue registrado previamente",
+        "status": "EXCEPCION"
+      }
+    }
+  }
+}

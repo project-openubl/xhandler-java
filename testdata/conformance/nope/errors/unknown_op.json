@@ -1,0 +1,8 @@
+{
+  "input": {},
+  "expected": {
+    "error": {
+      "kind": "invalid_request"
+    }
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "resources": {
+    "includes": [
+      { "pattern": "io/github/project/openubl/xhandler/core/XhandlerModule\\.meta" },
+      { "pattern": "io/github/project/openubl/xhandler/core/VERSION" }
+    ]
+  }
+}

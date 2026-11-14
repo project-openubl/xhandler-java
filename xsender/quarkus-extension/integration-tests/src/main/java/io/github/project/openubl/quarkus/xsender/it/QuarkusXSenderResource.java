@@ -1,6 +1,6 @@
 package io.github.project.openubl.quarkus.xsender.it;
 
-import io.github.project.openubl.xsender.XSender;
+import io.github.project.openubl.xsender.FileSender;
 import io.github.project.openubl.xsender.models.SunatResponse;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -15,19 +15,19 @@ import java.io.InputStream;
 public class QuarkusXSenderResource {
 
     @Inject
-    XSender xsender;
+    FileSender xsender;
 
     @POST
     @Path("bill-service/send-invoice")
     public String sendInvoice() throws IOException {
-        SunatResponse response = xsender.send(xml("xmls/12345678912-01-F001-1.xml"));
+        SunatResponse response = xsender.sendFile(xml("xmls/12345678912-01-F001-1.xml"));
         return response.getStatus().toString();
     }
 
     @POST
     @Path("bill-service/send-voided-document")
     public String sendVoidedDocument() throws IOException {
-        SunatResponse response = xsender.send(xml("xmls/12345678912-RA-20200328-1.xml"));
+        SunatResponse response = xsender.sendFile(xml("xmls/12345678912-RA-20200328-1.xml"));
         return response.getSunat().getTicket();
     }
 

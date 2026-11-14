@@ -1,0 +1,148 @@
+{
+  "input": {
+    "defaults": {
+      "fecha_emision": "2019-12-24",
+      "icb_tasa": "0.2",
+      "igv_tasa": "0.18",
+      "ivap_tasa": "0.04"
+    },
+    "document": {
+      "kind": "DespatchAdvice",
+      "spec": {
+        "comprador": null,
+        "destinatario": {
+          "nombre": "mi cliente",
+          "numero_documento_identidad": "12345678",
+          "tipo_documento_identidad": "1"
+        },
+        "detalles": [
+          {
+            "atributos": [],
+            "cantidad": "0.5",
+            "codigo": "123456",
+            "codigo_sunat": null,
+            "descripcion": null,
+            "unidad_medida": "KG"
+          }
+        ],
+        "documento_baja": null,
+        "documento_relacionado": null,
+        "documentos_adicionales": [],
+        "envio": {
+          "aeropuerto": null,
+          "choferes": [],
+          "contenedores": [],
+          "destino": {
+            "codigo_local": null,
+            "direccion": "DireccionDestino",
+            "ruc": null,
+            "ubigeo": "020202"
+          },
+          "fecha_traslado": "2019-12-24",
+          "indicadores": [],
+          "motivo_traslado": null,
+          "numero_bultos": null,
+          "partida": {
+            "codigo_local": null,
+            "direccion": "DireccionOrigen",
+            "ruc": null,
+            "ubigeo": "010101"
+          },
+          "peso_items": null,
+          "peso_total": "1",
+          "peso_total_unidad_medida": "KG",
+          "puerto": null,
+          "sustento_peso": null,
+          "tipo_modalidad_traslado": "02",
+          "tipo_traslado": "18",
+          "transportista": null,
+          "vehiculo": null
+        },
+        "fecha_emision": null,
+        "firmante": null,
+        "hora_emision": null,
+        "observaciones": null,
+        "proveedor": null,
+        "remitente": {
+          "numero_registro_mtc": null,
+          "razon_social": "Softgreen S.A.C.",
+          "ruc": "12345678912"
+        },
+        "serie_numero": "T001-1",
+        "tercero": null,
+        "tipo_comprobante": "09",
+        "version": null
+      }
+    }
+  },
+  "expected": {
+    "ok": {
+      "serie_numero": "T001-1",
+      "version": null,
+      "fecha_emision": "2019-12-24",
+      "hora_emision": null,
+      "tipo_comprobante": "09",
+      "observaciones": null,
+      "documento_baja": null,
+      "documento_relacionado": null,
+      "documentos_adicionales": [],
+      "firmante": {
+        "ruc": "12345678912",
+        "razon_social": "Softgreen S.A.C."
+      },
+      "remitente": {
+        "ruc": "12345678912",
+        "razon_social": "Softgreen S.A.C.",
+        "numero_registro_mtc": null
+      },
+      "destinatario": {
+        "tipo_documento_identidad": "1",
+        "numero_documento_identidad": "12345678",
+        "nombre": "mi cliente"
+      },
+      "comprador": null,
+      "tercero": null,
+      "proveedor": null,
+      "envio": {
+        "tipo_traslado": "18",
+        "motivo_traslado": null,
+        "sustento_peso": null,
+        "peso_total": "1",
+        "peso_total_unidad_medida": "KG",
+        "peso_items": null,
+        "numero_bultos": null,
+        "indicadores": [],
+        "tipo_modalidad_traslado": "02",
+        "fecha_traslado": "2019-12-24",
+        "transportista": null,
+        "choferes": [],
+        "vehiculo": null,
+        "contenedores": [],
+        "puerto": null,
+        "aeropuerto": null,
+        "partida": {
+          "ubigeo": "010101",
+          "direccion": "DireccionOrigen",
+          "codigo_local": null,
+          "ruc": null
+        },
+        "destino": {
+          "ubigeo": "020202",
+          "direccion": "DireccionDestino",
+          "codigo_local": null,
+          "ruc": null
+        }
+      },
+      "detalles": [
+        {
+          "unidad_medida": "KG",
+          "cantidad": "0.5",
+          "descripcion": null,
+          "codigo": "123456",
+          "codigo_sunat": null,
+          "atributos": []
+        }
+      ]
+    }
+  }
+}

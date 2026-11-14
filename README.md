@@ -40,21 +40,36 @@ XBuilder abstrae la complejidad de los estándares UBL y XML, permitiéndote con
 ### Ejemplo de Uso
 
 ```java
-// Ejemplo simplificado de creación de factura
 Invoice invoice = Invoice.builder()
-    .serie("F001")
-    .numero(1)
-    .proveedor(proveedor)
-    .cliente(cliente)
-    .detalle(detalle)
-    .build();
+        .serieNumero("F001-1")
+        .proveedor(Proveedor.builder().ruc("12345678912").razonSocial("Softgreen S.A.C.").build())
+        .cliente(Cliente.builder()
+                .tipoDocumentoIdentidad("6") // RUC (Catalog6)
+                .numeroDocumentoIdentidad("12121212121")
+                .nombre("Carlos Feria")
+                .build())
+        .detalles(List.of(Detalle.builder()
+                .descripcion("Item")
+                .cantidad(new BigDecimal("2"))
+                .precio(new BigDecimal("100"))
+                .build()))
+        .build();
 
-XMLInvoice xml = new InvoiceXMLBuilder().build(invoice);
+String xml = new XBuilder().build(invoice);       // fecha de hoy en Perú y tasas vigentes
+byte[] signed = new XSigner().sign(xml.getBytes(StandardCharsets.UTF_8),
+        SigningKey.fromPkcs12(Files.readAllBytes(Path.of("certificado.pfx")), "password"));
 ```
 
+XBuilder y XSender usan el **núcleo xhandler** (Rust), el mismo de las librerías de Go y
+Python, ejecutado en la JVM como WebAssembly compilado a bytecode
+([Chicory](https://chicory.dev)): sin código nativo y compatible con GraalVM native.
+
 > [!NOTE]
-> Para actualizar los snapshots de prueba en desarrollo local, ejecuta:
-> `mvn clean test -Dxbuilder.snapshot.update`
+> ¿Vienes de XBuilder 5.x? Revisa la [guía de migración](./xbuilder/MIGRATION.md).
+
+> [!NOTE]
+> Los casos de prueba (`testdata/conformance`), el módulo WebAssembly y los modelos se
+> copian desde xhandler-rust con `make sync RUST_REPO=../xhandler-rust`.
 
 ---
 
@@ -63,34 +78,35 @@ XMLInvoice xml = new InvoiceXMLBuilder().build(invoice);
 XSender envía tus comprobantes firmados a la SUNAT (o a un OSE): servicios SOAP (`billService`, consulta y validación) y la API REST de guías de remisión (con su token OAuth).
 
 ### Características
-- **Sin dependencias**: solo usa el JDK (`java.net.http`, StAX, `java.util.zip`). Funciona en Java SE, Spring Boot, Quarkus (JVM y nativo), WildFly/Jakarta EE, Tomcat, etc.
+- **Sin código nativo**: el núcleo xhandler corre en la JVM (Chicory) y el envío usa `java.net.http`; solo depende de Jackson y Chicory. Funciona en Java SE, Spring Boot, Quarkus (JVM y nativo), WildFly/Jakarta EE, Tomcat, etc.
 - **Automático**: lee el XML para decidir el nombre del archivo, el servicio y la operación (`sendBill`, `sendSummary`, guía de remisión REST...).
-- **Respuestas claras**: CDR, ticket o error de la SUNAT llegan como un `SunatResponse`; los fallos de red como `XSenderException`.
+- **Respuestas claras**: CDR, ticket o error de la SUNAT llegan como un `SunatResponse`; los errores del núcleo como `XhandlerException` (con su `ErrorKind`, igual que en Go y Python) y los fallos de red como `UncheckedIOException`.
 
 ### Ejemplo de Uso
 
+Su clase principal es `FileSender` (en 6.0 reemplaza a la clase `XSender`), con los mismos
+nombres que en Go y Python: `sendFile`, `sendPack`, `verifyTicket(destino, ticket)` y
+`verifyFileTicket(xml, ticket)`.
+
 ```java
-XSender xsender = new XSender(
-        CompanyURLs.builder()
-                .invoice("https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService")
-                .perceptionRetention("https://e-beta.sunat.gob.pe/ol-ti-itemision-otroscpe-gem-beta/billService")
-                .build(),
-        CompanyCredentials.builder()
+FileSender xsender = new FileSender(
+        URLs.beta(),
+        Credentials.builder()
                 .username("12345678959MODDATOS")
                 .password("MODDATOS")
                 .build()
 );
 
-SunatResponse response = xsender.send(signedXml);   // byte[] o Path
+SunatResponse response = xsender.sendFile(signedXml);   // byte[] o Path
 if (response.isTicket()) {
-    response = xsender.verifyTicket(signedXml, response.getSunat().getTicket());
+    response = xsender.verifyFileTicket(signedXml, response.getSunat().getTicket());
 }
 System.out.println(response.getStatus());           // ACEPTADO, RECHAZADO, EXCEPCION, EN_PROCESO...
 ```
 
-Para guías de remisión agrega `.despatch("https://api-cpe.sunat.gob.pe/v1/contribuyente/gem")` a las URLs y `clientId`/`clientSecret` a las credenciales; la SUNAT no ofrece un entorno beta para ellas, así que necesitas credenciales reales.
+Para guías de remisión usa `URLs.production()` (o agrega `.despatch("https://api-cpe.sunat.gob.pe/v1/contribuyente/gem")` a tus URLs) y `clientId`/`clientSecret` a las credenciales; la SUNAT no ofrece un entorno beta para ellas, así que necesitas credenciales reales.
 
-Si envías comprobantes de varias empresas, comparte un solo `SunatClient` (conexiones y tokens) entre sus `XSender`: `new XSender(urls, credentials, sunatClient)`.
+Si envías comprobantes de varias empresas, comparte un solo `SunatClient` (conexiones y tokens) entre sus `FileSender`: `new FileSender(urls, credentials, sunatClient)`.
 
 ### Frameworks
 
@@ -100,7 +116,7 @@ Si envías comprobantes de varias empresas, comparte un solo `SunatClient` (cone
 | Quarkus | `quarkus-xsender` | `quarkus.xsender.company.*` |
 | WildFly / Jakarta EE / MicroProfile | `xsender-cdi` | `xsender.company.*` (MicroProfile Config) |
 
-Todas exponen un `SunatClient` compartido y un `XSender` para la empresa configurada (en Quarkus y CDI, inyectar `XSender` sin configurar la empresa lanza `XSenderException`). Spring Boot / CDI (en Quarkus antepón `quarkus.`):
+Todas exponen un `SunatClient` compartido y un `FileSender` para la empresa configurada (en Quarkus y CDI, inyectar `FileSender` sin configurar la empresa lanza `IllegalStateException`). Spring Boot / CDI (en Quarkus antepón `quarkus.`):
 
 ```properties
 xsender.company.invoice-url=https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService

@@ -1,27 +1,39 @@
 name: CI
 
 on:
+  # Branches are tested through their pull requests; main after merging
   push:
-    branches-ignore:
-      - "dependabot/**"
+    branches:
+      - main
     paths-ignore:
       - 'README.md'
   pull_request:
     paths-ignore:
       - 'README.md'
 
+# A new push to a pull request cancels the run of the previous one
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 env:
   CI: true
 
 jobs:
   test:
-    name: JDK ${{matrix.java-version}} JVM Tests
+    # Linux keeps the name of the required check "JDK 25 JVM Tests"
+    name: ${{ matrix.os == 'ubuntu-latest' && format('JDK {0} JVM Tests', matrix.java-version) || format('JDK {0} JVM Tests ({1})', matrix.java-version, matrix.os) }}
     strategy:
       matrix:
         java-version: [ 25 ]
+        # Linux and Windows on x64, macOS on arm64. The xhandler core is
+        # WebAssembly compiled to JVM bytecode: no native code per platform.
+        os: [ ubuntu-latest, macos-latest, windows-latest ]
       fail-fast: false
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     steps:
+      # The test fixtures (XML, conformance corpus) must keep their LF line endings
+      - run: git config --global core.autocrlf false
       - uses: actions/checkout@v7.0.1
       - uses: actions/setup-java@v6.2.0
         with:
@@ -30,12 +42,8 @@ jobs:
           cache: maven
       - name: Maven tests
         run: mvn verify -Pexamples
-      - name: Upload XBuilder e2e Yaml files
-        uses: actions/upload-artifact@v4.6.2
-        with:
-          name: xbuilder-e2e-yaml
-          path: xbuilder/quarkus-extension/integration-tests/src/test/resources/e2e/
 
+  # Native image: the only check of the GraalVM configuration (core and models)
   quarkus-extension:
     needs: [ test ]
     runs-on: ubuntu-latest
@@ -52,72 +60,43 @@ jobs:
           cache: maven
       - name: Maven tests
         run: mvn install -DskipTests
-      - name: Download XBuilder e2e Yaml files
-        uses: actions/download-artifact@v8.0.2
-        with:
-          name: xbuilder-e2e-yaml
-          path: xbuilder/quarkus-extension/integration-tests/src/test/resources/e2e/
       - name: Maven IT tests
         run: mvn -Pnative-image install -f ${{ matrix.module }}/quarkus-extension/integration-tests/
 
+  # The oldest supported Quarkus, in JVM mode: the extensions use little Quarkus
+  # API, so this catches incompatibilities without more native builds
   quarkus-supported-v:
+    name: quarkus-supported-v (3.33.4.2)
     needs: [ test ]
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        module: [ xbuilder, xsender ]
-        quarkus-version: [ 3.33.4.2, 3.39.5 ]
-      fail-fast: false
     steps:
       - uses: actions/checkout@v7.0.1
-      - name: Set up JDK
-        uses: actions/setup-java@v6.2.0
+      - uses: actions/setup-java@v6.2.0
         with:
           java-version: 25
           distribution: temurin
           cache: maven
-      - name: Maven tests
+      - name: Maven install
         run: mvn install -DskipTests
-      - name: Download XBuilder e2e Yaml files
-        uses: actions/download-artifact@v8.0.2
-        with:
-          name: xbuilder-e2e-yaml
-          path: xbuilder/quarkus-extension/integration-tests/src/test/resources/e2e/
-      - name: Maven IT tests
-        run: mvn -Pnative-image install -f ${{ matrix.module }}/quarkus-extension/integration-tests/ -Dquarkus.version=${{ matrix.quarkus-version }}
+      - name: XBuilder IT tests
+        run: mvn install -f xbuilder/quarkus-extension/integration-tests/ -Dquarkus.version=3.33.4.2
+      - name: XSender IT tests
+        run: mvn install -f xsender/quarkus-extension/integration-tests/ -Dquarkus.version=3.33.4.2
 
+  # The current and the oldest supported Spring Boot
   xsender-springboot-extension:
     needs: [ test ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7.0.1
-      - name: Set up JDK
-        uses: actions/setup-java@v6.2.0
+      - uses: actions/setup-java@v6.2.0
         with:
           java-version: 25
           distribution: temurin
           cache: maven
-      - name: Maven tests
+      - name: Maven install
         run: mvn install -DskipTests
-      - name: Maven IT tests
+      - name: IT tests
         run: mvn install -f xsender/spring-boot-extension/integration-tests/
-
-  xsender-springboot-supported-v:
-    needs: [ xsender-springboot-extension ]
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        springboot-version: [ 4.0.9 ]
-      fail-fast: false
-    steps:
-      - uses: actions/checkout@v7.0.1
-      - name: Set up JDK
-        uses: actions/setup-java@v6.2.0
-        with:
-          java-version: 25
-          distribution: temurin
-          cache: maven
-      - name: Maven tests
-        run: mvn install -DskipTests
-      - name: Maven IT tests
-        run: mvn install -f xsender/spring-boot-extension/integration-tests/ -Dspringboot.version=${{ matrix.springboot-version }}
+      - name: IT tests (Spring Boot 4.0.9)
+        run: mvn install -f xsender/spring-boot-extension/integration-tests/ -Dspringboot.version=4.0.9

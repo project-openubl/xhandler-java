@@ -1,0 +1,24 @@
+{
+  "input": {
+    "call": {
+      "send_file": {
+        "target": {
+          "protocol": "soap",
+          "url": "https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService",
+          "action": "bill"
+        },
+        "file": {
+          "filename": "12345678912-01-F001-1.zip",
+          "zip": "UEsFBgAAAAAAAAAAAAAAAAAAAAAAAA=="
+        }
+      }
+    },
+    "status": 200,
+    "body": "<soap-env:Envelope xmlns:soap-env=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:wsse=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd\">\n    <soap-env:Header/>\n    <soap-env:Body>\n        <br:sendSummaryResponse xmlns:br=\"http://service.sunat.gob.pe\">\n            <ticket>1703154974517</ticket>\n        </br:sendSummaryResponse>\n    </soap-env:Body>\n</soap-env:Envelope>"
+  },
+  "expected": {
+    "ok": {
+      "ticket": "1703154974517"
+    }
+  }
+}

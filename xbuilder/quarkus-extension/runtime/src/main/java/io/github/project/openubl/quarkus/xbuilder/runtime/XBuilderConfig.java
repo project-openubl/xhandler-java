@@ -12,12 +12,17 @@ import java.util.Optional;
 public interface XBuilderConfig {
 
     /**
-     * Default igvTasa
+     * IGV rate of the documents that do not set it; the current SUNAT rate by default
      */
     Optional<BigDecimal> igvTasa();
 
     /**
-     * Default icbTasa
+     * ICB rate of the documents that do not set it; the current SUNAT rate by default
      */
     Optional<BigDecimal> icbTasa();
+
+    /**
+     * IVAP rate of the documents that do not set it; the current SUNAT rate by default
+     */
+    Optional<BigDecimal> ivapTasa();
 }

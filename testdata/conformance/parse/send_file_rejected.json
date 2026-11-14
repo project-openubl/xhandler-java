@@ -1,0 +1,30 @@
+{
+  "input": {
+    "call": {
+      "send_file": {
+        "target": {
+          "protocol": "soap",
+          "url": "https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService",
+          "action": "bill"
+        },
+        "file": {
+          "filename": "12345678912-01-F001-1.zip",
+          "zip": "UEsFBgAAAAAAAAAAAAAAAAAAAAAAAA=="
+        }
+      }
+    },
+    "status": 500,
+    "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<env:Envelope xmlns:env=\"http://schemas.xmlsoap.org/soap/envelope/\">\n    <env:Header/>\n    <env:Body>\n        <env:Fault>\n            <faultcode>env:Client.2335</faultcode>\n            <faultstring>El documento electrónico ingresado ha sido alterado - Detalle: <![CDATA[xxx.xxx.xxx value='ticket: 1 error: 2335']]></faultstring>\n        </env:Fault>\n    </env:Body>\n</env:Envelope>\n"
+  },
+  "expected": {
+    "ok": {
+      "fault": {
+        "code": "env:Client.2335",
+        "sunat_code": 2335,
+        "http_status": 500,
+        "message": "El documento electrónico ingresado ha sido alterado - Detalle: xxx.xxx.xxx value='ticket: 1 error: 2335'",
+        "status": "RECHAZADO"
+      }
+    }
+  }
+}

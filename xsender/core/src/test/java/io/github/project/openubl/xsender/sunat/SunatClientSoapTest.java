@@ -1,7 +1,9 @@
 package io.github.project.openubl.xsender.sunat;
 
-import io.github.project.openubl.xsender.XSenderException;
-import io.github.project.openubl.xsender.company.CompanyCredentials;
+import io.github.project.openubl.xhandler.core.XhandlerException;
+import java.io.UncheckedIOException;
+import io.github.project.openubl.xhandler.core.ErrorKind;
+import io.github.project.openubl.xsender.Credentials;
 import io.github.project.openubl.xsender.files.ZipFile;
 import io.github.project.openubl.xsender.models.Status;
 import io.github.project.openubl.xsender.models.SunatResponse;
@@ -25,7 +27,7 @@ class SunatClientSoapTest {
 
     private final FakeSunat sunat = new FakeSunat();
     private final SunatClient client = new SunatClient(SunatClient.defaultHttpClient(), sunat.url(""));
-    private final CompanyCredentials credentials = CompanyCredentials.builder()
+    private final Credentials credentials = Credentials.builder()
             .username("12345678959MODDATOS")
             .password("MODDATOS & <co>")
             .build();
@@ -104,9 +106,10 @@ class SunatClientSoapTest {
 
     @Test
     void nonSoapResponse_throws() {
-        XSenderException exception = assertThrows(XSenderException.class,
+        XhandlerException exception = assertThrows(XhandlerException.class,
                 () -> client.sendFile(destination(BillServiceDestination.SoapOperation.SEND_BILL), zipFile, credentials));
 
+        assertEquals(ErrorKind.RESPONSE, exception.getKind());
         assertTrue(exception.getMessage().contains("HTTP 404"));
         assertEquals(1, sunat.requests(PATH).size(), "only proxy 401s are retried");
     }
@@ -127,16 +130,17 @@ class SunatClientSoapTest {
     void persistent401_throwsAfterTwoRetries() {
         sunat.respondHtml(PATH, 401, "<html>401 Authorization Required</html>");
 
-        assertThrows(XSenderException.class,
+        XhandlerException error = assertThrows(XhandlerException.class,
                 () -> client.sendFile(destination(BillServiceDestination.SoapOperation.SEND_BILL), zipFile, credentials));
         assertEquals(3, sunat.requests(PATH).size());
+        assertEquals(ErrorKind.RATE_LIMITED, error.getKind());
     }
 
     @Test
     void xmlThatIsNotAnEnvelope_throws() {
         sunat.respondJson(PATH, 200, "<html><body>Mantenimiento</body></html>");
 
-        assertThrows(XSenderException.class,
+        assertThrows(XhandlerException.class,
                 () -> client.sendFile(destination(BillServiceDestination.SoapOperation.SEND_BILL), zipFile, credentials));
     }
 
@@ -144,7 +148,7 @@ class SunatClientSoapTest {
     void envelopeWithoutCdrNorTicket_throws() {
         sunat.respondXml(PATH, 200, "/sunat/get_status_response_in_progress.xml");
 
-        assertThrows(XSenderException.class,
+        assertThrows(XhandlerException.class,
                 () -> client.sendFile(destination(BillServiceDestination.SoapOperation.SEND_BILL), zipFile, credentials));
     }
 
@@ -155,7 +159,7 @@ class SunatClientSoapTest {
                 .soapOperation(BillServiceDestination.SoapOperation.SEND_BILL)
                 .build();
 
-        assertThrows(XSenderException.class, () -> client.sendFile(destination, zipFile, credentials));
+        assertThrows(UncheckedIOException.class, () -> client.sendFile(destination, zipFile, credentials));
     }
 
     @Test
@@ -192,14 +196,9 @@ class SunatClientSoapTest {
     }
 
     @Test
-    void consultDocument_getStatusCdr() {
+    void getStatusCdr() {
         sunat.respondXml("/consult", 200, "/sunat/get_status_cdr_response.xml");
-        BillConsultServiceDestination destination = BillConsultServiceDestination.builder()
-                .url(sunat.url("/consult"))
-                .operation(BillConsultServiceDestination.Operation.GET_STATUS_CDR)
-                .build();
-
-        ConsultResponse response = client.consultDocument(destination, new DocumentQuery("12345678959", "01", "F001", 102), credentials);
+        ConsultResponse response = client.getStatusCdr(sunat.url("/consult"), new DocumentQuery("12345678959", "01", "F001", 102), credentials);
 
         assertEquals("0004", response.statusCode());
         assertEquals("La constancia existe", response.statusMessage());
@@ -211,14 +210,9 @@ class SunatClientSoapTest {
     }
 
     @Test
-    void consultDocument_getStatus() {
+    void getStatus() {
         sunat.respondXml("/consult", 200, "/sunat/valida_cdp_response.xml");
-        BillConsultServiceDestination destination = BillConsultServiceDestination.builder()
-                .url(sunat.url("/consult"))
-                .operation(BillConsultServiceDestination.Operation.GET_STATUS)
-                .build();
-
-        ConsultResponse response = client.consultDocument(destination, new DocumentQuery("12345678959", "01", "F001", 102), credentials);
+        ConsultResponse response = client.getStatus(sunat.url("/consult"), new DocumentQuery("12345678959", "01", "F001", 102), credentials);
 
         assertEquals("0", response.statusCode());
         assertEquals("urn:getStatus", sunat.lastRequest("/consult").header("SOAPAction"));
@@ -228,10 +222,9 @@ class SunatClientSoapTest {
     @Test
     void validateCdp() {
         sunat.respondXml("/valid", 200, "/sunat/valida_cdp_response.xml");
-        BillValidServiceDestination destination = new BillValidServiceDestination(sunat.url("/valid"));
         CdpQuery query = new CdpQuery("12345678959", "01", "F001", "102", "6", "20123456789", "10/01/2024", new BigDecimal("118.00"), null);
 
-        ConsultResponse response = client.validateCdp(destination, query, credentials);
+        ConsultResponse response = client.validateCdp(sunat.url("/valid"), query, credentials);
 
         assertEquals("0", response.statusCode());
         assertEquals("El comprobante existe y está aceptado.", response.statusMessage());
@@ -244,20 +237,19 @@ class SunatClientSoapTest {
     @Test
     void consultService_faultIsReturnedAsAResponse() {
         sunat.respondXml("/valid", 500, "/sunat/bill_service_response_fault.xml");
-        BillValidServiceDestination destination = new BillValidServiceDestination(sunat.url("/valid"));
 
-        ConsultResponse response = client.validateFile(destination, "file.xml", new byte[]{1}, credentials);
+        ConsultResponse response = client.validateFile(sunat.url("/valid"), "file.xml", new byte[]{1}, credentials);
 
         assertEquals("0111", response.statusCode());
+        assertEquals(500, response.httpStatus());
         assertTrue(response.statusMessage().startsWith("No tiene el perfil"));
     }
 
     @Test
     void validateFile_postsTheFile() {
         sunat.respondXml("/valid", 200, "/sunat/valida_cdp_response.xml");
-        BillValidServiceDestination destination = new BillValidServiceDestination(sunat.url("/valid"));
 
-        client.validateFile(destination, "F001-1.xml", "abc".getBytes(StandardCharsets.UTF_8), credentials);
+        client.validateFile(sunat.url("/valid"), "F001-1.xml", "abc".getBytes(StandardCharsets.UTF_8), credentials);
 
         FakeSunat.Request request = sunat.lastRequest("/valid");
         assertEquals("urn:verificaCPEarchivo", request.header("SOAPAction"));

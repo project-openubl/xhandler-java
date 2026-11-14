@@ -1,7 +1,7 @@
 package io.github.project.openubl.xsender.sunat;
 
-import io.github.project.openubl.xsender.XSenderException;
-import io.github.project.openubl.xsender.company.CompanyCredentials;
+import io.github.project.openubl.xhandler.core.XhandlerException;
+import io.github.project.openubl.xsender.Credentials;
 import io.github.project.openubl.xsender.files.ZipFile;
 import io.github.project.openubl.xsender.models.Status;
 import io.github.project.openubl.xsender.models.SunatResponse;
@@ -27,7 +27,7 @@ class SunatClientGreTest {
 
     private final FakeSunat sunat = new FakeSunat();
     private final SunatClient client = new SunatClient(SunatClient.defaultHttpClient(), sunat.url(""));
-    private final CompanyCredentials credentials = CompanyCredentials.builder()
+    private final Credentials credentials = Credentials.builder()
             .username("20123456789MODDATOS")
             .password("MODDATOS")
             .clientId("my-client-id")
@@ -76,8 +76,9 @@ class SunatClientGreTest {
         FakeSunat.Request send = sunat.lastRequest(SEND_PATH);
         assertEquals("Bearer my-token", send.header("Authorization"));
         assertEquals("""
-                {"archivo":{"nomArchivo":"20123456789-09-T001-1.zip","arcGreZip":"YWJj",\
-                "hashZip":"ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"}}""", send.body());
+                {"archivo":{"arcGreZip":"YWJj",\
+                "hashZip":"ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",\
+                "nomArchivo":"20123456789-09-T001-1.zip"}}""", send.body());
     }
 
     @Test
@@ -128,7 +129,7 @@ class SunatClientGreTest {
     void tokenInTheCredentials_isUsedAsIs() {
         sunat.respondJson(SEND_PATH, 200, """
                 {"numTicket": "my-ticket"}""");
-        CompanyCredentials withToken = CompanyCredentials.builder().token("given-token").build();
+        Credentials withToken = Credentials.builder().token("given-token").build();
 
         client.sendFile(destination(BillServiceDestination.RestOperation.SEND_DOCUMENT), zipFile, withToken);
 
@@ -141,7 +142,7 @@ class SunatClientGreTest {
         sunat.respondJson(SEND_PATH, 503, """
                 {"cod": "503", "msg": "Service Unavailable"}""");
 
-        assertThrows(XSenderException.class,
+        assertThrows(XhandlerException.class,
                 () -> client.sendFile(destination(BillServiceDestination.RestOperation.SEND_DOCUMENT), zipFile, credentials));
     }
 
@@ -153,16 +154,17 @@ class SunatClientGreTest {
 
         SunatResponse response = client.sendFile(destination(BillServiceDestination.RestOperation.SEND_DOCUMENT), zipFile, credentials);
 
-        assertEquals(422, response.getMetadata().getResponseCode());
-        assertEquals("Unprocessable Entity", response.getMetadata().getDescription());
-        assertEquals(List.of("1033 - El comprobante fue registrado previamente"), response.getMetadata().getNotes());
+        // Both codes: SUNAT's and the HTTP status
+        assertEquals(1033, response.getMetadata().getResponseCode());
+        assertEquals(422, response.getMetadata().getHttpStatus());
+        assertEquals("Unprocessable Entity; 1033 - El comprobante fue registrado previamente", response.getMetadata().getDescription());
     }
 
     @Test
     void send_withoutClientCredentials_throws() {
-        CompanyCredentials withoutClient = CompanyCredentials.builder().username("u").password("p").build();
+        Credentials withoutClient = Credentials.builder().username("u").password("p").build();
 
-        assertThrows(XSenderException.class,
+        assertThrows(XhandlerException.class,
                 () -> client.sendFile(destination(BillServiceDestination.RestOperation.SEND_DOCUMENT), zipFile, withoutClient));
     }
 

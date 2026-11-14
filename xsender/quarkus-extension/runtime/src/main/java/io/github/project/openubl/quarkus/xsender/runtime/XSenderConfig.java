@@ -1,7 +1,7 @@
 package io.github.project.openubl.quarkus.xsender.runtime;
 
-import io.github.project.openubl.xsender.company.CompanyCredentials;
-import io.github.project.openubl.xsender.company.CompanyURLs;
+import io.github.project.openubl.xsender.Credentials;
+import io.github.project.openubl.xsender.URLs;
 import io.github.project.openubl.xsender.sunat.SunatClient;
 import io.quarkus.runtime.annotations.ConfigPhase;
 import io.quarkus.runtime.annotations.ConfigRoot;
@@ -21,7 +21,7 @@ public interface XSenderConfig {
     String securityApiUrl();
 
     /**
-     * The company an injected XSender sends for
+     * The company an injected FileSender sends for
      */
     Optional<Company> company();
 
@@ -61,12 +61,12 @@ public interface XSenderConfig {
          */
         Optional<String> clientSecret();
 
-        default CompanyURLs urls() {
-            return new CompanyURLs(invoiceUrl().orElse(null), perceptionRetentionUrl().orElse(null), despatchUrl().orElse(null));
+        default URLs urls() {
+            return new URLs(invoiceUrl().orElse(null), perceptionRetentionUrl().orElse(null), despatchUrl().orElse(null));
         }
 
-        default CompanyCredentials credentials() {
-            return CompanyCredentials.builder()
+        default Credentials credentials() {
+            return Credentials.builder()
                     .username(username())
                     .password(password())
                     .clientId(clientId().orElse(null))

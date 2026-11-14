@@ -1,0 +1,44 @@
+{
+  "input": {
+    "call": {
+      "validate_cdp": {
+        "url": "https://sunat/billValidService",
+        "cdp": {
+          "ruc": "12345678912",
+          "tipo_comprobante": "01",
+          "serie": "F001",
+          "numero": 1,
+          "tipo_documento_identidad_receptor": "6",
+          "numero_documento_identidad_receptor": "12121212121",
+          "fecha_emision": "24/12/2019",
+          "importe_total": "118.00",
+          "numero_autorizacion": null
+        }
+      }
+    },
+    "credentials": {
+      "username": "12345678959MODDATOS",
+      "password": "MODDATOS",
+      "client_id": "client-id",
+      "client_secret": "client-secret"
+    },
+    "token": "the-token"
+  },
+  "expected": {
+    "ok": {
+      "method": "POST",
+      "url": "https://sunat/billValidService",
+      "headers": [
+        [
+          "Content-Type",
+          "text/xml; charset=utf-8"
+        ],
+        [
+          "SOAPAction",
+          "urn:validaCDPcriterios"
+        ]
+      ],
+      "body": "<soap:Envelope xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">\n    <soap:Header>\n        <wsse:Security xmlns:wsse=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd\" xmlns:wsu=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd\">\n            <wsse:UsernameToken>\n                <wsse:Username>12345678959MODDATOS</wsse:Username>\n                <wsse:Password Type=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText\">MODDATOS</wsse:Password>\n            </wsse:UsernameToken>\n        </wsse:Security>\n    </soap:Header>\n    <soap:Body>\n        <ns2:validaCDPcriterios xmlns:ns2=\"http://service.sunat.gob.pe\">\n            <rucEmisor>12345678912</rucEmisor>\n            <tipoCDP>01</tipoCDP>\n            <serieCDP>F001</serieCDP>\n            <numeroCDP>1</numeroCDP>\n            <tipoDocIdReceptor>6</tipoDocIdReceptor>\n            <numeroDocIdReceptor>12121212121</numeroDocIdReceptor>\n            <fechaEmision>24&#x2F;12&#x2F;2019</fechaEmision>\n            <importeTotal>118.00</importeTotal>\n            <nroAutorizacion></nroAutorizacion>\n        </ns2:validaCDPcriterios>\n    </soap:Body>\n</soap:Envelope>"
+    }
+  }
+}

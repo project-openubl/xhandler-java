@@ -1,15 +1,14 @@
 package io.github.project.openubl.spring.xsender.runtime;
 
-import io.github.project.openubl.xsender.XSenderException;
-import io.github.project.openubl.xsender.company.CompanyCredentials;
-import io.github.project.openubl.xsender.company.CompanyURLs;
+import io.github.project.openubl.xsender.Credentials;
+import io.github.project.openubl.xsender.URLs;
 import io.github.project.openubl.xsender.sunat.SunatClient;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 
 /**
  * @param securityApiUrl where the guías de remisión access tokens are requested
- * @param company        the company an {@link io.github.project.openubl.xsender.XSender} bean sends for, if any
+ * @param company        the company an {@link io.github.project.openubl.xsender.FileSender} bean sends for, if any
  */
 @ConfigurationProperties("xsender")
 public record XSenderProperties(
@@ -31,15 +30,15 @@ public record XSenderProperties(
             return "Company[username=" + username + ", invoiceUrl=" + invoiceUrl + "]";
         }
 
-        CompanyURLs urls() {
-            return new CompanyURLs(invoiceUrl, perceptionRetentionUrl, despatchUrl);
+        URLs urls() {
+            return new URLs(invoiceUrl, perceptionRetentionUrl, despatchUrl);
         }
 
-        CompanyCredentials credentials() {
+        Credentials credentials() {
             if (password == null) {
-                throw new XSenderException("xsender.company.password is required");
+                throw new IllegalStateException("xsender.company.password is required");
             }
-            return CompanyCredentials.builder()
+            return Credentials.builder()
                     .username(username)
                     .password(password)
                     .clientId(clientId)

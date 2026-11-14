@@ -1,0 +1,15 @@
+{
+  "input": {
+    "xml": "PGh0bWwvPg==",
+    "urls": {
+      "invoice": "https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService",
+      "perception_retention": "https://e-beta.sunat.gob.pe/ol-ti-itemision-otroscpe-gem-beta/billService",
+      "despatch": ""
+    }
+  },
+  "expected": {
+    "error": {
+      "kind": "invalid_input"
+    }
+  }
+}

@@ -1,6 +1,6 @@
 package io.github.project.openubl.quarkus.xsender.test;
 
-import io.github.project.openubl.xsender.XSender;
+import io.github.project.openubl.xsender.FileSender;
 import io.github.project.openubl.xsender.sunat.SunatClient;
 import io.quarkus.test.QuarkusUnitTest;
 import jakarta.inject.Inject;
@@ -24,10 +24,10 @@ public class QuarkusXsenderTest {
     SunatClient sunatClient;
 
     @Inject
-    XSender xsender;
+    FileSender xsender;
 
     @Test
-    public void injectsTheSunatClientAndTheConfiguredXSender() {
+    public void injectsTheSunatClientAndTheConfiguredFileSender() {
         assertNotNull(sunatClient);
         assertNotNull(xsender);
     }

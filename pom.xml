@@ -37,6 +37,7 @@
         <smallrye-config.version>3.17.2</smallrye-config.version>
         <smallrye-common.version>2.21.1</smallrye-common.version>
         <jackson.version>2.22.4</jackson.version>
+        <chicory.version>1.7.5</chicory.version>
         <junit.version>6.1.3</junit.version>
         <failsafe-plugin.version>3.6.1</failsafe-plugin.version>
     </properties>
@@ -75,6 +76,11 @@
         <dependencies>
             <dependency>
                 <groupId>io.github.project-openubl</groupId>
+                <artifactId>xhandler-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.project-openubl</groupId>
                 <artifactId>xsender</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -92,8 +98,9 @@
     </dependencyManagement>
 
     <modules>
-        <module>xbuilder</module>
+        <module>xhandler-core</module>
         <module>xsender</module>
+        <module>xbuilder</module>
     </modules>
 
     <build>

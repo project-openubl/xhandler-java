@@ -1,0 +1,110 @@
+{
+  "input": {
+    "defaults": {
+      "fecha_emision": "2019-12-24",
+      "icb_tasa": "0.2",
+      "igv_tasa": "0.18",
+      "ivap_tasa": "0.04"
+    },
+    "document": {
+      "kind": "VoidedDocuments",
+      "spec": {
+        "comprobantes": [
+          {
+            "descripcion_sustento": "Motivo de baja 1",
+            "numero": 1,
+            "serie": "F001",
+            "tipo_comprobante": null
+          },
+          {
+            "descripcion_sustento": "Motivo de baja 2",
+            "numero": 2,
+            "serie": "F001",
+            "tipo_comprobante": null
+          },
+          {
+            "descripcion_sustento": "Motivo de baja 3",
+            "numero": 3,
+            "serie": "F001",
+            "tipo_comprobante": null
+          },
+          {
+            "descripcion_sustento": "Motivo de baja 4",
+            "numero": 4,
+            "serie": "F001",
+            "tipo_comprobante": null
+          },
+          {
+            "descripcion_sustento": "Motivo de baja 5",
+            "numero": 5,
+            "serie": "F001",
+            "tipo_comprobante": null
+          }
+        ],
+        "documento_id": null,
+        "fecha_emision": null,
+        "fecha_emision_comprobantes": "2019-12-22",
+        "firmante": null,
+        "numero": 1,
+        "proveedor": {
+          "contacto": null,
+          "direccion": null,
+          "nombre_comercial": null,
+          "razon_social": "Softgreen S.A.C.",
+          "ruc": "12345678912"
+        }
+      }
+    }
+  },
+  "expected": {
+    "ok": {
+      "numero": 1,
+      "fecha_emision": "2019-12-24",
+      "fecha_emision_comprobantes": "2019-12-22",
+      "proveedor": {
+        "ruc": "12345678912",
+        "razon_social": "Softgreen S.A.C.",
+        "nombre_comercial": null,
+        "direccion": null,
+        "contacto": null
+      },
+      "firmante": {
+        "ruc": "12345678912",
+        "razon_social": "Softgreen S.A.C."
+      },
+      "comprobantes": [
+        {
+          "tipo_comprobante": "01",
+          "serie": "F001",
+          "numero": 1,
+          "descripcion_sustento": "Motivo de baja 1"
+        },
+        {
+          "tipo_comprobante": "01",
+          "serie": "F001",
+          "numero": 2,
+          "descripcion_sustento": "Motivo de baja 2"
+        },
+        {
+          "tipo_comprobante": "01",
+          "serie": "F001",
+          "numero": 3,
+          "descripcion_sustento": "Motivo de baja 3"
+        },
+        {
+          "tipo_comprobante": "01",
+          "serie": "F001",
+          "numero": 4,
+          "descripcion_sustento": "Motivo de baja 4"
+        },
+        {
+          "tipo_comprobante": "01",
+          "serie": "F001",
+          "numero": 5,
+          "descripcion_sustento": "Motivo de baja 5"
+        }
+      ],
+      "documento_id": "RA-20191224-1"
+    }
+  }
+}

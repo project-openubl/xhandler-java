@@ -1,6 +1,6 @@
 package io.github.project.openubl.spring.xsender.runtime;
 
-import io.github.project.openubl.xsender.XSender;
+import io.github.project.openubl.xsender.FileSender;
 import io.github.project.openubl.xsender.sunat.SunatClient;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -19,7 +19,7 @@ class XSenderAutoConfigurationTest {
     void providesASunatClient() {
         contextRunner.run(context -> {
             assertThat(context).hasSingleBean(SunatClient.class);
-            assertThat(context).doesNotHaveBean(XSender.class);
+            assertThat(context).doesNotHaveBean(FileSender.class);
         });
     }
 
@@ -31,7 +31,7 @@ class XSenderAutoConfigurationTest {
                         "xsender.company.username=12345678959MODDATOS",
                         "xsender.company.password=MODDATOS"
                 )
-                .run(context -> assertThat(context).hasSingleBean(XSender.class));
+                .run(context -> assertThat(context).hasSingleBean(FileSender.class));
     }
 
     @Test

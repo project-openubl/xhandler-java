@@ -1,0 +1,31 @@
+{
+  "input": {
+    "call": {
+      "validate_cdp": {
+        "url": "https://sunat/billValidService",
+        "cdp": {
+          "ruc": "12345678912",
+          "tipo_comprobante": "01",
+          "serie": "F001",
+          "numero": 1,
+          "tipo_documento_identidad_receptor": "6",
+          "numero_documento_identidad_receptor": "12121212121",
+          "fecha_emision": "24/12/2019",
+          "importe_total": "118.00",
+          "numero_autorizacion": null
+        }
+      }
+    },
+    "status": 200,
+    "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<soap-env:Envelope xmlns:soap-env=\"http://schemas.xmlsoap.org/soap/envelope/\">\n    <soap-env:Body>\n        <ns2:validaCDPcriteriosResponse xmlns:ns2=\"http://service.sunat.gob.pe\">\n            <status>\n                <statusCode>0</statusCode>\n                <statusMessage>El comprobante existe y está aceptado.</statusMessage>\n            </status>\n        </ns2:validaCDPcriteriosResponse>\n    </soap-env:Body>\n</soap-env:Envelope>\n"
+  },
+  "expected": {
+    "ok": {
+      "status": {
+        "status_code": "0",
+        "status_message": "El comprobante existe y está aceptado.",
+        "cdr_zip": null
+      }
+    }
+  }
+}

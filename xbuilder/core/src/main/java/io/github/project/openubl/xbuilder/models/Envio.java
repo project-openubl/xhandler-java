@@ -59,6 +59,9 @@ public class Envio {
     @JsonProperty("tipo_modalidad_traslado")
     private String tipoModalidadTraslado;
 
+    /**
+     * Fecha de inicio del traslado; obligatoria
+     */
     @JsonProperty("fecha_traslado")
     private LocalDate fechaTraslado;
 

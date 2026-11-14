@@ -154,7 +154,9 @@ class SunatClientGreTest {
 
         SunatResponse response = client.sendFile(destination(BillServiceDestination.RestOperation.SEND_DOCUMENT), zipFile, credentials);
 
-        assertEquals(422, response.getMetadata().getResponseCode());
+        // Both codes: SUNAT's and the HTTP status
+        assertEquals(1033, response.getMetadata().getResponseCode());
+        assertEquals(422, response.getMetadata().getHttpStatus());
         assertEquals("Unprocessable Entity; 1033 - El comprobante fue registrado previamente", response.getMetadata().getDescription());
     }
 

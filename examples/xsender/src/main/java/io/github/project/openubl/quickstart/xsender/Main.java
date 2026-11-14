@@ -1,6 +1,6 @@
 package io.github.project.openubl.quickstart.xsender;
 
-import io.github.project.openubl.xsender.XSender;
+import io.github.project.openubl.xsender.FileSender;
 import io.github.project.openubl.xsender.company.CompanyCredentials;
 import io.github.project.openubl.xsender.company.CompanyURLs;
 import io.github.project.openubl.xsender.models.SunatResponse;
@@ -20,13 +20,13 @@ public class Main {
                 .password("MODDATOS")
                 .build();
 
-        XSender xsender = new XSender(companyURLs, credentials);
+        FileSender xsender = new FileSender(companyURLs, credentials);
 
         byte[] xml;
         try (InputStream is = Main.class.getClassLoader().getResourceAsStream("invoice.xml")) {
             xml = is.readAllBytes();
         }
-        SunatResponse response = xsender.send(xml);
+        SunatResponse response = xsender.sendFile(xml);
 
         System.out.println("SUNAT status: " + response.getStatus());
     }

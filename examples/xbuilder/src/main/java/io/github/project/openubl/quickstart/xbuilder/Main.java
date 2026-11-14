@@ -6,7 +6,7 @@ import io.github.project.openubl.xbuilder.models.Defaults;
 import io.github.project.openubl.xbuilder.models.Detalle;
 import io.github.project.openubl.xbuilder.models.Invoice;
 import io.github.project.openubl.xbuilder.models.Proveedor;
-import io.github.project.openubl.xbuilder.signature.KeyPair;
+import io.github.project.openubl.xbuilder.signature.SigningKey;
 import io.github.project.openubl.xbuilder.signature.XSigner;
 
 import java.io.InputStream;
@@ -36,7 +36,7 @@ public class Main {
 
     public static String signXML(String xml) throws Exception {
         try (InputStream keyStore = Main.class.getResourceAsStream("/LLAMA-PE-CERTIFICADO-DEMO-12345678912.pfx")) {
-            return new XSigner().sign(xml, KeyPair.fromPkcs12(keyStore.readAllBytes(), "password"));
+            return new XSigner().sign(xml, SigningKey.fromPkcs12(keyStore.readAllBytes(), "password"));
         }
     }
 

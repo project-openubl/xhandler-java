@@ -24,7 +24,7 @@ final class SunatResponses {
             JsonNode cdr = answer.get("cdr");
             return SunatResponse.builder()
                     .status(Status.valueOf(cdr.get("status").asText()))
-                    .metadata(new Metadata(number(cdr.get("response_code")), cdr.get("description").asText(), notes(cdr)))
+                    .metadata(new Metadata(number(cdr.get("response_code")), cdr.get("description").asText(), notes(cdr), null))
                     .sunat(Sunat.builder().cdr(Base64.getDecoder().decode(cdr.get("zip").asText())).build())
                     .build();
         }
@@ -38,13 +38,18 @@ final class SunatResponses {
             Integer code = number(noCdr.get("status_code"));
             return SunatResponse.builder()
                     .status(Status.valueOf(noCdr.get("status").asText()))
-                    .metadata(new Metadata(code, Integer.valueOf(98).equals(code) ? "En proceso" : null, List.of()))
+                    .metadata(new Metadata(code, Integer.valueOf(98).equals(code) ? "En proceso" : null, List.of(), null))
                     .build();
         }
         JsonNode fault = answer.get("fault");
         return SunatResponse.builder()
                 .status(Status.valueOf(fault.get("status").asText()))
-                .metadata(new Metadata(fault.get("sunat_code").isNull() ? null : fault.get("sunat_code").asInt(), fault.get("message").asText(), List.of()))
+                .metadata(new Metadata(
+                        fault.get("sunat_code").isNull() ? null : fault.get("sunat_code").asInt(),
+                        fault.get("message").asText(),
+                        List.of(),
+                        httpStatus(fault)
+                ))
                 .build();
     }
 
@@ -53,15 +58,21 @@ final class SunatResponses {
             JsonNode fault = answer.get("fault");
             // SUNAT's error codes have 4 digits, e.g. "0111"
             String code = fault.get("sunat_code").isNull() ? null : "%04d".formatted(fault.get("sunat_code").asInt());
-            return new ConsultResponse(code, fault.get("message").asText(), null);
+            return new ConsultResponse(code, fault.get("message").asText(), null, httpStatus(fault));
         }
         JsonNode status = answer.get("status");
         JsonNode cdr = status.get("cdr_zip");
         return new ConsultResponse(
                 status.get("status_code").asText(),
                 status.get("status_message").isNull() ? null : status.get("status_message").asText(),
-                cdr.isNull() ? null : Base64.getDecoder().decode(cdr.asText())
+                cdr.isNull() ? null : Base64.getDecoder().decode(cdr.asText()),
+                null
         );
+    }
+
+    private static Integer httpStatus(JsonNode fault) {
+        JsonNode status = fault.get("http_status");
+        return status == null || status.isNull() ? null : status.asInt();
     }
 
     private static Integer number(JsonNode code) {

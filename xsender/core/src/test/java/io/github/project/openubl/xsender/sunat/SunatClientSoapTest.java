@@ -194,14 +194,9 @@ class SunatClientSoapTest {
     }
 
     @Test
-    void consultDocument_getStatusCdr() {
+    void getStatusCdr() {
         sunat.respondXml("/consult", 200, "/sunat/get_status_cdr_response.xml");
-        BillConsultServiceDestination destination = BillConsultServiceDestination.builder()
-                .url(sunat.url("/consult"))
-                .operation(BillConsultServiceDestination.Operation.GET_STATUS_CDR)
-                .build();
-
-        ConsultResponse response = client.consultDocument(destination, new DocumentQuery("12345678959", "01", "F001", 102), credentials);
+        ConsultResponse response = client.getStatusCdr(sunat.url("/consult"), new DocumentQuery("12345678959", "01", "F001", 102), credentials);
 
         assertEquals("0004", response.statusCode());
         assertEquals("La constancia existe", response.statusMessage());
@@ -213,14 +208,9 @@ class SunatClientSoapTest {
     }
 
     @Test
-    void consultDocument_getStatus() {
+    void getStatus() {
         sunat.respondXml("/consult", 200, "/sunat/valida_cdp_response.xml");
-        BillConsultServiceDestination destination = BillConsultServiceDestination.builder()
-                .url(sunat.url("/consult"))
-                .operation(BillConsultServiceDestination.Operation.GET_STATUS)
-                .build();
-
-        ConsultResponse response = client.consultDocument(destination, new DocumentQuery("12345678959", "01", "F001", 102), credentials);
+        ConsultResponse response = client.getStatus(sunat.url("/consult"), new DocumentQuery("12345678959", "01", "F001", 102), credentials);
 
         assertEquals("0", response.statusCode());
         assertEquals("urn:getStatus", sunat.lastRequest("/consult").header("SOAPAction"));
@@ -230,10 +220,9 @@ class SunatClientSoapTest {
     @Test
     void validateCdp() {
         sunat.respondXml("/valid", 200, "/sunat/valida_cdp_response.xml");
-        BillValidServiceDestination destination = new BillValidServiceDestination(sunat.url("/valid"));
         CdpQuery query = new CdpQuery("12345678959", "01", "F001", "102", "6", "20123456789", "10/01/2024", new BigDecimal("118.00"), null);
 
-        ConsultResponse response = client.validateCdp(destination, query, credentials);
+        ConsultResponse response = client.validateCdp(sunat.url("/valid"), query, credentials);
 
         assertEquals("0", response.statusCode());
         assertEquals("El comprobante existe y está aceptado.", response.statusMessage());
@@ -246,20 +235,19 @@ class SunatClientSoapTest {
     @Test
     void consultService_faultIsReturnedAsAResponse() {
         sunat.respondXml("/valid", 500, "/sunat/bill_service_response_fault.xml");
-        BillValidServiceDestination destination = new BillValidServiceDestination(sunat.url("/valid"));
 
-        ConsultResponse response = client.validateFile(destination, "file.xml", new byte[]{1}, credentials);
+        ConsultResponse response = client.validateFile(sunat.url("/valid"), "file.xml", new byte[]{1}, credentials);
 
         assertEquals("0111", response.statusCode());
+        assertEquals(500, response.httpStatus());
         assertTrue(response.statusMessage().startsWith("No tiene el perfil"));
     }
 
     @Test
     void validateFile_postsTheFile() {
         sunat.respondXml("/valid", 200, "/sunat/valida_cdp_response.xml");
-        BillValidServiceDestination destination = new BillValidServiceDestination(sunat.url("/valid"));
 
-        client.validateFile(destination, "F001-1.xml", "abc".getBytes(StandardCharsets.UTF_8), credentials);
+        client.validateFile(sunat.url("/valid"), "F001-1.xml", "abc".getBytes(StandardCharsets.UTF_8), credentials);
 
         FakeSunat.Request request = sunat.lastRequest("/valid");
         assertEquals("urn:verificaCPEarchivo", request.header("SOAPAction"));

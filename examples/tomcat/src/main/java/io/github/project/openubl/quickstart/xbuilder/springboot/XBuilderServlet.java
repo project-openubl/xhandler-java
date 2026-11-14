@@ -5,7 +5,7 @@ import io.github.project.openubl.xbuilder.models.Cliente;
 import io.github.project.openubl.xbuilder.models.Detalle;
 import io.github.project.openubl.xbuilder.models.Invoice;
 import io.github.project.openubl.xbuilder.models.Proveedor;
-import io.github.project.openubl.xbuilder.signature.KeyPair;
+import io.github.project.openubl.xbuilder.signature.SigningKey;
 import io.github.project.openubl.xbuilder.signature.XSigner;
 
 import jakarta.servlet.annotation.WebServlet;
@@ -33,7 +33,7 @@ public class XBuilderServlet extends HttpServlet {
             // Sign XML
             String xmlString;
             try (InputStream keyStore = getClass().getResourceAsStream("/LLAMA-PE-CERTIFICADO-DEMO-12345678912.pfx")) {
-                xmlString = xsigner.sign(xml, KeyPair.fromPkcs12(keyStore.readAllBytes(), "password"));
+                xmlString = xsigner.sign(xml, SigningKey.fromPkcs12(keyStore.readAllBytes(), "password"));
             }
 
             // Response

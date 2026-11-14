@@ -1,6 +1,6 @@
 package io.github.project.openubl.quickstart.xbuilder.springboot;
 
-import io.github.project.openubl.xsender.XSender;
+import io.github.project.openubl.xsender.FileSender;
 import io.github.project.openubl.xsender.company.CompanyCredentials;
 import io.github.project.openubl.xsender.company.CompanyURLs;
 import io.github.project.openubl.xsender.models.SunatResponse;
@@ -15,7 +15,7 @@ import java.io.InputStream;
 @WebServlet("/api/file/upload")
 public class XSenderServlet extends HttpServlet {
 
-    private final XSender xsender = new XSender(
+    private final FileSender xsender = new FileSender(
             CompanyURLs.builder()
                     .invoice("https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService")
                     .perceptionRetention("https://e-beta.sunat.gob.pe/ol-ti-itemision-otroscpe-gem-beta/billService")
@@ -34,7 +34,7 @@ public class XSenderServlet extends HttpServlet {
             xml = is.readAllBytes();
         }
 
-        SunatResponse response = xsender.send(xml);
+        SunatResponse response = xsender.sendFile(xml);
 
         resp.setStatus(HttpServletResponse.SC_OK);
         resp.setContentType("text/plain");

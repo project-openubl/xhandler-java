@@ -1,0 +1,15 @@
+{
+  "input": {
+    "document": {
+      "kind": "DespatchAdvice",
+      "spec": {
+        "serie_numero": "T001-1"
+      }
+    }
+  },
+  "expected": {
+    "error": {
+      "kind": "validation"
+    }
+  }
+}

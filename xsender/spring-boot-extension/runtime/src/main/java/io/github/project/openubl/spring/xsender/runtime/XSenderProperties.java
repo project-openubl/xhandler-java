@@ -9,7 +9,7 @@ import org.springframework.boot.context.properties.bind.DefaultValue;
 
 /**
  * @param securityApiUrl where the guías de remisión access tokens are requested
- * @param company        the company an {@link io.github.project.openubl.xsender.XSender} bean sends for, if any
+ * @param company        the company an {@link io.github.project.openubl.xsender.FileSender} bean sends for, if any
  */
 @ConfigurationProperties("xsender")
 public record XSenderProperties(

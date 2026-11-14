@@ -14,6 +14,7 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
@@ -34,6 +35,10 @@ import java.util.concurrent.ConcurrentHashMap;
 public class SunatClient {
 
     public static final String SUNAT_SECURITY_API_URL = "https://api-seguridad.sunat.gob.pe";
+    /** Looks up documents already sent (getStatus, getStatusCdr) */
+    public static final String BILL_CONSULT_SERVICE_URL = "https://e-factura.sunat.gob.pe/ol-it-wsconscpegem/billConsultService";
+    /** Validates documents (validateCdp, validateFile) */
+    public static final String BILL_VALID_SERVICE_URL = "https://e-factura.sunat.gob.pe/ol-it-wsconsvalidcpe/billValidService";
     /** Pauses before retrying a request SUNAT's front proxy refused (rate limiting) */
     private static final List<Duration> RATE_LIMIT_PAUSES = List.of(Duration.ofSeconds(1), Duration.ofSeconds(2));
 
@@ -101,26 +106,40 @@ public class SunatClient {
     }
 
     /**
-     * Consults an issued document: its status (getStatus) or its CDR (getStatusCdr).
+     * billConsultService getStatus: the status of a document already sent.
+     *
+     * @param url e.g. {@link #BILL_CONSULT_SERVICE_URL}
      */
-    public ConsultResponse consultDocument(BillConsultServiceDestination destination, DocumentQuery query, CompanyCredentials credentials) {
-        String operation = destination.getOperation() == BillConsultServiceDestination.Operation.GET_STATUS
-                ? "get_status"
-                : "get_status_cdr";
+    public ConsultResponse getStatus(String url, DocumentQuery query, CompanyCredentials credentials) {
+        return consult("get_status", url, query, credentials);
+    }
+
+    /**
+     * billConsultService getStatusCdr: the CDR of a document already sent.
+     *
+     * @param url e.g. {@link #BILL_CONSULT_SERVICE_URL}
+     */
+    public ConsultResponse getStatusCdr(String url, DocumentQuery query, CompanyCredentials credentials) {
+        return consult("get_status_cdr", url, query, credentials);
+    }
+
+    private ConsultResponse consult(String operation, String url, DocumentQuery query, CompanyCredentials credentials) {
         Map<String, Object> document = Map.of(
                 "ruc", query.ruc(),
                 "tipo_comprobante", query.documentType(),
                 "serie", query.serie(),
                 "numero", query.number()
         );
-        Map<String, Object> call = Map.of(operation, Map.of("url", destination.getUrl(), "document", document));
+        Map<String, Object> call = Map.of(operation, Map.of("url", url, "document", document));
         return SunatResponses.consult(exchange(call, false, credentials));
     }
 
     /**
-     * Validates a document against the given criteria (validaCDPcriterios).
+     * billValidService validaCDPcriterios: validates a document against the given criteria.
+     *
+     * @param url e.g. {@link #BILL_VALID_SERVICE_URL}
      */
-    public ConsultResponse validateCdp(BillValidServiceDestination destination, CdpQuery query, CompanyCredentials credentials) {
+    public ConsultResponse validateCdp(String url, CdpQuery query, CompanyCredentials credentials) {
         Map<String, Object> cdp = new HashMap<>();
         cdp.put("ruc", query.ruc());
         cdp.put("tipo_comprobante", query.documentType());
@@ -131,15 +150,17 @@ public class SunatClient {
         cdp.put("fecha_emision", query.issueDate());
         cdp.put("importe_total", query.total().toPlainString());
         cdp.put("numero_autorizacion", query.authorizationNumber());
-        Map<String, Object> call = Map.of("validate_cdp", Map.of("url", destination.getUrl(), "cdp", cdp));
+        Map<String, Object> call = Map.of("validate_cdp", Map.of("url", url, "cdp", cdp));
         return SunatResponses.consult(exchange(call, false, credentials));
     }
 
     /**
-     * Validates an XML file (verificaCPEarchivo).
+     * billValidService verificaCPEarchivo: validates an XML file.
+     *
+     * @param url e.g. {@link #BILL_VALID_SERVICE_URL}
      */
-    public ConsultResponse validateFile(BillValidServiceDestination destination, String filename, byte[] file, CompanyCredentials credentials) {
-        Map<String, Object> call = Map.of("validate_file", Map.of("url", destination.getUrl(), "file", file(filename, file)));
+    public ConsultResponse validateFile(String url, String filename, byte[] file, CompanyCredentials credentials) {
+        Map<String, Object> call = Map.of("validate_file", Map.of("url", url, "file", file(filename, file)));
         return SunatResponses.consult(exchange(call, false, credentials));
     }
 
@@ -195,9 +216,12 @@ public class SunatClient {
     }
 
     private static Map<String, Object> parseInput(Map<String, Object> call, HttpResponse<byte[]> response) {
+        List<List<String>> headers = new ArrayList<>();
+        response.headers().map().forEach((name, values) -> values.forEach(value -> headers.add(List.of(name, value))));
         return Map.of(
                 "call", call,
                 "status", response.statusCode(),
+                "headers", headers,
                 "body", new String(response.body(), StandardCharsets.UTF_8)
         );
     }

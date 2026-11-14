@@ -21,6 +21,7 @@
       "fault": {
         "code": "env:Client.2335",
         "sunat_code": 2335,
+        "http_status": 500,
         "message": "El documento electrónico ingresado ha sido alterado - Detalle: xxx.xxx.xxx value='ticket: 1 error: 2335'",
         "status": "RECHAZADO"
       }

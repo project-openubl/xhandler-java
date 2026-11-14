@@ -28,18 +28,18 @@ class XSignerTest {
         return Conformance.cases("sign").stream().filter(c -> !c.name().equals("errors/xml_not_base64")).toList();
     }
 
-    static KeyPair keyPair(JsonNode key) {
+    static SigningKey signingKey(JsonNode key) {
         if (key.has("pem")) {
-            return KeyPair.fromPem(key.at("/pem/private_key").asText(), key.at("/pem/certificate").asText());
+            return SigningKey.fromPem(key.at("/pem/private_key").asText(), key.at("/pem/certificate").asText());
         }
-        return KeyPair.fromPkcs12(Base64.getDecoder().decode(key.at("/pkcs12/der").asText()), key.at("/pkcs12/password").asText());
+        return SigningKey.fromPkcs12(Base64.getDecoder().decode(key.at("/pkcs12/der").asText()), key.at("/pkcs12/password").asText());
     }
 
     @ParameterizedTest
     @MethodSource("signCases")
     void signCorpus(Conformance.Case c) {
         byte[] xml = Base64.getDecoder().decode(c.input().get("xml").asText());
-        KeyPair key = keyPair(c.input().get("key"));
+        SigningKey key = signingKey(c.input().get("key"));
 
         if (c.expectsError()) {
             XhandlerException error = assertThrows(XhandlerException.class, () -> xsigner.sign(xml, key));
@@ -60,19 +60,19 @@ class XSignerTest {
         char[] password = pkcs12.at("/key/pkcs12/password").asText().toCharArray();
         KeyStore keyStore = KeyStore.getInstance("PKCS12");
         keyStore.load(new ByteArrayInputStream(der), password);
-        KeyPair fromKeyStore = KeyPair.fromKeyStore(keyStore, keyStore.aliases().nextElement(), password);
+        SigningKey fromKeyStore = SigningKey.fromKeyStore(keyStore, keyStore.aliases().nextElement(), password);
 
         String xml = new XBuilder().build(XBuilderTest.invoice());
-        assertEquals(xsigner.sign(xml, KeyPair.fromPkcs12(der, new String(password))), xsigner.sign(xml, fromKeyStore));
+        assertEquals(xsigner.sign(xml, SigningKey.fromPkcs12(der, new String(password))), xsigner.sign(xml, fromKeyStore));
         assertTrue(xsigner.sign(xml, fromKeyStore).contains("Id=\"PROJECT-OPENUBL-SIGN\""));
     }
 
     @Test
-    void keyPairHidesItsSecrets() {
+    void signingKeyHidesItsSecrets() {
         JsonNode pem = Conformance.cases("sign").stream()
                 .filter(c -> c.name().equals("pem/min_data_ruc"))
                 .findFirst().orElseThrow()
                 .input();
-        assertTrue(!keyPair(pem.get("key")).toString().contains("PRIVATE KEY"));
+        assertTrue(!signingKey(pem.get("key")).toString().contains("PRIVATE KEY"));
     }
 }

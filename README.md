@@ -57,7 +57,7 @@ Invoice invoice = Invoice.builder()
 
 String xml = new XBuilder().build(invoice);       // fecha de hoy en Perú y tasas vigentes
 byte[] signed = new XSigner().sign(xml.getBytes(StandardCharsets.UTF_8),
-        KeyPair.fromPkcs12(Files.readAllBytes(Path.of("certificado.pfx")), "password"));
+        SigningKey.fromPkcs12(Files.readAllBytes(Path.of("certificado.pfx")), "password"));
 ```
 
 XBuilder y XSender usan el **núcleo xhandler** (Rust), el mismo de las librerías de Go y
@@ -84,8 +84,12 @@ XSender envía tus comprobantes firmados a la SUNAT (o a un OSE): servicios SOAP
 
 ### Ejemplo de Uso
 
+Su clase principal es `FileSender` (en 6.0 reemplaza a la clase `XSender`), con los mismos
+nombres que en Go y Python: `sendFile`, `sendPack`, `verifyTicket(destino, ticket)` y
+`verifyFileTicket(xml, ticket)`.
+
 ```java
-XSender xsender = new XSender(
+FileSender xsender = new FileSender(
         CompanyURLs.beta(),
         CompanyCredentials.builder()
                 .username("12345678959MODDATOS")
@@ -93,16 +97,16 @@ XSender xsender = new XSender(
                 .build()
 );
 
-SunatResponse response = xsender.send(signedXml);   // byte[] o Path
+SunatResponse response = xsender.sendFile(signedXml);   // byte[] o Path
 if (response.isTicket()) {
-    response = xsender.verifyTicket(signedXml, response.getSunat().getTicket());
+    response = xsender.verifyFileTicket(signedXml, response.getSunat().getTicket());
 }
 System.out.println(response.getStatus());           // ACEPTADO, RECHAZADO, EXCEPCION, EN_PROCESO...
 ```
 
 Para guías de remisión usa `CompanyURLs.production()` (o agrega `.despatch("https://api-cpe.sunat.gob.pe/v1/contribuyente/gem")` a tus URLs) y `clientId`/`clientSecret` a las credenciales; la SUNAT no ofrece un entorno beta para ellas, así que necesitas credenciales reales.
 
-Si envías comprobantes de varias empresas, comparte un solo `SunatClient` (conexiones y tokens) entre sus `XSender`: `new XSender(urls, credentials, sunatClient)`.
+Si envías comprobantes de varias empresas, comparte un solo `SunatClient` (conexiones y tokens) entre sus `FileSender`: `new FileSender(urls, credentials, sunatClient)`.
 
 ### Frameworks
 
@@ -112,7 +116,7 @@ Si envías comprobantes de varias empresas, comparte un solo `SunatClient` (cone
 | Quarkus | `quarkus-xsender` | `quarkus.xsender.company.*` |
 | WildFly / Jakarta EE / MicroProfile | `xsender-cdi` | `xsender.company.*` (MicroProfile Config) |
 
-Todas exponen un `SunatClient` compartido y un `XSender` para la empresa configurada (en Quarkus y CDI, inyectar `XSender` sin configurar la empresa lanza `XSenderException`). Spring Boot / CDI (en Quarkus antepón `quarkus.`):
+Todas exponen un `SunatClient` compartido y un `FileSender` para la empresa configurada (en Quarkus y CDI, inyectar `FileSender` sin configurar la empresa lanza `XSenderException`). Spring Boot / CDI (en Quarkus antepón `quarkus.`):
 
 ```properties
 xsender.company.invoice-url=https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService

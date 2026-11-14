@@ -21,7 +21,7 @@ public interface XSenderConfig {
     String securityApiUrl();
 
     /**
-     * The company an injected XSender sends for
+     * The company an injected FileSender sends for
      */
     Optional<Company> company();
 

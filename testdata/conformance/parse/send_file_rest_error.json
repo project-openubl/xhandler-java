@@ -18,8 +18,9 @@
   "expected": {
     "ok": {
       "fault": {
-        "code": "422",
-        "sunat_code": 422,
+        "code": "1033",
+        "sunat_code": 1033,
+        "http_status": 422,
         "message": "Unprocessable Entity; 1033 - El comprobante fue registrado previamente",
         "status": "EXCEPCION"
       }

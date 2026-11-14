@@ -1,0 +1,35 @@
+{
+  "input": {
+    "call": {
+      "send_file": {
+        "target": {
+          "protocol": "rest",
+          "url": "https://api-cpe.sunat.gob.pe/v1/contribuyente/gem"
+        },
+        "file": {
+          "filename": "12345678912-01-F001-1.zip",
+          "zip": "UEsFBgAAAAAAAAAAAAAAAAAAAAAAAA=="
+        }
+      }
+    },
+    "status": 400,
+    "body": "{\"cod\":\"400\",\"msg\":\"Bad Request\"}",
+    "headers": [
+      [
+        "cod",
+        "2033"
+      ]
+    ]
+  },
+  "expected": {
+    "ok": {
+      "fault": {
+        "code": "2033",
+        "sunat_code": 2033,
+        "http_status": 400,
+        "message": "Bad Request",
+        "status": "RECHAZADO"
+      }
+    }
+  }
+}

@@ -17,6 +17,7 @@
       "fault": {
         "code": "2223",
         "sunat_code": 2223,
+        "http_status": 200,
         "message": "El documento ya fue informado",
         "status": "RECHAZADO"
       }

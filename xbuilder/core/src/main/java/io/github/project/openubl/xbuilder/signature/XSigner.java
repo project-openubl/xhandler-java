@@ -23,7 +23,7 @@ public class XSigner {
      * XMLSigner output as ISO-8859-1 must read it as UTF-8)
      * @throws XhandlerException when the key or the document are invalid
      */
-    public byte[] sign(byte[] xml, KeyPair key) {
+    public byte[] sign(byte[] xml, SigningKey key) {
         Map<String, Object> input = Map.of(
                 "xml", Base64.getEncoder().encodeToString(xml),
                 "key", key.toJson()
@@ -36,7 +36,7 @@ public class XSigner {
      * @return the XML with its signature
      * @throws XhandlerException when the key or the document are invalid
      */
-    public String sign(String xml, KeyPair key) {
+    public String sign(String xml, SigningKey key) {
         return new String(sign(xml.getBytes(StandardCharsets.UTF_8), key), StandardCharsets.UTF_8);
     }
 }

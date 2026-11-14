@@ -27,7 +27,7 @@ import io.github.project.openubl.xbuilder.models.SummaryDocumentsItemComprobante
 import io.github.project.openubl.xbuilder.models.SummaryDocumentsValorVenta;
 import io.github.project.openubl.xbuilder.models.VoidedDocuments;
 import io.github.project.openubl.xbuilder.models.VoidedDocumentsItem;
-import io.github.project.openubl.xbuilder.signature.KeyPair;
+import io.github.project.openubl.xbuilder.signature.SigningKey;
 import io.github.project.openubl.xbuilder.signature.XSigner;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -71,7 +71,7 @@ public class XBuilderController {
 
     private String sign(String xml) throws Exception {
         try (InputStream keyStore = getClass().getResourceAsStream("/LLAMA-PE-CERTIFICADO-DEMO-12345678912.pfx")) {
-            return xsigner.sign(xml, KeyPair.fromPkcs12(keyStore.readAllBytes(), "password"));
+            return xsigner.sign(xml, SigningKey.fromPkcs12(keyStore.readAllBytes(), "password"));
         }
     }
 

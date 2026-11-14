@@ -25,36 +25,36 @@ import java.util.Objects;
  * everything else: the file name, the service, and the operation.
  *
  * <pre>{@code
- * XSender xsender = new XSender(urls, credentials);
+ * FileSender sender = new FileSender(CompanyURLs.beta(), credentials);
  * Path xml = Path.of("RA-20200328-1.xml");
- * SunatResponse response = xsender.send(xml);
+ * SunatResponse response = sender.sendFile(xml);
  * if (response.isTicket()) {
- *     response = xsender.verifyTicket(xml, response.getSunat().getTicket());
+ *     response = sender.verifyFileTicket(xml, response.getSunat().getTicket());
  * }
  * }</pre>
  * Applications sending for many companies should share one {@link SunatClient}
- * between their XSenders.
+ * between their FileSenders.
  */
-public class XSender {
+public class FileSender {
 
     private final CompanyURLs urls;
     private final CompanyCredentials credentials;
     private final SunatClient sunatClient;
 
-    public XSender(CompanyURLs urls, CompanyCredentials credentials) {
+    public FileSender(CompanyURLs urls, CompanyCredentials credentials) {
         this(urls, credentials, new SunatClient());
     }
 
-    public XSender(CompanyURLs urls, CompanyCredentials credentials, SunatClient sunatClient) {
+    public FileSender(CompanyURLs urls, CompanyCredentials credentials, SunatClient sunatClient) {
         this.urls = urls;
         this.credentials = credentials;
         this.sunatClient = sunatClient;
     }
 
     /**
-     * @return the CDR, a ticket to {@link #verifyTicket verify} later, or SUNAT's error
+     * @return the CDR, a ticket to {@link #verifyFileTicket verify} later, or SUNAT's error
      */
-    public SunatResponse send(byte[] xml) {
+    public SunatResponse sendFile(byte[] xml) {
         return send(core("prepare_send_file", xmlInput(xml)));
     }
 
@@ -64,8 +64,8 @@ public class XSender {
         return sunatClient.sendFile(Destinations.sendFile(prepared.get("send_target")), zipFile, credentials);
     }
 
-    public SunatResponse send(Path xml) {
-        return send(readAllBytes(xml));
+    public SunatResponse sendFile(Path xml) {
+        return sendFile(readAllBytes(xml));
     }
 
     /**
@@ -84,16 +84,27 @@ public class XSender {
     }
 
     /**
+     * Checks a ticket in the service of the document it was given for.
+     *
      * @param xml    the document the ticket was given for
      * @param ticket returned when the document was sent
      */
-    public SunatResponse verifyTicket(byte[] xml, String ticket) {
-        BillServiceDestination destination = Destinations.verifyTicket(core("verify_ticket_target", xmlInput(xml)));
-        return sunatClient.verifyTicket(destination, ticket, credentials);
+    public SunatResponse verifyFileTicket(byte[] xml, String ticket) {
+        return verifyTicket(Destinations.verifyTicket(core("verify_ticket_target", xmlInput(xml))), ticket);
     }
 
-    public SunatResponse verifyTicket(Path xml, String ticket) {
-        return verifyTicket(readAllBytes(xml), ticket);
+    public SunatResponse verifyFileTicket(Path xml, String ticket) {
+        return verifyFileTicket(readAllBytes(xml), ticket);
+    }
+
+    /**
+     * Checks a ticket in the given service.
+     *
+     * @param target e.g. the invoice service for summaries
+     * @param ticket returned when the document was sent
+     */
+    public SunatResponse verifyTicket(BillServiceDestination target, String ticket) {
+        return sunatClient.verifyTicket(target, ticket, credentials);
     }
 
     private Map<String, Object> xmlInput(byte[] xml) {

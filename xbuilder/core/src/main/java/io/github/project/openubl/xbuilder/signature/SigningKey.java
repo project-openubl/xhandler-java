@@ -13,11 +13,11 @@ import java.util.Objects;
  * The private key and certificate that sign the documents. The key is checked
  * when signing.
  */
-public final class KeyPair {
+public final class SigningKey {
 
     private final Map<String, Object> key;
 
-    private KeyPair(Map<String, Object> key) {
+    private SigningKey(Map<String, Object> key) {
         this.key = key;
     }
 
@@ -25,20 +25,20 @@ public final class KeyPair {
      * @param privateKey  PEM private key, PKCS#8 or PKCS#1
      * @param certificate PEM X.509 certificate
      */
-    public static KeyPair fromPem(String privateKey, String certificate) {
+    public static SigningKey fromPem(String privateKey, String certificate) {
         Objects.requireNonNull(privateKey, "privateKey");
         Objects.requireNonNull(certificate, "certificate");
-        return new KeyPair(Map.of("pem", Map.of("private_key", privateKey, "certificate", certificate)));
+        return new SigningKey(Map.of("pem", Map.of("private_key", privateKey, "certificate", certificate)));
     }
 
     /**
      * @param der      PKCS#12 keystore (.pfx, .p12)
      * @param password password of the keystore
      */
-    public static KeyPair fromPkcs12(byte[] der, String password) {
+    public static SigningKey fromPkcs12(byte[] der, String password) {
         Objects.requireNonNull(der, "der");
         Objects.requireNonNull(password, "password");
-        return new KeyPair(Map.of("pkcs12", Map.of("der", Base64.getEncoder().encodeToString(der), "password", password)));
+        return new SigningKey(Map.of("pkcs12", Map.of("der", Base64.getEncoder().encodeToString(der), "password", password)));
     }
 
     /**
@@ -47,7 +47,7 @@ public final class KeyPair {
      * @param alias    entry of the private key and its certificate
      * @param password password of the entry
      */
-    public static KeyPair fromKeyStore(KeyStore keyStore, String alias, char[] password) throws GeneralSecurityException {
+    public static SigningKey fromKeyStore(KeyStore keyStore, String alias, char[] password) throws GeneralSecurityException {
         Certificate certificate = keyStore.getCertificate(alias);
         if (!(keyStore.getKey(alias, password) instanceof PrivateKey privateKey) || certificate == null) {
             throw new GeneralSecurityException("No private key and certificate for alias " + alias);
@@ -64,7 +64,7 @@ public final class KeyPair {
 
     @Override
     public String toString() {
-        return "KeyPair(<redacted>)";
+        return "SigningKey(<redacted>)";
     }
 
     private static String pem(String type, byte[] der) {

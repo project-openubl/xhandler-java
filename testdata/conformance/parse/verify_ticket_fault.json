@@ -17,6 +17,7 @@
       "fault": {
         "code": "S:Client.0127",
         "sunat_code": 127,
+        "http_status": 500,
         "message": "El ticket no existe",
         "status": "EXCEPCION"
       }

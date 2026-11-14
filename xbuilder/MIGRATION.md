@@ -64,17 +64,19 @@ interface, and `Reversion` no longer extends `VoidedDocuments` (it has the same 
 
 | 5.x | 6.0 |
 |---|---|
-| `CertificateDetailsFactory.create(pfx, password)` + `XMLSigner.signXML(xml, "signatureId", cert, key)` | `new XSigner().sign(xml, KeyPair.fromPkcs12(pfxBytes, password))` |
-| PEM keys | `KeyPair.fromPem(privateKey, certificate)` |
-| A `java.security.KeyStore` | `KeyPair.fromKeyStore(keyStore, alias, password)` |
+| `CertificateDetailsFactory.create(pfx, password)` + `XMLSigner.signXML(xml, "signatureId", cert, key)` | `new XSigner().sign(xml, SigningKey.fromPkcs12(pfxBytes, password))` |
+| PEM keys | `SigningKey.fromPem(privateKey, certificate)` |
+| A `java.security.KeyStore` | `SigningKey.fromKeyStore(keyStore, alias, password)` |
 | `XmlSignatureHelper.getBytesFromDocument(signed)` read as ISO-8859-1 | `sign(byte[])` returns UTF-8 bytes; `sign(String)` returns text |
 
 The signature id is always `PROJECT-OPENUBL-SIGN`, the one the generated XML references.
 
 ## XSender
 
-`XSender` and `SunatClient` keep their API (see [the XSender guide](../xsender/MIGRATION.md)),
-gain `XSender.sendPack`, `CompanyURLs.beta()` / `production()` and
-`XSenderException.getKind()`, and now use the same core: a guía de remisión REST error has its details in
+The `XSender` class is now `FileSender`, with the method names of the Go and Python
+libraries (`sendFile`, `sendPack`, `verifyTicket(destination, ticket)`,
+`verifyFileTicket(xml, ticket)`), and `SunatClient` consults take the service URL (see
+[the XSender guide](../xsender/MIGRATION.md)). New: `CompanyURLs.beta()` /
+`production()` and `XSenderException.getKind()`. Both use the same core: a guía de remisión REST error has its details in
 `metadata.description` (`"Unprocessable Entity; 1033 - ..."`) instead of
 `metadata.notes`.

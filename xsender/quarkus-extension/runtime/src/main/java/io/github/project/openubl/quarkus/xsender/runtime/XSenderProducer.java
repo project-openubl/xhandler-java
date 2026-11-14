@@ -1,7 +1,6 @@
 package io.github.project.openubl.quarkus.xsender.runtime;
 
 import io.github.project.openubl.xsender.FileSender;
-import io.github.project.openubl.xsender.XSenderException;
 import io.github.project.openubl.xsender.sunat.SunatClient;
 import io.quarkus.arc.DefaultBean;
 import jakarta.enterprise.inject.Produces;
@@ -29,7 +28,7 @@ public class XSenderProducer {
     @DefaultBean
     FileSender xsender(XSenderConfig config, SunatClient sunatClient) {
         XSenderConfig.Company company = config.company()
-                .orElseThrow(() -> new XSenderException("Configure quarkus.xsender.company.* to inject an FileSender"));
+                .orElseThrow(() -> new IllegalStateException("Configure quarkus.xsender.company.* to inject a FileSender"));
         return new FileSender(company.urls(), company.credentials(), sunatClient);
     }
 }

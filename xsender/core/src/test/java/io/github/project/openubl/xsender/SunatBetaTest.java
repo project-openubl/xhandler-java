@@ -1,7 +1,7 @@
 package io.github.project.openubl.xsender;
 
-import io.github.project.openubl.xsender.company.CompanyCredentials;
-import io.github.project.openubl.xsender.company.CompanyURLs;
+import io.github.project.openubl.xsender.Credentials;
+import io.github.project.openubl.xsender.URLs;
 import io.github.project.openubl.xsender.models.Status;
 import io.github.project.openubl.xsender.models.SunatResponse;
 import org.junit.jupiter.api.Test;
@@ -22,11 +22,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class SunatBetaTest {
 
     private final FileSender xsender = new FileSender(
-            CompanyURLs.builder()
+            URLs.builder()
                     .invoice("https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService")
                     .perceptionRetention("https://e-beta.sunat.gob.pe/ol-ti-itemision-otroscpe-gem-beta/billService")
                     .build(),
-            CompanyCredentials.builder()
+            Credentials.builder()
                     .username("12345678959MODDATOS")
                     .password("MODDATOS")
                     .build()

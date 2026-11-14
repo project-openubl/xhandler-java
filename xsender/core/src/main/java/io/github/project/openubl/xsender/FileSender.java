@@ -3,8 +3,6 @@ package io.github.project.openubl.xsender;
 import com.fasterxml.jackson.databind.JsonNode;
 import io.github.project.openubl.xhandler.core.Xhandler;
 import io.github.project.openubl.xhandler.core.XhandlerException;
-import io.github.project.openubl.xsender.company.CompanyCredentials;
-import io.github.project.openubl.xsender.company.CompanyURLs;
 import io.github.project.openubl.xsender.models.SunatResponse;
 import io.github.project.openubl.xsender.files.ZipFile;
 import io.github.project.openubl.xsender.sunat.BillServiceDestination;
@@ -25,7 +23,7 @@ import java.util.Objects;
  * everything else: the file name, the service, and the operation.
  *
  * <pre>{@code
- * FileSender sender = new FileSender(CompanyURLs.beta(), credentials);
+ * FileSender sender = new FileSender(URLs.beta(), credentials);
  * Path xml = Path.of("RA-20200328-1.xml");
  * SunatResponse response = sender.sendFile(xml);
  * if (response.isTicket()) {
@@ -34,18 +32,22 @@ import java.util.Objects;
  * }</pre>
  * Applications sending for many companies should share one {@link SunatClient}
  * between their FileSenders.
+ * <p>
+ * Errors of the xhandler core are {@link XhandlerException}s with their
+ * {@link io.github.project.openubl.xhandler.core.ErrorKind}, e.g. {@code INVALID_INPUT}
+ * for an XML that is not a SUNAT document; see {@link SunatClient} for the others.
  */
 public class FileSender {
 
-    private final CompanyURLs urls;
-    private final CompanyCredentials credentials;
+    private final URLs urls;
+    private final Credentials credentials;
     private final SunatClient sunatClient;
 
-    public FileSender(CompanyURLs urls, CompanyCredentials credentials) {
+    public FileSender(URLs urls, Credentials credentials) {
         this(urls, credentials, new SunatClient());
     }
 
-    public FileSender(CompanyURLs urls, CompanyCredentials credentials, SunatClient sunatClient) {
+    public FileSender(URLs urls, Credentials credentials, SunatClient sunatClient) {
         this.urls = urls;
         this.credentials = credentials;
         this.sunatClient = sunatClient;
@@ -55,7 +57,7 @@ public class FileSender {
      * @return the CDR, a ticket to {@link #verifyFileTicket verify} later, or SUNAT's error
      */
     public SunatResponse sendFile(byte[] xml) {
-        return send(core("prepare_send_file", xmlInput(xml)));
+        return send(Xhandler.invoke("prepare_send_file", xmlInput(xml)));
     }
 
     private SunatResponse send(JsonNode prepared) {
@@ -80,7 +82,7 @@ public class FileSender {
                 "files", xmls.stream().map(Base64.getEncoder()::encodeToString).toList(),
                 "urls", urlsJson()
         );
-        return send(core("prepare_send_pack", input));
+        return send(Xhandler.invoke("prepare_send_pack", input));
     }
 
     /**
@@ -90,7 +92,7 @@ public class FileSender {
      * @param ticket returned when the document was sent
      */
     public SunatResponse verifyFileTicket(byte[] xml, String ticket) {
-        return verifyTicket(Destinations.verifyTicket(core("verify_ticket_target", xmlInput(xml))), ticket);
+        return verifyTicket(Destinations.verifyTicket(Xhandler.invoke("verify_ticket_target", xmlInput(xml))), ticket);
     }
 
     public SunatResponse verifyFileTicket(Path xml, String ticket) {
@@ -117,15 +119,6 @@ public class FileSender {
                 "perception_retention", Objects.toString(urls.getPerceptionRetention(), ""),
                 "despatch", Objects.toString(urls.getDespatch(), "")
         );
-    }
-
-    /** Asks the xhandler core how the documents go to SUNAT */
-    private static JsonNode core(String op, Map<String, Object> input) {
-        try {
-            return Xhandler.invoke(op, input);
-        } catch (XhandlerException e) {
-            throw new XSenderException("Could not send the document: " + e.getMessage(), e);
-        }
     }
 
     private static byte[] readAllBytes(Path path) {

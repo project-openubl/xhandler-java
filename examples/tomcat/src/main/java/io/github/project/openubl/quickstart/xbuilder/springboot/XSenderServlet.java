@@ -1,8 +1,8 @@
 package io.github.project.openubl.quickstart.xbuilder.springboot;
 
 import io.github.project.openubl.xsender.FileSender;
-import io.github.project.openubl.xsender.company.CompanyCredentials;
-import io.github.project.openubl.xsender.company.CompanyURLs;
+import io.github.project.openubl.xsender.Credentials;
+import io.github.project.openubl.xsender.URLs;
 import io.github.project.openubl.xsender.models.SunatResponse;
 
 import jakarta.servlet.annotation.WebServlet;
@@ -16,12 +16,12 @@ import java.io.InputStream;
 public class XSenderServlet extends HttpServlet {
 
     private final FileSender xsender = new FileSender(
-            CompanyURLs.builder()
+            URLs.builder()
                     .invoice("https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService")
                     .perceptionRetention("https://e-beta.sunat.gob.pe/ol-ti-itemision-otroscpe-gem-beta/billService")
                     .despatch("https://api-cpe.sunat.gob.pe/v1/contribuyente/gem")
                     .build(),
-            CompanyCredentials.builder()
+            Credentials.builder()
                     .username("12345678959MODDATOS")
                     .password("MODDATOS")
                     .build()

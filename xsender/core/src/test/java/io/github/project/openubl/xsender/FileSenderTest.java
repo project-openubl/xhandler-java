@@ -1,7 +1,8 @@
 package io.github.project.openubl.xsender;
 
-import io.github.project.openubl.xsender.company.CompanyCredentials;
-import io.github.project.openubl.xsender.company.CompanyURLs;
+import io.github.project.openubl.xhandler.core.XhandlerException;
+import io.github.project.openubl.xsender.Credentials;
+import io.github.project.openubl.xsender.URLs;
 import io.github.project.openubl.xsender.models.Status;
 import io.github.project.openubl.xsender.models.SunatResponse;
 import io.github.project.openubl.xsender.sunat.FakeSunat;
@@ -22,12 +23,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class FileSenderTest {
 
     private final FakeSunat sunat = new FakeSunat();
-    private final CompanyURLs urls = CompanyURLs.builder()
+    private final URLs urls = URLs.builder()
             .invoice(sunat.url("/invoice"))
             .perceptionRetention(sunat.url("/perception"))
             .despatch(sunat.url("/despatch"))
             .build();
-    private final CompanyCredentials credentials = CompanyCredentials.builder()
+    private final Credentials credentials = Credentials.builder()
             .username("12345678959MODDATOS")
             .password("MODDATOS")
             .build();
@@ -90,12 +91,12 @@ class FileSenderTest {
 
     @Test
     void verifyTicket_ofAnInvoice_throws() {
-        assertThrows(XSenderException.class, () -> xsender.verifyFileTicket(xml("/xmls/invoice_factura.xml"), "123"));
+        assertThrows(XhandlerException.class, () -> xsender.verifyFileTicket(xml("/xmls/invoice_factura.xml"), "123"));
     }
 
     @Test
     void send_ofAnUnsupportedXml_throws() {
-        assertThrows(XSenderException.class, () -> xsender.sendFile("<foo/>".getBytes()));
+        assertThrows(XhandlerException.class, () -> xsender.sendFile("<foo/>".getBytes()));
     }
 
     private static Path xml(String resource) {

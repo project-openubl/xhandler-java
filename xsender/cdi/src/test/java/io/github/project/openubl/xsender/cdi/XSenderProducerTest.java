@@ -1,6 +1,5 @@
 package io.github.project.openubl.xsender.cdi;
 
-import io.github.project.openubl.xsender.XSenderException;
 import io.github.project.openubl.xsender.sunat.SunatClient;
 import io.smallrye.config.PropertiesConfigSource;
 import io.smallrye.config.SmallRyeConfigBuilder;
@@ -37,6 +36,6 @@ class XSenderProducerTest {
     void producingAnXSenderWithoutCompany_throws() {
         Config config = config(Map.of());
 
-        assertThrows(XSenderException.class, () -> producer.xsender(config, new SunatClient()));
+        assertThrows(IllegalStateException.class, () -> producer.xsender(config, new SunatClient()));
     }
 }

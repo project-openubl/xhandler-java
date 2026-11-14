@@ -80,7 +80,7 @@ XSender envía tus comprobantes firmados a la SUNAT (o a un OSE): servicios SOAP
 ### Características
 - **Sin código nativo**: el núcleo xhandler corre en la JVM (Chicory) y el envío usa `java.net.http`; solo depende de Jackson y Chicory. Funciona en Java SE, Spring Boot, Quarkus (JVM y nativo), WildFly/Jakarta EE, Tomcat, etc.
 - **Automático**: lee el XML para decidir el nombre del archivo, el servicio y la operación (`sendBill`, `sendSummary`, guía de remisión REST...).
-- **Respuestas claras**: CDR, ticket o error de la SUNAT llegan como un `SunatResponse`; los fallos de red como `XSenderException`.
+- **Respuestas claras**: CDR, ticket o error de la SUNAT llegan como un `SunatResponse`; los errores del núcleo como `XhandlerException` (con su `ErrorKind`, igual que en Go y Python) y los fallos de red como `UncheckedIOException`.
 
 ### Ejemplo de Uso
 
@@ -90,8 +90,8 @@ nombres que en Go y Python: `sendFile`, `sendPack`, `verifyTicket(destino, ticke
 
 ```java
 FileSender xsender = new FileSender(
-        CompanyURLs.beta(),
-        CompanyCredentials.builder()
+        URLs.beta(),
+        Credentials.builder()
                 .username("12345678959MODDATOS")
                 .password("MODDATOS")
                 .build()
@@ -104,7 +104,7 @@ if (response.isTicket()) {
 System.out.println(response.getStatus());           // ACEPTADO, RECHAZADO, EXCEPCION, EN_PROCESO...
 ```
 
-Para guías de remisión usa `CompanyURLs.production()` (o agrega `.despatch("https://api-cpe.sunat.gob.pe/v1/contribuyente/gem")` a tus URLs) y `clientId`/`clientSecret` a las credenciales; la SUNAT no ofrece un entorno beta para ellas, así que necesitas credenciales reales.
+Para guías de remisión usa `URLs.production()` (o agrega `.despatch("https://api-cpe.sunat.gob.pe/v1/contribuyente/gem")` a tus URLs) y `clientId`/`clientSecret` a las credenciales; la SUNAT no ofrece un entorno beta para ellas, así que necesitas credenciales reales.
 
 Si envías comprobantes de varias empresas, comparte un solo `SunatClient` (conexiones y tokens) entre sus `FileSender`: `new FileSender(urls, credentials, sunatClient)`.
 
@@ -116,7 +116,7 @@ Si envías comprobantes de varias empresas, comparte un solo `SunatClient` (cone
 | Quarkus | `quarkus-xsender` | `quarkus.xsender.company.*` |
 | WildFly / Jakarta EE / MicroProfile | `xsender-cdi` | `xsender.company.*` (MicroProfile Config) |
 
-Todas exponen un `SunatClient` compartido y un `FileSender` para la empresa configurada (en Quarkus y CDI, inyectar `FileSender` sin configurar la empresa lanza `XSenderException`). Spring Boot / CDI (en Quarkus antepón `quarkus.`):
+Todas exponen un `SunatClient` compartido y un `FileSender` para la empresa configurada (en Quarkus y CDI, inyectar `FileSender` sin configurar la empresa lanza `IllegalStateException`). Spring Boot / CDI (en Quarkus antepón `quarkus.`):
 
 ```properties
 xsender.company.invoice-url=https://e-beta.sunat.gob.pe/ol-ti-itcpfegem-beta/billService

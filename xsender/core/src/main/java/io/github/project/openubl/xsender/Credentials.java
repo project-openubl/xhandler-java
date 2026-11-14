@@ -1,4 +1,4 @@
-package io.github.project.openubl.xsender.company;
+package io.github.project.openubl.xsender;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,7 +8,7 @@ import lombok.ToString;
 @Data
 @Builder
 @AllArgsConstructor
-public class CompanyCredentials {
+public class Credentials {
 
     private final String username;
     @ToString.Exclude

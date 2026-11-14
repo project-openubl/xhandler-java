@@ -76,7 +76,9 @@ The signature id is always `PROJECT-OPENUBL-SIGN`, the one the generated XML ref
 The `XSender` class is now `FileSender`, with the method names of the Go and Python
 libraries (`sendFile`, `sendPack`, `verifyTicket(destination, ticket)`,
 `verifyFileTicket(xml, ticket)`), and `SunatClient` consults take the service URL (see
-[the XSender guide](../xsender/MIGRATION.md)). New: `CompanyURLs.beta()` /
-`production()` and `XSenderException.getKind()`. Both use the same core: a guía de remisión REST error has its details in
+[the XSender guide](../xsender/MIGRATION.md)). New: `URLs.beta()` /
+`production()`. `CompanyURLs` / `CompanyCredentials` are `URLs` / `Credentials`, and
+`XSenderException` is gone: core errors are `XhandlerException` (with `getKind()`, as in Go
+and Python) and network failures `UncheckedIOException`. Both use the same core: a guía de remisión REST error has its details in
 `metadata.description` (`"Unprocessable Entity; 1033 - ..."`) instead of
 `metadata.notes`.

@@ -1,9 +1,8 @@
 package io.github.project.openubl.xsender.cdi;
 
 import io.github.project.openubl.xsender.FileSender;
-import io.github.project.openubl.xsender.XSenderException;
-import io.github.project.openubl.xsender.company.CompanyCredentials;
-import io.github.project.openubl.xsender.company.CompanyURLs;
+import io.github.project.openubl.xsender.Credentials;
+import io.github.project.openubl.xsender.URLs;
 import io.github.project.openubl.xsender.sunat.SunatClient;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;
@@ -26,7 +25,7 @@ import java.util.Optional;
  * xsender.company.client-secret=...    (guías de remisión)
  * </pre>
  * Without {@code xsender.company.username} and {@code password}, injecting an
- * FileSender fails with an {@link XSenderException} when the first bean using it is created.
+ * FileSender fails with an {@link IllegalStateException} when the first bean using it is created.
  * <p>
  * To provide your own SunatClient or FileSender (e.g. one per company), produce it
  * as an {@code @Alternative @Priority(1)} bean so it takes precedence over these.
@@ -46,16 +45,16 @@ public class XSenderProducer {
     @Singleton
     public FileSender xsender(Config config, SunatClient sunatClient) {
         String username = optional(config, "username")
-                .orElseThrow(() -> new XSenderException("Configure xsender.company.* to inject an FileSender"));
-        CompanyURLs urls = new CompanyURLs(
+                .orElseThrow(() -> new IllegalStateException("Configure xsender.company.* to inject a FileSender"));
+        URLs urls = new URLs(
                 optional(config, "invoice-url").orElse(null),
                 optional(config, "perception-retention-url").orElse(null),
                 optional(config, "despatch-url").orElse(null)
         );
-        CompanyCredentials credentials = CompanyCredentials.builder()
+        Credentials credentials = Credentials.builder()
                 .username(username)
                 .password(optional(config, "password")
-                        .orElseThrow(() -> new XSenderException("xsender.company.password is required")))
+                        .orElseThrow(() -> new IllegalStateException("xsender.company.password is required")))
                 .clientId(optional(config, "client-id").orElse(null))
                 .clientSecret(optional(config, "client-secret").orElse(null))
                 .build();

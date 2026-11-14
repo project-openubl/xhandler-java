@@ -5,7 +5,9 @@ XSender 6.0 ya no usa Apache Camel ni Apache CXF. El envío a la SUNAT lo hace u
 En 6.0 la clase `XSender` se llama `FileSender` y sus métodos tienen los nombres de las
 librerías de Go y Python: `send` → `sendFile`, `verifyTicket(xml, ticket)` →
 `verifyFileTicket(xml, ticket)`, y `verifyTicket(destino, ticket)` consulta un ticket en un
-servicio dado. En `SunatClient`, `consultDocument` es `getStatus` / `getStatusCdr` y las
+servicio dado. `CompanyURLs` y `CompanyCredentials` se llaman `URLs` y `Credentials` (paquete
+`io.github.project.openubl.xsender`, con `URLs.beta()` y `URLs.production()`), y
+`XSenderException` ya no existe: ver los errores más abajo. En `SunatClient`, `consultDocument` es `getStatus` / `getStatusCdr` y las
 consultas reciben la URL del servicio (`SunatClient.BILL_CONSULT_SERVICE_URL`,
 `BILL_VALID_SERVICE_URL`) en lugar de `BillConsultServiceDestination` /
 `BillValidServiceDestination`.
@@ -21,7 +23,7 @@ consultas reciben la URL del servicio (`SunatClient.BILL_CONSULT_SERVICE_URL`,
 | Clases generadas `service.sunat.gob.pe.*` | `ConsultResponse`, `DocumentQuery`, `CdpQuery` |
 | `spring.xsender.enable-logging-feature`, `quarkus.xsender.enable-logging-feature` | eliminados |
 
-Se mantienen `CompanyURLs`, `CompanyCredentials`, `SunatResponse`, `Status`, `BillServiceXMLFileAnalyzer` y los `*Destination`, con estos cambios menores:
+Se mantienen `URLs`, `Credentials`, `SunatResponse`, `Status`, `BillServiceXMLFileAnalyzer` y los `*Destination`, con estos cambios menores:
 
 - `models.rest.*Dto` se eliminaron (eran internos de las rutas de Camel).
 - `BillServiceDestination.RestOperation.getMethod()` se eliminó (devolvía un tipo de Camel).
@@ -58,7 +60,7 @@ SunatResponse response = xsender.verifyFileTicket(xml, ticket);
 
 ## Guías de remisión
 
-Ya no necesitas pedir el token a mano. Agrega `clientId` y `clientSecret` a `CompanyCredentials` y FileSender pide el token, lo reutiliza hasta un minuto antes de que expire y lo renueva si la SUNAT lo rechaza. Si prefieres manejar el token tú mismo, sigue funcionando `CompanyCredentials.builder().token(...)`.
+Ya no necesitas pedir el token a mano. Agrega `clientId` y `clientSecret` a `Credentials` y FileSender pide el token, lo reutiliza hasta un minuto antes de que expire y lo renueva si la SUNAT lo rechaza. Si prefieres manejar el token tú mismo, sigue funcionando `Credentials.builder().token(...)`.
 
 ## Servicios de consulta y validación
 
@@ -83,7 +85,7 @@ Antes devolvían las clases generadas por CXF y los errores llegaban como `Camel
 ## Errores
 
 - Las respuestas de la SUNAT (CDR, rechazos, SOAP faults, errores de la API de guías) llegan como `SunatResponse`.
-- Los problemas de red, URLs inválidas o respuestas que no son de la SUNAT lanzan `XSenderException` (unchecked).
+- Las respuestas que no son de la SUNAT y los documentos que no se pueden enviar lanzan `XhandlerException` (con su `ErrorKind`, p. ej. `RESPONSE` o `RATE_LIMITED`), los problemas de red `UncheckedIOException` y las URLs inválidas `IllegalArgumentException`.
 
 ## Spring Boot
 

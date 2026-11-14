@@ -6,8 +6,8 @@ import io.github.project.openubl.xbuilder.signature.SigningKey;
 import io.github.project.openubl.xbuilder.signature.XSigner;
 import io.github.project.openubl.xhandler.core.Conformance;
 import io.github.project.openubl.xsender.FileSender;
-import io.github.project.openubl.xsender.company.CompanyCredentials;
-import io.github.project.openubl.xsender.company.CompanyURLs;
+import io.github.project.openubl.xsender.Credentials;
+import io.github.project.openubl.xsender.URLs;
 import io.github.project.openubl.xsender.models.Status;
 import io.github.project.openubl.xsender.models.SunatResponse;
 import org.junit.jupiter.api.Test;
@@ -34,8 +34,8 @@ class E2ETest {
         byte[] signed = new XSigner().sign(xml.getBytes(StandardCharsets.UTF_8), testSigningKey());
 
         FileSender xsender = new FileSender(
-                CompanyURLs.beta(),
-                CompanyCredentials.builder().username("12345678959MODDATOS").password("MODDATOS").build()
+                URLs.beta(),
+                Credentials.builder().username("12345678959MODDATOS").password("MODDATOS").build()
         );
         SunatResponse response = xsender.sendFile(signed);
 

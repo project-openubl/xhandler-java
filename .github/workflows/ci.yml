@@ -1,14 +1,20 @@
 name: CI
 
 on:
+  # Branches are tested through their pull requests; main after merging
   push:
-    branches-ignore:
-      - "dependabot/**"
+    branches:
+      - main
     paths-ignore:
       - 'README.md'
   pull_request:
     paths-ignore:
       - 'README.md'
+
+# A new push to a pull request cancels the run of the previous one
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 env:
   CI: true
@@ -37,6 +43,7 @@ jobs:
       - name: Maven tests
         run: mvn verify -Pexamples
 
+  # Native image: the only check of the GraalVM configuration (core and models)
   quarkus-extension:
     needs: [ test ]
     runs-on: ubuntu-latest
@@ -56,59 +63,40 @@ jobs:
       - name: Maven IT tests
         run: mvn -Pnative-image install -f ${{ matrix.module }}/quarkus-extension/integration-tests/
 
+  # The oldest supported Quarkus, in JVM mode: the extensions use little Quarkus
+  # API, so this catches incompatibilities without more native builds
   quarkus-supported-v:
+    name: quarkus-supported-v (3.33.4.2)
     needs: [ test ]
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        module: [ xbuilder, xsender ]
-        quarkus-version: [ 3.33.4.2, 3.39.5 ]
-      fail-fast: false
     steps:
       - uses: actions/checkout@v7.0.1
-      - name: Set up JDK
-        uses: actions/setup-java@v6.2.0
+      - uses: actions/setup-java@v6.2.0
         with:
           java-version: 25
           distribution: temurin
           cache: maven
-      - name: Maven tests
+      - name: Maven install
         run: mvn install -DskipTests
-      - name: Maven IT tests
-        run: mvn -Pnative-image install -f ${{ matrix.module }}/quarkus-extension/integration-tests/ -Dquarkus.version=${{ matrix.quarkus-version }}
+      - name: XBuilder IT tests
+        run: mvn install -f xbuilder/quarkus-extension/integration-tests/ -Dquarkus.version=3.33.4.2
+      - name: XSender IT tests
+        run: mvn install -f xsender/quarkus-extension/integration-tests/ -Dquarkus.version=3.33.4.2
 
+  # The current and the oldest supported Spring Boot
   xsender-springboot-extension:
     needs: [ test ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7.0.1
-      - name: Set up JDK
-        uses: actions/setup-java@v6.2.0
+      - uses: actions/setup-java@v6.2.0
         with:
           java-version: 25
           distribution: temurin
           cache: maven
-      - name: Maven tests
+      - name: Maven install
         run: mvn install -DskipTests
-      - name: Maven IT tests
+      - name: IT tests
         run: mvn install -f xsender/spring-boot-extension/integration-tests/
-
-  xsender-springboot-supported-v:
-    needs: [ xsender-springboot-extension ]
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        springboot-version: [ 4.0.9 ]
-      fail-fast: false
-    steps:
-      - uses: actions/checkout@v7.0.1
-      - name: Set up JDK
-        uses: actions/setup-java@v6.2.0
-        with:
-          java-version: 25
-          distribution: temurin
-          cache: maven
-      - name: Maven tests
-        run: mvn install -DskipTests
-      - name: Maven IT tests
-        run: mvn install -f xsender/spring-boot-extension/integration-tests/ -Dspringboot.version=${{ matrix.springboot-version }}
+      - name: IT tests (Spring Boot 4.0.9)
+        run: mvn install -f xsender/spring-boot-extension/integration-tests/ -Dspringboot.version=4.0.9

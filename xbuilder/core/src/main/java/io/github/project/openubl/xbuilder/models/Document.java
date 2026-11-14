@@ -3,8 +3,6 @@ package io.github.project.openubl.xbuilder.models;
 
 /** Any document xbuilder can enrich and render: Invoice, CreditNote, DebitNote, DespatchAdvice, Perception, Retention, SummaryDocuments, VoidedDocuments, Reversion. */
 public interface Document {
-    /** The `kind` tag of the document, e.g. {@code Invoice}. */
-    default String kind() {
-        return getClass().getSimpleName();
-    }
+    /** The {@code kind} tag of the document, e.g. {@code Invoice}. */
+    String kind();
 }

@@ -27,7 +27,7 @@ import java.util.concurrent.BlockingQueue;
 public final class Xhandler {
 
     /** Version of the embedded xhandler core. */
-    public static final String VERSION = readVersion();
+    public static final String CORE_VERSION = readVersion();
 
     private static final WasmModule MODULE = XhandlerModule.load();
 
@@ -74,9 +74,14 @@ public final class Xhandler {
         if (module == null) {
             module = new Module();
         }
-        // On a trap (e.g. a panic in the core) the instance is unusable: the
-        // exception propagates and the instance is not returned to the pool.
-        byte[] response = module.invoke(request);
+        byte[] response;
+        try {
+            response = module.invoke(request);
+        } catch (RuntimeException trap) {
+            // e.g. a panic in the core: the instance is unusable
+            module.close();
+            throw new XhandlerException("xhandler core: " + trap.getMessage(), trap);
+        }
         if (!IDLE.offer(module)) {
             module.close();
         }
@@ -111,22 +116,17 @@ public final class Xhandler {
             call = instance.export("xh_invoke");
         }
 
+        /** Runs one request. After a trap the instance is discarded, so nothing is freed then. */
         byte[] invoke(byte[] request) {
             long ptr = alloc.apply(request.length)[0];
-            long packed;
-            try {
-                instance.memory().write((int) ptr, request);
-                packed = call.apply(ptr, request.length)[0];
-            } finally {
-                free.apply(ptr, request.length);
-            }
+            instance.memory().write((int) ptr, request);
+            long packed = call.apply(ptr, request.length)[0];
             int responsePtr = (int) (packed >>> 32);
             int responseLength = (int) packed;
-            try {
-                return instance.memory().readBytes(responsePtr, responseLength);
-            } finally {
-                free.apply(responsePtr, responseLength);
-            }
+            byte[] response = instance.memory().readBytes(responsePtr, responseLength);
+            free.apply(ptr, request.length);
+            free.apply(responsePtr, responseLength);
+            return response;
         }
 
         @Override

@@ -5,17 +5,13 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.List;
-import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Values used when the document does not set them. The tax rates default to
- * the current SUNAT rates; `fecha_emision` is required (usually today).
+ * Values used when the document does not set them; every field is optional.
  */
 @Data
 @Builder(toBuilder = true)
@@ -23,15 +19,27 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Defaults {
+    /**
+     * Today in Peru by default
+     */
+    @JsonProperty("fecha_emision")
+    private LocalDate fechaEmision;
+
+    /**
+     * The current SUNAT rate by default
+     */
     @JsonProperty("icb_tasa")
     private BigDecimal icbTasa;
 
+    /**
+     * The current SUNAT rate by default
+     */
     @JsonProperty("igv_tasa")
     private BigDecimal igvTasa;
 
+    /**
+     * The current SUNAT rate by default
+     */
     @JsonProperty("ivap_tasa")
     private BigDecimal ivapTasa;
-
-    @JsonProperty("fecha_emision")
-    private LocalDate fechaEmision;
 }

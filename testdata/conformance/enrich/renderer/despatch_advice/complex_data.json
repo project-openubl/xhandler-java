@@ -1,5 +1,11 @@
 {
   "input": {
+    "defaults": {
+      "fecha_emision": "2019-12-24",
+      "icb_tasa": "0.2",
+      "igv_tasa": "0.18",
+      "ivap_tasa": "0.04"
+    },
     "document": {
       "kind": "DespatchAdvice",
       "spec": {
@@ -126,141 +132,135 @@
         "tipo_comprobante": "09",
         "version": "2.1"
       }
-    },
-    "defaults": {
-      "fecha_emision": "2019-12-24"
     }
   },
   "expected": {
     "ok": {
-      "kind": "DespatchAdvice",
-      "spec": {
-        "serie_numero": "T001-100",
-        "version": "2.1",
-        "fecha_emision": "2019-12-24",
-        "hora_emision": null,
-        "tipo_comprobante": "09",
-        "observaciones": null,
-        "documento_baja": null,
-        "documento_relacionado": null,
-        "documentos_adicionales": [
+      "serie_numero": "T001-100",
+      "version": "2.1",
+      "fecha_emision": "2019-12-24",
+      "hora_emision": null,
+      "tipo_comprobante": "09",
+      "observaciones": null,
+      "documento_baja": null,
+      "documento_relacionado": null,
+      "documentos_adicionales": [
+        {
+          "tipo_documento": "09",
+          "tipo_documento_descripcion": "GUIA REMISION",
+          "numero": "T001-1",
+          "ruc_emisor": "20100010001"
+        }
+      ],
+      "firmante": {
+        "ruc": "12345678912",
+        "razon_social": "Softgreen S.A.C."
+      },
+      "remitente": {
+        "ruc": "12345678912",
+        "razon_social": "Softgreen S.A.C.",
+        "numero_registro_mtc": null
+      },
+      "destinatario": {
+        "tipo_documento_identidad": "1",
+        "numero_documento_identidad": "12345678",
+        "nombre": "Mi Cliente S.A.C."
+      },
+      "comprador": {
+        "tipo_documento_identidad": "1",
+        "numero_documento_identidad": "12345678",
+        "nombre": "Mi Cliente S.A.C."
+      },
+      "tercero": null,
+      "proveedor": null,
+      "envio": {
+        "tipo_traslado": "01",
+        "motivo_traslado": null,
+        "sustento_peso": "Empaque madera",
+        "peso_total": "100.50",
+        "peso_total_unidad_medida": "KGM",
+        "peso_items": "90.00",
+        "numero_bultos": 10,
+        "indicadores": [],
+        "tipo_modalidad_traslado": "01",
+        "fecha_traslado": "2019-12-24",
+        "transportista": null,
+        "choferes": [
           {
-            "tipo_documento": "09",
-            "tipo_documento_descripcion": "GUIA REMISION",
-            "numero": "T001-1",
-            "ruc_emisor": "20100010001"
+            "tipo": "CONDUCTOR_PRINCIPAL",
+            "tipo_documento_identidad": "1",
+            "numero_documento_identidad": "11111111",
+            "nombres": "Juan",
+            "apellidos": "Perez",
+            "licencia": "Q1234567"
+          },
+          {
+            "tipo": "COPILOTO",
+            "tipo_documento_identidad": "1",
+            "numero_documento_identidad": "22222222",
+            "nombres": "Jose",
+            "apellidos": "Gomez",
+            "licencia": null
           }
         ],
-        "firmante": {
-          "ruc": "12345678912",
-          "razon_social": "Softgreen S.A.C."
-        },
-        "remitente": {
-          "ruc": "12345678912",
-          "razon_social": "Softgreen S.A.C.",
-          "numero_registro_mtc": null
-        },
-        "destinatario": {
-          "tipo_documento_identidad": "1",
-          "numero_documento_identidad": "12345678",
-          "nombre": "Mi Cliente S.A.C."
-        },
-        "comprador": {
-          "tipo_documento_identidad": "1",
-          "numero_documento_identidad": "12345678",
-          "nombre": "Mi Cliente S.A.C."
-        },
-        "tercero": null,
-        "proveedor": null,
-        "envio": {
-          "tipo_traslado": "01",
-          "motivo_traslado": null,
-          "sustento_peso": "Empaque madera",
-          "peso_total": "100.50",
-          "peso_total_unidad_medida": "KGM",
-          "peso_items": "90.00",
-          "numero_bultos": 10,
-          "indicadores": [],
-          "tipo_modalidad_traslado": "01",
-          "fecha_traslado": "2019-12-24",
-          "transportista": null,
-          "choferes": [
+        "vehiculo": {
+          "placa": "ABC-123",
+          "numero_circulacion": "TUC-001",
+          "numero_autorizacion": "AUTH-001",
+          "codigo_emisor": "MTC",
+          "secundarios": [
             {
-              "tipo": "CONDUCTOR_PRINCIPAL",
-              "tipo_documento_identidad": "1",
-              "numero_documento_identidad": "11111111",
-              "nombres": "Juan",
-              "apellidos": "Perez",
-              "licencia": "Q1234567"
+              "placa": "CAR-456",
+              "numero_circulacion": "TUC-SEC",
+              "numero_autorizacion": null,
+              "codigo_emisor": null,
+              "secundarios": []
+            }
+          ]
+        },
+        "contenedores": [
+          "CONT-001",
+          "CONT-002"
+        ],
+        "puerto": {
+          "codigo": "CALLAO",
+          "nombre": "Puerto del Callao"
+        },
+        "aeropuerto": null,
+        "partida": {
+          "ubigeo": "010101",
+          "direccion": "Av. Origen 123",
+          "codigo_local": "0001",
+          "ruc": "12345678912"
+        },
+        "destino": {
+          "ubigeo": "020202",
+          "direccion": "Av. Destino 456",
+          "codigo_local": "0002",
+          "ruc": "87654321098"
+        }
+      },
+      "detalles": [
+        {
+          "unidad_medida": "NIU",
+          "cantidad": "5.00",
+          "descripcion": "Caja de herramientas",
+          "codigo": "ITEM-01",
+          "codigo_sunat": null,
+          "atributos": [
+            {
+              "codigo": "1001",
+              "nombre": "Color",
+              "valor": "Rojo"
             },
             {
-              "tipo": "COPILOTO",
-              "tipo_documento_identidad": "1",
-              "numero_documento_identidad": "22222222",
-              "nombres": "Jose",
-              "apellidos": "Gomez",
-              "licencia": null
+              "codigo": "1002",
+              "nombre": "Marca",
+              "valor": "ToolMaster"
             }
-          ],
-          "vehiculo": {
-            "placa": "ABC-123",
-            "numero_circulacion": "TUC-001",
-            "numero_autorizacion": "AUTH-001",
-            "codigo_emisor": "MTC",
-            "secundarios": [
-              {
-                "placa": "CAR-456",
-                "numero_circulacion": "TUC-SEC",
-                "numero_autorizacion": null,
-                "codigo_emisor": null,
-                "secundarios": []
-              }
-            ]
-          },
-          "contenedores": [
-            "CONT-001",
-            "CONT-002"
-          ],
-          "puerto": {
-            "codigo": "CALLAO",
-            "nombre": "Puerto del Callao"
-          },
-          "aeropuerto": null,
-          "partida": {
-            "ubigeo": "010101",
-            "direccion": "Av. Origen 123",
-            "codigo_local": "0001",
-            "ruc": "12345678912"
-          },
-          "destino": {
-            "ubigeo": "020202",
-            "direccion": "Av. Destino 456",
-            "codigo_local": "0002",
-            "ruc": "87654321098"
-          }
-        },
-        "detalles": [
-          {
-            "unidad_medida": "NIU",
-            "cantidad": "5.00",
-            "descripcion": "Caja de herramientas",
-            "codigo": "ITEM-01",
-            "codigo_sunat": null,
-            "atributos": [
-              {
-                "codigo": "1001",
-                "nombre": "Color",
-                "valor": "Rojo"
-              },
-              {
-                "codigo": "1002",
-                "nombre": "Marca",
-                "valor": "ToolMaster"
-              }
-            ]
-          }
-        ]
-      }
+          ]
+        }
+      ]
     }
   }
 }

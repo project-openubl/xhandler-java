@@ -19,12 +19,10 @@ public class XBuilderProducer {
     @Singleton
     @DefaultBean
     XBuilder xbuilder(XBuilderConfig config) {
-        return new XBuilder(() -> {
-            Defaults defaults = XBuilder.todayDefaults();
-            config.igvTasa().ifPresent(defaults::setIgvTasa);
-            config.icbTasa().ifPresent(defaults::setIcbTasa);
-            config.ivapTasa().ifPresent(defaults::setIvapTasa);
-            return defaults;
-        });
+        return new XBuilder(Defaults.builder()
+                .igvTasa(config.igvTasa().orElse(null))
+                .icbTasa(config.icbTasa().orElse(null))
+                .ivapTasa(config.ivapTasa().orElse(null))
+                .build());
     }
 }

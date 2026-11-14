@@ -40,7 +40,7 @@ class XhandlerTest {
     void versionMatchesSyncedCore() throws IOException {
         String synced = Files.readString(Path.of("src/main/resources/io/github/project/openubl/xhandler/core/VERSION")).trim();
         assertEquals(synced, Xhandler.invoke("version", null).asText());
-        assertEquals(synced, Xhandler.VERSION);
+        assertEquals(synced, Xhandler.CORE_VERSION);
     }
 
     @Test
@@ -53,6 +53,6 @@ class XhandlerTest {
     void concurrentCalls() {
         Set<String> versions = ConcurrentHashMap.newKeySet();
         IntStream.range(0, 32).parallel().forEach(i -> versions.add(Xhandler.invoke("version", null).asText()));
-        assertEquals(Set.of(Xhandler.VERSION), versions);
+        assertEquals(Set.of(Xhandler.CORE_VERSION), versions);
     }
 }

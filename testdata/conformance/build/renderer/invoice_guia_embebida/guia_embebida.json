@@ -1,5 +1,11 @@
 {
   "input": {
+    "defaults": {
+      "fecha_emision": "2019-12-24",
+      "icb_tasa": "0.2",
+      "igv_tasa": "0.18",
+      "ivap_tasa": "0.04"
+    },
     "document": {
       "kind": "Invoice",
       "spec": {
@@ -104,9 +110,6 @@
         "total_importe": null,
         "total_impuestos": null
       }
-    },
-    "defaults": {
-      "fecha_emision": "2019-12-24"
     }
   },
   "expected": {

@@ -1,16 +1,14 @@
 package io.github.project.openubl.xbuilder;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import io.github.project.openubl.xbuilder.models.Defaults;
 import io.github.project.openubl.xbuilder.models.Document;
 import io.github.project.openubl.xhandler.core.Json;
 import io.github.project.openubl.xhandler.core.Xhandler;
 import io.github.project.openubl.xhandler.core.XhandlerException;
 
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.Map;
-import java.util.function.Supplier;
 
 /**
  * Creates the UBL XML of SUNAT documents: invoices (boletas and facturas),
@@ -36,37 +34,30 @@ import java.util.function.Supplier;
  */
 public class XBuilder {
 
-    private static final ZoneId PERU = ZoneId.of("America/Lima");
-
-    private final Supplier<Defaults> defaults;
+    private final Defaults defaults;
 
     /**
-     * Uses {@link #todayDefaults()} for the documents built without defaults.
+     * The documents built without defaults use today's date in Peru and the
+     * current SUNAT tax rates.
      */
     public XBuilder() {
-        this(XBuilder::todayDefaults);
+        this(new Defaults());
     }
 
     /**
      * @param defaults the defaults of the documents built without them, e.g.
-     *                 with other tax rates
+     *                 other tax rates; the fields left null keep today's date
+     *                 in Peru and the current SUNAT rates
      */
-    public XBuilder(Supplier<Defaults> defaults) {
+    public XBuilder(Defaults defaults) {
         this.defaults = defaults;
-    }
-
-    /**
-     * @return the defaults for documents issued today in Peru, with the current SUNAT tax rates
-     */
-    public static Defaults todayDefaults() {
-        return Defaults.builder().fechaEmision(LocalDate.now(PERU)).build();
     }
 
     /**
      * Enriches the document with the defaults of this builder and renders its XML.
      */
     public String build(Document document) {
-        return build(document, defaults.get());
+        return build(document, defaults);
     }
 
     /**
@@ -81,7 +72,7 @@ public class XBuilder {
      * Same as {@link #enrich(Document, Defaults)} with the defaults of this builder.
      */
     public <T extends Document> T enrich(T document) {
-        return enrich(document, defaults.get());
+        return enrich(document, defaults);
     }
 
     /**
@@ -90,9 +81,9 @@ public class XBuilder {
      */
     @SuppressWarnings("unchecked")
     public <T extends Document> T enrich(T document, Defaults defaults) {
-        var enriched = Xhandler.invoke("enrich", input(document, defaults));
+        JsonNode spec = Xhandler.invoke("enrich", input(document, defaults));
         try {
-            return (T) Json.MAPPER.treeToValue(enriched.get("spec"), document.getClass());
+            return (T) Json.MAPPER.treeToValue(spec, document.getClass());
         } catch (JsonProcessingException e) {
             throw new XhandlerException("xbuilder: " + e.getMessage(), e);
         }

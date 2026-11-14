@@ -1,5 +1,11 @@
 {
   "input": {
+    "defaults": {
+      "fecha_emision": "2019-12-24",
+      "icb_tasa": "0.2",
+      "igv_tasa": "0.18",
+      "ivap_tasa": "0.04"
+    },
     "document": {
       "kind": "Perception",
       "spec": {
@@ -42,57 +48,51 @@
         "tipo_regimen": "01",
         "tipo_regimen_porcentaje": "2"
       }
-    },
-    "defaults": {
-      "fecha_emision": "2019-12-24"
     }
   },
   "expected": {
     "ok": {
-      "kind": "Perception",
-      "spec": {
-        "serie": "P001",
-        "numero": 1,
-        "fecha_emision": "2022-01-31",
-        "moneda": "PEN",
-        "proveedor": {
-          "ruc": "12345678912",
-          "razon_social": "Softgreen S.A.C.",
-          "nombre_comercial": null,
-          "direccion": null,
-          "contacto": null
+      "serie": "P001",
+      "numero": 1,
+      "fecha_emision": "2022-01-31",
+      "moneda": "PEN",
+      "proveedor": {
+        "ruc": "12345678912",
+        "razon_social": "Softgreen S.A.C.",
+        "nombre_comercial": null,
+        "direccion": null,
+        "contacto": null
+      },
+      "cliente": {
+        "tipo_documento_identidad": "6",
+        "numero_documento_identidad": "12121212121",
+        "nombre": "Carlos Feria",
+        "direccion": null,
+        "contacto": null
+      },
+      "firmante": {
+        "ruc": "12345678912",
+        "razon_social": "Softgreen S.A.C."
+      },
+      "tipo_regimen": "01",
+      "tipo_regimen_porcentaje": "2",
+      "importe_total_percibido": "10",
+      "importe_total_cobrado": "210",
+      "observaciones": "Percepcion de prueba",
+      "operacion": {
+        "numero_operacion": 1,
+        "fecha_operacion": "2022-01-31",
+        "importe_operacion": "100",
+        "comprobante_afectado": {
+          "tipo_comprobante": "01",
+          "serie_numero": "F001-1",
+          "fecha_emision": "2022-01-31",
+          "importe_total": "200",
+          "moneda": "PEN"
         },
-        "cliente": {
-          "tipo_documento_identidad": "6",
-          "numero_documento_identidad": "12121212121",
-          "nombre": "Carlos Feria",
-          "direccion": null,
-          "contacto": null
-        },
-        "firmante": {
-          "ruc": "12345678912",
-          "razon_social": "Softgreen S.A.C."
-        },
-        "tipo_regimen": "01",
-        "tipo_regimen_porcentaje": "2",
-        "importe_total_percibido": "10",
-        "importe_total_cobrado": "210",
-        "observaciones": "Percepcion de prueba",
-        "operacion": {
-          "numero_operacion": 1,
-          "fecha_operacion": "2022-01-31",
-          "importe_operacion": "100",
-          "comprobante_afectado": {
-            "tipo_comprobante": "01",
-            "serie_numero": "F001-1",
-            "fecha_emision": "2022-01-31",
-            "importe_total": "200",
-            "moneda": "PEN"
-          },
-          "tipo_cambio": null
-        },
-        "documento_id": "P001-1"
-      }
+        "tipo_cambio": null
+      },
+      "documento_id": "P001-1"
     }
   }
 }

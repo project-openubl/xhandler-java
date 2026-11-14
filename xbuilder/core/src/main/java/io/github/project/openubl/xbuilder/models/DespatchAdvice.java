@@ -3,11 +3,9 @@ package io.github.project.openubl.xbuilder.models;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -84,4 +82,9 @@ public class DespatchAdvice implements Document {
 
     @JsonProperty("detalles")
     private List<DespatchAdviceItem> detalles;
+
+    @Override
+    public String kind() {
+        return "DespatchAdvice";
+    }
 }

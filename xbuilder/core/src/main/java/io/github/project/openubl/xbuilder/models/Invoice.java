@@ -117,4 +117,9 @@ public class Invoice implements Document {
 
     @JsonProperty("orden_compra")
     private String ordenCompra;
+
+    @Override
+    public String kind() {
+        return "Invoice";
+    }
 }

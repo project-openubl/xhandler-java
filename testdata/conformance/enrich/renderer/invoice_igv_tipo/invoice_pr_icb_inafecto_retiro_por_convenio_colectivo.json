@@ -1,5 +1,11 @@
 {
   "input": {
+    "defaults": {
+      "fecha_emision": "2019-12-24",
+      "icb_tasa": "0.2",
+      "igv_tasa": "0.18",
+      "ivap_tasa": "0.04"
+    },
     "document": {
       "kind": "Invoice",
       "spec": {
@@ -71,123 +77,117 @@
         "total_importe": null,
         "total_impuestos": null
       }
-    },
-    "defaults": {
-      "fecha_emision": "2019-12-24"
     }
   },
   "expected": {
     "ok": {
-      "kind": "Invoice",
-      "spec": {
-        "leyendas": {},
-        "serie_numero": "F001-1",
-        "moneda": "PEN",
-        "fecha_emision": "2019-12-24",
-        "hora_emision": null,
-        "fecha_vencimiento": null,
-        "proveedor": {
-          "ruc": "12345678912",
-          "razon_social": "Softgreen S.A.C.",
-          "nombre_comercial": null,
-          "direccion": {
-            "ubigeo": null,
-            "codigo_local": "0000",
-            "urbanizacion": null,
-            "departamento": null,
-            "provincia": null,
-            "distrito": null,
-            "direccion": null,
-            "codigo_pais": null
-          },
-          "contacto": null
-        },
-        "cliente": {
-          "tipo_documento_identidad": "6",
-          "numero_documento_identidad": "12121212121",
-          "nombre": "Carlos Feria",
+      "leyendas": {},
+      "serie_numero": "F001-1",
+      "moneda": "PEN",
+      "fecha_emision": "2019-12-24",
+      "hora_emision": null,
+      "fecha_vencimiento": null,
+      "proveedor": {
+        "ruc": "12345678912",
+        "razon_social": "Softgreen S.A.C.",
+        "nombre_comercial": null,
+        "direccion": {
+          "ubigeo": null,
+          "codigo_local": "0000",
+          "urbanizacion": null,
+          "departamento": null,
+          "provincia": null,
+          "distrito": null,
           "direccion": null,
-          "contacto": null
+          "codigo_pais": null
         },
-        "firmante": {
-          "ruc": "12345678912",
-          "razon_social": "Softgreen S.A.C."
-        },
-        "icb_tasa": "0.2",
-        "igv_tasa": "0.18",
-        "ivap_tasa": "0.04",
-        "tipo_comprobante": "01",
-        "tipo_operacion": "0101",
-        "detraccion": null,
-        "percepcion": null,
-        "direccion_entrega": null,
-        "guia_embebida": null,
-        "forma_pago": {
-          "tipo": "Contado",
-          "cuotas": [],
-          "total": "0"
-        },
-        "anticipos": [],
-        "descuentos": [],
-        "cargos": [],
-        "detalles": [
-          {
-            "descripcion": "Item1",
-            "cantidad": "1",
-            "unidad_medida": "NIU",
-            "codigo": null,
-            "codigo_sunat": null,
-            "codigo_gs1": null,
-            "precio": "0",
-            "precio_con_impuestos": "0",
-            "precio_referencia": "118",
-            "precio_referencia_tipo": "02",
-            "igv_tasa": "0",
-            "icb_tasa": "0.2",
-            "isc_tasa": "0",
-            "igv_tipo": "34",
-            "isc_tipo": "01",
-            "icb_aplica": true,
-            "icb": "0.2",
-            "igv": "0",
-            "igv_base_imponible": "118",
-            "isc": "0",
-            "isc_base_imponible": "118",
-            "total_impuestos": "0.2",
-            "atributos": []
-          }
-        ],
-        "total_importe": {
-          "anticipos": "0",
-          "descuentos": "0",
-          "cargos": "0",
-          "importe": "0.2",
-          "importe_sin_impuestos": "0",
-          "importe_con_impuestos": "0.2"
-        },
-        "total_impuestos": {
-          "total": "0",
-          "ivap_importe": "0",
-          "ivap_base_imponible": "0",
-          "exportacion_importe": "0",
-          "exportacion_base_imponible": "0",
-          "gravado_importe": "0",
-          "gravado_base_imponible": "0",
-          "inafecto_importe": "0",
-          "inafecto_base_imponible": "0",
-          "exonerado_importe": "0",
-          "exonerado_base_imponible": "0",
-          "gratuito_importe": "0",
-          "gratuito_base_imponible": "118",
-          "icb_importe": "0.2",
-          "isc_importe": "0",
-          "isc_base_imponible": "0"
-        },
-        "guias": [],
-        "documentos_relacionados": [],
-        "observaciones": null,
-        "orden_compra": null
-      }
+        "contacto": null
+      },
+      "cliente": {
+        "tipo_documento_identidad": "6",
+        "numero_documento_identidad": "12121212121",
+        "nombre": "Carlos Feria",
+        "direccion": null,
+        "contacto": null
+      },
+      "firmante": {
+        "ruc": "12345678912",
+        "razon_social": "Softgreen S.A.C."
+      },
+      "icb_tasa": "0.2",
+      "igv_tasa": "0.18",
+      "ivap_tasa": "0.04",
+      "tipo_comprobante": "01",
+      "tipo_operacion": "0101",
+      "detraccion": null,
+      "percepcion": null,
+      "direccion_entrega": null,
+      "guia_embebida": null,
+      "forma_pago": {
+        "tipo": "Contado",
+        "cuotas": [],
+        "total": "0"
+      },
+      "anticipos": [],
+      "descuentos": [],
+      "cargos": [],
+      "detalles": [
+        {
+          "descripcion": "Item1",
+          "cantidad": "1",
+          "unidad_medida": "NIU",
+          "codigo": null,
+          "codigo_sunat": null,
+          "codigo_gs1": null,
+          "precio": "0",
+          "precio_con_impuestos": "0",
+          "precio_referencia": "118",
+          "precio_referencia_tipo": "02",
+          "igv_tasa": "0",
+          "icb_tasa": "0.2",
+          "isc_tasa": "0",
+          "igv_tipo": "34",
+          "isc_tipo": "01",
+          "icb_aplica": true,
+          "icb": "0.2",
+          "igv": "0",
+          "igv_base_imponible": "118",
+          "isc": "0",
+          "isc_base_imponible": "118",
+          "total_impuestos": "0.2",
+          "atributos": []
+        }
+      ],
+      "total_importe": {
+        "anticipos": "0",
+        "descuentos": "0",
+        "cargos": "0",
+        "importe": "0.2",
+        "importe_sin_impuestos": "0",
+        "importe_con_impuestos": "0.2"
+      },
+      "total_impuestos": {
+        "total": "0",
+        "ivap_importe": "0",
+        "ivap_base_imponible": "0",
+        "exportacion_importe": "0",
+        "exportacion_base_imponible": "0",
+        "gravado_importe": "0",
+        "gravado_base_imponible": "0",
+        "inafecto_importe": "0",
+        "inafecto_base_imponible": "0",
+        "exonerado_importe": "0",
+        "exonerado_base_imponible": "0",
+        "gratuito_importe": "0",
+        "gratuito_base_imponible": "118",
+        "icb_importe": "0.2",
+        "isc_importe": "0",
+        "isc_base_imponible": "0"
+      },
+      "guias": [],
+      "documentos_relacionados": [],
+      "observaciones": null,
+      "orden_compra": null
     }
   }
 }

@@ -1,5 +1,11 @@
 {
   "input": {
+    "defaults": {
+      "fecha_emision": "2019-12-24",
+      "icb_tasa": "0.2",
+      "igv_tasa": "0.18",
+      "ivap_tasa": "0.04"
+    },
     "document": {
       "kind": "VoidedDocuments",
       "spec": {
@@ -30,45 +36,39 @@
           "ruc": "12345678912"
         }
       }
-    },
-    "defaults": {
-      "fecha_emision": "2019-12-24"
     }
   },
   "expected": {
     "ok": {
-      "kind": "VoidedDocuments",
-      "spec": {
-        "numero": 1,
-        "fecha_emision": "2019-12-24",
-        "fecha_emision_comprobantes": "2019-12-22",
-        "proveedor": {
-          "ruc": "12345678912",
-          "razon_social": "Softgreen S.A.C.",
-          "nombre_comercial": null,
-          "direccion": null,
-          "contacto": null
+      "numero": 1,
+      "fecha_emision": "2019-12-24",
+      "fecha_emision_comprobantes": "2019-12-22",
+      "proveedor": {
+        "ruc": "12345678912",
+        "razon_social": "Softgreen S.A.C.",
+        "nombre_comercial": null,
+        "direccion": null,
+        "contacto": null
+      },
+      "firmante": {
+        "ruc": "12345678912",
+        "razon_social": "Softgreen S.A.C."
+      },
+      "comprobantes": [
+        {
+          "tipo_comprobante": "01",
+          "serie": "F001",
+          "numero": 1,
+          "descripcion_sustento": "Mi sustento1"
         },
-        "firmante": {
-          "ruc": "12345678912",
-          "razon_social": "Softgreen S.A.C."
-        },
-        "comprobantes": [
-          {
-            "tipo_comprobante": "01",
-            "serie": "F001",
-            "numero": 1,
-            "descripcion_sustento": "Mi sustento1"
-          },
-          {
-            "tipo_comprobante": "01",
-            "serie": "F001",
-            "numero": 2,
-            "descripcion_sustento": "Mi sustento2"
-          }
-        ],
-        "documento_id": "RA-20191224-1"
-      }
+        {
+          "tipo_comprobante": "01",
+          "serie": "F001",
+          "numero": 2,
+          "descripcion_sustento": "Mi sustento2"
+        }
+      ],
+      "documento_id": "RA-20191224-1"
     }
   }
 }

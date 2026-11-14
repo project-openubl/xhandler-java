@@ -90,4 +90,9 @@ public class DebitNote implements Document {
 
     @JsonProperty("orden_compra")
     private String ordenCompra;
+
+    @Override
+    public String kind() {
+        return "DebitNote";
+    }
 }

@@ -17,10 +17,12 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class XBuilderTest {
 
@@ -58,7 +60,7 @@ class XBuilderTest {
     @MethodSource("enrichCases")
     void enrichCorpusThroughModels(Conformance.Case c) throws Exception {
         Document document = documentOf(c.input().get("document"));
-        Document expected = documentOf(c.expected().get("ok"));
+        Document expected = Json.MAPPER.treeToValue(c.expected().get("ok"), document.getClass());
         assertEquals(expected, xbuilder.enrich(document, defaultsOf(c)));
     }
 
@@ -86,6 +88,22 @@ class XBuilderTest {
         assertEquals(0, new BigDecimal("236").compareTo(enriched.getTotalImporte().getImporte()));
         assertEquals("PEN", enriched.getMoneda());
         assertEquals(LocalDate.of(2019, 12, 24), enriched.getFechaEmision());
+    }
+
+    /** Without a date, the core uses today in Peru: Chicory must give it the real clock */
+    @Test
+    void enrichDefaultsToTodayInPeru() {
+        LocalDate before = LocalDate.now(ZoneOffset.ofHours(-5));
+        LocalDate fechaEmision = xbuilder.enrich(invoice()).getFechaEmision();
+        assertTrue(fechaEmision.equals(before) || fechaEmision.equals(LocalDate.now(ZoneOffset.ofHours(-5))), fechaEmision::toString);
+    }
+
+    @Test
+    void sendsDecimalsAsPlainText() {
+        Invoice document = invoice();
+        document.getDetalles().get(0).setPrecio(new BigDecimal("1E+2"));
+        Invoice enriched = xbuilder.enrich(document);
+        assertEquals(0, new BigDecimal("236").compareTo(enriched.getTotalImporte().getImporte()));
     }
 
     @Test

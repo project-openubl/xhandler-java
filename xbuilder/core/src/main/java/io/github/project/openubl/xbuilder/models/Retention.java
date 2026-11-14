@@ -5,9 +5,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.List;
-import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -69,4 +66,9 @@ public class Retention implements Document {
      */
     @JsonProperty("documento_id")
     private String documentoId;
+
+    @Override
+    public String kind() {
+        return "Retention";
+    }
 }

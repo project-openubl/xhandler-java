@@ -71,13 +71,6 @@ deploy:
           - target/staging-deploy
 
 announce:
-  zulip:
-    active: RELEASE
-    account: release-bot@projectopenubl.zulipchat.com
-    apiHost: https://projectopenubl.zulipchat.com/api/v1
-    channel: announcements
-    subject: '{{projectNameCapitalized}} {{projectVersion}} released!'
-    message: '🚀 {{projectNameCapitalized}} {{projectVersion}} has been released! {{releaseNotesUrl}}'
   slack:
     active: RELEASE
     channel: '#notifications'

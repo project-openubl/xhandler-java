@@ -3,7 +3,6 @@
 [![License](https://img.shields.io/github/license/project-openubl/xhandler-java?logo=apache)](https://www.apache.org/licenses/LICENSE-2.0)
 [![CI](https://github.com/project-openubl/xhandler-java/actions/workflows/ci.yml/badge.svg)](https://github.com/project-openubl/xhandler-java/actions/workflows/ci.yml)
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.project-openubl/xbuilder)](https://central.sonatype.com/namespace/io.github.project-openubl)
-[![Project Chat](https://img.shields.io/badge/zulip-join_chat-brightgreen.svg?logo=zulip)](https://projectopenubl.zulipchat.com/)
 
 Crea, firma y envía los comprobantes electrónicos (XML UBL) de la SUNAT del Perú desde Java, con
 extensiones para Quarkus, Spring Boot y Jakarta EE. Sin código nativo; compatible con GraalVM
@@ -105,8 +104,7 @@ Ejemplos completos en [`examples/`](examples): Spring Boot, WildFly, Tomcat y Ja
 
 ## Contribuir
 
-Revisa [CONTRIBUTING.md](CONTRIBUTING.md). Preguntas en el
-[chat de Zulip](https://projectopenubl.zulipchat.com/).
+Revisa [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Licencia
 

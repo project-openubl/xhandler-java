@@ -47,7 +47,6 @@ jobs:
           JRELEASER_GITHUB_TOKEN: ${{ secrets.GH_PAT }}
           JRELEASER_PROJECT_VERSION: ${{ github.event.inputs.version }}
           JRELEASER_PRERELEASE_PATTERN: .*(?:Alpha|alpha|Beta|beta)[0-9]
-          JRELEASER_ZULIP_API_KEY: ${{ secrets.JRELEASER_ZULIP_API_KEY }}
           JRELEASER_SLACK_TOKEN: ${{ secrets.JRELEASER_SLACK_TOKEN }}
           JRELEASER_SLACK_WEBHOOK: ${{ secrets.JRELEASER_SLACK_WEBHOOK }}
           JRELEASER_ARTICLE_GITHUB_TOKEN: ${{ secrets.GH_PAT }}

@@ -66,4 +66,13 @@ class XSignerTest {
         assertEquals(xsigner.sign(xml, KeyPair.fromPkcs12(der, new String(password))), xsigner.sign(xml, fromKeyStore));
         assertTrue(xsigner.sign(xml, fromKeyStore).contains("Id=\"PROJECT-OPENUBL-SIGN\""));
     }
+
+    @Test
+    void keyPairHidesItsSecrets() {
+        JsonNode pem = Conformance.cases("sign").stream()
+                .filter(c -> c.name().equals("pem/min_data_ruc"))
+                .findFirst().orElseThrow()
+                .input();
+        assertTrue(!keyPair(pem.get("key")).toString().contains("PRIVATE KEY"));
+    }
 }

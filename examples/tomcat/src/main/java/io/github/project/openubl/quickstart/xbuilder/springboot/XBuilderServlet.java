@@ -38,7 +38,7 @@ public class XBuilderServlet extends HttpServlet {
 
             // Response
             resp.setStatus(HttpServletResponse.SC_OK);
-            resp.setContentType("text/plain");
+            resp.setContentType("application/xml; charset=UTF-8");
             resp.getWriter().write(xmlString);
             resp.getWriter().flush();
         } catch (Exception e) {

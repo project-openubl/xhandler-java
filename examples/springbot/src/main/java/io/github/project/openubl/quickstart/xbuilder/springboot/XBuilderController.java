@@ -52,7 +52,7 @@ public class XBuilderController {
     private final XBuilder xbuilder = new XBuilder();
     private final XSigner xsigner = new XSigner();
 
-    @PostMapping(value = "/api/create-xml/{kind}", produces = "text/plain")
+    @PostMapping(value = "/api/create-xml/{kind}", produces = "application/xml;charset=UTF-8")
     public String createXML(@PathVariable String kind, @RequestBody String clientName) throws Exception {
         Document document = switch (kind) {
             case "invoice" -> invoice(clientName);

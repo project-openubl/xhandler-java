@@ -4,8 +4,10 @@ import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 import java.security.PrivateKey;
 import java.security.cert.Certificate;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * The private key and certificate that sign the documents. The key is checked
@@ -24,6 +26,8 @@ public final class KeyPair {
      * @param certificate PEM X.509 certificate
      */
     public static KeyPair fromPem(String privateKey, String certificate) {
+        Objects.requireNonNull(privateKey, "privateKey");
+        Objects.requireNonNull(certificate, "certificate");
         return new KeyPair(Map.of("pem", Map.of("private_key", privateKey, "certificate", certificate)));
     }
 
@@ -32,6 +36,8 @@ public final class KeyPair {
      * @param password password of the keystore
      */
     public static KeyPair fromPkcs12(byte[] der, String password) {
+        Objects.requireNonNull(der, "der");
+        Objects.requireNonNull(password, "password");
         return new KeyPair(Map.of("pkcs12", Map.of("der", Base64.getEncoder().encodeToString(der), "password", password)));
     }
 
@@ -42,10 +48,12 @@ public final class KeyPair {
      * @param password password of the entry
      */
     public static KeyPair fromKeyStore(KeyStore keyStore, String alias, char[] password) throws GeneralSecurityException {
-        PrivateKey privateKey = (PrivateKey) keyStore.getKey(alias, password);
         Certificate certificate = keyStore.getCertificate(alias);
-        if (privateKey == null || certificate == null) {
+        if (!(keyStore.getKey(alias, password) instanceof PrivateKey privateKey) || certificate == null) {
             throw new GeneralSecurityException("No private key and certificate for alias " + alias);
+        }
+        if (privateKey.getEncoded() == null) {
+            throw new GeneralSecurityException("The private key of alias " + alias + " can't be exported");
         }
         return fromPem(pem("PRIVATE KEY", privateKey.getEncoded()), pem("CERTIFICATE", certificate.getEncoded()));
     }
@@ -54,8 +62,13 @@ public final class KeyPair {
         return key;
     }
 
+    @Override
+    public String toString() {
+        return "KeyPair(<redacted>)";
+    }
+
     private static String pem(String type, byte[] der) {
-        String base64 = Base64.getMimeEncoder(64, "\n".getBytes()).encodeToString(der);
+        String base64 = Base64.getMimeEncoder(64, "\n".getBytes(StandardCharsets.US_ASCII)).encodeToString(der);
         return "-----BEGIN " + type + "-----\n" + base64 + "\n-----END " + type + "-----\n";
     }
 }

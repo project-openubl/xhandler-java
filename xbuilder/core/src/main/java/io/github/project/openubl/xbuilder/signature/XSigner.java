@@ -18,8 +18,9 @@ import java.util.Map;
 public class XSigner {
 
     /**
-     * @param xml UTF-8 or ISO-8859-1 XML
-     * @return the XML with its signature, in UTF-8
+     * @param xml UTF-8 or ISO-8859-1 XML, as its XML declaration says
+     * @return the XML with its signature, in UTF-8 (callers that read the old
+     * XMLSigner output as ISO-8859-1 must read it as UTF-8)
      * @throws XhandlerException when the key or the document are invalid
      */
     public byte[] sign(byte[] xml, KeyPair key) {
@@ -31,6 +32,7 @@ public class XSigner {
     }
 
     /**
+     * @param xml the XML text; its XML declaration's encoding does not matter
      * @return the XML with its signature
      * @throws XhandlerException when the key or the document are invalid
      */

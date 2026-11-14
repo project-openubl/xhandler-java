@@ -232,34 +232,6 @@
             </build>
         </profile>
         <profile>
-            <id>sonar</id>
-            <properties>
-                <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-                <sonar.organization>project-openubl</sonar.organization>
-                <sonar.projectKey>project-openubl_xhandler</sonar.projectKey>
-                <sonar.moduleKey>${project.artifactId}</sonar.moduleKey>
-                <sonar.projectName>xhandler</sonar.projectName>
-            </properties>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.sonarsource.scanner.maven</groupId>
-                        <artifactId>sonar-maven-plugin</artifactId>
-                        <version>5.8.0.7211</version>
-                        <executions>
-                            <execution>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>sonar</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-        <profile>
             <id>publication</id>
             <properties>
                 <altDeploymentRepository>local::file:./target/staging-deploy</altDeploymentRepository>

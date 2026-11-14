@@ -17,7 +17,9 @@ release:
   github:
     owner: project-openubl
     name: xhandler-java
-    overwrite: true
+    # release-tools' release-xhandler workflow creates the tag and the GitHub release
+    skipTag: true
+    skipRelease: true
     discussionCategoryName: Announcements
     issues:
       enabled: true

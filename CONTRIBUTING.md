@@ -35,11 +35,13 @@ mvn verify -f xsender/spring-boot-extension/integration-tests/
   aquí:
 
   ```shell
-  make sync RUST_REPO=../xhandler-rust
+  make sync RUST_REPO=../xhandler-rust   # el núcleo de tu checkout, para desarrollar
+  make sync CORE=6.0.0-alpha.1           # el núcleo de una versión de xhandler-rust
   ```
 
   `make sync` copia el núcleo, los modelos (`xbuilder/core/.../xbuilder/models/`) y el corpus de
-  conformidad (`testdata/conformance/`). No los edites a mano.
+  conformidad (`testdata/conformance/`). No los edites a mano. Una versión solo se publica con el
+  núcleo de la versión igual de xhandler-rust: `make verify-core` lo comprueba.
 - En Java está lo que necesita IO (`xsender/core`: cliente HTTP, reintentos, caché de tokens) y la
   integración con los frameworks (`*/quarkus-extension`, `xsender/spring-boot-extension`,
   `xsender/cdi`).

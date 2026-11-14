@@ -40,21 +40,36 @@ XBuilder abstrae la complejidad de los estándares UBL y XML, permitiéndote con
 ### Ejemplo de Uso
 
 ```java
-// Ejemplo simplificado de creación de factura
 Invoice invoice = Invoice.builder()
-    .serie("F001")
-    .numero(1)
-    .proveedor(proveedor)
-    .cliente(cliente)
-    .detalle(detalle)
-    .build();
+        .serieNumero("F001-1")
+        .proveedor(Proveedor.builder().ruc("12345678912").razonSocial("Softgreen S.A.C.").build())
+        .cliente(Cliente.builder()
+                .tipoDocumentoIdentidad("6") // RUC (Catalog6)
+                .numeroDocumentoIdentidad("12121212121")
+                .nombre("Carlos Feria")
+                .build())
+        .detalles(List.of(Detalle.builder()
+                .descripcion("Item")
+                .cantidad(new BigDecimal("2"))
+                .precio(new BigDecimal("100"))
+                .build()))
+        .build();
 
-XMLInvoice xml = new InvoiceXMLBuilder().build(invoice);
+String xml = new XBuilder().build(invoice);       // fecha de hoy en Perú y tasas vigentes
+byte[] signed = new XSigner().sign(xml.getBytes(StandardCharsets.UTF_8),
+        KeyPair.fromPkcs12(Files.readAllBytes(Path.of("certificado.pfx")), "password"));
 ```
 
+XBuilder y XSender usan el **núcleo xhandler** (Rust), el mismo de las librerías de Go y
+Python, ejecutado en la JVM como WebAssembly compilado a bytecode
+([Chicory](https://chicory.dev)): sin código nativo y compatible con GraalVM native.
+
 > [!NOTE]
-> Para actualizar los snapshots de prueba en desarrollo local, ejecuta:
-> `mvn clean test -Dxbuilder.snapshot.update`
+> ¿Vienes de XBuilder 5.x? Revisa la [guía de migración](./xbuilder/MIGRATION.md).
+
+> [!NOTE]
+> Los casos de prueba (`testdata/conformance`), el módulo WebAssembly y los modelos se
+> copian desde xhandler-rust con `make sync RUST_REPO=../xhandler-rust`.
 
 ---
 

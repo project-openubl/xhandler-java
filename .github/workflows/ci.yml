@@ -30,11 +30,6 @@ jobs:
           cache: maven
       - name: Maven tests
         run: mvn verify -Pexamples
-      - name: Upload XBuilder e2e Yaml files
-        uses: actions/upload-artifact@v4.6.2
-        with:
-          name: xbuilder-e2e-yaml
-          path: xbuilder/quarkus-extension/integration-tests/src/test/resources/e2e/
 
   quarkus-extension:
     needs: [ test ]
@@ -52,11 +47,6 @@ jobs:
           cache: maven
       - name: Maven tests
         run: mvn install -DskipTests
-      - name: Download XBuilder e2e Yaml files
-        uses: actions/download-artifact@v8.0.2
-        with:
-          name: xbuilder-e2e-yaml
-          path: xbuilder/quarkus-extension/integration-tests/src/test/resources/e2e/
       - name: Maven IT tests
         run: mvn -Pnative-image install -f ${{ matrix.module }}/quarkus-extension/integration-tests/
 
@@ -78,11 +68,6 @@ jobs:
           cache: maven
       - name: Maven tests
         run: mvn install -DskipTests
-      - name: Download XBuilder e2e Yaml files
-        uses: actions/download-artifact@v8.0.2
-        with:
-          name: xbuilder-e2e-yaml
-          path: xbuilder/quarkus-extension/integration-tests/src/test/resources/e2e/
       - name: Maven IT tests
         run: mvn -Pnative-image install -f ${{ matrix.module }}/quarkus-extension/integration-tests/ -Dquarkus.version=${{ matrix.quarkus-version }}
 

@@ -34,8 +34,7 @@ verify-core:
 	./hack/core.sh verify $(WASM) $(VERSION_FILE)
 
 verify-release:
-	@test "v$$(cat $(VERSION_FILE))" = "$(TAG)" || { echo "error: the core is $$(cat $(VERSION_FILE)), not $(TAG:v%=%): run make sync CORE=$(TAG:v%=%)" >&2; exit 1; }
-	STRICT=true ./hack/core.sh verify $(WASM) $(VERSION_FILE)
+	./hack/core.sh verify-release $(TAG) $(WASM) $(VERSION_FILE)
 
 test:
 	mvn verify

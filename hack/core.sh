@@ -1,13 +1,16 @@
 #!/usr/bin/env bash
 # The xhandler core (xhandler.wasm, its models and the conformance corpus) comes from the
 # releases of xhandler-rust, which attach xhandler-dist-<version>.tar.gz, xhandler.wasm and
-# SHA256SUMS.
+# SHA256SUMS. This script is identical in xhandler-go, xhandler-python and xhandler-java.
 #
-#   core.sh download <version> <dir>      extracts the release's dist into <dir>
-#   core.sh verify <wasm> <version-file>  checks that <wasm> is the xhandler.wasm released as the
-#                                         version in <version-file>; a version that was never
-#                                         released (a core built from a checkout) only warns,
-#                                         unless STRICT=true
+#   core.sh download <version> <dir>
+#       extracts the release's dist into <dir>
+#   core.sh verify <wasm> <version-file>
+#       checks that <wasm> is the xhandler.wasm released as the version in <version-file>; a
+#       version that was never released (a core built from a checkout) only warns
+#   core.sh verify-release <tag> <wasm> <version-file>
+#       what releasing <tag> requires: the version in <version-file> is the tag's and <wasm> is
+#       the xhandler.wasm of that xhandler-rust release
 set -euo pipefail
 
 releases=${XHANDLER_RUST_RELEASES:-https://github.com/project-openubl/xhandler-rust/releases/download}
@@ -28,12 +31,20 @@ download)
   fi
   rm -rf "$dir" && mkdir -p "$dir" && tar -xzf "$tmp/$asset" -C "$dir"
   ;;
-verify)
+verify | verify-release)
+  if [ "$1" = verify-release ]; then
+    tag=$2
+    shift
+  fi
   wasm=$2 version=$(cat "$3")
+  if [ -n "${tag:-}" ] && [ "v$version" != "$tag" ]; then
+    echo "error: the core is $version, not ${tag#v}: run make sync CORE=${tag#v}" >&2
+    exit 1
+  fi
   expected=$(released_sha256 "$version" xhandler.wasm)
   if [ -z "$expected" ]; then
     message="the core $version ($wasm) is not an xhandler-rust release: sync a release with 'make sync CORE=<version>'"
-    if [ "${STRICT:-}" = true ]; then
+    if [ -n "${tag:-}" ]; then
       echo "error: $message" >&2
       exit 1
     fi
@@ -46,7 +57,7 @@ verify)
   fi
   ;;
 *)
-  echo "usage: core.sh download <version> <dir> | verify <wasm> <version-file>" >&2
+  echo "usage: core.sh download <version> <dir> | verify <wasm> <version-file> | verify-release <tag> <wasm> <version-file>" >&2
   exit 2
   ;;
 esac

@@ -15,6 +15,9 @@ on:
         required: true
         type: string
 
+# release-tools finds the run of a release by this name
+run-name: Release ${{ github.event.release.tag_name || inputs.tag }}
+
 permissions:
   contents: read
 
@@ -56,6 +59,8 @@ jobs:
         with:
           # Signs and publishes to Maven Central; no GitHub release, no announcements
           arguments: deploy
+          # The version this configuration was validated with
+          version: 1.23.0
         env:
           JRELEASER_PROJECT_VERSION: ${{ env.VERSION }}
           JRELEASER_GITHUB_TOKEN: ${{ github.token }}

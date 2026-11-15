@@ -5,14 +5,16 @@
 #   make sync                  a checkout of xhandler-rust (RUST_REPO), for development
 #   make verify-core           checks that the committed core is the one released as its VERSION
 #   make verify-release TAG=v<version>
-#                              what releasing <version> requires: the core of the xhandler-rust
-#                              release of the same version
+#                              what releasing <version> requires: syncing the xhandler-rust
+#                              release of the same version changes nothing
 RUST_REPO ?= ../xhandler-rust
 CORE ?=
 DIST := $(if $(CORE),.dist,$(RUST_REPO)/dist)
 WASM := xhandler-core/src/main/wasm/xhandler.wasm
 VERSION_FILE := xhandler-core/src/main/resources/io/github/project/openubl/xhandler/core/VERSION
 MODELS := xbuilder/core/src/main/java/io/github/project/openubl/xbuilder/models
+
+SYNCED := $(WASM) $(VERSION_FILE) $(MODELS) testdata/conformance
 
 .PHONY: sync dist verify-core verify-release test
 
@@ -35,6 +37,12 @@ verify-core:
 
 verify-release:
 	./hack/core.sh verify-release $(TAG) $(WASM) $(VERSION_FILE)
+	$(MAKE) --no-print-directory sync CORE=$(TAG:v%=%)
+	@if [ -n "$$(git status --porcelain -- $(SYNCED))" ]; then \
+		echo "error: the core differs from the xhandler-rust $(TAG) release (now synced here):" >&2; \
+		git status --short -- $(SYNCED) >&2; \
+		exit 1; \
+	fi
 
 test:
 	mvn verify

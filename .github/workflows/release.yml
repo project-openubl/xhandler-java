@@ -1,68 +1,66 @@
 name: Release
 
+# Runs when a release is published (release-tools' release-xhandler workflow creates it after
+# syncing the core of the xhandler-rust release of the same version) and publishes to Maven
+# Central with JReleaser. The tag is the version: the poms on main say 6.0.0-SNAPSHOT and this
+# workflow sets the tag's version.
+
 on:
+  release:
+    types: [published]
   workflow_dispatch:
     inputs:
-      version:
-        description: "Release version"
+      tag:
+        description: "Existing release tag to publish again, e.g. v6.0.0-alpha.1"
         required: true
-      next:
-        description: "Next version"
-        required: false
-      branch:
-        description: "The branch to use when releasing"
-        required: true
-        default: "main"
         type: string
 
+permissions:
+  contents: read
+
+env:
+  TAG: ${{ github.event.release.tag_name || inputs.tag }}
+
 jobs:
-  release:
+  maven-central:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7.0.1
         with:
+          ref: ${{ env.TAG }}
           fetch-depth: 0
-          ref: ${{ github.event.inputs.branch }}
       - uses: actions/setup-java@v6.2.0
         with:
           java-version: 25
           distribution: temurin
           cache: maven
-      - name: Set release version
-        env:
-          RELEASE_VERSION: ${{ github.event.inputs.version }}
+      - run: echo "VERSION=${TAG#v}" >> "$GITHUB_ENV"
+      # A release carries the core released by xhandler-rust as the same version (release-tools
+      # checks it too, before tagging)
+      - run: make verify-release TAG="$TAG"
+      # Maven Central never replaces a version: a rerun after publishing skips the rest
+      - name: Check Maven Central
+        id: central
         run: |
-          mvn -B versions:set versions:commit -DnewVersion=$RELEASE_VERSION -Pprepare-release
-          git config --global user.email "project.openubl.preview.bot@gmail.com"
-          git config --global user.name "Project-Openubl Bot"
-          git commit --signoff --allow-empty -a -m "🏁 Releasing version $RELEASE_VERSION"
-          git push origin HEAD:${{ github.event.inputs.branch }}
-
-      - name: Prepare files
-        run: mvn -Ppublication -DskipTests
-
-      - name: JReleaser
+          if curl -sfI "https://repo1.maven.org/maven2/io/github/project-openubl/xhandler-core/$VERSION/xhandler-core-$VERSION.pom" >/dev/null; then
+            echo "::notice::$VERSION is already on Maven Central"
+            echo "published=true" >> "$GITHUB_OUTPUT"
+          fi
+      - if: ${{ !steps.central.outputs.published }}
+        run: mvn -B versions:set -DnewVersion="$VERSION" -DgenerateBackupPoms=false
+      # Tests, then the artifacts with sources and javadoc into target/staging-deploy
+      - if: ${{ !steps.central.outputs.published }}
+        run: mvn -B -Ppublication
+      - if: ${{ !steps.central.outputs.published }}
         uses: jreleaser/release-action@v2
+        with:
+          # Signs and publishes to Maven Central; no GitHub release, no announcements
+          arguments: deploy
         env:
-          JRELEASER_GITHUB_TOKEN: ${{ secrets.GH_PAT }}
-          JRELEASER_PROJECT_VERSION: ${{ github.event.inputs.version }}
-          JRELEASER_PRERELEASE_PATTERN: .*(?:Alpha|alpha|Beta|beta)[0-9]
-          JRELEASER_SLACK_TOKEN: ${{ secrets.JRELEASER_SLACK_TOKEN }}
-          JRELEASER_SLACK_WEBHOOK: ${{ secrets.JRELEASER_SLACK_WEBHOOK }}
-          JRELEASER_ARTICLE_GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+          JRELEASER_PROJECT_VERSION: ${{ env.VERSION }}
+          JRELEASER_GITHUB_TOKEN: ${{ github.token }}
           JRELEASER_GPG_SECRET_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
           JRELEASER_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
           JRELEASER_GPG_PUBLIC_KEY: ${{ secrets.GPG_PUBLIC_KEY }}
           JRELEASER_MAVENCENTRAL_SONATYPE_USERNAME: ${{ secrets.NEXUS_USERNAME }}
           JRELEASER_MAVENCENTRAL_SONATYPE_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
-
-
-      - name: Set next version
-        env:
-          NEXT_VERSION: ${{ github.event.inputs.next }}
-        run: |
-          mvn -B versions:set versions:commit -DnewVersion=$NEXT_VERSION -Pprepare-release
-          git config --global user.email "project.openubl.preview.bot@gmail.com"
-          git config --global user.name "Project-Openubl Bot"
-          git commit --signoff -a -m "⬆️  Next version $NEXT_VERSION"
-          git push origin HEAD:${{ github.event.inputs.branch }}

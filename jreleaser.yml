@@ -17,42 +17,10 @@ release:
   github:
     owner: project-openubl
     name: xhandler-java
-    overwrite: true
-    discussionCategoryName: Announcements
-    issues:
-      enabled: true
-    changelog:
-      formatted: ALWAYS
-      preset: conventional-commits
-      labelers:
-        - label: 'feat'
-          title: 'regex:^(?:\(feat\)(?:\(.*\))?!?):\s.*'
-        - label: 'fix'
-          title: 'regex:^(?:\(fix\)(?:\(.*\))?!?):\s.*'
-        - label: 'chore'
-          title: '(chore)'
-
-        - label: 'dependencies'
-          title: '(deps)'
-        - label: 'dependencies'
-          title: 'regex:(?:\(deps\)(?:\(.*\))?!?):\s.*'
-        - label: 'dependencies'
-          title: 'regex:(?:\(deps-dev\)(?:\(.*\))?!?):\s.*'
-        - label: 'dependencies'
-          title: 'regex:^Bump\s'
-      categories:
-        - title: '⚙️  Dependencies'
-          key: 'dependencies'
-          labels:
-            - 'dependencies'
-      hide:
-        categories:
-          - 'merge'
-          - 'build'
-          - 'dependencies'
-        contributors:
-          - 'GitHub'
-          - 'dependabot'
+    # Only deploys to Maven Central: release-tools' release-xhandler workflow creates the tag
+    # and the GitHub release
+    skipTag: true
+    skipRelease: true
 
 signing:
   active: ALWAYS
@@ -69,17 +37,3 @@ deploy:
         url: https://central.sonatype.com/api/v1/publisher
         stagingRepositories:
           - target/staging-deploy
-
-announce:
-  slack:
-    active: RELEASE
-    channel: '#notifications'
-    message: '🚀 {{projectNameCapitalized}} {{projectVersion}} has been released! {{releaseNotesUrl}}'
-  article:
-    active: RELEASE
-    repository:
-      owner: project-openubl
-      name: website
-    files:
-      - path: 'release.md'
-        transform: 'blog/{{#f_now}}YYYY-MM-dd{{/f_now}}/{{projectName}}-{{#f_dash}}{{projectVersion}}{{/f_dash}}-released.md'

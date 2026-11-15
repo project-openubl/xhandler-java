@@ -40,6 +40,10 @@ jobs:
           distribution: "temurin"
           java-version: ${{ matrix.java-version }}
           cache: maven
+      # The committed core is the xhandler.wasm of the xhandler-rust release in its VERSION
+      - name: Verify the core
+        if: runner.os == 'Linux'
+        run: make verify-core
       - name: Maven tests
         run: mvn verify -Pexamples
 

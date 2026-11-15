@@ -5,8 +5,8 @@ import io.github.project.openubl.xbuilder.models.Cliente;
 import io.github.project.openubl.xbuilder.models.Detalle;
 import io.github.project.openubl.xbuilder.models.Invoice;
 import io.github.project.openubl.xbuilder.models.Proveedor;
-import io.github.project.openubl.xbuilder.signature.SigningKey;
-import io.github.project.openubl.xbuilder.signature.XSigner;
+import io.github.project.openubl.xsigner.SigningKey;
+import io.github.project.openubl.xsigner.XSigner;
 
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;

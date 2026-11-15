@@ -1,4 +1,4 @@
-package io.github.project.openubl.xbuilder.signature;
+package io.github.project.openubl.xsigner;
 
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;

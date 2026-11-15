@@ -2,8 +2,8 @@ package io.github.project.openubl.xbuilder;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import io.github.project.openubl.xbuilder.models.Invoice;
-import io.github.project.openubl.xbuilder.signature.SigningKey;
-import io.github.project.openubl.xbuilder.signature.XSigner;
+import io.github.project.openubl.xsigner.SigningKey;
+import io.github.project.openubl.xsigner.XSigner;
 import io.github.project.openubl.xhandler.core.Conformance;
 import io.github.project.openubl.xsender.FileSender;
 import io.github.project.openubl.xsender.Credentials;

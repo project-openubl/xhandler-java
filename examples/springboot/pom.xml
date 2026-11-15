@@ -10,7 +10,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>examples-springbot</artifactId>
+    <artifactId>examples-springboot</artifactId>
     <name>Examples - Springbot</name>
 
     <properties>

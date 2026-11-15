@@ -20,7 +20,7 @@
         <module>xsender</module>
         <module>wildfly</module>
         <module>tomcat</module>
-        <module>springbot</module>
+        <module>springboot</module>
     </modules>
 
     <build>

@@ -1,4 +1,4 @@
-package io.github.project.openubl.xbuilder.signature;
+package io.github.project.openubl.xsigner;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import io.github.project.openubl.xbuilder.XBuilder;

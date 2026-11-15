@@ -69,6 +69,9 @@ interface, and `Reversion` no longer extends `VoidedDocuments` (it has the same 
 | A `java.security.KeyStore` | `SigningKey.fromKeyStore(keyStore, alias, password)` |
 | `XmlSignatureHelper.getBytesFromDocument(signed)` read as ISO-8859-1 | `sign(byte[])` returns UTF-8 bytes; `sign(String)` returns text |
 
+`XSigner` and `SigningKey` are in the package `io.github.project.openubl.xsigner` (in the `xbuilder`
+artifact), like the `xsigner` module of the Go, Python and Rust libraries.
+
 The signature id is always `PROJECT-OPENUBL-SIGN`, the one the generated XML references.
 
 ## XSender

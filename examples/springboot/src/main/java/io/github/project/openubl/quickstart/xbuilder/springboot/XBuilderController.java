@@ -27,8 +27,8 @@ import io.github.project.openubl.xbuilder.models.SummaryDocumentsItemComprobante
 import io.github.project.openubl.xbuilder.models.SummaryDocumentsValorVenta;
 import io.github.project.openubl.xbuilder.models.VoidedDocuments;
 import io.github.project.openubl.xbuilder.models.VoidedDocumentsItem;
-import io.github.project.openubl.xbuilder.signature.SigningKey;
-import io.github.project.openubl.xbuilder.signature.XSigner;
+import io.github.project.openubl.xsigner.SigningKey;
+import io.github.project.openubl.xsigner.XSigner;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

@@ -16,6 +16,17 @@ MODELS := xbuilder/core/src/main/java/io/github/project/openubl/xbuilder/models
 
 SYNCED := $(WASM) $(VERSION_FILE) $(MODELS) testdata/conformance
 
+# core.sh syncs and verifies a released core. It lives in xhandler-rust, next to the release
+# format it reads, and is downloaded from the tag of the core at hand (from main for a core
+# released before it was there, or not released). CORE_SH=<path> runs a local copy instead, e.g.
+# while changing it in xhandler-rust.
+CORE_SH ?=
+CORE_SH_URL := https://raw.githubusercontent.com/project-openubl/xhandler-rust
+# $(call core_sh,<core version>,<core.sh arguments>)
+core_sh = $(if $(CORE_SH),bash $(CORE_SH) $(2),script=$$(mktemp) && trap 'rm -f "$$script"' EXIT && \
+	{ curl -fsSL -o "$$script" $(CORE_SH_URL)/v$(1)/xhandler-wasm/core.sh 2>/dev/null || \
+	curl -fsSL -o "$$script" $(CORE_SH_URL)/main/xhandler-wasm/core.sh; } && bash "$$script" $(2))
+
 .PHONY: sync dist verify-core verify-release test
 
 sync: dist
@@ -29,14 +40,14 @@ dist:
 ifeq ($(CORE),)
 	$(MAKE) -C $(RUST_REPO)/xhandler-wasm dist
 else
-	./hack/core.sh download $(CORE) $(DIST)
+	$(call core_sh,$(CORE:v%=%),download $(CORE) $(DIST))
 endif
 
 verify-core:
-	./hack/core.sh verify $(WASM) $(VERSION_FILE)
+	$(call core_sh,$$(tr -d '\r\n' <$(VERSION_FILE)),verify $(WASM) $(VERSION_FILE))
 
 verify-release:
-	./hack/core.sh verify-release $(TAG) $(WASM) $(VERSION_FILE)
+	$(call core_sh,$(TAG:v%=%),verify-release $(TAG) $(WASM) $(VERSION_FILE))
 	$(MAKE) --no-print-directory sync CORE=$(TAG:v%=%)
 	@if [ -n "$$(git status --porcelain -- $(SYNCED))" ]; then \
 		echo "error: the core differs from the xhandler-rust $(TAG) release (now synced here):" >&2; \

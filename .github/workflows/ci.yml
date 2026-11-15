@@ -43,7 +43,7 @@ jobs:
       # The committed core is the xhandler.wasm of the xhandler-rust release in its VERSION
       - name: Verify the core
         if: runner.os == 'Linux'
-        run: make verify-core
+        run: make verify-core verify-core-script
       - name: Maven tests
         run: mvn verify -Pexamples
 

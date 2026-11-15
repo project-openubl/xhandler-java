@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 # The xhandler core (xhandler.wasm, its models and the conformance corpus) comes from the
 # releases of xhandler-rust, which attach xhandler-dist-<version>.tar.gz, xhandler.wasm and
-# SHA256SUMS. This script is identical in xhandler-go, xhandler-python and xhandler-java.
+# SHA256SUMS. The original is project-openubl/release-tools' xhandler/core.sh: change it there,
+# then copy it to xhandler-go, xhandler-python and xhandler-java (`make verify-core-script` there
+# checks the copy).
 #
 #   core.sh download <version> <dir>
 #       extracts the release's dist into <dir>

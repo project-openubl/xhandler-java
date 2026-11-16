@@ -25,7 +25,10 @@ final class SunatResponses {
             return SunatResponse.builder()
                     .status(Status.valueOf(cdr.get("status").asText()))
                     .metadata(new Metadata(number(cdr.get("response_code")), cdr.get("description").asText(), notes(cdr), null))
-                    .sunat(Sunat.builder().cdr(Base64.getDecoder().decode(cdr.get("zip").asText())).build())
+                    .sunat(Sunat.builder()
+                            .cdr(Base64.getDecoder().decode(cdr.get("zip").asText()))
+                            .documentDescription(text(cdr.get("document_description")))
+                            .build())
                     .build();
         }
         if (answer.has("ticket")) {
@@ -64,7 +67,7 @@ final class SunatResponses {
         JsonNode cdr = status.get("cdr_zip");
         return new ConsultResponse(
                 status.get("status_code").asText(),
-                status.get("status_message").isNull() ? null : status.get("status_message").asText(),
+                text(status.get("status_message")),
                 cdr.isNull() ? null : Base64.getDecoder().decode(cdr.asText()),
                 null
         );
@@ -73,6 +76,10 @@ final class SunatResponses {
     private static Integer httpStatus(JsonNode fault) {
         JsonNode status = fault.get("http_status");
         return status == null || status.isNull() ? null : status.asInt();
+    }
+
+    private static String text(JsonNode value) {
+        return value == null || value.isNull() ? null : value.asText();
     }
 
     private static Integer number(JsonNode code) {

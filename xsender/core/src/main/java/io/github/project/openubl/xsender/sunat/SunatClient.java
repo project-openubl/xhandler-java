@@ -92,7 +92,7 @@ public class SunatClient {
                 "target", Destinations.target(destination),
                 "file", file(zipFile.getFilename(), zipFile.getFile())
         ));
-        return SunatResponses.of(exchange(call, destination.getRestOperation() != null, credentials));
+        return SunatResponses.send(exchange(call, destination.getRestOperation() != null, credentials));
     }
 
     /**
@@ -105,7 +105,7 @@ public class SunatClient {
                 "target", Destinations.target(destination),
                 "ticket", ticket
         ));
-        return SunatResponses.of(exchange(call, destination.getRestOperation() != null, credentials));
+        return SunatResponses.verify(exchange(call, destination.getRestOperation() != null, credentials));
     }
 
     /**

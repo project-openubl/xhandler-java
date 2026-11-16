@@ -1,95 +1,120 @@
 package io.github.project.openubl.xsender.sunat;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import io.github.project.openubl.xhandler.core.Json;
+import io.github.project.openubl.xhandler.core.XhandlerException;
 import io.github.project.openubl.xsender.models.Metadata;
 import io.github.project.openubl.xsender.models.Status;
 import io.github.project.openubl.xsender.models.Sunat;
 import io.github.project.openubl.xsender.models.SunatResponse;
+import io.github.project.openubl.xsender.models.answers.CDR;
+import io.github.project.openubl.xsender.models.answers.ConsultResult;
+import io.github.project.openubl.xsender.models.answers.ConsultStatus;
+import io.github.project.openubl.xsender.models.answers.Fault;
+import io.github.project.openubl.xsender.models.answers.NoCDR;
+import io.github.project.openubl.xsender.models.answers.SendFileAnswer;
+import io.github.project.openubl.xsender.models.answers.VerifyResult;
 
-import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 
 /**
- * Builds the responses from the answers of the xhandler core: {@code {cdr}},
- * {@code {ticket}}, {@code {no_cdr}}, {@code {fault}} or {@code {status}}.
+ * Builds the responses from the answers of the xhandler core, read into the
+ * types generated from its schema (models.answers).
  */
 final class SunatResponses {
 
     private SunatResponses() {
     }
 
-    static SunatResponse of(JsonNode answer) {
-        if (answer.has("cdr")) {
-            JsonNode cdr = answer.get("cdr");
+    /** A CDR, a ticket to verify later, or SUNAT's error */
+    static SunatResponse send(JsonNode json) {
+        SendFileAnswer answer = read(json, SendFileAnswer.class);
+        if (answer.getCdr() != null) {
+            return of(answer.getCdr());
+        }
+        if (answer.getTicket() != null) {
             return SunatResponse.builder()
-                    .status(Status.valueOf(cdr.get("status").asText()))
-                    .metadata(new Metadata(number(cdr.get("response_code")), cdr.get("description").asText(), notes(cdr), null))
-                    .sunat(Sunat.builder()
-                            .cdr(Base64.getDecoder().decode(cdr.get("zip").asText()))
-                            .documentDescription(text(cdr.get("document_description")))
-                            .build())
+                    .sunat(Sunat.builder().ticket(answer.getTicket()).build())
                     .build();
         }
-        if (answer.has("ticket")) {
-            return SunatResponse.builder()
-                    .sunat(Sunat.builder().ticket(answer.get("ticket").asText()).build())
-                    .build();
+        return of(answer.getFault());
+    }
+
+    /** A CDR, no CDR yet (e.g. in progress), or SUNAT's error */
+    static SunatResponse verify(JsonNode json) {
+        VerifyResult answer = read(json, VerifyResult.class);
+        if (answer.getCdr() != null) {
+            return of(answer.getCdr());
         }
-        if (answer.has("no_cdr")) {
-            JsonNode noCdr = answer.get("no_cdr");
-            Integer code = number(noCdr.get("status_code"));
+        NoCDR noCdr = answer.getNoCdr();
+        if (noCdr != null) {
+            Integer code = number(noCdr.getStatusCode());
             return SunatResponse.builder()
-                    .status(Status.valueOf(noCdr.get("status").asText()))
+                    .status(status(noCdr.getStatus()))
                     .metadata(new Metadata(code, Integer.valueOf(98).equals(code) ? "En proceso" : null, List.of(), null))
                     .build();
         }
-        JsonNode fault = answer.get("fault");
+        return of(answer.getFault());
+    }
+
+    static ConsultResponse consult(JsonNode json) {
+        ConsultResult answer = read(json, ConsultResult.class);
+        Fault fault = answer.getFault();
+        if (fault != null) {
+            // SUNAT's error codes have 4 digits, e.g. "0111"
+            String code = fault.getSunatCode() == null ? null : "%04d".formatted(fault.getSunatCode());
+            return new ConsultResponse(code, fault.getMessage(), null, fault.getHttpStatus());
+        }
+        ConsultStatus status = answer.getStatus();
+        return new ConsultResponse(status.getStatusCode(), status.getStatusMessage(), status.getCdrZip(), null);
+    }
+
+    private static SunatResponse of(CDR cdr) {
         return SunatResponse.builder()
-                .status(Status.valueOf(fault.get("status").asText()))
+                .status(status(cdr.getStatus()))
+                .metadata(new Metadata(number(cdr.getResponseCode()), cdr.getDescription(), List.copyOf(cdr.getNotes()), null))
+                .sunat(Sunat.builder()
+                        .cdr(cdr.getZip())
+                        .documentDescription(cdr.getDocumentDescription())
+                        .build())
+                .cdr(cdr)
+                .build();
+    }
+
+    private static SunatResponse of(Fault fault) {
+        Long code = fault.getSunatCode();
+        return SunatResponse.builder()
+                .status(status(fault.getStatus()))
                 .metadata(new Metadata(
-                        fault.get("sunat_code").isNull() ? null : fault.get("sunat_code").asInt(),
-                        fault.get("message").asText(),
+                        code == null ? null : code.intValue(),
+                        fault.getMessage(),
                         List.of(),
-                        httpStatus(fault)
+                        fault.getHttpStatus()
                 ))
                 .build();
     }
 
-    static ConsultResponse consult(JsonNode answer) {
-        if (answer.has("fault")) {
-            JsonNode fault = answer.get("fault");
-            // SUNAT's error codes have 4 digits, e.g. "0111"
-            String code = fault.get("sunat_code").isNull() ? null : "%04d".formatted(fault.get("sunat_code").asInt());
-            return new ConsultResponse(code, fault.get("message").asText(), null, httpStatus(fault));
+    private static Status status(io.github.project.openubl.xsender.models.answers.Status status) {
+        return switch (status) {
+            case ACCEPTED -> Status.ACEPTADO;
+            case REJECTED -> Status.RECHAZADO;
+            case EXCEPTION -> Status.EXCEPCION;
+            case IN_PROGRESS -> Status.EN_PROCESO;
+            case UNKNOWN -> Status.UNKNOWN;
+        };
+    }
+
+    /** The generated answers ignore the fields a newer core adds */
+    private static <T> T read(JsonNode json, Class<T> type) {
+        try {
+            return Json.MAPPER.treeToValue(json, type);
+        } catch (JsonProcessingException e) {
+            throw new XhandlerException("xsender: " + e.getMessage(), e);
         }
-        JsonNode status = answer.get("status");
-        JsonNode cdr = status.get("cdr_zip");
-        return new ConsultResponse(
-                status.get("status_code").asText(),
-                text(status.get("status_message")),
-                cdr.isNull() ? null : Base64.getDecoder().decode(cdr.asText()),
-                null
-        );
     }
 
-    private static Integer httpStatus(JsonNode fault) {
-        JsonNode status = fault.get("http_status");
-        return status == null || status.isNull() ? null : status.asInt();
-    }
-
-    private static String text(JsonNode value) {
-        return value == null || value.isNull() ? null : value.asText();
-    }
-
-    private static Integer number(JsonNode code) {
-        String text = code.asText();
-        return text.matches("\\d+") ? Integer.valueOf(text) : null;
-    }
-
-    private static List<String> notes(JsonNode cdr) {
-        List<String> notes = new ArrayList<>();
-        cdr.get("notes").forEach(note -> notes.add(note.asText()));
-        return notes;
+    private static Integer number(String code) {
+        return code.matches("\\d+") ? Integer.valueOf(code) : null;
     }
 }

@@ -91,6 +91,15 @@ public class CreditNote implements Document {
     @JsonProperty("orden_compra")
     private String ordenCompra;
 
+    /**
+     * The corrected amount owed and installments of the factura it
+     * modifies: required for `tipo_nota` "13" (Catalog9, ajustes de montos
+     * y/o fechas de pago) and refused for the others. Unlike an invoice's,
+     * it isn't filled in when missing.
+     */
+    @JsonProperty("forma_pago")
+    private FormaPago formaPago;
+
     @Override
     public String kind() {
         return "CreditNote";

@@ -23,6 +23,7 @@
         "response_code": "0",
         "description": "La Factura numero F001-1, ha sido aceptada",
         "notes": [],
+        "document_description": null,
         "status": "ACEPTADO"
       }
     }

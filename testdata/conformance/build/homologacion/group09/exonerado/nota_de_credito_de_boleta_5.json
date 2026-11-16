@@ -49,6 +49,7 @@
         "documentos_relacionados": [],
         "fecha_emision": null,
         "firmante": null,
+        "forma_pago": null,
         "guias": [],
         "hora_emision": null,
         "icb_tasa": null,

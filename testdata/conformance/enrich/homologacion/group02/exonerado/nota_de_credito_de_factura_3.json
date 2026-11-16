@@ -199,6 +199,7 @@
         "documentos_relacionados": [],
         "fecha_emision": null,
         "firmante": null,
+        "forma_pago": null,
         "guias": [],
         "hora_emision": null,
         "icb_tasa": null,
@@ -463,7 +464,8 @@
       },
       "guias": [],
       "documentos_relacionados": [],
-      "orden_compra": null
+      "orden_compra": null,
+      "forma_pago": null
     }
   }
 }

@@ -39,8 +39,9 @@ mvn verify -f xsender/spring-boot-extension/integration-tests/
   make sync CORE=6.0.0-alpha.1           # el núcleo de una versión de xhandler-rust
   ```
 
-  `make sync` copia el núcleo, los modelos (`xbuilder/core/.../xbuilder/models/`) y el corpus de
-  conformidad (`testdata/conformance/`). No los edites a mano. Una versión solo se publica con el
+  `make sync` copia el núcleo, los modelos (`xbuilder/core/.../xbuilder/models/`), las respuestas
+  de SUNAT (`xsender/core/.../xsender/models/answers/`) y el corpus de conformidad
+  (`testdata/conformance/`). No los edites a mano. Una versión solo se publica con el
   núcleo de la versión igual de xhandler-rust: `make verify-core` lo comprueba.
   Estos comandos descargan el `core.sh` de xhandler-rust (`xhandler-wasm/core.sh`) del tag del
   núcleo; `CORE_SH=<ruta>` usa una copia local, p. ej. al cambiarlo allá.

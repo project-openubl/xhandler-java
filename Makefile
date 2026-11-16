@@ -1,5 +1,5 @@
-# The core (xhandler.wasm and its VERSION in xhandler-core, the xbuilder models and
-# testdata/conformance) comes from xhandler-rust:
+# The core (xhandler.wasm and its VERSION in xhandler-core, the generated xbuilder models and
+# xsender answers, and testdata/conformance) comes from xhandler-rust:
 #
 #   make sync CORE=<version>   the xhandler-rust v<version> release
 #   make sync                  a checkout of xhandler-rust (RUST_REPO), for development
@@ -14,7 +14,9 @@ WASM := xhandler-core/src/main/wasm/xhandler.wasm
 VERSION_FILE := xhandler-core/src/main/resources/io/github/project/openubl/xhandler/core/VERSION
 MODELS := xbuilder/core/src/main/java/io/github/project/openubl/xbuilder/models
 
-SYNCED := $(WASM) $(VERSION_FILE) $(MODELS) testdata/conformance
+ANSWERS := xsender/core/src/main/java/io/github/project/openubl/xsender/models/answers
+
+SYNCED := $(WASM) $(VERSION_FILE) $(MODELS) $(ANSWERS) testdata/conformance
 
 # core.sh syncs and verifies a released core. It lives in xhandler-rust, next to the release
 # format it reads, and is downloaded from the tag of the core at hand (from main for a core
@@ -33,6 +35,7 @@ sync: dist
 	cp $(DIST)/xhandler.wasm $(WASM)
 	cp $(DIST)/VERSION $(VERSION_FILE)
 	rm -rf $(MODELS) && mkdir -p $(MODELS) && cp $(DIST)/models/java/*.java $(MODELS)/
+	rm -rf $(ANSWERS) && mkdir -p $(ANSWERS) && cp $(DIST)/models/java/xsender/*.java $(ANSWERS)/
 	rm -rf testdata/conformance && cp -r $(DIST)/conformance testdata/conformance
 	$(if $(CORE),rm -rf $(DIST))
 

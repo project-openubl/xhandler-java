@@ -16,21 +16,23 @@ class SunatResponsesTest {
         String field = documentDescription == null ? "" : ", \"document_description\": \"" + documentDescription + "\"";
         return new ObjectMapper().readTree("""
                 {"cdr": {"zip": "", "response_code": "0", "description": "La Guia numero T001-1, ha sido aceptada",
-                         "notes": [], "status": "ACEPTADO"%s}}
+                         "notes": [], "status": "ACEPTADO", "added_by_a_newer_core": true%s}}
                 """.formatted(field));
     }
 
     @Test
     void cdr_carriesTheDocumentDescription() throws Exception {
-        SunatResponse response = SunatResponses.of(cdr(QR));
+        SunatResponse response = SunatResponses.send(cdr(QR));
 
         assertEquals(QR, response.getSunat().getDocumentDescription());
+        assertEquals(QR, response.getCdr().getDocumentDescription());
     }
 
     @Test
     void cdr_withoutDocumentDescription() throws Exception {
-        SunatResponse response = SunatResponses.of(cdr(null));
+        SunatResponse response = SunatResponses.send(cdr(null));
 
         assertNull(response.getSunat().getDocumentDescription());
+        assertNull(response.getCdr().getDocumentDescription());
     }
 }

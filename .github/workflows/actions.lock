@@ -5,7 +5,7 @@ version: 'v0.0.3'
 workflows:
     '.github/workflows/auto-merge-dependabot.yaml': []
     '.github/workflows/backport.yml':
-        - 'sorenlouv/backport-github-action@v9.5.1'
+        - 'sorenlouv/backport-github-action@v12.0.4'
     '.github/workflows/ci.yml':
         - 'actions/checkout@v7.0.1'
         - 'actions/setup-java@v6.2.0'
@@ -46,8 +46,8 @@ dependencies:
         repo_id: 352099563
         uses:
             - 'actions/setup-java@dded0888837ed1f317902acf8a20df0ad188d165'
-    'sorenlouv/backport-github-action@v9.5.1':
-        ref: 'v9.5.1'
-        commit: 'sha1-ad888e978060bc1b2798690dd9d03c4036560947'
+    'sorenlouv/backport-github-action@v12.0.4':
+        ref: 'v12.0.4'
+        commit: 'sha1-8a6c0381851f43f9f1fddc7303f0e9015eb57b62'
         owner_id: 209966
         repo_id: 291038744

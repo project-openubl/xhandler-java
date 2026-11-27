@@ -8,14 +8,14 @@ workflows:
         - 'sorenlouv/backport-github-action@v12.0.4'
     '.github/workflows/ci.yml':
         - 'actions/checkout@v7.0.1'
-        - 'actions/setup-java@v6.2.0'
+        - 'actions/setup-java@v6.3.0'
     '.github/workflows/codeql-analysis.yml':
         - 'actions/checkout@v7.0.1'
-        - 'actions/setup-java@v6.2.0'
+        - 'actions/setup-java@v6.3.0'
         - 'github/codeql-action@v4.39.3'
     '.github/workflows/release.yml':
         - 'actions/checkout@v7.0.1'
-        - 'actions/setup-java@v6.2.0'
+        - 'actions/setup-java@v6.3.0'
         - 'jreleaser/release-action@v2'
     '.github/workflows/verify-pr-title.yaml': []
 dependencies:
@@ -29,9 +29,9 @@ dependencies:
         commit: 'sha1-dded0888837ed1f317902acf8a20df0ad188d165'
         owner_id: 44036562
         repo_id: 196057608
-    'actions/setup-java@v6.2.0':
-        ref: 'v6.2.0'
-        commit: 'sha1-77dd5b2ce225ea11469928ac317850245a74ae78'
+    'actions/setup-java@v6.3.0':
+        ref: 'v6.3.0'
+        commit: 'sha1-d1374f8ac74474200d16ef8ecee22c7ae7a51880'
         owner_id: 44036562
         repo_id: 196057608
     'github/codeql-action@v4.39.3':
